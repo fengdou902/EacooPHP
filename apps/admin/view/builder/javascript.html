@@ -1,0 +1,38 @@
+<script type="text/javascript">
+    $(function() {
+        //给数组增加查找指定的元素索引方法
+        Array.prototype.indexOf = function(val) {
+            for (var i = 0; i < this.length; i++) {
+                if (this[i] == val) return i;
+            }
+            return -1;
+        };
+
+        //给数组增加删除方法
+        Array.prototype.remove = function(val) {
+            var index = this.indexOf(val);
+            if (index > -1) {
+                this.splice(index, 1);
+            }
+        };
+        //筛选框变化触发表单提交
+        $('[data-role="select_text"]').change(function(){
+            $('#selectForm').submit();
+        });
+    });
+    //筛选
+    $(document).on('submit', '.form-dont-clear-url-param', function(e){
+        e.preventDefault();
+
+        var seperator = "&";
+        var form = $(this).serialize();
+        var action = $(this).attr('action');
+        if(action == ''){
+            action = location.href;
+        }
+        var new_location = action +'?'+ seperator + form;
+        location.href = new_location;
+
+        return false;
+    });
+</script>

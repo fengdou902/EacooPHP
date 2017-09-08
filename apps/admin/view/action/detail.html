@@ -1,0 +1,40 @@
+  {extend name="../apps/admin/view/public/base.html"/}
+  {block name="style"}
+
+  {/block}
+
+  {block name="main"}
+   <table class="table table-bordered">
+	    <tbody>
+	    <tr>
+	      <th>执行者</th>
+	      <td>{$info.nickname}</td>
+	    </tr>
+	    <tr>
+	      <th>行为名称</th>
+	      <td>{$info.title}</td>
+	    </tr>
+	    <tr>
+	      <th>行为标识</th>
+	      <td>{$info.name}</td>
+	    </tr>
+	    <tr>
+	      <th>行为ip</th>
+	      <td>{$info.action_ip},所在地理位置：{$info.ip_city}</td>
+	    </tr>
+	    <tr>
+	      <th>日志备注</th>
+	      <td>{$info.remark}</td>
+	    </tr>
+	    <tr>
+	      <th>执行时间</th>
+	      <td>{$info.create_time}</td>
+	    </tr>
+	  </tbody></table>
+  {/block}
+
+  {block name="script"}
+  <script type="text/javascript">
+    
+  </script>
+  {/block}

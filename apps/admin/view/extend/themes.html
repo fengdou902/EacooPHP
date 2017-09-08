@@ -1,0 +1,62 @@
+{extend name="public/base"/}
+{block name="style"}
+  <style type="text/css">
+    .theme-item{padding:10px;}
+    .block-content{background-color: #f5f5f5!important;margin:0 10px;border-radius: 3px;color: #666;border:1px solid #f0f0f0;}
+    .theme-cover img{height: 230px;}
+    .block-content h3{font-size: 16px;margin: 0 auto;padding: 20px 0;margin-bottom: 15px;color: #656565;border-bottom: 1px solid #d5d5d5;position: relative;white-space: nowrap;text-align: center;}
+    .block-content h3::before {
+        content: '';
+        bottom: -10%;
+        background: #ccc;
+        left: 43%;
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        border-radius: 50%;
+    }
+
+    .block-content h3::after {
+        content: '';
+        bottom: -10%;
+        background: #ccc;
+        right: 43%;
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        border-radius: 50%;
+    }
+
+    .item-metas,.item-description{padding:0 10px;line-height: 26px;color: #888;}
+    .item-description{font-size: 13px;}
+  </style>
+{/block}
+
+{block name="main"} 
+    <div class="builder-tabs builder-form-tabs">
+        
+        <div class="form-group"><a title="取消多主题支持" class="btn btn-primary btn-sm ajax-get" href="{:url('admin/Theme/cancel')}"> 取消多主题支持</a></div>
+    </div>
+    <hr/>
+    <div class="builder formbuilder-box panel-body">
+
+    <div class="row">    
+      {foreach name="theme_items" item="item"}
+        <div class="col-md-4 theme-item"> 
+          <div class="block-content">     
+              <div class="theme-cover"><img src="{$item.cover}" width="100%"></div>
+              <h3>{$item.title}</h3>
+              <div class="item-metas"><span class="meta-author"><i class="fa fa-user"></i> {$item.developer}</span><span class="meta-author text-success pull-right">{$item.status}</span></div>
+              <div class="item-description">{$item.description}</div>
+              <div class="ml-10 mt-10 mb-10">{$item.right_button}</div>
+            </div>
+        </div>
+      {/foreach}
+   </div><!--row-->
+ </div>
+
+{/block}
+
+{block name="script"}
+
+{/block}

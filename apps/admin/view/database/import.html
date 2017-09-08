@@ -1,0 +1,80 @@
+{extend name="public/base"/}
+
+{block name="main"}
+    <div class="cf mb-20">
+        <ul class="nav nav-tabs">
+            <li class=""><a href="{:url('admin/Database/index',['type'=>'export'])}">数据备份</a></li>
+             <li class="active"><a href="{:url('admin/Database/index',['type'=>'import'])}">数据恢复</a></li>
+        </ul>
+    </div>
+    <!-- 应用列表 -->
+    <div class="data-table table-striped">
+        <table class="table table-hover table-responsive">
+            <thead>
+                <tr>
+                    <th width="200">备份名称</th>
+                    <th width="80">卷数</th>
+                    <th width="80">压缩</th>
+                    <th width="80">数据大小</th>
+                    <th width="200">备份时间</th>
+                    <th>状态</th>
+                    <th width="200">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {volist name="list" id="data"}
+                    <tr>
+                        <td>{$data.time|date='Ymd-His',###}</td>
+                        <td>{$data.part}</td>
+                        <td>{$data.compress}</td>
+                        <td>{$data.size|format_bytes}</td>
+                        <td>{$key}</td>
+                        <td>-</td>
+                        <td class="action">
+                            <a class="db-import" href="{:url('import?time='.$data['time'])}">恢复</a>&nbsp;
+                            <a class="db-import" href="{:realpath(config('data_backup_path'))}/{$data.time|date='Ymd-His',###}-1.sql.gz">打包下载</a>&nbsp;
+                            <a class="ajax-get confirm" href="{:url('del?time='.$data['time'])}">删除</a>
+                        </td>
+                    </tr>
+                {/volist}
+            </tbody>
+        </table>
+    </div>
+    <!-- /应用列表 -->
+{/block}
+
+{block name="script"}
+    <script type="text/javascript">
+        $(".db-import").click(function(){
+            var self = this, status = ".";
+            $.get(self.href, success, "json");
+            window.onbeforeunload = function(){ return "正在还原数据库，请不要关闭！" }
+            return false;
+        
+            function success(data){
+                if(data.code){
+                    if(data.gz){
+                        data.msg += status;
+                        if(status.length === 5){
+                            status = ".";
+                        } else {
+                            status += ".";
+                        }
+                    }
+                    $(self).parent().prev().text(data.msg);
+                    if(data.part){
+                        $.get(self.href, 
+                            {"part" : data.part, "start" : data.start}, 
+                            success, 
+                            "json"
+                        );
+                    }  else {
+                        window.onbeforeunload = function(){ return null; }
+                    }
+                } else {
+                    updateAlert(data.msg,'error');
+                }
+            }
+        });
+    </script>
+{/block}

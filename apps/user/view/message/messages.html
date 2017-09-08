@@ -1,0 +1,61 @@
+  {extend name="../apps/admin/view/public/base.html"/}
+  {block name="style"}
+
+  {/block}
+
+  {block name="main"}
+    <div class="row">
+        <div class="builder-tabs builder-form-tabs col-md-12 msg-tab">
+              <ul class="nav nav-tabs">
+                  <li class="{php}if($box_type=='inbox'){echo 'active';}{/php}"><a href="{:url('messages')}">收件箱<span class="msg-bage badge bg-teal">{$inboxMessageCount}</span></a></li>
+                  <li class="{php}if($box_type=='outbox'){echo 'active';}{/php}"><a href="{:url('messages',array('box_type'=>'outbox'))}">发件箱<span class="msg-bage badge bg-purple" >{$outboxMessageCount}</span></a></li>
+                  <li><a class="btn bg-aqua btn-block return" href="{:url('send_message')}"><i class="fa fa-send-o"></i> 发送消息</a></li>
+              </ul>
+          <div class="form-group"></div>
+      </div>
+    </div>
+
+    <div class="builder formbuilder-box panel-body">
+    <div class="row">    
+        <div class="builder-table col-sm-12">      
+            <table class="table table-bordered f13">
+                <tbody>
+                <tr>
+                  <th style="width: 10px"><input class="check-all" type="checkbox"></th>
+                  <th class="tc">头像</th>
+                  <th>标题</th>
+                  <th style="width:390px;">内容</th>
+                  <th><eq name="box_type" value="inbox">发件人<else/>收件人</eq></th>
+                  <th style="width:100px;">发送时间</th>
+                  <th style="width:130px;">操作</th>
+                </tr>
+                {volist name="message_list" id="message"}
+                  <tr>
+                    <td><input class="ids" type="checkbox" value="{$message.id}" name="ids[]"></td>
+                    <td class="tc"><img style="width:32px;height:32px;" src="{$message.avatar|root_full_path=###}"/></td>
+                    <td>{$message.title}</td>
+                    <td>{$message.content}</td>
+                    <td>{eq name="box_type" value="inbox"}{$message.nickname}{else/}{$message.nickname}{/eq}</td>
+                    <td>{$message.create_time}</td>
+                    {php}
+                      if($box_type=='inbox'){
+                            $detail_to_uid=$message['from_uid'];
+                        }else{
+                            $detail_to_uid=$message['to_uid'];
+                        }
+                    {/php}
+                    <td><a class="label label-info" href="{:url('detail',['to_uid'=>$detail_to_uid])}">查看并回复</a> <a title="删除" class="label label-danger ajax-get confirm" model="messages" href="{:url('setStatus',['status'=>'delete','ids'=>$message['id'],'model'=>'messages'])}">删除</a></td>
+                  </tr>
+                {/volist}
+              </tbody>
+              </table>
+                    
+            </div>    
+   </div><!--row-->
+ </div>
+
+  {/block}
+
+  {block name="script"}
+
+  {/block}

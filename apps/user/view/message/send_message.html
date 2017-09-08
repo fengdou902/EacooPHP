@@ -1,0 +1,71 @@
+  {extend name="../apps/admin/view/public/base.html"/}
+  {block name="style"}
+    <!--此页面增加的style-->
+  {/block}
+
+  {block name="main"}
+    <div class="row">
+        <div class="builder-tabs builder-form-tabs col-md-12">
+            <ul class="nav nav-tabs">
+                <li class=""><a href="{:url('messages')}">收件箱<span class="msg-bage badge bg-teal">{$inboxMessageCount}</span></a></li>
+                <li class=""><a href="{:url('messages',['box_type'=>'outbox'])}">发件箱<span class="msg-bage badge bg-purple" >{$outboxMessageCount}</span></a></li>
+                <li><a class="btn bg-aqua btn-block return" href="{:url('send_message')}"><i class="fa fa-send-o"></i> 发送消息</a></li>
+            </ul>
+          <div class="form-group"></div>
+      </div>
+    </div>
+
+    <div class="builder formbuilder-box mt-20">
+
+    <div class="row">    
+
+    <div class="col-md-7">      
+      <form action="" method="post" id="form-msg" class="form-builder form-horizontal">
+      <fieldset>
+        <div class="form-group item_to_uids ">
+          <label for="to_uids" class="col-md-3 control-label">接收者</label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" name="to_uids" value="" placeholder="填写接收用户ID，留空则群发所有用户">
+            
+          </div>
+      </div>
+      <div class="form-group item_title ">
+          <label for="title" class="col-md-3 control-label">标题<sup>*</sup></label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" name="title" value="" placeholder="必填">
+            
+          </div>
+      </div>
+      <div class="form-group item_content ">
+      <label for="content" class="col-md-3 control-label">消息内容<sup>*</sup></label>
+        <div class="col-md-9">
+          <textarea name="content" class="form-control" length="120" rows="5" placeholder="填写消息内容"></textarea>
+            
+        </div>
+      </div>
+      <div class="form-group">
+          <div class="col-md-10 col-md-offset-2 tc">
+            <button class="btn btn-primary submit ajax-post " type="submit" target-form="form-builder">确定</button> 
+                &nbsp;<button onclick="javascript:document.getElementById('form-msg').reset();return false;" class="btn btn-warning">重置</button>
+        </div>
+    </div>
+
+   </fieldset>
+  </form>
+                    
+    </div>    
+   </div><!--row-->
+ </div>
+
+  {/block}
+
+  {block name="script"}
+    <script type="text/javascript">
+        $(function(){
+            //遍历选中当前权限的子权限
+            $('.auth input[type="checkbox"]').on('change',function(){
+                $('.'+$(this).attr('data-module-name')+' .auth'+$(this).val()).find('input').prop('checked',this.checked);
+            });
+        });
+    </script>
+  {s/block}

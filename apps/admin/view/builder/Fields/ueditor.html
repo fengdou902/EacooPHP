@@ -1,0 +1,26 @@
+{case value="ueditor"}
+{php}
+    if (strpos($field['name'],'[')) {
+        $field['id']=str_replace(']','',str_replace('[','',$field['name']));
+      }else{
+        $field['id']=$field['name'];
+      }
+      $ueditor_attributes = [
+        'id'      => $field['id'],
+        'name'    => $field['name'],
+        'default' => isset($field['value'])? $field['value']:'',
+        'width'   => isset($field['options']['width'])? $field['options']['width']:'',
+        'height'  => isset($field['options']['height'])? $field['options']['height']:'',
+        'config'  => isset($field['options']['config']) ? $field['options']['config']:''
+      ];
+      $ueditor_param=isset($field['options']['param']) ? $field['options']['param']:'';
+{/php}
+<div class="form-group item_{$field.name} {$field.extra_class}">
+        <label for="{$field.name}" class="col-md-2 control-label">{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{$field.title|htmlspecialchars}</label>
+        <div class="col-md-9">
+	         {:widget('common/editor/ueditor',[$ueditor_attributes,$ueditor_param])}
+	        {notempty name="field.tip"}<p class="help-block">{$field.tip}</p>{/notempty}
+        </div>
+    </div>
+
+{/case}

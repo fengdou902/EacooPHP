@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="zh-CN" class="ie8"> <![endif]-->
+<html lang="zh-CN">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>{$meta_title|default="EacooPHP系统"}</title>
+<meta content="telephone=no,email=no,address=no" name="format-detection" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<meta name="msapplication-tap-highlight" content="no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="wap-font-scale" content="no" />
+<meta name="Keywords" content="EacooPHP系统" />
+<meta name="Description" content="EacooPHP系统" />
+<meta name="frontend-mobile" content="yes" />
+<!-- 网站头像 -->
+<link rel="icon" type="image/x-icon" href="__THEME_IMG__/favicon_0.jpg" />
+<link rel="shortcut icon" type="image/x-icon" href="__THEME_IMG__/favicon_0.jpg" />
+<link type="text/css" rel="stylesheet" href="__THEME_CSS__/common.css"/>
+{block name="style"}{/block}
+
+<script type="text/javascript" src="__THEME_JS__/jquery.js"></script>
+<script type="text/javascript" src="__THEME_JS__/jquery.cookie.js"></script>
+</head>
+<body>
+  <!-- 站点 -->
+{block name="main"}
+
+{/block}
+  
+  {:config('web_site_statistics')}
+  {block name="script"}{/block}
+
+</body>
+</html>

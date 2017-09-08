@@ -1,0 +1,36 @@
+      <div class="col-md-4">
+              <!-- USERS LIST -->
+              <div class="box box-danger">
+                <div class="box-header with-border">
+                  <h3 class="box-title">最新注册用户</h3>
+
+                  <div class="box-tools pull-right">
+                    <span class="label label-danger hide">{$latestmember_total}个新用户</span>
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body no-padding">
+                  <ul class="users-list clearfix">
+                  {volist name="member_list" id="v"}
+                      <li>
+                        <img src="{$v.avatar|root_full_path=###}" width='69' height="69">
+                        <a class="users-list-name" href="{:url('admin/User/edit',['uid'=>$v['uid']])}">{$v.nickname}</a>
+                        <span class="users-list-date">{$v.create_time|friendly_date=###,'mohu'}</span>
+                      </li>
+                  {/volist}
+                  
+                  </ul>
+                  <!-- /.users-list -->
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer text-center">
+                  <a href="{:url('admin/User/index')}" class="uppercase">查看所有用户</a>
+                </div>
+                <!-- /.box-footer -->
+              </div>
+              <!--/.box -->
+            </div>

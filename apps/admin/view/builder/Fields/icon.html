@@ -1,0 +1,19 @@
+{case value="icon"}
+{php}
+  $iconpicker=1;
+  $icons_json[]=$field['name'];
+{/php}
+	<div class="form-group item_{$field.name} {$field.extra_class|default=''}">
+		<label for="{$field.name}" class="col-md-2 control-label">{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{$field.title|htmlspecialchars}</label>
+		 <div class="col-md-6">
+		 			<div class="input-group input" id="{$field.name}-picker">
+              <span class="input-group-btn">
+                  <button class="btn btn-raised btn-default btn-sm" type="button"><i class="fa fa-info-circle"></i> 选择图标</button>
+              </span>
+              <input type="text" class="form-control" name="{$field.name}" value="{present name="field.value"}{$field.value|htmlspecialchars}{/present}" {$field.extra_attr|default=''}>
+          </div>
+		   
+		    
+    </div>
+  </div>
+{/case}

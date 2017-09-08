@@ -1,0 +1,76 @@
+  <aside class="main-sidebar sidebar-wrapper">
+
+    <section class="sidebar">
+      <!-- Sidebar user panel -->
+<!--       <div class="user-panel">
+        <div class="pull-left image">
+         <img src="{$current_user.avatar|root_full_path}" class="img-circle" alt="">
+        </div>
+        <div class="pull-left info">
+          <p><a href="{:url('Admin/User/profile',array('uid'=>$current_user['uid']))}">{$current_user.nickname}</a></p>
+          <i class="fa fa-circle text-success"></i> [<span class="loginout f12">退出</span>]
+        </div>
+      </div> -->
+      <ul class="sidebar-menu">
+      <li class="header">MAIN NAVIGATION</li>
+
+           {volist name="sidebar_menus" id="vo"}
+                <li class="{notempty name="vo._child"}treeview{/notempty}">
+                    {present name="vo"}<a href="{notempty name="vo._child"}#{else/}{:url($vo['name'])}{/notempty}" >
+                        <i class="fa {$vo.icon|default='fa-circle-o'}"></i>
+                          <span>{$vo.title}</span>
+                          {notempty name="vo._child"}<i class="fa fa-angle-left pull-right"></i>{/notempty}
+                      </a>{/present}
+                    {notempty name="vo._child"}
+                      <ul class="treeview-menu">
+                        {volist name="vo._child" id="v"}
+                             {empty name="v._child"}
+                              <li ><a href="{:url($v['name'])}" ><i class="fa fa-circle-o"></i> {$v.title}</a> </li>
+                              {else/}
+                               <li ><a href="{:url($v['name'])}" ><i class="fa fa-circle-o"></i> {$v.title} <i class="fa fa-angle-left pull-right"></i></a>
+                                 <ul class="treeview-menu">
+                                  {volist name="v._child" id="_v"}
+                                    <li><a href="{:url($_v['name'])}" ><i class="fa fa-circle-o"></i> {$_v.title}</a></li>
+                                  {/volist}                 
+                               </ul>
+                                </li>
+                              {/empty}
+                        {/volist}                 
+                     </ul>
+                     {/notempty}
+                </li>
+            {/volist}
+
+        <li class="header">LABELS</li>
+        <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>帮助中心</span></a></li>
+        <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>常见问题</span></a></li>
+        <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>联系我们</span></a></li>
+      </ul>
+    </section>
+
+<!--     <section class="sidebar-sub-nav">
+        <div class="menu-items" style="display: none;">
+          {volist name="sidebar_menus" id="vo"}
+                {notempty name="vo._child"}
+                <div data-pid="{$vo.id}" class="menu-item-box" id="menu-{$vo.id}">
+                  <ul>
+                    {volist name="vo._child" id="v"}
+                         {empty name="v._child"}
+                          <li ><a href="{:url($v['name'])}" ><i class="fa fa-circle-o"></i> {$v.title}</a> </li>
+                          {else/}
+                           <li ><a href="{:url($v['name'])}" ><i class="fa fa-circle-o"></i> {$v.title} <i class="fa fa-angle-left pull-right"></i></a>
+                             <ul >
+                              {volist name="v._child" id="_v"}
+                                <li><a href="{:url($_v['name'])}" ><i class="fa fa-circle-o"></i> {$_v.title}</a></li>
+                              {/volist}                 
+                           </ul>
+                            </li>
+                          {/empty}
+                    {/volist}                 
+                 </ul>
+                 </div>
+                 {/notempty}
+            {/volist}
+        </div>
+      </section> -->
+  </aside>

@@ -1,0 +1,170 @@
+{extend name="$_admin_public_base_"/}
+{block name="style"}
+    <link type="text/css" rel="stylesheet" href="__CSS__/admin.css"/>
+{/block}
+
+{block name="main"}
+    <div class="row">
+    <form id="form_id" method="post" action="{$form_url}" class="form-post form-horizontal">
+        <div class="col-md-8 ">
+        <div class="box box-info">
+            <div class="box-header with-border">
+                  <h3 class="box-title">{$meta_title}</h3>
+            </div>
+             <div class="box-body">
+                {notempty name="post_obj.id"}
+                    <input type="hidden" name="id" value="{$post_obj.id|default='0'}" />
+                {/notempty}
+                <div class="form-group w">
+                  <!--<label class="col-sm-1 control-label" for="title">标题</label>-->
+                  <div class="col-sm-12">
+                    <input class="form-control" name="title" value="{$post_obj.title|default=''}" type="text" placeholder="请输入标题">
+                  </div>
+                  
+                </div>
+             
+                <!--编辑器-->
+                <div class="form-group col-sm-12">
+                {:widget('common/Editor/wangeditor',[['id'=>'cmscontent','name'=>'content','default'=>$post_obj['content'],'width'=>'100%','height'=>'360px','config'=>'all'],['importWangEditor'=>1,'open_attachmentModal'=>'multiple']])}
+                </div>
+                <!--编辑器-->
+                <div class="form-group w">
+                  <label class="col-sm-2 control-label" for="excerpt">SEO摘要</label>
+                  <div class="col-sm-10">
+                    <textarea class="form-control" name="excerpt" rows='5'>{$post_obj.excerpt|default=''}</textarea>
+                  </div>
+                  
+                </div>
+                <div class="form-group w">
+                  <label class="col-sm-2 control-label" for="seo_keywords">SEO关键字</label>
+                  <div class="col-sm-10">
+                    <input class="form-control" name="seo_keywords" value="{$post_obj.seo_keywords|default=''}" type="text">
+                    <p class="help-block">多关键词之间用英文逗号隔开</p>
+                  </div>
+                  
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="box box-info">
+        <div class="box-header with-border">
+              <h3 class="box-title">扩展面板</h3>
+        </div>
+         <div class="box-body">
+            <div class="form-group">
+                <label class="control-label col-md-3" style="padding:0;" for="date_d">发布时间:</label>
+                <div class="col-md-8"> <input id="date_d" class="form-control form-datetime" type="text" value="{$post_obj.publish_time|default=date('Y-m-d H:i:s',time())}" name="publish_time" readonly></div>  
+            </div>
+            <!--<div class="form-group">
+                <label class="control-label col-md-4" for="status">审核状态:</label>
+                <div class="col-md-8">
+                    <select name="status" class="form-control">
+                        <option value="1">已发布</option>
+                        <option value="3">待审核</option>
+                        <option value="0">草稿</option>
+                      </select>
+                  </div>  
+            </div>-->
+            <div class="form-group">
+                <label class="control-label col-md-3" for="istop">置顶:</label>
+                <div class="col-md-8">
+                    <input type="checkbox" class="" name="istop" id="istop" placeholder=""><span class="f12 pl-10 color-6">可在前台置顶显示</span>
+                  </div>  
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3" for="recommended">推荐:</label>
+                <div class="col-md-8">
+                    <input type="checkbox" class="" name="recommended" id="recommended" placeholder=""><span class="f12 pl-10 color-6">作为站内推荐</span>
+                  </div>  
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3" for="status">分类:</label>
+                <div class="col-md-8">
+                    <select name="category_id" class="form-control">
+                    {volist name="post_category" id="val"}
+                        <option value="{$key}" {php}if($key==$category_id){echo 'selected';}{/php}>{$val}</option>
+                    {/volist}
+                    </select>
+                  </div>  
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3" for="status">标签:</label>
+                <div class="col-md-8">
+                    <select multiple name="tag_ids" class="form-control">
+                    {volist name="post_tags" id="val"}
+                        <option value="{$key}" {eq name="key" value="$tag_id"}selected{/eq}>{$val}</option>
+                    {/volist}
+                    </select>
+                  </div>  
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-3" for="status">排序:</label>
+                <div class="col-md-8">
+                    <input type="number" class="form-control" name="sort" id="sort" value="0" placeholder="">
+                </div>  
+            </div>
+            
+             <div class="form-group">
+              <label class="control-label col-md-3" for="title">缩略图:</label>
+                <div class="col-md-offset-3">{:widget('common/Upload/picture',[['id'=>'img','class'=>'uploadsingleimg','name'=>'img','value'=>$post_obj['img'],'config'=>'','width'=>false,'height'=>false]])}
+                </div>
+            </div>
+            </div>
+        </div><!--box-->
+    </div>
+    <div class="col-md-12 tc mt-30">
+        <div class="box box-solid">
+
+            <div class="box-body">
+            {notempty name="post_obj.id"}
+                <button class="btn btn-primary ajax-post" id="login" align="center" type="submit" name="status" value="1" target-form="form-post">更新</button>
+            {else/}
+                <button class="btn btn-primary ajax-post" id="login" align="center" type="submit" name="status" value="1" target-form="form-post">保存并发布</button>
+                <a class="btn btn-default" id="preview" align="center" type="submit" >预览</a>
+                <button class="btn btn-default ajax-post" id="save" name="status" value="0" align="center" type="submit" target-form="form-post">保存草稿</button>
+            {/notempty}
+                <button onclick="javascript:history.back(-1);return false;" class="btn btn-default return">返回</button>
+            </div>
+        </div>
+    </div>
+</form>
+</div>
+{/block}
+
+{block name="script"}
+    <link href="__STATIC__/libs/datetimepicker/datetimepicker.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="__STATIC__/libs/datetimepicker/datetimepicker.min.js"></script>
+
+    <script>
+        $('.form-datetime').datetimepicker({
+            language: "zh-CN",
+            autoclose: true,
+            format: 'yyyy-mm-dd hh:ii'
+        });
+        $('.form-date').datetimepicker({
+            language: "zh-CN",
+            minView: 2,
+            autoclose: true,
+            format: 'yyyy-mm-dd'
+        });
+        $('.form-time').datetimepicker({
+            language: "zh-CN",
+            minView: 0,
+            startView:1,
+            autoclose: true,
+            format: 'hh:ii'
+        });
+        $('.time').change(function () {
+            var fieldName = $(this).attr('data-field-name');
+            var dateString = $(this).val();
+            var date = new Date(dateString);
+            var timestamp = date.getTime();
+            $('[name=' + fieldName + ']').val(Math.floor(timestamp / 1000));
+        });
+    </script>
+{/block}

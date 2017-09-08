@@ -1,0 +1,125 @@
+<div class="repeatable repeatable_{$id}" >
+    <table class="table table-bordered " >
+          <thead style="background-color: #f0f0f0;">
+            <tr>
+            {volist name="options.0" id="option"}
+                <th {eq name="option.type" value="image"}style="width: 100px;text-align: center;" {/eq}>{$option.title}</th>
+            {/volist}
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody data-repeater-list="{$name}">
+            {volist name="options" id="new_option"}
+                <tr data-repeater-item >
+                  {php}if(is_array($new_option)){{/php}
+                    {foreach name="new_option" item="row" key="key"} 
+                      <td>
+                      {switch name="row.type"}
+                          {case value="info"}{$row.value|default=''}{/case}
+                          {case value="select"}
+                              <select name="[{$key}]" class="form-control select-sm" {$row.extra_attr|default=""}>
+                                  {foreach name="row.options" item="option" key="option_key"}
+                                  <option value="{$option_key}" >{$option}</option>
+                                  {/foreach}
+                              </select>
+                          {/case}
+                          {case value="image"}<div class="repeater-img-field" style="min-height: 90px;"><input type="hidden" name="[{$key}]" id="repeater-{$id}-{$key}-" value="{$row.default|default=''}"><span class="repeater-field-img"><img src="{$row.default|getThumbImageById=###|default='__PUBLIC__/img/noimage.gif'}" width="90" data-url="{:url('admin/Attachment/attachmentLayer',['input_id_name'=>$id,'path_type'=>'picture','select_type'=>'single'])}" onclick="openAttachmentLayer(this);" style="cursor: pointer;"></span></div>{/case}
+                          {default/}
+                              <input type="{$row.type}" class="form-control input-sm" name="[{$key}]" value="{$row.default|default=''}" placeholder="{$row.placeholder|default=''}">
+                      {/switch}
+                      </td>
+                      {/foreach}
+                    {php}}{/php}
+                    <td><label data-repeater-delete class="label label-danger btn-sm" style="cursor: pointer;"><i class="fa fa-trash"></i></label></td>
+              </tr>
+            {/volist}
+              
+          </tbody>
+        </table>
+        <button type="button" data-repeater-create class="btn btn-success btn-sm repeater-add-{$id} fr mr-10" ><i class="fa fa-plus"></i> 添加</button>
+</div>
+{egt name="param.is_load_attachment_modal" value="1"}
+    {php}if($param['is_load_WebUploader_script']>0){ {/php}
+      <script type="text/javascript" charset="utf-8" src="__STATIC__/libs/webuploader/js/webuploader.js"></script>
+      <link href="__STATIC__/libs/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+    {php}}{/php}
+    <script type="text/javascript">
+        var ZjfAttachmentOptions_{$id} = {
+            ismore:'single',
+            currentImgElement:false
+        };
+    </script>
+
+<script>
+    //本地上传(分开写为了好控制)
+    $(function () {
+
+      //判断哪个图片字段选择
+      $('body').on('click','.repeater-img-field', function() {
+          var $this = $(this);
+          var repeater_img_id =$this.children('input').attr('name');
+          ZjfAttachmentOptions_{$id}.currentImgElement = repeater_img_id;
+        })
+
+         //图片选择器列表确认按钮
+      $('#attachment_{$id}_ok').click(function () {
+          var id  = $("#attachment_{$id}_ids").val();
+          var src = $("#attachment_{$id}_srcs").val();
+          //插入数据
+          var repeater_img_element=ZjfAttachmentOptions_{$id}.currentImgElement;//获取当前图片字段元素节点
+            $("input[name='"+repeater_img_element+"']").val(id);
+            $("input[name='"+repeater_img_element+"']").parent().find('.repeater-field-img').html(
+                  '<img src="'+ src+'" width="90" data-url="{:url("admin/Attachment/attachmentLayer",["input_id_name"=>$id,"path_type"=>"picture","select_type"=>"single"])}" onclick="openAttachmentLayer(this);" style="cursor: pointer;">'
+            );
+          $(".attachment-content").find('div.cover').hide();
+      })
+  })
+
+/**
+ * 设置附件输入框值
+ * @param {[type]} inputName 输入框名
+ * @param {[type]} ids       附件IDs
+ * @param {[type]} srcs      附件SRCs
+ */
+function setAttachmentInputVal(inputName,ids,srcs) {
+
+    if (ids.length>0 && srcs.length>0) {
+        $("#"+inputName).val(ids);
+        //插入数据
+          var repeater_img_element=ZjfAttachmentOptions_{$id}.currentImgElement;//获取当前图片字段元素节点
+            $("input[name='"+repeater_img_element+"']").val(id);
+            $("input[name='"+repeater_img_element+"']").parent().find('.repeater-field-img').html(
+                  '<img src="'+ src+'" width="90" data-url="{:url("admin/Attachment/attachmentLayer",["input_id_name"=>$id,"path_type"=>"picture","select_type"=>"single"])}" onclick="openAttachmentLayer(this);" style="cursor: pointer;">'
+            );
+          $(".attachment-content").find('div.cover').hide();
+    }
+    
+    layer.closeAll('iframe');
+}
+</script>
+
+{/egt}
+
+{php}if(!$param['is_load_script']){{/php}
+    <script type="text/javascript" charset="utf-8" src="__STATIC__/libs/jquery-repeater/jquery.repeater.min.js"></script>
+{php}}{/php}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        'use strict';
+        $('.repeatable_{$id}').repeater({
+            show: function () {
+                $(this).find(".repeater-field-img img").attr('src','__PUBLIC__/img/noimage.gif');
+                $(this).slideDown();
+            },
+            hide: function (deleteElement) {
+                if(confirm('您确定要删除吗?')) {
+                    $(this).slideUp(deleteElement);
+                }
+            },
+            ready: function (setIndexes) {
+
+            }
+        });
+    });
+</script>

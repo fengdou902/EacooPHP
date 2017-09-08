@@ -1,0 +1,14 @@
+/addons/
+.idea
+composer.lock
+*.zip
+htaccess
+vendor
+thinkphp
+runtime
+public/static/libs/
+/apps/install.lock
+/apps/database.php
+/apps/route_sso.php
+/public/runtime
+/public/uploads

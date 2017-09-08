@@ -1,0 +1,106 @@
+  <extend name="Public/base"/>
+  <block name="style">
+    <!--此页面增加的style-->
+  </block>
+
+  <block name="body">
+      <div class="row">
+          <div class="builder-tabs builder-form-tabs col-md-12">
+                <ul class="nav nav-tabs">
+                    <li class=""><a href="{:U('messages')}">收件箱<span class="msg-bage badge bg-teal">{$inboxMessageCount}</span></a></li>
+                    <li class=""><a href="{:U('messages',array('box_type'=>'outbox'))}">发件箱<span class="msg-bage badge bg-purple" >{$outboxMessageCount}</span></a></li>
+                    <li><a class="btn bg-aqua btn-block return" href="{:U('send_message')}"><i class="fa fa-send-o"></i> 发送消息</a></li>
+                </ul>
+            <div class="form-group"></div>
+        </div>
+      </div>
+
+    <div class="builder formbuilder-box mt-20">
+
+    <div class="row">    
+
+    <div class="col-md-7"> 
+      <div class="col-md-12 col-md-offset-3">
+
+          <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">详细信息</h3>
+              </div>
+            <div class="panel-body">
+                  <div class="row mb-10">
+                      <label for="title" class="col-md-3 control-label">标题：</label>
+                      <div class="col-md-9">
+                        <p>{$msginfo.title}</p>
+                      </div>
+                  </div>
+
+                  <div class="row mb-10">
+                      <label for="to_uids" class="col-md-3 control-label">消息内容：</label>
+                      <div class="col-md-9">
+                        <p>{$msginfo.content}</p>
+                      </div>
+                  </div>
+                <div class="row mb-10">
+                      <label for="nickname" class="col-md-3 control-label">发件人：</label>
+                      <div class="col-md-9">
+                        <p><span class="" ><img src="{$msginfo.fromuid_avatar|get_image=###}" style="width:50px;height:50px;"></span>{$msginfo.fromuid_nickname}</p>
+                      </div>
+                  </div>
+                  <div class="row mb-10">
+                      <label for="nickname" class="col-md-3 control-label">收件人：</label>
+                      <div class="col-md-9">
+                        <p><span class="" ><img src="{$msginfo.touid_avatar|get_image=###}" style="width:50px;height:50px;"></span>{$msginfo.touid_nickname}</p>
+                      </div>
+                  </div>
+                  <div class="row mb-10">
+                      <label for="create_time" class="col-md-3 control-label">时间：</label>
+                      <div class="col-md-9">
+                        <p>{$msginfo.create_time|date="Y-m-d H:i:s",###}</p>
+                      </div>
+                  </div>
+                  <div class="row mb-10">
+                      <label for="type" class="col-md-3 control-label">消息类型：</label>
+                      <div class="col-md-9">
+                        <p>{$msginfo.type}</p>
+                      </div>
+                  </div>
+
+            </div>
+          </div>
+      </div>
+      <form action="{:U('send_message')}" method="post" id="form-reply" class="form-builder form-horizontal col-md-12">
+      <fieldset>
+      <h3 class="f14 tc mb-20 color-6"><i class="fa fa-send"></i> 回复消息</h3><hr/>
+        <div class="form-group item_title ">
+            <label for="title" class="col-md-3 control-label">标题<sup>*</sup></label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" name="title" value="" placeholder="必填">
+              
+            </div>
+        </div>
+        <div class="form-group item_content ">
+          <label for="content" class="col-md-3 control-label">消息内容<sup>*</sup></label>
+          <div class="col-md-9">
+            <textarea name="content" class="form-control" length="120" rows="5" placeholder="回复的消息内容"></textarea>
+          </div>
+        </div>
+      <div class="form-group">
+          <input type="hidden" name="to_uids" value="{$msginfo.from_uid}">
+          <div class="col-md-10 col-md-offset-2 tc">
+               <button class="btn btn-primary submit ajax-post " type="submit" target-form="form-builder">确定</button> 
+                &nbsp;<button onclick="javascript:document.getElementById('form-reply').reset();return false;" class="btn btn-warning">重置</button> 
+        </div>
+    </div>
+
+   </fieldset>
+  </form>
+                    
+            </div>    
+   </div><!--row-->
+ </div>
+
+  </block>
+
+  <block name="script">
+
+  </block>

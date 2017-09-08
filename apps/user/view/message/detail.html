@@ -1,0 +1,127 @@
+  {extend name="../apps/admin/view/public/base.html"/}
+  {block name="style"}
+    <!--此页面增加的style-->
+    <style type="text/css">
+    .direct-chat-messages{height: 430px;}
+    .direct-chat-contacts{height: 430px;}
+    .direct-chat-name{font-weight: 400;color: #666;font-size: 12px;}
+    .direct-chat-msg{width: 60%;}
+
+    .input-group-btn>.btn+.dropdown-toggle{padding-left: 8px;padding-right: 8px;}
+    .direct-chat-timestamp{font-size: 10px;}
+    </style>
+  {/block}
+
+  {block name="main"}
+    <div class="row">
+        <div class="builder-tabs builder-form-tabs col-md-12">
+            <ul class="nav nav-tabs">
+                <li class=""><a href="{:url('messages')}">收件箱<span class="msg-bage badge bg-teal">{$inboxMessageCount}</span></a></li>
+                <li class=""><a href="{:url('messages',['box_type'=>'outbox'])}">发件箱<span class="msg-bage badge bg-purple" >{$outboxMessageCount}</span></a></li>
+                <li><a class="btn bg-aqua btn-block return" href="{:url('send_message')}"><i class="fa fa-send-o"></i> 发送消息</a></li>
+            </ul>
+          <div class="form-group"></div>
+      </div>
+    </div>
+
+    <div class="builder formbuilder-box mt-20">
+
+    <div class="row">    
+    <div class="col-md-7"> 
+      <div class="col-md-10 col-md-offset-3">
+        <div class="box box-info box-solid direct-chat direct-chat-info mb-50">
+        <div class="box-header">
+          <h3 class="box-title"><i class="fa fa-send"></i> 正在与"{$to_user_info.nickname}"发送消息</h3>
+          <div class="box-tools pull-right">
+            <!--<span data-toggle="tooltip" title="3条新消息" class="badge bg-aqua">3</span>-->
+            
+            <button class="btn btn-box-tool" data-toggle="tooltip" title="Contacts" data-widget="chat-pane-toggle"><i class="fa fa-comments"></i></button>
+            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            <button class="btn btn-box-tool" onclick="javascript:location.reload();"><i class="fa fa fa-refresh"></i></button>
+          </div>
+        </div><!-- /.box-header -->
+        <div class="box-body">
+          <!-- Conversations are loaded here -->
+          <div class="direct-chat-messages">
+          {volist name="message_list" id="message"}
+            {neq name="message.from_uid" value="$current_user.uid"}
+                <!-- Message. Default to the left -->
+                <div class="direct-chat-msg">
+                  <div class="direct-chat-info clearfix">
+                    <span class="direct-chat-name pull-left">From：{$message.title}</span>
+                    <span class="direct-chat-timestamp pull-right">{$message.create_time}</span>
+                  </div><!-- /.direct-chat-info -->
+                  <img class="direct-chat-img" src="{$message.fromuid_avatar|root_full_path=###}" alt="message user image"><!-- /.direct-chat-img -->
+                  <div class="direct-chat-text">
+                    {$message.content}
+                  </div><!-- /.direct-chat-text -->
+                </div><!-- /.direct-chat-msg -->
+              {else/}
+                  <!-- Message to the right -->
+                  <div class="direct-chat-msg right w">
+                    <div class="direct-chat-info clearfix">
+                      <span class="direct-chat-name pull-right">From：{$message.title}</span>
+                      <span class="direct-chat-timestamp pull-left">{$message.create_time}</span>
+                    </div><!-- /.direct-chat-info -->
+                    <img class="direct-chat-img" src="{$message.fromuid_avatar|root_full_path=###}" alt="message user image"><!-- /.direct-chat-img -->
+                    <div class="direct-chat-text">
+                      {$message.content}
+                    </div><!-- /.direct-chat-text -->
+                  </div><!-- /.direct-chat-msg -->
+            {/neq}
+
+          {/volist}
+
+          </div><!--/.direct-chat-messages-->
+
+          <!-- Contacts are loaded here -->
+          <div class="direct-chat-contacts">
+            <ul class="contacts-list">
+              <li>
+                <a href="#">
+                  <img class="contacts-list-img" src="{$to_user_info.avatar|root_full_path=###}" alt="Contact Avatar">
+                  <div class="contacts-list-info">
+                    <span class="contacts-list-name">
+                      {$to_user_info.nickname}
+                      <small class="contacts-list-date pull-right">{$to_user_info.reg_time}</small>
+                    </span>
+                    <span class="contacts-list-msg">{$to_user_info.description}</span>
+                  </div><!-- /.contacts-list-info -->
+                </a>
+              </li><!-- End Contact Item -->
+            </ul><!-- /.contatcts-list -->
+          </div><!-- /.direct-chat-pane -->
+        </div><!-- /.box-body -->
+        <div class="box-footer">
+          <form action="{:url('send_message')}" method="post" id="form-reply" class="form-builder ">
+            <input type="hidden" name="to_uids" value="{$to_user_info.uid}">
+            <input type="hidden" name="title" placeholder="自定义标题" value='与"{$to_user_info.nickname}"对话' class="form-control">
+            <div class="input-group">
+              <input type="text" name="content" placeholder="消息内容..." class="form-control">
+              <span class="input-group-btn">
+                <button class="btn btn-info btn-flat submit ajax-post " type="submit" target-form="form-builder">发送</button>
+                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">修改消息标题</a></li>
+                  </ul>
+                <button type="button" class="btn btn-default" style="color:#666"><i class="fa fa-plus"></i></button>
+              </span>
+            </div>
+          </form>
+        </div><!-- /.box-footer-->
+      </div>
+
+    </div>
+
+   </div>    
+   </div><!--row-->
+ </div>
+
+  {/block}
+
+  {block name="script"}
+
+  {/block}

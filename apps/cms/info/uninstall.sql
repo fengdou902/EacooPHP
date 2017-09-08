@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS `oc_cms_article`;
+DROP TABLE IF EXISTS `oc_cms_attribute`;
+DROP TABLE IF EXISTS `oc_cms_index`;
+DROP TABLE IF EXISTS `oc_cms_category`;
+DROP TABLE IF EXISTS `oc_cms_type`;
+DROP TABLE IF EXISTS `oc_cms_slider`;
+DROP TABLE IF EXISTS `oc_cms_notice`;
+DROP TABLE IF EXISTS `oc_cms_footnav`;
+DROP TABLE IF EXISTS `oc_cms_friendly_link`;

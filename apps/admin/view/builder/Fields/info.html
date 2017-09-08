@@ -1,0 +1,12 @@
+{case value="info"}
+<!--     <div class="form-group item_{$field.name} {$field.extra_class}">
+        <label for="{$field.name}" class="col-md-3 control-label">{$field.title|htmlspecialchars}{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}</label>
+        {notempty name="field.tip"}<div class="col-md-9 help-block"><i class="fa fa-info-circle f18 color-info1"></i> {$field.tip}</div>{/notempty}
+    </div> -->
+    <div class=" form-group item_{$field.name} {$field.extra_class|default=''}">
+    	<div class="col-md-6 col-md-offset-2 callout callout-warning ">
+	    	<h5><i class="fa fa-bullhorn"></i> {$field.title|default=''}</h5>
+	    	{notempty name="field.tip"}<p>{$field.tip}</p>{/notempty}
+    	</div>
+    </div>
+{/case}

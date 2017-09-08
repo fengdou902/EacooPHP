@@ -1,0 +1,37 @@
+{extend name="public/base"/}
+{block name="main"}
+<div class="margin-top">
+
+	<header>
+		<h2 class="text-center">{$product_name} 安装协议</h2>
+
+	</header>
+	<section class="article-content" style="text-indent: 2em">
+		<p>
+			{$product_name}基于
+			<a target="_blank" href="http://www.thinkphp.cn">ThinkPHP</a>框架
+			的开发产品。感谢顶想公司为{$product_name}提供内核支持。
+		</p>
+
+		<p>
+			感谢您选择{$product_name}，希望我们的努力可以为您创造价值。官方网址为
+			<a href="{$company_website_domain}" target="_blank">{$company_website_domain}</a>
+			，官方社区网址为
+			<a href="{$website_domain}" target="_blank">{$website_domain}</a>
+			。
+		</p>
+
+		<p>
+			EacooPHP遵循Apache2开源协议发布，并提供免费使用。
+		</p>
+
+	</section>
+	<section class="text-center abstract">版权所有 (c) 2016-2017，保留所有权利。</section>
+</div>
+<div class="margin-top">
+	<div class="text-center">
+		<a class="btn btn-primary" href="{:url('install/index/check')}">同意安装协议</a>
+		<a class="btn btn-default" style="background: white;" href="{$website_domain}">不同意</a>
+	</div>
+</div>
+{/block}

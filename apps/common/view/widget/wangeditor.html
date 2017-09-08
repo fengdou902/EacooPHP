@@ -1,0 +1,82 @@
+{php} if(\Think\Hook::get('adminEditor') && MODULE_NAME == 'admin'){{/php}
+    <label class="textarea">
+        <textarea name="{$name}" id="{$id}">{$default}</textarea>
+        {:hook('adminEditor', array('id'=>$id,'value'=>$default))}
+    </label>
+
+{php}}elseif(\Think\Hook::get('editor')){{/php}
+
+<label class="textarea">
+    <textarea name="{$name}" id="{$id}">{$default}</textarea>
+    {:hook('editor', array('id'=>$id,'value'=>$default))}
+</label>
+
+{php}}else{
+
+    $path_type = isset($field['upload_config']['path_type'])? $field['upload_config']['path_type']:'picture';
+
+{/php}
+{if condition="$param['importWangEditor']"}
+    <link rel="stylesheet" type="text/css" href="__STATIC__/libs/wangeditor/css/wangEditor.min.css">
+    <style type="text/css">
+        .wangEditor-menu-container .menu-group{padding: 0 2px;}
+        .wangEditor-container .content{min-height: auto;}
+        .modal{z-index: 10002;}
+        .wangEditor-menu-container .menu_attachment{color:#3bb4f2!important;cursor: pointer;}
+    </style>
+    <script type="text/javascript" src="__STATIC__/libs/wangeditor/js/wangEditor.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/libs/wangeditor/js/custom-menu.js"></script>
+{/if}
+
+<textarea id="{$id}" name="{$name}" style="width:{$width};height:{$height};{$style}">{$default}</textarea>
+
+<!--这里引用jquery和wangEditor.js-->
+<script type="text/javascript">
+// 为页面所有的editor配置全局的密钥
+    wangEditor.config.mapAk = 'TVhjYjq1ICT2qqL5LdS8mwas';  // 此处换成自己申请的密钥
+    var attachmentModal_url ="{:url('admin/Attachment/attachmentLayer',['input_id_name'=>$id,'path_type'=>$path_type,'select_type'=>'multiple','from'=>'wangeditor'])}";//附件选择器地址
+    var editor_{$id} = new wangEditor('{$id}');
+    {notempty name="menus"}
+        editor_{$id}.config.menus =[{$menus}];//配置工具菜单
+    {else/}
+        editor_{$id}.config.menus ="";
+    {/notempty}
+    //上传图片
+    editor_{$id}.config.uploadImgUrl = "{:url('admin/attachment/upload',['path_type'=>$path_type,'uploadtype'=>'picture','upload_from'=>'wangeditor'])}";
+    // 配置自定义参数（举例）
+    editor_{$id}.config.uploadImgFileName = 'wangEditorFile';
+    editor_{$id}.config.uploadParams = {
+        uploadtype: 'image',
+        upload_from:'wangeditor'//请求来源
+    };
+
+    // 设置 headers（举例）
+    /*editor_{$id}.config.uploadHeaders = {
+        'Accept' : 'text/x-json'
+    };*/
+    // 配置自定义表情，在 create() 之前配置
+    editor_{$id}.config.emotions = {
+        // 支持多组表情
+        // 第一组，id叫做 'default' 
+        'default': {
+            title: '默认',  // 组名称
+            data: '__STATIC__/libs/wangeditor/emotions/default.data'  // data可以是一个url地址，访问该地址要能返回表情包的json文件
+        },
+        // 第二组，id叫做'weibo'
+        'weibo': {
+            title: '微博表情',  // 组名称
+            data: '__STATIC__/libs/wangeditor/emotions/weibo.data'
+        }
+        // 下面还可以继续，第三组、第四组、、、
+    };
+
+    editor_{$id}.config.menuFixed = false;// 关闭菜单栏fixed
+    editor_{$id}.create();
+     
+    function setAttachmentWangeditorVal{$id}(data){
+            editor_{$id}.$txt.append(data);
+            layer.closeAll('iframe');
+      }  
+</script>
+
+{php}}{/php}
