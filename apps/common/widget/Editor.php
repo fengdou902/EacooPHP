@@ -5,7 +5,15 @@ use app\common\controller\Base;
 
 class Editor extends Base
 {
-    //百度编辑器
+    /**
+     * 百度编辑器
+     * @param  array $attributes [description]
+     * @param  string $param [description]
+     * @param  string $style [description]
+     * @return [type] [description]
+     * @date   2017-09-11
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
     public function ueditor($attributes = [],$param='',$style='')
     {
         $id      = isset($attributes['id'])? $attributes['id']:'myeditor';
@@ -44,26 +52,23 @@ class Editor extends Base
 
     /**
      * wangeditor编辑器
-     * @param  string $id      id标示
-     * @param  string $name    name值
-     * @param  string $default 默认值
-     * @param  string $width   宽度
-     * @param  string $height  高度
-     * @param  string $config  配置
-     * @param  array  $param   [description]
-     * @param  string $style   [description]
-     * @return [type]          [description]
+     * @param  array $attributes 属性
+     * @param  array $param 额外属性
+     * @param  string $style 样式
+     * @return [type] [description]
+     * @date   2017-09-11
+     * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function wangeditor($attributes = [],$param=['importWangEditor'=>1,'open_attachmentModal'=>'multiple'],$style='')
+    public function wangeditor($attributes = [],$param=[],$style='')
     {
-        $id      = isset($attributes['id'])? $attributes['id']:'myeditor';
-        $name    = isset($attributes['name']) ? $attributes['name']:'content';
-        $default = isset($attributes['default']) ? $attributes['default']:'';
-        $width   = isset($attributes['width']) ? $attributes['width'] : '100%';
-        $height  = isset($attributes['height']) ? $attributes['height'] : '300px';
-        $config  = isset($attributes['config']) ? $attributes['config'] : 'simple';
+        $id      = isset($attributes['id'])? $attributes['id']:'myeditor';//ID标识
+        $name    = isset($attributes['name']) ? $attributes['name']:'content';//name值
+        $default = isset($attributes['default']) ? $attributes['default']:'';//默认值
+        $width   = isset($attributes['width']) ? $attributes['width'] : '100%';//宽度
+        $height  = isset($attributes['height']) ? $attributes['height'] : '300px';//高度
+        $config  = isset($attributes['config']) ? $attributes['config'] : 'simple';//菜单配置
 
-        if (!$param||$param=='') {
+        if (!$param || $param=='') {
             $param = array('importWangEditor'=>1,'open_attachmentModal'=>'multiple');
         }
         $this->assign('id',$id);

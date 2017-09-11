@@ -270,7 +270,7 @@
   $(function(){ 
     $.ajax({  
         type : "get",  
-        url : "{:url('admin/dashboard/getEacooNews')}",  
+        url : "__ROOT__{:url('admin/dashboard/getEacooNews')}",  
         data:{access_token:'dc364ec66f5d7c4d0a1948eecf35db73'},
         dataType : "json",
         success : function(result){
@@ -283,7 +283,7 @@
           }
         },  
         error:function(){  
-            console.debug('get_eacoo_news_fail');
+            console.debug('eacoo_news fail！');
         }  
     });   
 

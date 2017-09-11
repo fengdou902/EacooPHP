@@ -13,6 +13,8 @@ use app\common\controller\Base;
 use app\common\model\User;
 use app\admin\model\AuthRule;
 
+use com\EacooAccredit;
+
 use think\Cache;
 use think\Loader;
 use think\Hook;
@@ -20,14 +22,19 @@ use think\Hook;
 class Admin extends Base
 { 
 	public function _initialize() {
-
 		parent::_initialize();
-        
+        //检测是否是最新版本
+        $eacoo_version = EacooAccredit::getVersion();
+        if ($eacoo_version['version']!=EACOOPHP_V) {
+            $this->assign('eacoo_version',$eacoo_version);
+        }
+
         if (SERVER_SOFTWARE_TYPE=='nginx') {
             \think\Url::root('/admin.php?s=');
         } else{
             \think\Url::root('/admin.php');
         }
+
         if( !is_login()){
             // 还没登录 跳转到登录页面
             $this->redirect(url('admin/index/login'));
@@ -47,9 +54,8 @@ class Admin extends Base
             }
             // 检测系统权限
         }
-        //定义成员变量
-        $this->user_model = new User();
-        if (session('activation_auth_sign') != $this->user_model->where('uid',$this->currentUser['uid'])->value('activation_auth_sign')) {
+
+        if (session('activation_auth_sign') != User::where('uid',$this->currentUser['uid'])->value('activation_auth_sign')) {
             $this->error('您的帐号正在别的地方登录!',url('admin/index/logout'));
         }
 

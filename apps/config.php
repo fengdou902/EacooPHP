@@ -148,13 +148,13 @@ $config = [
     // | 视图输出字符串内容替换
     // +----------------------------------------------------------------------
     'view_replace_str'       => [
-        '__ROOT__'      => '/',
-        '__STATIC__'    => '/static',
-        '__PUBLIC__'    => '/static/assets',
-        '__LIBS__'      => '/static/libs',
-        '__ADMIN_CSS__' => '/static/admin/css',
-        '__ADMIN_JS__'  => '/static/admin/js',
-        '__ADMIN_IMG__' => '/static/admin/img',
+        '__ROOT__'      => BASE_PATH,
+        '__STATIC__'    => BASE_PATH.'/static',
+        '__PUBLIC__'    => BASE_PATH.'/static/assets',
+        '__LIBS__'      => BASE_PATH.'/static/libs',
+        '__ADMIN_CSS__' => BASE_PATH.'/static/admin/css',
+        '__ADMIN_JS__'  => BASE_PATH.'/static/admin/js',
+        '__ADMIN_IMG__' => BASE_PATH.'/static/admin/img',
     ],
     // 默认跳转页面对应的模板文件
     'dispatch_success_tmpl'  => THINK_PATH . 'tpl' . DS . 'dispatch_jump.tpl',

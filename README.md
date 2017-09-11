@@ -25,11 +25,12 @@ EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求
 
 邮件: postmaster@eacoo123.com  
 QQ: 1217085939  
-电话: 15801182251  
 
 ## 鸣谢
 感谢以下的项目,排名不分先后
 [ThinkPHP](http://www.thinkphp.cn)、[JQuery](http://jquery.com/)、[Bootstrap](http://getbootstrap.com/)、[AdminLTE](https://almsaeedstudio.com)、[Select2](https://github.com/select2/select2)等优秀开源项目。
 ## 版权申明
-EacooPHP遵循Apache2开源协议发布，并提供免费使用。
-本项目包含的第三方源码和二进制文件之版权信息另行标注。
+EacooPHP遵循Apache2开源协议发布，并提供免费使用。  
+本项目包含的第三方源码和二进制文件之版权信息另行标注。  
+版权所有Copyright © 2016-2017 by EacooPHP (http://www.eacoo123.com)  
+All rights reserved。

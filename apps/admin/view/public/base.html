@@ -245,24 +245,27 @@
 {block name="script"}{/block}
 <script type="text/javascript">
 $(function(){
-    /*退出*/
-      $('.loginout').click(function(){
+  /*退出*/
+  $('.loginout').click(function(){
+      layer.confirm('确定要退出吗？', {icon: 3},function(){
+          parent.layer.msg('退出成功!', {
+            shift: 2,
+            time: 1000,
+            shade: [0.1,'#000'],
+            end: function(){
+              window.location.href = '{:url("index/logout")}';
+            }
+          });
+      });
 
-        layer.confirm('确定要退出吗？', {icon: 3},function(){
-            parent.layer.msg('退出成功!', {
-              shift: 2,
-              time: 1000,
-              shade: [0.1,'#000'],
-              end: function(){
-                window.location.href = '{:url("index/logout")}';
-              }
-            });
-        });
+   });
 
-       });
-
-      $('.popover-toggle').popover();
-    });
+  //检测新版本
+  {present name="eacoo_version"}
+    updateAlert('发现了新版本，V{$eacoo_version.version}。点击<a href="https://git.oschina.net/ZhaoJunfeng/EacooPHP/attach_files">查看新版本</a>','warning');
+  {/present}
+  $('.popover-toggle').popover();
+});
 
   function delcahe(){
     $.get("{:url('admin/index/delcache')}",function(data){
