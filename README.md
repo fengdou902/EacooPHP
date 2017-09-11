@@ -15,6 +15,11 @@ EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求
 4.无缝整合阿里云OSS附件同步机制。（本地与oss同时存在，任意切换）  
 5.官方提供免费CMS,微信等功能模块  
 
+## 文档
+
+[https://www.kancloud.cn/youpzt/eacoo?token=eJFSYAfcWX](https://www.kancloud.cn/youpzt/eacoo?token=eJFSYAfcWX)
+
+
 ## 社区支持
 
 [http://forum.eacoo123.com](http://forum.eacoo123.com)（分享您遇到的问题，方便遇到同样问题的人也能快速找到答案）。

@@ -10,11 +10,15 @@
 namespace app\admin\controller;
 use app\admin\builder\Builder;
 
+use app\common\model\User as UserModel;
+
 class User extends Admin {
 
     function _initialize()
     {
         parent::_initialize();
+
+        $this->user_model = new UserModel;
     }
 
     //用户列表

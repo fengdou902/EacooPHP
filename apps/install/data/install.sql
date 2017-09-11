@@ -454,14 +454,14 @@ CREATE TABLE `eacoo_config` (
 
 INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `function`, `group`, `sub_group`, `type`, `remark`, `create_time`, `update_time`, `sort`, `status`) VALUES
 (1, 'toggle_web_site', '站点开关', '1', '0:关闭\r\n1:开启', '', 1, 0, 'select', '站点关闭后将提示网站已关闭，不能正常访问', 1378898976, 1406992386, 1, 1),
-(2, 'web_site_title', '网站标题', 'EacooPHP', '', '', 6, 0, 'text', '网站标题前台显示标题', 1378898976, 1504542295, 2, 1),
+(2, 'web_site_title', '网站标题', 'EacooPHP快速开发框架', '', '', 6, 0, 'text', '网站标题前台显示标题', 1378898976, 1504542295, 2, 1),
 (4, 'web_site_logo', '网站LOGO', '250', '', '', 6, 0, 'picture', '网站LOGO', 1407003397, 1504542295, 4, 1),
-(5, 'web_site_description', 'SEO描述', '该系统框架基于统一核心的通用互联网+信息化服务解决方案，追求简单、高效、卓越。可轻松实现支持多终端的WEB产品快速搭建、部署、上线。系统功能采用模块化、组件化、插件化等开放化低耦合设计，应用商城拥有丰富的功能模块、插件、主题，便于用户灵活扩展和二次开发。', '', '', 6, 1, 'textarea', '网站搜索引擎描述', 1378898976, 1468593817, 6, 1),
-(6, 'web_site_keyword', 'SEO关键字', '开源商城 B2C商城  B2B2C商城  三级分销  多用户商城  免费商城  微商城', '', '', 6, 1, 'textarea', '网站搜索引擎关键字', 1378898976, 1468593827, 4, 1),
+(5, 'web_site_description', 'SEO描述', 'EacooPHP开发系统', '', '', 6, 1, 'textarea', '网站搜索引擎描述', 1378898976, 1468593817, 6, 1),
+(6, 'web_site_keyword', 'SEO关键字', 'EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求高效，简单，灵活。', '', '', 6, 1, 'textarea', '网站搜索引擎关键字', 1378898976, 1468593827, 4, 1),
 (7, 'web_site_copyright', '版权信息', 'Copyright © ******有限公司 All rights reserved.', '', '', 1, 0, 'text', '设置在网站底部显示的版权信息', 1406991855, 1468493911, 7, 1),
 (8, 'web_site_icp', '网站备案号', '豫ICP备14003306号', '', '', 6, 0, 'text', '设置在网站底部显示的备案号，如“苏ICP备1502009-2号"', 1378900335, 1504542295, 8, 1),
 (9, 'web_site_statistics', '站点统计', '', '', '', 1, 0, 'textarea', '支持百度、Google、cnzz等所有Javascript的统计代码', 1378900335, 1415983236, 9, 1),
-(10, 'index_url', '首页地址', 'http://www.eacoo123.com', '', '', 2, 0, 'text', '可以通过配置此项自定义系统首页的地址，比如：http://www.xxx.com', 1471579753, 1501769488, 0, 1),
+(10, 'index_url', '首页地址', 'http://localhost', '', '', 2, 0, 'text', '可以通过配置此项自定义系统首页的地址，比如：http://www.xxx.com', 1471579753, 1501769488, 0, 1),
 (11, 'upload_file_size', '文件上传大小', '20', '', '', 9, 0, 'number', '文件上传大小单位：MB', 1428681031, 1428681031, 1, 1),
 (12, 'upload_image_size', '图片上传大小', '2', '', '', 9, 0, 'number', '图片上传大小单位：MB', 1428681071, 1428681071, 2, 1),
 (13, 'admin_tags', '后台多标签', '0', '0:关闭\r\n1:开启', '', 2, 0, 'radio', '', 1453445526, 1501769488, 3, 1),
@@ -500,10 +500,9 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `function
 (49, 'reg_default_roleid', '注册默认角色', '4', '', 'role_type', 7, 0, 'select', '', 1471681620, 1471689765, 0, 1),
 (50, 'open_register', '开放注册', '', '1:是\r\n0:否', '', 7, 0, 'radio', '', 1471681674, 1471681674, 0, 1),
 (56, 'meanwhile_user_online', '允许同时登录', '1', '1:是\r\n0:否', '', 7, 0, 'radio', '是否允许同一帐号在不同地方同时登录', 1473437355, 1473437355, 0, 1),
-(57, 'aliyun_oss', '阿里云oss', '{"enable":"1","bucket":"eacoomall-shop","access_key_id":"7twprgJpcw4hdEtn","access_key_secret":"HqPF1ErZpT1GrGusvPEgaDWtqykPq4","root_path":"images","domain":"http:\\/\\/img.eacoomall.com","endpoint":"http:\\/\\/oss-cn-beijing.aliyuncs.com","style":[{"name":"wap-thumb"},{"name":"small"},{"name":"medium"},{"name":"large"}]}', '', '', 0, 0, 'json', '阿里云OSS配置', 1473437355, 1500182001, 0, 1),
+(57, 'aliyun_oss', '阿里云oss', '{"enable":"1","bucket":"eacoo123","access_key_id":"","access_key_secret":"","root_path":"images","domain":"http:\\/\\/img.eacoomall.com","endpoint":"http:\\/\\/oss-cn-beijing.aliyuncs.com","style":[{"name":"wap-thumb"},{"name":"small"},{"name":"medium"},{"name":"large"}]}', '', '', 0, 0, 'json', '阿里云OSS配置', 1473437355, 1505118117, 0, 1),
 (58, 'api_kdniao', '快递鸟', '', '', '', 0, 0, 'json', '\n快递鸟设置，应用于电子面单中使用，未配置，将导致商家无法使用电子面单\n系统在调取物流信息时将调用快递鸟的“即时查询API”接口获取物流数据\n您可以通过 测试物流查询 链接测试物流信息查询', 1473437355, 1500182001, 0, 1),
 (59, 'user_administrator', '超级管理员', '1', '', '', 7, 0, 'text', '填写用户UID，多个用户用英文逗号","分开', 1503412286, 1503412339, 0, 1);
-
 -- --------------------------------------------------------
 
 --
