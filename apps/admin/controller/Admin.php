@@ -34,10 +34,10 @@ class Admin extends Base
         } else{
             \think\Url::root('/admin.php');
         }
-
+        
         if( !is_login()){
             // 还没登录 跳转到登录页面
-            $this->redirect(url('admin/index/login'));
+            $this->redirect('admin/index/login');
             exit;
         } else {
             $this->currentUser = session('user_login_auth');

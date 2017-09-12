@@ -29,7 +29,7 @@ class Index extends Base
      * 后台登录
      */
     public function login(){ 
-        if(session('user_login_auth')) $this->redirect(url('admin/dashboard/index'));
+        if(session('user_login_auth')) $this->redirect('admin/dashboard/index');
 
         if (IS_POST) {
            $captcha = new Captcha();
@@ -61,7 +61,7 @@ class Index extends Base
     public function logout(){
         session(null);
         cookie(null,config('cookie.prefix'));
-        $this->redirect(url('admin/index/login'));
+        $this->redirect('admin/index/login');
     }
     
     /**

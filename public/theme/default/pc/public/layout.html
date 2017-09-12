@@ -13,23 +13,44 @@
 <meta name="Keywords" content="EacooPHP系统" />
 <meta name="Description" content="EacooPHP系统" />
 <meta name="frontend-mobile" content="yes" />
-<!-- 网站头像 -->
-<link rel="icon" type="image/x-icon" href="__THEME_IMG__/favicon_0.jpg" />
-<link rel="shortcut icon" type="image/x-icon" href="__THEME_IMG__/favicon_0.jpg" />
-<link type="text/css" rel="stylesheet" href="__THEME_CSS__/common.css"/>
-{block name="style"}{/block}
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css"/>
 
-<script type="text/javascript" src="__THEME_JS__/jquery.js"></script>
-<script type="text/javascript" src="__THEME_JS__/jquery.cookie.js"></script>
+{load href="__ADMIN_CSS__/AdminLTE.min.css,__ADMIN_CSS__/_all-skins.min.css,__PUBLIC__/css/base.css" /}
+
+{block name="style"}{/block}
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.10.2.min.js"></script>    
+<script type="text/javascript">
+    var EacooPHP = window.EacooPHP = {
+        "root_domain": "{$Request.domain}", //当前网站地址
+        "static": "__STATIC__", //静态资源地址
+        "public": "__PUBLIC__", //项目公共目录地址
+        "uploads_url" :'/uploads/',
+        "cdn_url":"{:config('aliyun_oss.domain')}",
+    }
+</script>
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
 </head>
-<body>
+<body class="hold-transition skin-blue layout-top-nav">
   <!-- 站点 -->
 {block name="main"}
 
 {/block}
-  
-  {:config('web_site_statistics')}
-  {block name="script"}{/block}
+ 
+<script type="text/javascript" src="__PUBLIC__/js/bootstrap.min.js"></script>
+<!-- Slimscroll -->
+<script src="__STATIC__/libs/slimscroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script type="text/javascript" src="__STATIC__/libs/fastclick/fastclick.min.js"></script>
+<!-- AdminLTE App -->
+<script type="text/javascript" src="__ADMIN_JS__/app.min.js" ></script>
+
+{:config('web_site_statistics')}
+{block name="script"}{/block}
 
 </body>
 </html>

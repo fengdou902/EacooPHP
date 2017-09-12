@@ -8,7 +8,6 @@
 // +----------------------------------------------------------------------
 namespace app\home\controller;
 
-use app\common\model\User;
 class Index extends Home {
 
     function _initialize()

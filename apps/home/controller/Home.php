@@ -18,8 +18,8 @@ class Home extends Base {
            $this->error('站点已经关闭，请稍后访问~');
         }
 
-        $this->current_user = session('user_login_auth');
-        $this->assign('current_user', $this->current_user);
+        $this->currentUser = session('user_login_auth');
+        $this->assign('current_user', $this->currentUser);
         
         $this->assign('_theme_public_', config('theme_public'));  // 页面公共继承模版
         $this->assign('_theme_public_layout', config('theme_public').'layout.html');  // 页面公共继承模版

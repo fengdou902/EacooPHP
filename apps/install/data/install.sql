@@ -146,10 +146,7 @@ INSERT INTO `eacoo_attachment` (`id`, `uid`, `name`, `path`, `url`, `location`, 
 (1, 1, 'preg_match_imgs.jpeg', '/uploads/Editor/Picture/2016-06-12/575d4bd8d0351.jpeg', '', 'local', 'editor', 'jpeg', '', 19513, '', '4cf157e42b44c95d579ee39b0a1a48a4', 'dee76e7b39f1afaad14c1e03cfac5f6031c3c511', 0, 1465732056, 1465732056, 0, 1),
 (2, 1, 'gerxiangimg200x200.jpg', '/uploads/Editor/Picture/2016-06-12/575d4bfb09961.jpg', '', 'local', 'editor', 'jpg', '', 5291, 'gerxiangimg200x200', '4db879c357c4ab80c77fce8055a0785f', '480eb2e097397856b99b373214fb28c2f717dacf', 0, 1465732090, 1465732090, 0, 1),
 (3, 1, 'oraclmysqlzjfblhere.jpg', '/uploads/Editor/Picture/2016-06-12/575d4c691e976.jpg', '', 'local', 'editor', 'jpg', '', 23866, 'mysql', '5a3a5a781a6d9b5f0089f6058572f850', 'a17bfe395b29ba06ae5784486bcf288b3b0adfdb', 0, 1465732201, 1465732201, 0, 1),
-(4, 1, 'photo2.png', '/uploads/picture/2016-07-03/5778d8209dcfe.png', '', 'local', 'picture', 'png', '', 424395, NULL, 'e6a4cc39bbc43c4bcf8b8aeed4a7f410', '0d0bbc1adc137c06c80349ffe7475edca7a1b368', 0, 1467537440, 1467537440, 0, 1),
-(5, 1, 'photo1.png', '/uploads/picture/2016-07-03/5778d820a4841.png', '', 'local', 'picture', 'png', '', 673900, '', '95aba97561f29dbd847c4458063c4818', 'dded910169f301114b68449d36c7e94e099bf63f', 0, 1467537440, 1467537440, 0, 1),
 (6, 1, '功能表格', '/uploads/attachment/2016-07-13/5785daaa2f2e6.xlsx', '', 'local', 'file', 'xlsx', '', 11399, NULL, '5fd89f172ca8a95fa13b55ccb24d5971', 'b8706af3fa59ef0fc65675e40131f25e12f94664', 0, 1468390058, 1468390058, 0, 1),
-(7, 1, '附件1-15', '/uploads/attachment/2016-07-13/5785db1665135.doc', '', 'local', 'file', 'doc', '', 582144, NULL, '7363ce2e1a238fb71d91f82dfe69449e', '406d01372119d647753feb359a5dab164ef9aa71', 0, 1468390166, 1468390166, 0, 1),
 (8, 1, '会员数据2016-06-30 18_44_14', '/uploads/attachment/2016-07-13/5785dce2e15c1.xls', '', 'local', 'file', 'xls', '', 173387, NULL, '9ff55acddd75366d20dcb931eb1d87ea', 'acf5daf769e6ba06854002104bfb8c2886da97af', 0, 1468390626, 1468390626, 0, 1),
 (10, 1, '苹果短信-三全音 - 铃声', '/uploads/attachment/2016-07-27/579857b5aca95.mp3', '', 'local', 'file', 'mp3', '', 19916, NULL, 'bab00edb8d6a5cf4de5444a2e5c05009', '73cda0fb4f947dcb496153d8b896478af1247935', 0, 1469601717, 1469601717, 0, 1),
 (12, 1, 'music', '/uploads/attachment/2016-07-28/57995fe9bf0da.mp3', '', 'local', 'file', 'mp3', '', 160545, NULL, '935cd1b8950f1fdcd23d47cf791831cf', '73c318221faa081544db321bb555148f04b61f00', 0, 1469669353, 1469669353, 0, 1),
@@ -232,9 +229,7 @@ INSERT INTO `eacoo_attachment` (`id`, `uid`, `name`, `path`, `url`, `location`, 
 (90, 1, 'wx1image_14751588708117', '/uploads/picture/2016-09-29/wx1image_14751588708117.jpg', '', 'local', 'picture', 'jpg', '', 24226, NULL, '', '', 0, 1475158870, 0, 0, 1),
 (91, 1, 'meinv_admin_avatar', '/uploads/picture/2016-09-30/57edd952ba0e0.jpg', '', 'local', 'picture', 'jpg', '', 7006, NULL, '89b678fa35106c7a0f7579cb8426bd7a', '7d10ddb80359255e58c04bd30412b00bba6938a5', 0, 1475205458, 1475205458, 0, 1),
 (92, 1, '57e0a9c03a61b', '/uploads/picture/2016-10-03/57f2076c4e997.jpg', '', 'local', 'picture', 'jpg', '', 110032, NULL, 'e3694c361707487802476e81709c863f', 'd5381f24235ee72d9fd8dfe2bb2e3d128217c8ce', 0, 1475479404, 1475479404, 0, 1),
-(93, 1, '好风好水 1', '/uploads/attachment/2016-10-05/57f4cbbda2e2e.mp3', '', 'local', 'file', 'mp3', '', 4896952, NULL, 'a4311ef8450f90b1f18809e3dee1bd58', 'b9e18a0d1269b6c061f6e8900cbec9f0a2ac6694', 0, 1475660733, 1475660733, 0, 1),
-(94, 1, '轮回', '/uploads/attachment/2016-10-05/57f4cc2e5d00c.mp3', '', 'local', 'file', 'mp3', '', 2390391, NULL, '037fa7e64888d5d04992e8cb64179979', 'd53634ecddfb96de995339455a56af1cd9ee44ba', 0, 1475660846, 1475660846, 0, 1),
-(95, 1, '9812496129086622', '/uploads/picture/2016-10-06/57f6136b5bd4e.jpg', '', 'local', 'picture', 'jpg', '', 164177, NULL, '983944832c987b160ae409f71acc7933', 'bce6147f4070989fc0349798acf6383938e5563a', 0, 1475744619, 1475744619, 0, 1);
+(93, 1, '9812496129086622', '/uploads/picture/2016-10-06/57f6136b5bd4e.jpg', '', 'local', 'picture', 'jpg', '', 164177, NULL, '983944832c987b160ae409f71acc7933', 'bce6147f4070989fc0349798acf6383938e5563a', 0, 1475744619, 1475744619, 0, 1);
 
 -- --------------------------------------------------------
 
