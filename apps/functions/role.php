@@ -15,9 +15,12 @@ function get_login_role($field='id')
         } else{
             $role_info = [];
             if (session('activation_auth_sign') == data_auth_sign($user)) {
-                foreach ($user['auth_group'] as $key => $val) {
-                    $role_info[] = db('AuthGroup')->where(['id'=>$key])->field($field)->find();
+                if (!empty($user['auth_group'])) {
+                    foreach ($user['auth_group'] as $key => $val) {
+                        $role_info[] = db('AuthGroup')->where(['id'=>$key])->field($field)->find();
+                    }
                 }
+                
                 
             }
             

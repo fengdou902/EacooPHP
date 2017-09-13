@@ -32,7 +32,7 @@ class User extends Admin {
         $map['status'] = ['egt', '0']; // 禁用和正常状态
         list($data_list,$page) = $this->user_model->getListByPage($map,'reg_time desc','*',20);
         foreach($data_list as $k=>$user){
-            $data_list[$k]['role_name']= get_role_info($user['uid'],'title')[0]['title']? : '无';//获取角色名
+            $data_list[$k]['role_name']= isset(get_role_info($user['uid'],'title')[0]['title']) ? get_role_info($user['uid'],'title')[0]['title']: '无';//获取角色名
         }
         
         $send_message_attr['title']   = '<i class="fa fa-comment-o"></i> 发送消息';
