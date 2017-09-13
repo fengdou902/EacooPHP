@@ -34,6 +34,11 @@ EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求
 邮件: postmaster@eacoo123.com  
 官方QQ群: 436491685  
 
+### 演示地址
+[http://demo1.eacoo123.com/admin.php?s=/admin/index/login](http://demo1.eacoo123.com/admin.php?s=/admin/index/login)
+账号：admin
+密码：123456
+
 ## 鸣谢
 感谢以下的项目,排名不分先后
 [ThinkPHP](http://www.thinkphp.cn)、[JQuery](http://jquery.com/)、[Bootstrap](http://getbootstrap.com/)、[AdminLTE](https://almsaeedstudio.com)、[Select2](https://github.com/select2/select2)等优秀开源项目。
