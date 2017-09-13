@@ -19,6 +19,9 @@ EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求
 
 [https://www.kancloud.cn/youpzt/eacoo?token=eJFSYAfcWX](https://www.kancloud.cn/youpzt/eacoo?token=eJFSYAfcWX)
 
+## 下载（完整包）
+
+[https://git.oschina.net/ZhaoJunfeng/EacooPHP/attach_files](https://git.oschina.net/ZhaoJunfeng/EacooPHP/attach_files)
 
 ## 社区支持
 
@@ -29,7 +32,7 @@ EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求
 在使用中有任何问题，欢迎反馈给我们，可以用以下联系方式跟我们交流
 
 邮件: postmaster@eacoo123.com  
-QQ: 1217085939  
+官方QQ群: 436491685  
 
 ## 鸣谢
 感谢以下的项目,排名不分先后
