@@ -25,7 +25,7 @@ define('THEME_PATH',__DIR__ . '/theme/');
  * 定义前台标记
  */
 define('MODULE_MARK', 'front');
-define('EACOOPHP_V','1.0.0');
+define('EACOOPHP_V','1.0.1');
 //定义环境类型
 if (strpos($_SERVER["SERVER_SOFTWARE"],'nginx')!==false) {
 	define('SERVER_SOFTWARE_TYPE','nginx');

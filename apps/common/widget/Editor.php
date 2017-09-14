@@ -14,14 +14,14 @@ class Editor extends Base
      * @date   2017-09-11
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function ueditor($attributes = [],$param='',$style='')
+    public function ueditor($attributes = [],$param = [],$style='')
     {
         $id      = isset($attributes['id'])? $attributes['id']:'myeditor';
         $name    = isset($attributes['name']) ? $attributes['name']:'content';
         $default = isset($attributes['default']) ? $attributes['default']:'';
-        $width   = isset($attributes['width'])||empty($attributes['width']) ? $attributes['width'] : '100%';
-        $height  = isset($attributes['height'])||empty($attributes['height']) ? $attributes['height'] : '300px';
-        $config  = isset($attributes['config'])||empty($attributes['config']) ? $attributes['config'] : 'simple';
+        $width   = isset($attributes['width'])||!empty($attributes['width']) ? $attributes['width'] : '100%';
+        $height  = isset($attributes['height'])||!empty($attributes['height']) ? $attributes['height'] : '300px';
+        $config  = isset($attributes['config'])||!empty($attributes['config']) ? $attributes['config'] : 'simple';
 
         $this->assign('id',$id);
         $this->assign('name',$name);
@@ -36,8 +36,10 @@ class Editor extends Base
         } elseif ($config == 'all'){
             $config='';
         }
-        empty($param['zIndex']) && $param['zIndex'] = 977;
-        $config.=(empty($config)?'':',').'zIndex:'.$param['zIndex'];
+ 
+        $zIndex  = isset($attributes['zIndex'])||!empty($attributes['zIndex']) ? $attributes['zIndex'] : '977';
+        
+        $config.=(empty($config) ? '' : ',').'zIndex:'.$zIndex;
         is_bool(strpos($width,'%')) && $config.=',initialFrameWidth:'.str_replace('px','',$width);
         is_bool(strpos($height,'%')) && $config.=',initialFrameHeight:'.str_replace('px','',$height);
         $config.=',autoHeightEnabled: false';

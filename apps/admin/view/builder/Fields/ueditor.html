@@ -13,7 +13,7 @@
         'height'  => isset($field['options']['height'])? $field['options']['height']:'',
         'config'  => isset($field['options']['config']) ? $field['options']['config']:''
       ];
-      $ueditor_param=isset($field['options']['param']) ? $field['options']['param']:'';
+      $ueditor_param=isset($field['options']['param']) ? $field['options']['param']:[];
 {/php}
 <div class="form-group item_{$field.name} {$field.extra_class}">
         <label for="{$field.name}" class="col-md-2 control-label">{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{$field.title|htmlspecialchars}</label>
