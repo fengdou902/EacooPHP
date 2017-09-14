@@ -307,10 +307,10 @@ EOF;
             if ($newpassword == $repassword) {
                 $uid          =$this->input('post.uid',is_login(),'intval');
                 $new_password =encrypt($newpassword);
-                $res= model('users')->where(['uid'=>$uid])->setField('password',$new_password);
+                $res= UserModel::where(['uid'=>$uid])->setField('password',$new_password);
                 if ($res) {
                     session(null);
-                    $this->success('密码修改成功', url('admin/public/login'));
+                    $this->success('密码修改成功', url('admin/index/login'));
                 }
             }
         } else {
@@ -322,6 +322,7 @@ EOF;
                     ->addFormItem('newpassword', 'password', '新密码', '','','','placeholder="填写新密码"')
                     ->addFormItem('repassword', 'password', '重复密码', '','','','placeholder="填写重复密码"')
                     ->setFormData($info)
+                    //->setAjaxSubmit(false)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
         }

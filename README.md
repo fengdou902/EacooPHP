@@ -21,7 +21,7 @@ EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求
 
 ## 下载（完整包）
 
-[https://git.oschina.net/ZhaoJunfeng/EacooPHP/attach_files](https://git.oschina.net/ZhaoJunfeng/EacooPHP/attach_files)
+加入官方QQ群: 436491685 获取最新完整安装包
 
 ## 社区支持
 
