@@ -9,7 +9,11 @@
 {block name="main"}
   <!--此页面主体内容-->
   <div class="dashboard-container">
-  {:widget('cms/Dashboard/tool')}
+  {php}
+    if(check_install_module('cms')){ 
+  {/php}
+    {:widget('cms/Dashboard/tool')}
+  {php}}{/php}
   <div class="row">
 
       <div class="col-md-6">

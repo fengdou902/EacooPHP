@@ -10,8 +10,9 @@ namespace app\user\admin;
 use app\admin\controller\Admin;
 
 use app\user\model\Message as MessageModel;
-use app\admin\builder\AdminFormBuilder;
-use app\admin\builder\AdminListBuilder;
+use app\common\model\User;
+
+use app\admin\builder\Builder;
 
 class Message extends Admin {
     protected $message_model;
@@ -66,6 +67,7 @@ class Message extends Admin {
         $this->assign('outboxMessageCount',$outboxMessageCount);
         return $this->fetch();
     }
+
     //发送消息
     public function send_message($from_uid=0,$type=1){
         $this->assign('meta_title','发送消息');
@@ -75,8 +77,8 @@ class Message extends Admin {
            $from_uid = is_login();
         }
         if(IS_POST && $from_uid){
-            $to_uids=$this->input('post.to_uids');
-            $to_uids=explode(',',$to_uids);
+            $to_uids = $this->input('post.to_uids');
+            $to_uids = explode(',',$to_uids);
             foreach ($to_uids as $key => $to_uid) {
                 $data['from_uid'] = $from_uid;
                 $data['to_uid']   = $to_uid;
@@ -101,7 +103,7 @@ class Message extends Admin {
                 $this ->success('发送成功');
             }
             return;
-        }else{
+        } else{
             $inboxMessageCount  =$this->message_model->newMessageCount(null,'inbox');
             $outboxMessageCount =$this->message_model->newMessageCount(null,'outbox');
             
@@ -111,6 +113,7 @@ class Message extends Admin {
         }
         
     }
+    
     //消息详情
     function detail($to_uid){
         

@@ -3,7 +3,7 @@
 // +----------------------------------------------------------------------
 // | PHP version 5.4+                
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014-2016 http://www.eacoomall.com, All rights reserved.
+// | Copyright (c) 2014-2016 http://www.eacoo123.com, All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: 心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
@@ -25,7 +25,7 @@ class Admin extends Base
 		parent::_initialize();
         //检测是否是最新版本
         $eacoo_version = EacooAccredit::getVersion();
-        if ($eacoo_version['version']!=EACOOPHP_V) {
+        if ($eacoo_version['version']!= EACOOPHP_V) {
             $this->assign('eacoo_version',$eacoo_version);
         }
 

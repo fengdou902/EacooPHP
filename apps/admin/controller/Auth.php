@@ -3,7 +3,7 @@
 // +----------------------------------------------------------------------
 // | PHP version 5.4+                
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014-2016 http://www.eacoomall.com, All rights reserved.
+// | Copyright (c) 2014-2016 http://www.eacoo123.com, All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: 心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
@@ -13,6 +13,7 @@ use Common\Util\Tree;
 use app\admin\model\AuthRule;
 use app\admin\model\AuthGroup;
 use app\admin\model\AuthGroupAccess;
+use app\common\model\User;
 
 use app\admin\builder\Builder;
 
@@ -21,18 +22,20 @@ class Auth extends Admin {
     protected $authRuleModel;
     protected $authGroupModel;
     protected $moduleList;
+    protected $userModel;
 
     function _initialize()
     {
         parent::_initialize();
-        $this->authRuleModel = new AuthRule();
+        $this->authRuleModel  = new AuthRule();
         $this->authGroupModel = new AuthGroup();
+        $this->userModel     = new User;
 
         $default_module = [ 
                         'admin'   =>'后台模块',
                         'home'    =>'前台模块',
                         ];
-        $moduleList = db('module')->where('status',1)->column('title','name');                
+        $moduleList = db('modules')->where('status',1)->column('title','name');                
         $this->moduleList = $default_module+$moduleList;
 
     }
@@ -168,6 +171,7 @@ class Auth extends Admin {
         }   
         
     }
+
     /**
      * 对菜单进行排序
      * @author 心云间、凝听 <981248356@qq.com>
@@ -497,7 +501,7 @@ EOF;
             $authGroup[$row['id']]=$row;
         }
         //$list = $this->lists($model,array('a.group_id'=>$group_id,'m.status'=>array('egt',0)),'m.uid asc',null,'m.uid,m.nickname,m.last_login_time,m.last_login_ip,m.status');
-        $list= $this->user_model->alias('m')->join ('__AUTH_GROUP_ACCESS__ a','m.uid=a.uid' )->where(['a.group_id'=>$group_id,'m.status'=>['egt',0]])->order('m.uid asc')->field('m.uid,m.nickname,m.last_login_time,m.last_login_ip,m.status')->paginate(20);
+        $list= $this->userModel->alias('m')->join ('__AUTH_GROUP_ACCESS__ a','m.uid=a.uid' )->where(['a.group_id'=>$group_id,'m.status'=>['egt',0]])->order('m.uid asc')->field('m.uid,m.nickname,m.last_login_time,m.last_login_ip,m.status')->paginate(20);
 
         $this->assign( '_list',     $list );
         $this->assign( 'page',     $list->render());
@@ -589,7 +593,7 @@ EOF;
             if ( is_administrator($uid) ) {
                 $this->error('该用户为超级管理员');
             }
-            if( !$this->user_model->where(array('uid'=>$uid))->find() ){
+            if( !$this->userModel->where(array('uid'=>$uid))->find() ){
                 $this->error('管理员用户不存在');
             }
         }

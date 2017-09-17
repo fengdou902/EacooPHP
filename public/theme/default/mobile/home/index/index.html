@@ -1,11 +1,171 @@
 {extend name="$_theme_public_layout"/}
 {block name="style"}
+
 {/block}
 
 {block name="main"}
- 
+  <div class="wrapper">
+
+  <header class="main-header">
+    <nav class="navbar navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a href="" class="navbar-brand"><b>Eacoo</b>PHP</a>
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+            <i class="fa fa-bars"></i>
+          </button>
+        </div>
+        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="__ROOT__/admin.php?s=/admin/dashboard/index">进入后台 <span class="sr-only">(current)</span></a></li>
+            
+          </ul>
+          
+        </div>
+        <!-- /.navbar-collapse -->
+        <!-- Navbar Right Menu -->
+        <div class="navbar-custom-menu">
+          <ul class="nav navbar-nav">
+
+            <li class="dropdown user user-menu">
+              <!-- Menu Toggle Button -->
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <!-- The user image in the navbar-->
+                <img src="http://img.eacoomall.com/images/uploads/avatar/1/594e7fcad7d91.jpg" class="user-image" alt="User Image">
+                <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                <span class="hidden-xs">心云间、凝听</span>
+              </a>
+              <ul class="dropdown-menu">
+                <!-- The user image in the menu -->
+                <li class="user-header">
+                  <img src="http://img.eacoomall.com/images/uploads/avatar/1/594e7fcad7d91.jpg" class="img-circle" alt="User Image">
+
+                  <p>
+                    心云间、凝听 - 管理者
+                    <small>注册时间：2017-09-12</small>
+                  </p>
+                </li>
+                <!-- Menu Body -->
+                <li class="user-body">
+                  <div class="row">
+                    <div class="col-xs-4 text-center">
+                      <a href="#">Followers</a>
+                    </div>
+                    <div class="col-xs-4 text-center">
+                      <a href="#">Sales</a>
+                    </div>
+                    <div class="col-xs-4 text-center">
+                      <a href="#">Friends</a>
+                    </div>
+                  </div>
+                  <!-- /.row -->
+                </li>
+                <!-- Menu Footer-->
+                <li class="user-footer">
+                  <div class="pull-left">
+                    <a href="#" class="btn btn-default btn-flat">个人资料</a>
+                  </div>
+                  <div class="pull-right">
+                    <a href="#" class="btn btn-default btn-flat">退出</a>
+                  </div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <!-- /.navbar-custom-menu -->
+      </div>
+      <!-- /.container-fluid -->
+    </nav>
+  </header>
+  <!-- Full Width Column -->
+  <div class="content-wrapper">
+    <div class="container">
+      <!-- Content Header (Page header) -->
+      <section class="content-header">
+        <h1>
+          主页
+          <small>展示页</small>
+        </h1>
+        <ol class="breadcrumb">
+          <li><a href="#"><i class="fa fa-dashboard"></i> 首页</a></li>
+          <li><a href="#">内容</a></li>
+          <li class="active">展示</li>
+        </ol>
+      </section>
+
+      <!-- Main content -->
+      <section class="content">
+        
+        <div class="box box-default">
+          <div class="box-header with-border">
+            <h3 class="box-title">介绍</h3>
+          </div>
+          <div class="box-body">
+          <div class="text-center w70 center-block oh" >
+	          	<div class="mt-30">
+		        	<h4>前言</h4>
+			        <p >EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求高效，简单，灵活。具有灵活的应用和插件机制，模块式开发，大大降低开发成本。</p>
+					<p>使用EacooPHP框架开发定制您的系统前，建议熟悉官方的tp5.0完全开发手册。</p>
+		        </div>
+		        
+
+				<div class="mt-30">
+					<h4 >功能特性</h4>
+					<ul class="list-unstyled">
+						<li>1.基于Auth验证的权限管理系统</li>
+						<li>2.封装主流的前端功能组件，直接使用更方便</li>
+						<li>3.人性化，更好的交互体验的媒体附件管理器和图片组件</li>
+						<li>4.无缝整合阿里云OSS附件同步机制。（本地与oss同时存在，任意切换）</li>
+						<li>5.官方提供免费CMS,微信等功能模块</li>
+					</ul>
+				</div>
+				
+				<div class="mt-30">
+					<h4>在使用中遇到问题该怎么办？</h4>
+					<ul class="list-unstyled">
+					<li>
+						1.建议先在社区中寻找或提问，作者也优先解答社区中的问题。<br>社区地址：<a href="http://forum.eacoo123.com" target="_blank">http://forum.eacoo123.com</a>（分享您遇到的问题，方便遇到同样问题的人也能快速找到答案）。
+					</li>
+					<li><p>2.加入官方QQ群：436491685</p>
+					<div class="col-sm-12 ">
+						<img src="__THEME_IMG__/EacooPHP-qq-qrcode1.png" title="" alt="EacooPHP-qq-qrcode">
+					</div>
+					</li>
+
+					</ul>
+				</div>
+				    
+	          </div>
+	          <div class="show text-center">
+	          	<hr>
+		        <p>
+		        	<a href="__ROOT__/admin.php?s=/admin/index/login" class="btn btn-primary">登录后台</a>
+		        </p>
+	          </div>
+	          
+
+          </div>
+	        
+          <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- /.container -->
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">
+      <b>Version</b> {:EACOOPHP_V}
+    </div>
+    <strong>Copyright &copy; 2016-2017 <a href="http://forum.eacoo123.com" target="_blank">EacooPHP</a>.</strong> 保留所有权利。
+  </footer>
+</div>
+<!-- ./wrapper -->
 {/block}
 
 {block name="script"}
-
+ 
 {/block}

@@ -1,0 +1,16 @@
+{
+	"name":"SyncLogin",//插件名或标识
+	"title":"第三方账号登录",//插件标题
+	"description":"集成第三方授权登录，包括微博、QQ、微信",//插件描述
+	"author":"心云间、凝听",//插件作者
+	"admin_manage_into":"",//后台管理入口地址
+	"version":"0.0.1",//插件版本号
+	"dependent":{//依赖性
+		"plugins":{
+
+		},
+		"modules":{
+
+		},
+	}
+}

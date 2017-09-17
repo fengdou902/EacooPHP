@@ -1,0 +1,27 @@
+{
+	//名或标识
+	"name":"home",
+	//标题
+	"title":"前台Home",
+	//描述
+	"description":"一款基础前台Home模块",
+	//作者
+	"author":"心云间、凝听",
+	//后台管理入口地址
+	"admin_manage_into":"",
+	//是否系统模块
+	"is_system":1,
+	//版本号
+	"version":"1.0.0",
+	//依赖性
+	"dependent":{
+		"plugins":{
+
+		},
+		"modules":{
+
+		},
+	},
+	//当前模块sql文件的表前缀（用与安装时替换为当前系统的数据库前缀）
+	"database_prefix":"eacoo_",
+}

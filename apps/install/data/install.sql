@@ -469,7 +469,7 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `function
 (21, 'config_group_list', '配置分组', '1:基本\r\n2:系统\r\n3:开发\r\n4:部署\r\n5:授权\r\n6:网站信息\r\n7:用户\r\n8:邮箱\r\n9:多媒体', '', '', 3, 0, 'array', '配置分组的键值对不要轻易改变', 1379228036, 1467557143, 5, 1),
 (22, 'eacoo_username', '官网账号', 'eacoo', '', '', 5, 0, 'text', '官网登陆账号（支持用户名、邮箱、手机号）', 1438647815, 1464602856, 1, 1),
 (23, 'eacoo_password', '官网密码', 'eacoo', '', '', 5, 0, 'text', '官网密码', 1438647815, 1464602874, 2, 1),
-(24, 'eacoo_sn', '密钥', '', '', '', 5, 0, 'textarea', '密钥请通过登陆http://www.eacoomall.com至个人中心获取', 1438647815, 1468493748, 3, 1),
+(24, 'eacoo_sn', '密钥', '', '', '', 5, 0, 'textarea', '密钥请通过登陆http://www.eacoo123.com至个人中心获取', 1438647815, 1468493748, 3, 1),
 (25, 'form_item_type', '表单项目类型', 'hidden:隐藏\r\nonlyreadly:仅读文本\r\nnumber:数字\r\ntext:单行文本\r\ntextarea:多行文本\r\narray:数组\r\npassword:密码\r\nradio:单选框\r\ncheckbox:复选框\r\nselect:下拉框\r\nicon:字体图标\r\ndate:日期\r\ndatetime:时间\r\npicture:单张图片\r\npictures:多张图片\r\nfile:单个文件\r\nfiles:多个文件\r\nwangeditor:wangEditor编辑器\r\nueditor:百度富文本编辑器\r\neditormd:Markdown编辑器\r\ntags:标签\r\njson:JSON\r\nboard:拖', '', '', 3, 0, 'array', '专为配置管理设定\r\n', 1464533806, 1500174666, 0, 1),
 (26, 'term_taxonomy', '分类法', 'post_category:分类目录\r\npost_tag:标签\r\nmedia_cat:多媒体分类', '', '', 3, 0, 'array', '', 1465267993, 1468421717, 0, 1),
 (27, 'data_backup_path', '数据库备份根路径', '../data/backup', '', '', 2, 0, 'text', '', 1465478225, 1501769488, 0, 1),
@@ -625,11 +625,11 @@ INSERT INTO `eacoo_module` (`id`, `name`, `title`, `logo`, `description`, `devel
 (4, 'weixin', '微信公众号', '', '专注微信公众号平台开发', '赵俊峰', '1.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, NULL, 1471694178, 1471694178, 7, 1),
 (5, 'vcloud', '直播系统', '', '一款专注直播系统方案', '赵俊峰', '1.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, NULL, 1475822984, 1475822984, 9, 0),
 (6, 'mall', 'mall商城', '', '专注电商一体化方案', '赵俊峰', '1.2.0', '{"center":[{"title":"\\u6211\\u7684\\u4ea7\\u54c1","icon":"fa fa-list","url":"Shop\\/Index\\/my"}]}', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Shop"]}', 0, NULL, 1470274220, 1470274220, 8, 1),
-(7, 'shop', 'shop商城', '', '一款专注单用户商城方案', '赵俊峰', '1.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, 'http://www.eacoomall.com', 0, 0, 1, 1),
-(8, 'home', '前台模块', '', '一款基础前台模块', '赵俊峰', '1.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, 'http://www.eacoomall.com', 1496732323, 1496732323, 2, 1),
-(9, 'shop', '单用户商城', '', '一款专注单用户商城方案', '赵俊峰', '1.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, 'http://www.eacoomall.com', 1497889916, 1497889916, 3, 1),
-(10, 'cms', 'CMS', '', '内容管理系统，网站建设方案', '赵俊峰', '1.2.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Cms"]}', 0, 'http://www.eacoomall.com', 1497890313, 1497890313, 4, 1),
-(11, 'wechat', '微信公众号', '', '专注微信公众号平台开发', '心云间、凝听', '1.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, 'http://www.eacoomall.com', 1498061286, 1498061286, 5, 1);
+(7, 'shop', 'shop商城', '', '一款专注单用户商城方案', '赵俊峰', '1.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, 'http://www.eacoo123.com', 0, 0, 1, 1),
+(8, 'home', '前台模块', '', '一款基础前台模块', '赵俊峰', '1.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, 'http://www.eacoo123.com', 1496732323, 1496732323, 2, 1),
+(9, 'shop', '单用户商城', '', '一款专注单用户商城方案', '赵俊峰', '1.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, 'http://www.eacoo123.com', 1497889916, 1497889916, 3, 1),
+(10, 'cms', 'CMS', '', '内容管理系统，网站建设方案', '赵俊峰', '1.2.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Cms"]}', 0, 'http://www.eacoo123.com', 1497890313, 1497890313, 4, 1),
+(11, 'wechat', '微信公众号', '', '专注微信公众号平台开发', '心云间、凝听', '1.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, 'http://www.eacoo123.com', 1498061286, 1498061286, 5, 1);
 
 -- --------------------------------------------------------
 
@@ -1156,7 +1156,7 @@ INSERT INTO `eacoo_themes` (`id`, `name`, `title`, `cover`, `description`, `deve
 (1, 'blog', '博客主题', '/theme/shop/cover.png', '个人博客主题', '心灵旅行', '1.0', NULL, 0, NULL, 0, 1468510877, 1468510877, 1),
 (2, 'sns', 'SNS定制主题', '/theme/shop/cover.png', '社交化主题', '心灵旅行', '1.0', NULL, 0, NULL, 0, 1468511857, 1468512447, 1),
 (3, 'default', '官方默认主题', '/theme/shop/cover.png', '内置于系统中，是其它主题的基础主题', '心云间、凝听', '1.0.0', NULL, 1, 'http://www.eacoo123.com', 0, 1475899420, 1504109169, 1),
-(4, 'shop', '单用户商城模板', '/theme/shop/cover.png', '商城主题', '心灵旅行', '1.0', NULL, 0, 'http://www.eacoomall.com', 0, 0, 0, 1);
+(4, 'shop', '单用户商城模板', '/theme/shop/cover.png', '商城主题', '心灵旅行', '1.0', NULL, 0, 'http://www.eacoo123.com', 0, 0, 0, 1);
 
 -- --------------------------------------------------------
 

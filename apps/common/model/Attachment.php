@@ -389,12 +389,6 @@ class Attachment extends Base {
             case 'txt':
                 $mimeType='text/plain';
                 break;
-            case 'ppt':
-                $mimeType='application/vnd.ms-powerpoint';
-                break;
-            case 'ppt':
-                $mimeType='application/vnd.ms-powerpoint';
-                break;
             case 'js':
                 $mimeType='application/x-javascript';
                 break;

@@ -9,6 +9,8 @@
 namespace app\user\admin;
 use app\admin\controller\Admin;
 
+use app\common\model\User;
+
 use think\Db;
 
 class Tongji extends Admin {
@@ -41,10 +43,10 @@ class Tongji extends Admin {
         $month = strtotime(date('Y-m-01'));
 
         $user = [
-            'today'      => $this->user_model->where("reg_time>$today")->count(),//今日新增会员
-            'month'      => $this->user_model->where("reg_time>$month")->count(),//本月新增会员
-            'total'      => $this->user_model->count(),//会员总数
-            'user_money' => $this->user_model->sum('money'),//会员余额总额
+            'today'      => User::where("reg_time>$today")->count(),//今日新增会员
+            'month'      => User::where("reg_time>$month")->count(),//本月新增会员
+            'total'      => User::count(),//会员总数
+            'user_money' => User::sum('money'),//会员余额总额
             'hasorder'   => 36,
         ];
         $this->assign('user',$user);

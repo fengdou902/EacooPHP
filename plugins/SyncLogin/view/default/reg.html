@@ -1,0 +1,88 @@
+<extend name="./Theme/Sns/Public/layout.html"/>
+
+<block name="main">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-md-6 col-md-offset-3">
+                <div class="panel-body">
+                    <!-- 提示信息 -->
+                    <div class="alert alert-danger">
+                        如果您看到此页面，说明您是第一次通过{$user_sns_info.type}访问本站点，接下来完成简单的设置，以后即可用{$user_sns_info.type}自动登录。
+                    </div>
+    
+                    <!--登录信息-->
+                    <div class="media panel">
+                        <a class="pull-left" href="#">
+                            <img class="media-object" src="{$user_sns_info.head}" width="50" height="50" />
+                        </a>
+                        <div class="media-body">
+                            <h5 class="media-heading">恭喜您，{$user_sns_info.nick}</h5>
+                            <p>您的{$user_sns_info.type}授权成功，接下来完成简单的设置，即可用{$user_sns_info.type}直接登录。</p>
+                        </div>
+                    </div>
+                    
+                    <div role="tabpanel" >
+                        <!-- 登录TAB -->
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active">
+                                <a href="#register" role="tab" data-toggle="tab">还没有帐号</a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#bind" role="tab" data-toggle="tab">已有账号</a>
+                            </li>
+                        </ul>
+                    
+                        <!-- 登录 -->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="register">
+                                <!--创建新账号-->
+                                <div>
+                                    <form class="form reg-form" action="{:addons_url('SyncLogin://Login/register')}" method="post">
+                                        <div class="form-group"></div>
+                                        <div class="form-group">
+                                            <input type="hidden" name="avatar" value="{$user_sns_info.head}">
+                                            <input type="text" class="form-control input-lg" name="password" placeholder="请设置一个密码">
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-success btn-block btn-lg ajax-post" target-form="reg-form">立即创建新账号</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="bind">
+                                <form class="login-form" action="{:addons_url('SyncLogin://Login/bind')}" method="post">
+                                    <div class="form-group"></div>
+                                    <div class="form-group">
+                                        <div class="controls">
+                                            <input type="text" class="form-control input-lg" placeholder="请输入邮箱/手机号/用户名" name="username">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="controls">
+                                            <input type="password" class="form-control input-lg" placeholder="请输入密码" name="password">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="controls">
+                                            <button type="submit" class="btn btn-info btn-block btn-lg ajax-post" target-form="login-form">确认绑定</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+
+<block name="script">
+    <script type="text/javascript">
+        //$(function(){
+            window.beforeunload = function(){
+                location.href = "{:addons_url('SyncLogin://Login/login')}";
+            };
+        //})
+    </script>
+</block>

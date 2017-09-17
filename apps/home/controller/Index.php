@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017 http://www.eacoomall.com All rights reserved.
+// | Copyright (c) 2017 http://www.eacoo123.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------

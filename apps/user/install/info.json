@@ -1,0 +1,18 @@
+{
+	"name":"user",
+	"title":"用户中心",
+	"description":"用户模块，系统核心模块，不可卸载",
+	"author":"心云间、凝听",
+	"admin_manage_into":"",
+	"is_system":1,
+	"version":"1.0.0",
+	"dependent":{
+		"plugins":{
+
+		},
+		"modules":{
+
+		}
+	},
+	"database_prefix":"eacoo_"
+}

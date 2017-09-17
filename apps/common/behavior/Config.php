@@ -95,7 +95,7 @@ class Config {
             //$system_config['COOKIE_PREFIX']  = ENV_PRE.MODULE_MARK.'_';  // Cookie前缀
 
             // 获取所有安装的模块配置
-            $module_list = db('module')->where(['status' =>1])->select();
+            $module_list = db('modules')->where(['status' =>1])->select();
             foreach ($module_list as $val) {
                 $module_config[strtolower($val['name'].'_config')] = json_decode($val['config'], true);
                 $module_config[strtolower($val['name'].'_config')]['module_name'] = $val['name'];
@@ -108,11 +108,11 @@ class Config {
 
             // 加载Formbuilder扩展类型
            /* $system_config['FORM_ITEM_TYPE'] = config('FORM_ITEM_TYPE form_item_type');
-            //$formbuilder_extend = explode(',', db('Hook')->getFieldByName('FormBuilderExtend', 'addons'));
+            //$formbuilder_extend = explode(',', db('Hook')->getFieldByName('FormBuilderExtend', 'plugins'));
             if ($formbuilder_extend) {
-                $addon_object = db('Addon');
+                $plugin_object = db('Addon');
                 foreach ($formbuilder_extend as $val) {
-                    $temp = json_decode($addon_object->getFieldByName($val, 'config'), true);
+                    $temp = json_decode($plugin_object->getFieldByName($val, 'config'), true);
                     if ($temp['status']) {
                         $form_type[$temp['form_item_type_name']] = array($temp['form_item_type_title'], $temp['form_item_type_field']);
                         $system_config['FORM_ITEM_TYPE'] = array_merge($system_config['FORM_ITEM_TYPE'], $form_type);

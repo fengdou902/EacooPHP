@@ -9,7 +9,7 @@ class InitHook {
 		if (substr(request()->pathinfo(), 0, 7) != 'install' && is_file(APP_PATH . 'database.php')) {
 
 			//扩展插件
-			\think\Loader::addNamespace('addons', ROOT_PATH . '/addons/');
+			\think\Loader::addNamespace('plugins', ROOT_PATH . '/plugins/');
 
 			$this->setHook();
 
@@ -21,16 +21,16 @@ class InitHook {
 	protected function setHook() {
 		$data = cache('hooks');
 		if (!$data) {
-			$hooks = db('Hooks')->column('name,addons');
+			$hooks = db('Hooks')->column('name,plugins');
 			foreach ($hooks as $key => $value) {
 				if ($value) {
 					$map['status'] = 1;
 					$names         = explode(',', $value);
 					$map['name']   = array('IN', $names);
-					$data          = db('Addons')->where($map)->column('id,name');
+					$data          = db('plugins')->where($map)->column('id,name');
 					if ($data) {
-						$addons = array_intersect($names, $data);
-						Hook::add($key, array_map('get_addon_class', $addons));
+						$plugins = array_intersect($names, $data);
+						Hook::add($key, array_map('get_plugin_class', $plugins));
 					}
 				}
 			}
