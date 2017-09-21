@@ -1,4 +1,4 @@
-/addons/
+/plugins/
 .idea
 composer.lock
 *.zip
@@ -11,3 +11,4 @@ public/static/libs/
 /apps/database.php
 /public/runtime
 /public/uploads
+/public/static/plugins

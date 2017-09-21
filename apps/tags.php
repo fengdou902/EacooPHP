@@ -14,13 +14,14 @@ return [
     // 应用初始化
     'app_init'     => [],
     // 应用开始
-    'app_begin'    => ['app\\common\\behavior\\Config',],
-    //控制器初始化
-    'base_controller_init'=>['app\\common\\behavior\\InitHook'],
+    'app_begin'    => [
+        'app\\common\\behavior\\Config',
+        
+    ],
     // 模块初始化
     'module_init'  => [],
     // 操作开始执行
-    'action_begin' => [],
+    'action_begin' => ['app\\common\\behavior\\InitHook'],
     // 视图内容过滤
     'view_filter'  => [],
     // 日志写入

@@ -30,9 +30,11 @@ class Modules extends Base {
      * 获取模块菜单
      */
     public function getAdminMenu($module_name = MODULE_NAME) {
-        $map_rules['module']  = $module_name;
-        $map_rules['status']  = 1;
-        $map_rules['is_menu'] = 1;
+        $map = [
+            'module'  =>$module_name,
+            'is_menu' =>1,
+            'status'  =>1
+        ];
         $_menu_list = db('auth_rule')->where($map_rules)->field('id,name,title,module,pid,type,icon')->order('sort asc')->select();
         // 转换成树结构
         $tree = new tree();
@@ -50,12 +52,20 @@ class Modules extends Base {
         foreach ($dir as $subdir) {
             $info_file = realpath(APP_PATH.$subdir).'/install/'.self::$infoFile;
             if (is_file($info_file) && $subdir != '.' && $subdir != '..') {
-                $module_list[] = self::getInfo($subdir);//模块名即为当前模块的文件夹名
+                $module_info = self::getInfo($subdir);//模块名即为当前模块的文件夹名
+                if (!empty($module_info)) {
+                    $module_list[] = $module_info;
+                }
+                unset($module_info);
             }
         }
         foreach ($module_list as &$val) {
             if (!isset($val['right_button'])) $val['right_button']='';
             switch($val['status']){
+                case -3:  // 模块信息异常
+                    $val['status_icon'] = '<span class="text-danger">异常</span>';
+                    $val['right_button']  = '<a class="label label-danger" href="http://forum.eacoo123.com" target="_blank">反馈</a>';
+                    break;
                 case -2:  // 损坏
                     $val['status_icon'] = '<span class="text-danger">损坏</span>';
                     $val['right_button']  = '<a class="label label-danger ajax-get" href="'.url('setStatus', ['status' => 'delete', 'ids' => $val['id']]).'">删除记录</a>';
@@ -66,13 +76,13 @@ class Modules extends Base {
                     break;
                 case 0:  // 禁用
                     $val['status_icon'] = '<i class="fa fa-ban text-danger"></i>';
-                    $val['right_button'] .= '<a class="label label-info ajax-get" href="'.url('updateInfo', ['id' => $val['id']]).'">更新菜单</a> ';
+                    $val['right_button'] .= '<a class="label label-info ajax-get" href="'.url('updateInfo', ['id' => $val['id']]).'">刷新</a> ';
                     $val['right_button'] .= '<a class="label label-success ajax-get" href="'.url('setStatus', ['status' => 'resume', 'ids' => $val['id']]).'">启用</a> ';
                     $val['right_button'] .= '<a class="label label-danger" href="'.url('uninstall_before', ['id' => $val['id']]).'">卸载</a> ';
                     break;
                 case 1:  // 正常
                     $val['status_icon'] = '<i class="fa fa-check text-success"></i>';
-                    $val['right_button'] .= '<a class="label label-info ajax-get" href="'.url('updateInfo?id='.$val['id']).'">更新信息</a> ';
+                    $val['right_button'] .= '<a class="label label-info ajax-get" href="'.url('updateInfo?id='.$val['id']).'">刷新</a> ';
                     if (!$val['is_system']) {
                         $val['right_button'] .= '<a class="label label-warning ajax-get" href="'.url('setStatus', ['status' => 'forbid', 'ids' => $val['id']]).'">禁用</a> ';
                         $val['right_button'] .= '<a class="label label-danger" href="'.url('uninstall_before', ['id' => $val['id']]).'">卸载</a> ';
@@ -90,23 +100,31 @@ class Modules extends Base {
     public static function getInfo($name)
     {
         $module = self::where(['name' => $name])->field(true)->find();
-        if ($module === false || $module == null) {//数据库中不存在信息
-            $moduleInfo       = self::getInfoByFile($name);//从文件获取
+        if ($module === false || empty($module)) {//数据库中不存在信息
+            $module_info       = self::getInfoByFile($name);//从文件获取
 
-            if (!empty($moduleInfo)) {
-                $moduleInfo['status']=-1;
-                return $moduleInfo;
+            if (!empty($module_info)) {
+                $module_info['status']=-1;
+                return $module_info;
             } else{
-                return false;
+                $module_info = [
+                    'name'=>$name,
+                    'title'=>'未知',
+                    'description'=>'<span class="text-danger">请在'.$name.'模块目录下的install目录中检测info.json文件信息是否符合格式！</span>',
+                    'author'=>'未知',
+                    'version'=>'未知',
+                    'status'=>-3,
+                ];
+                return $module_info;
             }
 
         } else {
-            return $module;
+            return $module->toArray();
         }
     }
 
     /**
-     * 检测是否安装某个模块
+     * 检测是否安装了某个模块
      * @param  string $name [description]
      * @return [type] [description]
      * @date   2017-09-17
@@ -122,6 +140,27 @@ class Modules extends Base {
         }
 
         return false;
+    }
+
+    /**
+     * 检测信息
+     * @param  string $name [description]
+     * @return [type] [description]
+     * @date   2017-09-18
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public static function checkInfoFile($name='') {
+        if ($name=='') {
+            return false;
+        }
+        $info_check_keys = ['name', 'title', 'description', 'author', 'version'];
+        foreach ($info_check_keys as $value) {
+            if (!array_key_exists($value, self::getInfoByFile($name))) {
+                return false;
+            }
+
+        }
+        return true;
     }
 
     /**
@@ -222,6 +261,40 @@ class Modules extends Base {
         }
     }
 
+    /**
+     * 获取插件默认配置
+     * @param  string $name [description]
+     * @return [type] [description]
+     * @date   2017-09-18
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public static function getDefaultConfig($name ='')
+    {
+        if ($name=='') {
+            $name = self::$pluginName;
+        }
+
+        $config = [];
+        if ($name) {
+            $options = self::getOptionsByFile($name);
+            if (!empty($options) && is_array($options)) {
+                $config = [];
+                foreach ($options as $key => $value) {
+                    if ($value['type'] == 'group') {
+                        foreach ($value['options'] as $gkey => $gvalue) {
+                            foreach ($gvalue['options'] as $ikey => $ivalue) {
+                                $config[$ikey] = $ivalue['value'];
+                            }
+                        }
+                    } else {
+                        $config[$key] = $options[$key]['value'];
+                    }
+                }
+            }
+        }
+        return $config;
+    }
+    
     /*——————————————————————————私有域—————————————————————————————*/
     
     /**

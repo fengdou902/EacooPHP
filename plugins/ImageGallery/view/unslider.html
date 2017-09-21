@@ -101,8 +101,8 @@
     opacity: 1;
 }
 </style>
-<script type="text/javascript" src="__ROOT__/__STATIC__/jquery/jquery-1.11.1.min.js"></script>
-<script type="text/javascript" src="__ROOT__/Addons/ImageSlider/Unslider/unslider.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="__STATIC__/plugins/ImageGallery/Unslider/unslider.min.js"></script>
 <script type="text/javascript">
 $(function() {
     $('.banner').unslider({
@@ -118,17 +118,8 @@ $(function() {
 <div class="banner clearfix">
     <ul>
         <!-- 插件配置幻灯片-->
-      {foreach name="images" item="images" key="k"}
-            <li><a href="{$urls[$k]}" target="_blank"><img src=".{$images.path}" style="width:{$config.imgWidth}px;height:{$config.imgHeight}px;"/></a></li>
+      {foreach name="sliders" item="row"}
+        <li><a href="{$row.url|default=''}" target="_blank"><img src="{$row.img|get_image=###,''|default=''}" style="width:{empty name="config.imgWidth"}100%{else/}{$config.imgWidth}px{/empty};height:{$config.imgHeight}px;"/></a></li>
       {/foreach}
-      <!-- 内容推荐幻灯片-->
-      <article:position name="postion" pos="$config['position']" limit="5" category="$config['category']">
-            <li>
-                <a href="{:url('article/detail?id='.$postion['id'])}" target="_blank">
-                    <img src="{$postion.cover_id|get_image='path'}" style="width:{$config.imgWidth}px;height:{$config.imgHeight}px;"/>
-                </a>
-                <!-- <div class="inner"><h1></h1><p></p><a class="btn" href="#"></a></div>-->
-            </li>
-      </article:position>
     </ul>
 </div>

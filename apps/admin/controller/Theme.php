@@ -37,20 +37,6 @@ class Theme extends Admin {
 
         $this->assign('theme_items',$data_list);
         return $this->fetch('extend/themes');
-        // // 使用Builder快速建立列表页面。
-        // $builder = new Builder();
-        // $builder->setMetaTitle('主题列表')  // 设置页面标题
-        //         ->addTopButton('self', $attr)
-        //         ->keyListItem('name', '名称')
-        //         ->keyListItem('title', '标题')
-        //         ->keyListItem('description', '描述')
-        //         ->keyListItem('developer', '开发者')
-        //         ->keyListItem('version', '版本')
-        //         //->keyListItem('create_time', '创建时间', 'time')
-        //         ->keyListItem('status', '状态')
-        //         ->keyListItem('right_button', '操作', 'btn')
-        //         ->setListData($data_list)     // 数据列表
-        //         ->fetch();
     }
 
     /**
@@ -58,23 +44,15 @@ class Theme extends Admin {
      */
     public function install($name){
         // 获取当前主题信息
-        //$config_file = realpath(THEME_PATH.$name).'/'.$this->themeModel->info_file();
-        $config_file = realpath('./'.THEME_PATH.$name).'/'.$this->themeModel->info_file();
-        if (!$config_file) {
+        $info = ThemeModel::getInfoByFile($name);
+        if (!$info) {
             $this->error('安装失败');
         }
-        $config = include $config_file;
-        $data   = $config['info'];
-        if ($config['config']) {
-            $data['config'] = json_encode($config['config'],true);
-        }
-        //验证数据
-        // $vali_result = $this->validateData('Theme',$data);
-        // if (true !== $vali_result) {
-        //     $this->error($vali_result);
-        // }
+        $config = ThemeModel::getDefaultConfig($name);//获取文件中的默认配置值
+        $info['config'] = !empty($config) ? json_encode($config) : '';
+
         // 写入数据库记录
-        $result = $this->themeModel->allowField(true)->isUpdate(false)->data($data)->save();
+        $result = $this->themeModel->allowField(true)->isUpdate(false)->data($info)->save();
         if ($result) {
             $this->success('安装成功', url('index'));
         } else {
@@ -88,7 +66,7 @@ class Theme extends Admin {
      */
     public function uninstall($id) {
         // 当前主题禁止卸载
-        $result = $this->themeModel->delete($id);
+        $result = ThemeModel::destroy($id);
         if ($result) {
             $this->success('卸载成功！');
         } else {
@@ -100,19 +78,18 @@ class Theme extends Admin {
      * 更新主题信息
      */
     public function updateInfo($id) {
-        $name = $this->themeModel->getFieldById($id, 'name');
-        $config_file = realpath(THEME_PATH.$name).'/'.$this->themeModel->info_file();
-        if (!$config_file) {
-            $this->error('不存在安装文件');
+        $name = ThemeModel::where('id',$id)->value('name');
+        // 获取当前主题信息
+        $info = ThemeModel::getInfoByFile($name);
+        if (!$info) {
+            $this->error('安装失败');
         }
-        $config = include $config_file;
-        $data = $config['info'];
-        if ($config['config']) {
-            $data['config'] = json_encode($config['config']);
-        }
-        $data['id'] = $id;
+        $config = ThemeModel::getDefaultConfig($name);//获取文件中的默认配置值
+        $info['config'] = !empty($config) ? json_encode($config) : '';
+
+        $info['id'] = $id;
         
-        if ($this->themeModel->editData($data,$id)) {
+        if ($this->themeModel->editData($info,$id)) {
             $this->success('更新成功', url('index'));
         } else {
             $this->error($this->themeModel->getError());
@@ -124,10 +101,12 @@ class Theme extends Admin {
      * 切换主题
      */
     public function setCurrent($id) {
-        $theme_info = $this->themeModel->find($id);
-        if ($theme_info) {
+        $is_res = $this->themeModel->where('id',$id)->count();
+        if ($is_res) {
             // 当前主题current字段置为1
-            $map['id'] = array('eq', $id);
+            $map = [
+                'id'=>$id
+            ];
             $result1 = $this->themeModel->where($map)->update(['current'=>1]);
             if ($result1) {
                 // 其它主题current字段置为0

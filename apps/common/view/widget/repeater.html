@@ -23,7 +23,7 @@
                                   {/foreach}
                               </select>
                           {/case}
-                          {case value="image"}<div class="repeater-img-field" style="min-height: 90px;"><input type="hidden" name="[{$key}]" id="repeater-{$id}-{$key}-" value="{$row.default|default=''}"><span class="repeater-field-img"><img src="{$row.default|getThumbImageById=###|default='__PUBLIC__/img/noimage.gif'}" width="90" data-url="{:url('admin/Attachment/attachmentLayer',['input_id_name'=>$id,'path_type'=>'picture','select_type'=>'single'])}" onclick="openAttachmentLayer(this);" style="cursor: pointer;"></span></div>{/case}
+                          {case value="image"}<div class="repeater-img-field" style="min-height: 90px;"><input type="hidden" name="[{$key}]" id="repeater-{$id}-{$key}-" value="{$row.default|default=''}"><span class="repeater-field-img"><img src="{$row.default|get_image=###,'medium'|default='__PUBLIC__/img/noimage.gif'}" width="90" data-url="{:url('admin/Attachment/attachmentLayer',['input_id_name'=>$id,'path_type'=>'picture','select_type'=>'single'])}" onclick="openAttachmentLayer(this);" style="cursor: pointer;"></span></div>{/case}
                           {default/}
                               <input type="{$row.type}" class="form-control input-sm" name="[{$key}]" value="{$row.default|default=''}" placeholder="{$row.placeholder|default=''}">
                       {/switch}
@@ -44,7 +44,7 @@
       <link href="__STATIC__/libs/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
     {php}}{/php}
     <script type="text/javascript">
-        var ZjfAttachmentOptions_{$id} = {
+        var EacooAttachmentOptions_{$id} = {
             ismore:'single',
             currentImgElement:false
         };
@@ -58,7 +58,7 @@
       $('body').on('click','.repeater-img-field', function() {
           var $this = $(this);
           var repeater_img_id =$this.children('input').attr('name');
-          ZjfAttachmentOptions_{$id}.currentImgElement = repeater_img_id;
+          EacooAttachmentOptions_{$id}.currentImgElement = repeater_img_id;
         })
 
          //图片选择器列表确认按钮
@@ -66,7 +66,7 @@
           var id  = $("#attachment_{$id}_ids").val();
           var src = $("#attachment_{$id}_srcs").val();
           //插入数据
-          var repeater_img_element=ZjfAttachmentOptions_{$id}.currentImgElement;//获取当前图片字段元素节点
+          var repeater_img_element=EacooAttachmentOptions_{$id}.currentImgElement;//获取当前图片字段元素节点
             $("input[name='"+repeater_img_element+"']").val(id);
             $("input[name='"+repeater_img_element+"']").parent().find('.repeater-field-img').html(
                   '<img src="'+ src+'" width="90" data-url="{:url("admin/Attachment/attachmentLayer",["input_id_name"=>$id,"path_type"=>"picture","select_type"=>"single"])}" onclick="openAttachmentLayer(this);" style="cursor: pointer;">'
@@ -81,15 +81,14 @@
  * @param {[type]} ids       附件IDs
  * @param {[type]} srcs      附件SRCs
  */
-function setAttachmentInputVal(inputName,ids,srcs) {
-
+function newSetAttachmentInputVal(inputName,ids,srcs) {
     if (ids.length>0 && srcs.length>0) {
         $("#"+inputName).val(ids);
         //插入数据
-          var repeater_img_element=ZjfAttachmentOptions_{$id}.currentImgElement;//获取当前图片字段元素节点
-            $("input[name='"+repeater_img_element+"']").val(id);
+          var repeater_img_element = EacooAttachmentOptions_{$id}.currentImgElement;//获取当前图片字段元素节点
+            $("input[name='"+repeater_img_element+"']").val(ids);
             $("input[name='"+repeater_img_element+"']").parent().find('.repeater-field-img').html(
-                  '<img src="'+ src+'" width="90" data-url="{:url("admin/Attachment/attachmentLayer",["input_id_name"=>$id,"path_type"=>"picture","select_type"=>"single"])}" onclick="openAttachmentLayer(this);" style="cursor: pointer;">'
+                  '<img src="'+ srcs+'" width="90" data-url="{:url("admin/Attachment/attachmentLayer",["input_id_name"=>$id,"path_type"=>"picture","select_type"=>"single"])}" onclick="openAttachmentLayer(this);" style="cursor: pointer;">'
             );
           $(".attachment-content").find('div.cover').hide();
     }

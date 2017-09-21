@@ -1,6 +1,7 @@
 <?php 
 use think\Route;
 use app\admin\model\Modules;
+use app\admin\model\Plugins;
 
 /**
  * 检测是否安装某个模块
@@ -22,7 +23,7 @@ function check_install_module($name='')
  */
 function hook($hook, $params = [])
 {
-    \Think\Hook::listen($hook, $params);
+    \think\Hook::listen($hook, $params);
 }
 
 /**
@@ -33,7 +34,7 @@ function hook($hook, $params = [])
  * @author 心云间、凝听 <981248356@qq.com>
  */
 function get_plugin_class($name) {
-    $class = "\\plugins\\" . $name . "\\{$name}";
+    $class = "\\plugins\\" . $name . "\\index";
     return $class;
 }
 
@@ -43,13 +44,16 @@ function get_plugin_class($name) {
  */
 function get_plugin_config($name)
 {
-    $class = get_plugin_class($name);
-    if (class_exists($class)) {
-        $plugin = new $class();
-        return $plugin->getConfig();
-    } else {
-        return [];
+    if ($name!='') {
+        $class = get_plugin_class($name);
+        if (class_exists($class)) {
+            $plugin = new $class();
+            return $plugin->getConfig();
+        } else {
+            return [];
+        }
     }
+    
 }
 
 /**

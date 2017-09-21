@@ -65,6 +65,7 @@ function check_dirfile(){
 		array('dir',  '可写', 'bg-green', 'public/uploads/download/'),
 		array('dir',  '可写', 'bg-green', 'public/uploads/picture/'),
 		array('dir',  '可写', 'bg-green', 'public/uploads/editor/'),
+		array('dir',  '可写', 'bg-green', 'public/static/plugins/'),
 		array('dir',  '可写', 'bg-green', 'data/backup/'),
 
 	);

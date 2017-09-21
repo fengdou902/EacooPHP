@@ -6,7 +6,7 @@
 	"admin_manage_into":"",
 	"is_system":1,
 	"version":"1.0.0",
-	"dependent":{
+	"dependences":{
 		"plugins":{
 
 		},

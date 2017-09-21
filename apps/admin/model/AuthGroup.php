@@ -58,7 +58,7 @@ class AuthGroup extends Base
         }
 
         $uid_arr = explode(',',$uid);
-        $uid_arr = array_diff($uid_arr,array(config('USER_ADMINISTRATOR')));
+        $uid_arr = array_diff($uid_arr,array(config('user_administrator')));
         $add = [];
         if( $del!==false ){
             foreach ($uid_arr as $u){

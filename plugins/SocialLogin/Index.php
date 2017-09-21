@@ -1,34 +1,23 @@
 <?php
-namespace plugins\SyncLogin;
-use app\common\controller\Plugins;
+namespace plugins\SocialLogin;
+use app\common\controller\Plugin;
 /**
  * 同步登陆插件
  */
-class SyncLogin extends Plugins{
+class Index extends Plugin {
+    
     /**
-     * 插件信息
+     * 自定义插件后台
      */
-    public $info = array(
-        'name'            => 'SyncLogin',
-        'title'           => '第三方账号登录',
-        'description'     => '第三方账号登录',
-        'status'          => 1,
-        'has_adminManage' => 1,
-        'author'          => '心云间、凝听',
-        'version'         => '0.1'
-    );
+    //public $custom_adminlist = './Plugins/SocialLogin/admin.html';
     
     /**
      * 插件所需钩子
      */
     public $hooks = array(
-        'SyncLogin',
+        'SocialLogin',
+        'PageHeader'
     );
-
-    /**
-     * 自定义插件后台
-     */
-    //public $custom_adminlist = './Plugins/SyncLogin/admin.html';
 
     /**
      * 插件后台数据表配置
@@ -57,7 +46,7 @@ class SyncLogin extends Plugins{
     /**
      * 登录按钮钩子
      */
-    public function SyncLogin($param){
+    public function SocialLogin($param){
         $this->assign($param);
         $config = $this->getConfig();
         $this->assign('config',$config);

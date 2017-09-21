@@ -1,0 +1,17 @@
+{
+	"name":"SocialLogin",
+	"title":"第三方账号登录",
+	"description":"集成第三方授权登录，包括微博、QQ、微信",
+	"author":"心云间、凝听",
+	"admin_manage_into":"",
+	"version":"0.0.1",
+	"dependences":{
+		"plugins":{
+
+		},
+		"modules":{
+
+		}
+	},
+	"database_prefix":"eacoo_"
+}

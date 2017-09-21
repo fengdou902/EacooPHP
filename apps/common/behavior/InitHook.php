@@ -1,12 +1,15 @@
 <?php
 namespace app\common\behavior;
 
+use app\admin\model\Hooks as HooksModel;
+use app\admin\model\Plugins as PluginsModel;
+
 use think\Hook;
 class InitHook {
 
 	public function run(&$request) {
 		//未安装时不执行
-		if (substr(request()->pathinfo(), 0, 7) != 'install' && is_file(APP_PATH . 'database.php')) {
+		if (substr(request()->pathinfo(), 0, 7) != 'install' && is_file(APP_PATH . 'database.php') && is_file(APP_PATH . 'install.lock')) {
 
 			//扩展插件
 			\think\Loader::addNamespace('plugins', ROOT_PATH . '/plugins/');
@@ -18,23 +21,30 @@ class InitHook {
 		}
 	}
 
+	/**
+	 * 设置钩子行为
+	 * @date   2017-09-20
+	 * @author 心云间、凝听 <981248356@qq.com>
+	 */
 	protected function setHook() {
 		$data = cache('hooks');
 		if (!$data) {
-			$hooks = db('Hooks')->column('name,plugins');
+			$hooks = HooksModel::where('status',1)->column('name,plugins');
 			foreach ($hooks as $key => $value) {
 				if ($value) {
 					$map['status'] = 1;
 					$names         = explode(',', $value);
 					$map['name']   = array('IN', $names);
-					$data          = db('plugins')->where($map)->column('id,name');
+					$data          = PluginsModel::where($map)->column('id,name');
 					if ($data) {
 						$plugins = array_intersect($names, $data);
 						Hook::add($key, array_map('get_plugin_class', $plugins));
 					}
 				}
 			}
-			cache('hooks', Hook::get());
+			// if (config('develop_mode') == 0) {
+			 	cache('hooks', Hook::get());
+			// }
 		} else {
 			Hook::import($data, false);
 		}

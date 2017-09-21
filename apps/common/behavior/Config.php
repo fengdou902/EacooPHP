@@ -22,6 +22,8 @@ class Config {
      */
     public function run(&$params) {
         defined('MODULE_NAME') or define('MODULE_NAME',$params['module'][0] ? $params['module'][0]:config('default_module'));
+        
+        define('EACOOPHP_V','1.0.3');
         // 安装模式下直接返回
         if(defined('MODULE_NAME') && MODULE_NAME === 'install') return;
         // 当前模块模版参数配置
@@ -65,7 +67,8 @@ class Config {
             $current_theme_module_path = $current_theme_path.MODULE_NAME.'/'; //当前主题模块文件夹路径
 
             if(is_dir($current_theme_module_path)){
-
+                thinkConfig::get('template');
+                $ec_config['template'] = config('template');
                 $ec_config['template']['view_path'] = $current_theme_module_path;
                 
                 // 各模块自带静态资源路径

@@ -17,15 +17,18 @@ if (version_compare(PHP_VERSION, '5.5', '<')) {
 }
 // 定义应用目录
 define('APP_PATH', __DIR__ . '/../apps/');
+
 // 定义资源目录
 define('PUBLIC_PATH', __DIR__ . '/');
+
 //主题目录
 define('THEME_PATH',__DIR__ . '/theme/');
+
 /**
- * 定义前台标记
+ * 定义标记
  */
 define('MODULE_MARK', 'front');
-define('EACOOPHP_V','1.0.1');
+
 //定义环境类型
 if (strpos($_SERVER["SERVER_SOFTWARE"],'nginx')!==false) {
 	define('SERVER_SOFTWARE_TYPE','nginx');
@@ -34,6 +37,7 @@ if (strpos($_SERVER["SERVER_SOFTWARE"],'nginx')!==false) {
 } else{
 	define('SERVER_SOFTWARE_TYPE','no');
 }
+
 /**
  * 项目定义
  * 扩展类库目录

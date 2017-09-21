@@ -19,28 +19,29 @@ class Theme extends Base {
 
     protected $insert   = ['current'=>0,'sort'=>0,'status' => 1];
 
-    /**
-     * 安装描述文件名
-     */
-    public function info_file() {
-        return 'info.php';
-    }
+    //安装描述文件名
+    static public $infoFile = 'info.json';
+
+    //安装菜单文件名
+    static public $menusFile = 'menus.php';
+
+    //安装选项文件名
+    static public $optionsFile = 'options.php';
 
     /**
      * 获取主题列表
      * @param string $addon_dir
      */
     public function getAll() {
-        //获取所有主题（文件夹下必须有$install_file定义的安装描述文件）
-        $path = './theme/';;
+        $path = THEME_PATH;
         $dirs = array_map('basename', glob($path.'*', GLOB_ONLYDIR));
-        foreach ($dirs as $dir) {
-            $config_file = realpath($path.$dir).'/'.$this->info_file();
-            if (is_file($config_file)) {
-                $theme_dir_list[]                      = $dir;
-                $temp_arr                              = include $config_file;
-                $temp_arr['info']['status']            = -1; //未安装
-                $theme_list[$temp_arr['info']['name']] = $temp_arr['info'];
+        foreach ($dirs as $name) {
+            $info_file = realpath($path.$name).'/'.self::$infoFile;
+            if (is_file($info_file)) {
+                $theme_dir_list[]          = $name;
+                $info                      = self::getInfoByFile($name);
+                $info['status']            = -1; //未安装
+                $theme_list[$info['name']] = $info;
             }
         }
 
@@ -82,5 +83,151 @@ class Theme extends Base {
             }
         }
         return $theme_list;
+    }
+
+    /**
+     * 检测信息
+     * @param  string $name [description]
+     * @return [type] [description]
+     * @date   2017-09-18
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public static function checkInfoFile($name='') {
+        if ($name=='') {
+            $name = self::$pluginName;
+        }
+        $info_check_keys = ['name', 'title', 'description', 'author', 'version'];
+        foreach ($info_check_keys as $value) {
+            if (!array_key_exists($value, self::getInfoByFile($name))) {
+                return false;
+            }
+
+        }
+        return true;
+    }
+
+    /**
+     * 获取插件依赖的钩子
+     * @param  string $name [description]
+     * @return [type] [description]
+     * @date   2017-09-18
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public static function getDependentHooks($name='')
+    {
+        if ($name=='' || !$name) {
+            return false;
+        }
+        $info = self::getInfoByFile($name);
+        $dependent_hooks = !empty($info['dependences']['hooks']) ? $info['dependences']['hooks']:'';
+        $dependent_hooks = explode(',', $dependent_hooks);
+        return $dependent_hooks;
+    }
+
+    /**
+     * 文件获取模块信息
+     * @param  [type] $name [description]
+     * @return [type] [description]
+     * @date   2017-09-15
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public static function getInfoByFile($name = '')
+    {
+        if ($name=='' || !$name) {
+            return false;
+        }
+        $info_file = realpath(THEME_PATH.$name).'/'.self::$infoFile;
+        if (is_file($info_file)) {
+            $info = file_get_contents($info_file);
+            $info = json_decode($info,true);
+            return $info;
+        } else {
+            return [];
+        }
+
+    }
+
+    /**
+     * 文件获取安装信息的后台菜单
+     * @param  string $name 模块名
+     * @return [type] [description]
+     * @date   2017-09-16
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public static function getAdminMenusByFile($name='')
+    {
+        if ($name=='' || !$name) {
+            return false;
+        }
+        $file = realpath(THEME_PATH.$name).'/'.self::$menusFile;
+
+        if (is_file($file)) {
+
+            $module_menus = include $file;
+
+            return !empty($module_menus['admin_menus']) ? $module_menus['admin_menus'] : false;
+
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 文件获取安装的后台选项
+     * @param  string $name [description]
+     * @return [type] [description]
+     * @date   2017-09-16
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public static function getOptionsByFile($name ='')
+    {
+        if ($name=='' || !$name) {
+            return false;
+        }
+        $file = realpath(THEME_PATH.$name).'/'.self::$optionsFile;
+
+        if (is_file($file)) {
+
+            $module_menus = include $file;
+
+            return $module_menus;
+
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 获取插件默认配置
+     * @param  string $name [description]
+     * @return [type] [description]
+     * @date   2017-09-18
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public static function getDefaultConfig($name ='')
+    {
+        if ($name=='') {
+            $name = self::$themeName;
+        }
+
+        $config = [];
+        if ($name) {
+            $options = self::getOptionsByFile($name);
+            if (!empty($options) && is_array($options)) {
+                $config = [];
+                foreach ($options as $key => $value) {
+                    if ($value['type'] == 'group') {
+                        foreach ($value['options'] as $gkey => $gvalue) {
+                            foreach ($gvalue['options'] as $ikey => $ivalue) {
+                                $config[$ikey] = $ivalue['value'];
+                            }
+                        }
+                    } else {
+                        $config[$key] = $options[$key]['value'];
+                    }
+                }
+            }
+        }
+        return $config;
     }
 }

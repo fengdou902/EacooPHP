@@ -221,7 +221,7 @@ function get_image($id = 0 , $type='') {
  * @param  string $style 样式
  * @return [type]       [description]
  */
-function cdn_img_url($path = '',$style='')
+function cdn_img_url($path = '', $style='')
 {
     if($path=='' || !$path) return false;
 

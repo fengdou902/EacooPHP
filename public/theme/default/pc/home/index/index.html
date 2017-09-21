@@ -1,6 +1,9 @@
 {extend name="$_theme_public_layout"/}
 {block name="style"}
-
+<style type="text/css">
+  .logo{padding: 12px 0 !important;width: 200px!important;}
+  .logo .logo-img{width: 80%;}
+</style>
 {/block}
 
 {block name="main"}
@@ -10,7 +13,7 @@
     <nav class="navbar navbar-static-top">
       <div class="container">
         <div class="navbar-header">
-          <a href="" class="navbar-brand"><b>Eacoo</b>PHP</a>
+          <a href="" class="navbar-brand logo"><img class="logo-img" src="__ROOT__/eacoophp_logo_v1.png"></a>
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
             <i class="fa fa-bars"></i>
           </button>
@@ -78,6 +81,7 @@
       <!-- /.container-fluid -->
     </nav>
   </header>
+  {:hook('ImageGallery')}
   <!-- Full Width Column -->
   <div class="content-wrapper">
     <div class="container">

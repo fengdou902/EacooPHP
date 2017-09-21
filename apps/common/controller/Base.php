@@ -10,7 +10,6 @@
 namespace app\common\controller;
 use think\Controller;
 use think\Cookie;
-use think\Hook;
 
 class Base extends Controller {
 
@@ -24,8 +23,6 @@ class Base extends Controller {
 		//获取request信息
 		$this->requestInfo();
 		Cookie::set('__forward__',$this->url,3600);
-		//自定义基础控制器钩子
-		Hook::listen('base_controller_init', $this, $this->request, true);
 		//验证安装文件
 		if (!is_file(APP_PATH . 'install.lock') || !is_file(APP_PATH . 'database.php')) {
 			$this->redirect('install/index/index');
@@ -54,7 +51,7 @@ class Base extends Controller {
 	 * @return [type] [description]
 	 */
 	protected function requestInfo() {
-		$this->param = $this->request->param();
+		
 		defined('MODULE_NAME') or define('MODULE_NAME', $this->request->module());
 		defined('CONTROLLER_NAME') or define('CONTROLLER_NAME', $this->request->controller());
 		defined('ACTION_NAME') or define('ACTION_NAME', $this->request->action());
@@ -62,6 +59,8 @@ class Base extends Controller {
 		defined('IS_AJAX') or define('IS_AJAX', $this->request->isAjax());
 		defined('IS_GET') or define('IS_GET', $this->request->isGet());
 		defined('IS_MOBILE') or define('IS_MOBILE', $this->request->isMobile());
+
+		$this->param = $this->request->param();
 		$this->simple_url = strtolower($this->request->module() . '/' . $this->request->controller() . '/' . $this->request->action());
 		$this->ip = $this->request->ip();
 		$this->url = $this->request->url(true);//完整url

@@ -98,7 +98,7 @@ class Auth extends Admin {
             ->keyListItem('title','名称','link',['link'=>url('Auth/rule',array('pid'=>'__data_id__'))])
             ->keyListItem('p_menu','上级菜单')
             ->keyListItem('name', 'URL')
-            ->keyListItem('module', '模块')
+            ->keyListItem('from_flag', '来源标识')
             ->keyListItem('sort', '排序')
             ->keyListItem('is_menu','菜单','array',[0=>'否',1=>'是'])
             ->keyListItem('status','状态','status')
@@ -126,7 +126,7 @@ class Auth extends Admin {
         if ($id==0) {//新增
             $pid       = (int)$this->input('get.pid');
             $pid_data  = $this->authRuleModel->find($pid);
-            $menu_data = array('module'=>$pid_data['module'],'pid'=>$pid);
+            $menu_data = array('from_flag'=>$pid_data['from_flag'],'pid'=>$pid);
         }
         
         if(IS_POST){
@@ -158,7 +158,7 @@ class Auth extends Admin {
                     ->setMetaTitle($title.'菜单')  // 设置页面标题
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
                     ->addFormItem('title', 'text', '标题', '用于后台显示的配置标题')
-                    ->addFormItem('module', 'select', '所属模块', '所属的模块，模块菜单必须选择，否则无法导出',$this->moduleList)  
+                    ->addFormItem('from_flag', 'select', '所属模块', '所属的模块，模块菜单必须选择，否则无法导出',$this->moduleList)  
                     ->addFormItem('pid', 'multilayer_select', '上级菜单', '上级菜单',$menus)
                     ->addFormItem('icon', 'icon', '字体图标', '字体图标')
                     ->addFormItem('name', 'text', '链接', '链接')
@@ -252,7 +252,7 @@ class Auth extends Admin {
             $to_module = $this->input('post.to_module');
             if ($to_module) {
                 $map['id'] = ['in',$ids];
-                $data      = ['module' => $to_module];
+                $data      = ['from_flag' => $to_module];
                 $this->editRow('auth_rule', $data, $map, array('success'=>'移动成功','error'=>'移动失败',U('index')));
 
             } else {

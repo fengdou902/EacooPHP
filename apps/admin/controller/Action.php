@@ -205,11 +205,11 @@ class Action extends Admin {
 		}
 
 		$info = $this->actionLogModel->alias('a')->join('__USERS__ b','a.uid = b.uid')->join('__ACTION__ c','a.action_id = c.id')->order('a.create_time desc')->field('a.*,b.nickname,c.name,c.title')->find();
-		$info['nickname']    = $this->user_model->where('uid',$info['uid'])->value('nickname');
+		$info['nickname']    = db('users')->where('uid',$info['uid'])->value('nickname');
 		//$info['action_ip']   = long2ip($info['action_ip']);
-		$ip_info = curlGet('http://www.ip.cn/?ip='.$info['action_ip']);
-		$sub_content = get_sub_content($ip_info,'<div class="well">','</div>');
-		$sub_content = get_sub_content($sub_content,'<p>所在地理位置','<p>GeoIP');
+		$ip_info         = curl_get('http://www.ip.cn/?ip='.$info['action_ip']);
+		$sub_content     = get_sub_content($ip_info,'<div class="well">','</div>');
+		$sub_content     = get_sub_content($sub_content,'<p>所在地理位置','<p>GeoIP');
 		$info['ip_city'] = get_sub_content($sub_content,'<code>','</p>');
 		
 		$this->assign('info',$info);

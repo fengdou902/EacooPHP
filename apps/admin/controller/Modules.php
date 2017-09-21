@@ -184,24 +184,8 @@ class Modules extends Admin {
 		}
 
 		// 处理模块配置
-		$options = ModuleModel::getOptionsByFile($name);
-		if (!empty($options) && is_array($options)) {
-			$config = [];
-			foreach ($options as $key => $value) {
-				if ($value['type'] == 'group') {
-					foreach ($value['options'] as $gkey => $gvalue) {
-						foreach ($gvalue['options'] as $ikey => $ivalue) {
-							$config[$ikey] = $ivalue['value'];
-						}
-					}
-				} else {
-					$config[$key] = $options[$key]['value'];
-				}
-			}
-			$info['config'] = json_encode($config);
-		} else {
-			$info['config'] = '';
-		}
+		$config = ModuleModel::getDefaultConfig($name);
+		$info['config'] = !empty($config) ? json_encode($config) : '';
 
 		// 写入数据库模块信息
 		$res = $this->moduleModel->allowField(true)->isUpdate(false)->data($info)->save();
@@ -318,6 +302,8 @@ class Modules extends Admin {
 
 		$result = $this->moduleModel->allowField(true)->save($info,['id'=>$id]);
 		if ($result) {
+			// 删除后台菜单
+		    $this->removeAdminMenus($name,true);
 			//后台菜单入库
 			$admin_menus = ModuleModel::getAdminMenusByFile($name);
 			if (!empty($admin_menus) && is_array($admin_menus)) {
@@ -340,26 +326,27 @@ class Modules extends Admin {
 	 * 添加后台菜单
 	 * @param  array $data 菜单数据
 	 * @param  integer $pid 父级ID
-	 * @param  string $module_name 模块名
+	 * @param  string $flag_name 模块名
 	 * @date   2017-09-15
 	 * @author 心云间、凝听 <981248356@qq.com>
 	 */
-    private function addAdminMenus($data = [], $module_name = '', $pid = 0)
+    private function addAdminMenus($data = [], $flag_name = '', $pid = 0)
     {
-    	if (!empty($data) && is_array($data) && $module_name!='') {
+    	if (!empty($data) && is_array($data) && $flag_name!='') {
+    		
     		$authRuleModel = new AuthRule;
 			foreach ($data as $key => $menu) {
-				$menu['module'] = $module_name;
+				$pid = isset($menu['pid']) ? (int)$menu['pid'] : $pid;
+				
+				$menu['from_type'] = 1;//1代表module
+				$menu['from_flag'] = $flag_name;
 				$menu['pid']    = $pid;
 				$menu['sort']   = isset($menu['sort']) ? $menu['sort'] : 99;
 				$authRuleModel->allowField(true)->isUpdate(false)->data($menu)->save();
 				//添加子菜单
-				if (isset($menu['sub_menu'])) {
-					if (!empty($menu['sub_menu'])) {
-						$this->addAdminMenus($menu['sub_menu'], $module_name, $authRuleModel->id);
-					}
-	                
-	            }
+				if (!empty($menu['sub_menu'])) {
+					$this->addAdminMenus($menu['sub_menu'], $flag_name, $authRuleModel->id);
+				}
 			}
 			cache('admin_sidebar_menus',null);//清空后台菜单缓存
 			return true;
@@ -369,19 +356,23 @@ class Modules extends Admin {
 
     /**
      * 移除后台菜单
-     * @param  string $module_name 模块名
+     * @param  string $flag_name 模块名
      * @param  boolean $delete 是否删除数据
      * @return [type] [description]
      * @date   2017-09-18
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    private function removeAdminMenus($module_name='' ,$delete=true)
+    private function removeAdminMenus($flag_name='' ,$delete=true)
     {
-    	if ($module_name!='') {
+    	if ($flag_name!='') {
+    		$map = [
+                'from_type' => 1,
+                'from_flag' => $flag_name
+            ];
     		if ($delete) {
-    			$res = AuthRule::where('module', $module_name)->delete();
+    			$res = AuthRule::where($map)->delete();
     		} else{
-    			$res = AuthRule::where('module', $module_name)->update(['status'=>0]);
+    			$res = AuthRule::where($map)->update(['status'=>0]);
     		}
     		if (false === $res) {
 	            $this->error('菜单删除失败，请重新卸载');
@@ -396,25 +387,25 @@ class Modules extends Admin {
     /**
      * 更新后台菜单
      * @param  array $data [description]
-     * @param  string $module_name [description]
+     * @param  string $flag_name [description]
      * @param  integer $pid [description]
      * @return [type] [description]
      * @date   2017-09-16
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    private function updateAdminMenus($data = [], $module_name = '', $pid = 0)
+    private function updateAdminMenus($data = [], $flag_name = '', $pid = 0)
     {
-   //  	if (!empty($data) && is_array($data) && $module_name!='') {
+   //  	if (!empty($data) && is_array($data) && $flag_name!='') {
    //  		$authRuleModel = new AuthRule;
 			// foreach ($data as $key => $menu) {
-			// 	$menu['module'] = $module_name;
+			// 	$menu['module'] = $flag_name;
 			// 	$menu['pid']    = $pid;
 			// 	$menu['sort']   = isset($menu['sort']) ? $menu['sort'] : 99;
 			// 	$authRuleModel->allowField(true)->isUpdate(false)->data($menu)->save();
 			// 	//添加子菜单
 			// 	if (isset($menu['sub_menu'])) {
 			// 		if (!empty($menu['sub_menu'])) {
-			// 			$this->updateAdminMenus($menu['sub_menu'], $module_name, $authRuleModel->id);
+			// 			$this->updateAdminMenus($menu['sub_menu'], $flag_name, $authRuleModel->id);
 			// 		}
 	                
 	  //           }

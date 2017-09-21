@@ -22,7 +22,7 @@
                     <div class="form-group">
                         <div class="auth">
                             {volist name="all_auth_rules" id="vo1"}
-                                {php} $module_name = $vo1['module']; {/php}
+                                {php} $module_name = $vo1['from_flag']; {/php}
                                 <div class="{$module_name}">
                                     <div class="ud-control ud-checkbox">
                                         <label class="checkbox-label checkbox-inline">

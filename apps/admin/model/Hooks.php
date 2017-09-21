@@ -9,6 +9,7 @@
 namespace app\admin\model;
 
 use app\common\model\Base;
+use app\admin\model\Plugins;
 /**
  * 插件钩子模型
  * 该类参考了OneThink的部分实现
@@ -20,44 +21,51 @@ class Hooks extends Base {
     /**
     * 获取件所需的钩子是否存在，没有则新增
     * @param string $str  钩子名称
-    * @param string $addons  插件名称
-    * @param string $addons  件简介
+    * @param string $plugins  插件名称
+    * @param string $plugins  件简介
     */
     public function existHook($name, $data){
+        if ($name=='' || !$name) {
+           return false; 
+        }
+
         $map = [
             'name'=>$name
         ];
         $gethook = $this->where($map)->find();
         $gethook = $gethook->toArray();
-        if (!$gethook || empty($gethook) || !is_array($gethook)) {
-            $data['name']        = $name;
-            $data['description'] = $data['description'];
-            $data['type']        = 1;
+        if (!$gethook || empty($gethook)) {
+            $data = [
+                'name'        => $name,
+                'description' => $data['description'],
+                'type'        => 1
+            ];
             $this->allowField(true)->isUpdate(false)->data($data)->save();
         }
     }
 
     /**
      * 更新插件里的所有钩子对应的插件
-     * @param  [type] $addons_name [description]
+     * @param  [type] $plugins_name [description]
      * @return [type] [description]
      * @date   2017-09-02
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function updateHooks($addons_name) {
-        $addons_class = get_addon_class($addons_name);//获取插件名
-        if (!class_exists($addons_class)) {
-            $this->error = "未实现{$addons_name}插件的入口文件";
+    public function updateHooks($plugins_name) {
+        $plugins_class = get_plugin_class($plugins_name);//获取插件名
+        if (!class_exists($plugins_class)) {
+            $this->error = "未实现{$plugins_name}插件的入口文件";
             return false;
         }
-        $methods = get_class_methods($addons_class);
+        $methods = get_class_methods($plugins_class);
+
         $hooks = $this->column('name');
         $common = array_intersect($hooks, $methods);
         if (!empty($common)) {
             foreach ($common as $hook) {
-                $flag = $this->updateAddons($hook, array($addons_name));
+                $flag = $this->updatePlugins($hook, array($plugins_name));
                 if (false === $flag) {
-                    $this->removeHooks($addons_name);
+                    $this->removeHooks($plugins_name);
                     return false;
                 }
             }
@@ -68,49 +76,53 @@ class Hooks extends Base {
     /**
      * 更新单个钩子处的插件
      * @param  [type] $hook_name [description]
-     * @param  [type] $addons_name [description]
+     * @param  [type] $plugins_name [description]
      * @return [type] [description]
      * @date   2017-09-02
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function updateAddons($hook_name, $addons_name) {
-        $o_addons = $this->where("name='{$hook_name}'")->value('addons');
-        if ($o_addons) {
-            $o_addons = explode(',', $o_addons);
+    public function updatePlugins($hook_name, $plugins_name) {
+        $map = [
+            'name'=>$hook_name
+        ];
+        $o_plugins = $this->where($map)->value('plugins');
+        if ($o_plugins) {
+            $o_plugins = explode(',', $o_plugins);
         }
-        if ($o_addons) {
-            $addons = array_merge($o_addons, $addons_name);
-            $addons = array_unique($addons);
+        if ($o_plugins) {
+            $plugins = array_merge($o_plugins, $plugins_name);
+            $plugins = array_unique($plugins);
         } else {
-            $addons = $addons_name;
+            $plugins = $plugins_name;
         }
-        $flag = $this->where("name='{$hook_name}'")
-                     ->setField('addons',implode(',', $addons));
+        $flag = $this->where($map)
+                     ->setField('plugins',implode(',', $plugins));
         if (false === $flag) {
-            $this->where("name='{$hook_name}'")
-                 ->setField('addons',implode(',', $o_addons));
+            $this->where($map)
+                 ->setField('plugins',implode(',', $o_plugins));
         }
         return $flag;
     }
 
     /**
      * 去除插件所有钩子里对应的插件数据
-     * @param  [type] $addons_name [description]
+     * @param  [type] $plugins_name [description]
      * @return [type] [description]
      * @date   2017-09-02
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function removeHooks($addons_name) {
-        $addons_class = get_addon_class($addons_name);
-        if (!class_exists($addons_class)) {
+    public function removeHooks($plugins_name) {
+
+        $plugin_class = get_plugin_class($plugins_name);
+        if (!class_exists($plugin_class)) {
             return false;
         }
-        $methods = get_class_methods($addons_class);
+        $methods = get_class_methods($plugin_class);
         $hooks   = $this->column('name');
         $common  = array_intersect($hooks, $methods);
         if ($common) {
             foreach ($common as $hook) {
-                $flag = $this->removeAddons($hook, array($addons_name));
+                $flag = $this->removePlugins($hook, array($plugins_name));
                 if (false === $flag) {
                     return false;
                 }
@@ -122,24 +134,24 @@ class Hooks extends Base {
     /**
      * 去除单个钩子里对应的插件数据
      * @param  [type] $hook_name [description]
-     * @param  [type] $addons_name [description]
+     * @param  [type] $plugins_name [description]
      * @return [type] [description]
      * @date   2017-09-02
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function removeAddons($hook_name, $addons_name) {
-        $o_addons = $this->where("name='{$hook_name}'")->value('addons');
-        $o_addons = explode(',', $o_addons);
-        if ($o_addons) {
-            $addons = array_diff($o_addons, $addons_name);
+    public function removePlugins($hook_name, $plugins_name) {
+        $o_plugins = $this->where("name='{$hook_name}'")->value('plugins');
+        $o_plugins = explode(',', $o_plugins);
+        if ($o_plugins) {
+            $plugins = array_diff($o_plugins, $plugins_name);
         } else {
             return true;
         }
         $flag = $this->where("name='{$hook_name}'")
-                     ->setField('addons',implode(',', $addons));
+                     ->setField('plugins',implode(',', $plugins));
         if (false === $flag) {
             $this->where("name='{$hook_name}'")
-                 ->setField('addons',implode(',', $o_addons));
+                 ->setField('plugins',implode(',', $o_plugins));
         }
         return $flag;
     }

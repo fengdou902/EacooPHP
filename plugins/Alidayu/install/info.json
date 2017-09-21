@@ -1,10 +1,9 @@
 {
-	"name":"home",
-	"title":"前台Home",
-	"description":"一款基础前台Home模块",
+	"name":"Alidayu",
+	"title":"阿里大于-短信接口",
+	"description":"通过阿里大于短信接口发送短信",
 	"author":"心云间、凝听",
 	"admin_manage_into":"",
-	"is_system":1,
 	"version":"1.0.0",
 	"dependences":{
 		"plugins":{
@@ -13,6 +12,5 @@
 		"modules":{
 
 		}
-	},
-	"database_prefix":"eacoo_"
+	}
 }
