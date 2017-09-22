@@ -57,7 +57,6 @@ var { font-style: normal }
 ins { text-decoration: none }
 .color { color: #f23030 }
 
-
 /*input 字体颜色*/
 input::-webkit-input-placeholder {color:#999;}
 input:-moz-placeholder {color:#999;}

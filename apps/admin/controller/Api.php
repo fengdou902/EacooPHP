@@ -23,9 +23,9 @@ class Api extends Admin{
         $this->configModel = new Config();
         $this->tabList = [
                 'smtp'         => ['title'=>'邮件设置','href'=>url('Api/index')],
-                'sms'          => ['title'=>'短信设置','href'=>url('admin/addons/config',['name'=>'Alidayu'])],
-                'aliyun_oss'   => ['title'=>'阿里OSS','href'=>url('Api/aliyunOss')],
-                'social_login' => ['title'=>'关联登录','href'=>url('admin/addons/config',['name'=>'SyncLogin'])],
+                'sms'          => ['title'=>'短信设置','href'=>url('admin/plugins/config',['name'=>'Alidayu'])],
+                'aliyun_oss'   => ['title'=>'阿里OSS','href'=>url('admin/Api/aliyunOss')],
+                'social_login' => ['title'=>'关联登录','href'=>url('admin/plugins/config',['name'=>'SocialLogin'])],
             ];
     }
 

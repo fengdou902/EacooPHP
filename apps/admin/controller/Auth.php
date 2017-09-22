@@ -466,7 +466,7 @@ EOF;
                 //$this->error('不能修改超级管理员'.$title);
            // }else{
                 if ($this->authGroupModel->editData($data,$id)) {
-                    cache('admin_menu',null);
+                    cache('admin_sidebar_menus',null);
                     $this->success($title.'成功', url('role'));
                 }else{
                     $this->error($this->authGroupModel->getError());
@@ -639,12 +639,12 @@ EOF;
             if(in_array('1', $ids)) {
                 $this->error('超级管理员不允许操作');
             }
-        }else{
+        } else{
             if($ids === '1') {
                 $this->error('超级管理员不允许操作');
             }
         }
-        cache('admin_menu',null);//清空后台菜单缓存
+        cache('admin_sidebar_menus',null);//清空后台菜单缓存
         parent::setStatus($model);
     }
 }
