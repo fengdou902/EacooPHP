@@ -34,7 +34,7 @@ function hook($hook, $params = [])
  * @author 心云间、凝听 <981248356@qq.com>
  */
 function get_plugin_class($name) {
-    $class = "\\plugins\\" . $name . "\\index";
+    $class = "\\plugins\\" . $name . "\\Index";
     return $class;
 }
 

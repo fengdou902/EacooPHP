@@ -6,7 +6,7 @@ return [
     'admin_menus' =>[
         [
             'title'   =>'第三方登录',
-            'name'    =>'admin/plugins/config?name=SyncLogin',
+            'name'    =>'admin/plugins/config?name=SocialLogin',
             'icon'    => '',
             'is_menu' => 1,
             'pid'     => 10,

@@ -6,7 +6,7 @@ return [
     'admin_menus' =>[
         [
             'title'   =>'图片轮播',
-            'name'    =>'admin/plugins/config?name=ImageSlider',
+            'name'    =>'admin/plugins/config?name=ImageGallery',
             'icon'    => 'fa fa-file-text',
             'is_menu' => 1,
             'pid'     => 10,

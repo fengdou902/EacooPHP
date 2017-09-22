@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS `eacoo_plugin_sync_login`;
+DROP TABLE IF EXISTS `eacoo_plugin_social_login`;
 
-CREATE TABLE `eacoo_plugin_sync_login` (
+CREATE TABLE `eacoo_plugin_social_login` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `uid` int(11) unsigned NOT NULL COMMENT '用户ID',
   `type` varchar(15) NOT NULL DEFAULT '' COMMENT '类别',

@@ -29,30 +29,57 @@ class Modules extends Admin {
 
 	/**
 	 * 模块列表
+	 * @param  string $from_type 来源类型
 	 * @return [type] [description]
-	 * @date   2017-09-15
+	 * @date   2017-09-21
 	 * @author 心云间、凝听 <981248356@qq.com>
 	 */
-	public function index() {
+	public function index($from_type = 'local') {
+		$tab_list = [
+            'local'=>['title'=>'本地','href'=>url('index',['from_type'=>'local'])],
+            'oneline'=>['title'=>'模块市场','href'=>url('index',['from_type'=>'oneline'])],
+        ];
 
-		$data_list = $this->moduleModel->getAll();
+        if ($from_type == 'local') {
+        	$data_list = $this->moduleModel->getAll();
 
-		Builder::run('List')
-				->setMetaTitle('模块列表')  // 设置页面标题
-				->addTopButton('resume')   // 添加启用按钮
-				->addTopButton('forbid')   // 添加禁用按钮
-				//->addTopButton('sort')  // 添加排序按钮
-				->setSearch('请输入ID/标题', url('index'))
-				->keyListItem('name', '名称')
-				->keyListItem('title', '标题')
-				->keyListItem('description', '描述')
-				->keyListItem('author', '开发者')
-				->keyListItem('version', '版本')
-				//->keyListItem('create_time', '创建时间', 'time')
-				->keyListItem('status_icon', '状态', 'text')
-				->keyListItem('right_button', '操作', 'btn')
-				->setListData($data_list)     // 数据列表
-				->fetch();
+			Builder::run('List')
+					->setMetaTitle('模块列表')  // 设置页面标题
+					->setTabNav($tab_list,$from_type) 
+					->addTopButton('resume')   // 添加启用按钮
+					->addTopButton('forbid')   // 添加禁用按钮
+					//->addTopButton('sort')  // 添加排序按钮
+					->setSearch('请输入ID/标题', url('index'))
+					->keyListItem('name', '名称')
+					->keyListItem('title', '标题')
+					->keyListItem('description', '描述')
+					->keyListItem('author', '开发者')
+					->keyListItem('version', '版本')
+					//->keyListItem('create_time', '创建时间', 'time')
+					->keyListItem('status', '状态')
+					->keyListItem('right_button', '操作', 'btn')
+					->setListData($data_list)     // 数据列表
+					->fetch();
+        } elseif ($from_type == 'oneline') {
+        	$data_list = $this->getAppstoreModules();
+
+			Builder::run('List')
+					->setMetaTitle('模块列表')  // 设置页面标题
+					->setTabNav($tab_list,$from_type) 
+					->addTopButton('resume')   // 添加启用按钮
+					->addTopButton('forbid')   // 添加禁用按钮
+					->keyListItem('name', '标识')
+                    ->keyListItem('title', '名称')
+                    ->keyListItem('description', '描述')
+                    ->keyListItem('author', '作者')
+                    ->keyListItem('downloaded', '活跃度')
+                    ->keyListItem('version', '版本号')
+                    ->keyListItem('publish_time', '最近更新')
+					->keyListItem('right_button', '操作', 'btn')
+					->setListData($data_list)     // 数据列表
+					->fetch();
+        }
+		
 	}
 
 	/**
@@ -462,4 +489,49 @@ class Modules extends Admin {
 		}
 		parent::setStatus($model);
 	}
+
+	/**
+     * 获取插件市场数据
+     * @return [type] [description]
+     * @date   2017-09-21
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    private function getAppstoreModules($paged = 1)
+    {
+        $store_data = cache('eacoo_appstore_modules_'.$paged);
+        if (empty($store_data) || !$store_data) {
+            $url        = 'http://www.eacoo123.com/server_appstore_modules';
+            $params = [
+                'paged'=>$paged
+            ];
+            $result     = curl_post($url,$params);
+            $result = json_decode($result,true);
+            $store_data = $result['data'];
+            cache('eacoo_appstore_modules_'.$paged,$store_data,3600);
+        }
+        if (!empty($store_data)) {
+            foreach ($store_data as $key => &$val) {
+                $local_data = $this->moduleModel->localModules();
+
+                $val['downloaded'] = '<i class="fa fa-star color-warning"></i> '.$val['downloaded'];
+                $val['publish_time'] = friendly_date($val['publish_time']);
+                $val['right_button'] = '<a class="label label-primary" href="http://www.eacoo123.com">现在安装</a> ';
+                if (!empty($local_data)) {
+                    foreach ($local_data as $key => $row) {
+                        if ($row['name']==$val['name']) {
+                            if ($row['version']<$val['version']) {
+                                $val['right_button'] = '<a class="label label-success" href="http://www.eacoo123.com">升级</a> ';
+                            } else{
+                                $val['right_button'] = '<a class="label label-default" href="#">已安装</a> ';
+                            }
+                            
+                        }
+                    }
+                }
+
+                $val['right_button'] .= '<a class="label label-info " href="http://www.eacoo123.com" target="_blank">更多详情</a> ';
+            }
+        }
+        return $store_data;
+    }
 }

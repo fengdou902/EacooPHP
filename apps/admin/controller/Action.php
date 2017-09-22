@@ -62,7 +62,6 @@ class Action extends Admin {
 	 * @author 心云间、凝听 <981248356@qq.com>
 	 */
 	public function add() {
-		$model = model('Action');
 		if (IS_POST) {
 			$data   = input('post.');
 			$result = $this->actionModel->save($data);

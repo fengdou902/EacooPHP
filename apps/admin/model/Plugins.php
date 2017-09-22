@@ -22,14 +22,6 @@ class Plugins extends Model {
     static public $optionsFile = 'options.php';
 
     /**
-     * 插件类型
-     */
-    public function plugin_type($id) {
-        $list[0] = '系统插件';
-        return $id ? $list[$id] : $list;
-    }
-
-    /**
      * 获取插件列表
      * @param string $plugin_dir
      */
@@ -164,6 +156,42 @@ class Plugins extends Model {
         // $dependent_hooks = !empty($info['dependences']['hooks']) ? $info['dependences']['hooks']:'';
         $dependent_hooks = $plugin_obj->hooks;
         return $dependent_hooks;
+    }
+
+    /**
+     * 本地插件信息
+     * @return [type] [description]
+     * @date   2017-09-21
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function localPlugins()
+    {
+
+        $plugins = cache('local_plugins');
+        if (empty($plugins) || !$plugins) {
+            $plugin_dir = self::$pluginDir;
+            $dirs = array_map('basename', glob($plugin_dir.'*', GLOB_ONLYDIR));
+            if ($dirs == false || !file_exists($plugin_dir)) {
+                $this->error = '插件目录不可读或者不存在';
+                return false;
+            } else{
+                if (!empty($dirs)) {
+                    foreach ($dirs as $name) {
+                        $info = $this->getInfoByFile($name);
+                        $info_flag = $this->checkInfoFile($name);
+                        if (!$info || !$info_flag) {
+                            \think\Log::record('插件'.$name.'的信息缺失！');
+                            continue;
+                        }
+
+                        $plugins[$name] = $info;
+                    }
+                    cache('local_plugins',$plugins,600);
+                } 
+            }
+        }
+        
+        return $plugins;
     }
 
     /**

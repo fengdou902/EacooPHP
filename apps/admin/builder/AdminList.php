@@ -126,7 +126,7 @@ class AdminList extends Builder
                 $my_attribute['title'] = '禁用';
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['class'] = 'btn btn-warning ajax-post confirm btn-sm';
-                $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;
+                $my_attribute['model'] = !empty($attribute['model']) ? $attribute['model']: CONTROLLER_NAME;
                 $my_attribute['href']  = url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
                     array(
@@ -136,7 +136,7 @@ class AdminList extends Builder
                 );
 
                 // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
-                if ($attribute && is_array($attribute)) {
+                if (!empty($attribute) && is_array($attribute)) {
                     $my_attribute = array_merge($my_attribute, $attribute);
                 }
 
@@ -363,7 +363,7 @@ class AdminList extends Builder
             case 'forbid':  // 改变记录状态按钮，会更具数据当前的状态自动选择应该显示启用/禁用
                 //预定义按钮属
                 $my_attribute['type'] = 'forbid';
-                $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;
+                $my_attribute['model'] = !empty($attribute['model']) ? $attribute['model'] : CONTROLLER_NAME;
                 $my_attribute['0']['title'] = '启用';
                 $my_attribute['0']['class'] = $this->_right_button_type==1 ? 'btn btn-success btn-xs ajax-get confirm':'ajax-get confirm';
                 $my_attribute['0']['href']  = url(
@@ -391,7 +391,7 @@ class AdminList extends Builder
             case 'hide':  // 改变记录状态按钮，会更具数据当前的状态自动选择应该显示隐藏/显示
                 // 预定义按钮属
                 $my_attribute['type'] = 'hide';
-                $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;
+                $my_attribute['model'] = !empty($attribute['model']) ? $attribute['model'] : CONTROLLER_NAME;
                 $my_attribute['2']['title'] = '显示';
                 $my_attribute['2']['class'] = $this->_right_button_type==1 ? 'btn btn-success btn-xs ajax-get confirm':'ajax-get confirm';
                 $my_attribute['2']['href']  = url(

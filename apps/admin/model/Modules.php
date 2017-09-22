@@ -63,25 +63,25 @@ class Modules extends Base {
             if (!isset($val['right_button'])) $val['right_button']='';
             switch($val['status']){
                 case -3:  // 模块信息异常
-                    $val['status_icon'] = '<span class="text-danger">异常</span>';
+                    $val['status'] = '<span class="text-danger">异常</span>';
                     $val['right_button']  = '<a class="label label-danger" href="http://forum.eacoo123.com" target="_blank">反馈</a>';
                     break;
                 case -2:  // 损坏
-                    $val['status_icon'] = '<span class="text-danger">损坏</span>';
+                    $val['status'] = '<span class="text-danger">损坏</span>';
                     $val['right_button']  = '<a class="label label-danger ajax-get" href="'.url('setStatus', ['status' => 'delete', 'ids' => $val['id']]).'">删除记录</a>';
                     break;
                 case -1:  // 未安装
-                    $val['status_icon'] = '<i class="fa fa-download text-warning"></i>';
+                    $val['status'] = '<i class="fa fa-download text-warning"></i>';
                     $val['right_button']  = '<a class="label label-success" href="'.url('install_before', ['name' => $val['name']]).'">安装</a>';
                     break;
                 case 0:  // 禁用
-                    $val['status_icon'] = '<i class="fa fa-ban text-danger"></i>';
+                    $val['status'] = '<i class="fa fa-ban text-danger"></i>';
                     $val['right_button'] .= '<a class="label label-info ajax-get" href="'.url('updateInfo', ['id' => $val['id']]).'">刷新</a> ';
                     $val['right_button'] .= '<a class="label label-success ajax-get" href="'.url('setStatus', ['status' => 'resume', 'ids' => $val['id']]).'">启用</a> ';
                     $val['right_button'] .= '<a class="label label-danger" href="'.url('uninstall_before', ['id' => $val['id']]).'">卸载</a> ';
                     break;
                 case 1:  // 正常
-                    $val['status_icon'] = '<i class="fa fa-check text-success"></i>';
+                    $val['status'] = '<i class="fa fa-check text-success"></i>';
                     $val['right_button'] .= '<a class="label label-info ajax-get" href="'.url('updateInfo?id='.$val['id']).'">刷新</a> ';
                     if (!$val['is_system']) {
                         $val['right_button'] .= '<a class="label label-warning ajax-get" href="'.url('setStatus', ['status' => 'forbid', 'ids' => $val['id']]).'">禁用</a> ';
@@ -161,6 +161,43 @@ class Modules extends Base {
 
         }
         return true;
+    }
+
+    /**
+     * 本地模块信息
+     * @return [type] [description]
+     * @date   2017-09-21
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function localModules()
+    {
+        $data = cache('local_modules');
+        if (empty($data) || !$data) {
+            $module_dir = APP_PATH;
+            $dirs = array_map('basename', glob($module_dir.'*', GLOB_ONLYDIR));
+            if ($dirs == false || !file_exists($module_dir)) {
+                $this->error = '模块目录不可读或者不存在';
+                return false;
+            } else{
+                if (!empty($dirs)) {
+                    foreach ($dirs as $name) {
+                        $info = $this->getInfoByFile($name);
+                        
+                        if (empty($info) || !$info) {
+                            \think\Log::record('模块'.$name.'的信息缺失！');
+                            continue;
+                        } else{
+                            $info_flag = $this->checkInfoFile($name);
+                            $data[$name] = $info;
+                        }
+                        
+                    }
+                    cache('local_modules',$data,600);
+                } 
+            }
+        }
+        
+        return $data;
     }
 
     /**

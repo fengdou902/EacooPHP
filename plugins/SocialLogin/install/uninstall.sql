@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS `eacoo_plugin_sync_login`;
+DROP TABLE IF EXISTS `eacoo_plugin_social_login`;

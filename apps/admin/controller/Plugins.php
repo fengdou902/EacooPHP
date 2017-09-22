@@ -33,31 +33,59 @@ class Plugins extends Admin {
 
     /**
      * 插件列表
+     * @param  string $from_type 来源类型
      * @return [type] [description]
-     * @date   2017-09-02
+     * @date   2017-09-21
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function index() {
+    public function index($from_type = 'local') {
 
         $this->assign('custom_head',['self'=>'<a href="'.url('admin/plugins/hooks').'" class="btn btn-primary btn-sm mr-10">钩子管理</a>']);
+        $tab_list = [
+            'local'=>['title'=>'本地','href'=>url('index',['from_type'=>'local'])],
+            'oneline'=>['title'=>'插件市场','href'=>url('index',['from_type'=>'oneline'])],
+        ];
         // 获取所有插件信息
         //$paged = $this->input('get.p',1);
-        $plugins = $this->pluginModel->getAll();
+        if ($from_type == 'local') {
+            //本地插件
+            $plugins = $this->pluginModel->getAll();
+            // 使用Builder快速建立列表页面。
+            Builder::run('List')
+                    ->setMetaTitle('本地插件')  // 设置页面标题
+                    ->setTabNav($tab_list,$from_type) 
+                    ->addTopButton('resume')   // 添加启用按钮
+                    ->addTopButton('forbid')   // 添加禁用按钮
+                    ->keyListItem('name', '标识')
+                    ->keyListItem('title', '名称')
+                    ->keyListItem('description', '描述')
+                    ->keyListItem('author', '作者')
+                    ->keyListItem('status', '状态')
+                    ->keyListItem('version', '版本')
+                    ->keyListItem('right_button', '操作', 'btn')
+                    ->setListData($plugins)    // 数据列表
+                    ->fetch();
+        } elseif($from_type == 'oneline'){
+            //线上插件
+            $plugins = $this->getAppstorePlugins();
+            Builder::run('List')
+                    ->setMetaTitle('插件市场')  // 设置页面标题
+                    ->setTabNav($tab_list,$from_type) 
+                    ->addTopButton('resume')   // 添加启用按钮
+                    ->addTopButton('forbid')   // 添加禁用按钮
+                    ->keyListItem('name', '标识')
+                    ->keyListItem('title', '名称')
+                    ->keyListItem('description', '描述')
+                    ->keyListItem('author', '作者')
+                    ->keyListItem('downloaded', '活跃度')
+                    ->keyListItem('version', '版本号')
+                    ->keyListItem('publish_time', '最近更新')
+                    ->keyListItem('right_button', '操作', 'btn')
+                    ->setListData($plugins)    // 数据列表
+                    ->fetch();
+        }
 
-        // 使用Builder快速建立列表页面。
-        Builder::run('List')
-                ->setMetaTitle('插件列表')  // 设置页面标题
-                ->addTopButton('resume')   // 添加启用按钮
-                ->addTopButton('forbid')   // 添加禁用按钮
-                ->keyListItem('name', '标识')
-                ->keyListItem('title', '名称')
-                ->keyListItem('description', '描述')
-                ->keyListItem('author', '作者')
-                ->keyListItem('status', '状态')
-                ->keyListItem('version', '版本')
-                ->keyListItem('right_button', '操作', 'btn')
-                ->setListData($plugins)    // 数据列表
-                ->fetch();
+        
     }
 
     /**
@@ -234,7 +262,6 @@ class Plugins extends Admin {
                         PluginsModel::where('name',$name)->update(['status'=>0]);
                         $this->error('安装失败，原因：插件静态资源目录不可写');
                     }
-                    
                 }
                 $this->success('安装成功');
             } else {
@@ -270,8 +297,8 @@ class Plugins extends Admin {
      */
     public function uninstall($id, $clear = false) {
         $plugin_info = $this->pluginModel->where('id',$id)->field('name')->find();
-
-        $hooks_update = $this->hooksModel->removeHooks($plugin_info['name']);
+        $name = $plugin_info['name'];
+        $hooks_update = $this->hooksModel->removeHooks($name);
         if ($hooks_update === false) {
             $this->error('卸载插件所挂载的钩子数据失败');
         }
@@ -283,16 +310,30 @@ class Plugins extends Admin {
         }
         if ($result) {
             // 删除后台菜单
-            $this->removeAdminMenus($plugin_info['name'],$clear);
+            $this->removeAdminMenus($name,$clear);
             // 卸载数据库
-            $sql_file = realpath(PluginsModel::$pluginDir.$plugin_info['name']).'/install/uninstall.sql';
+            $sql_file = realpath(PluginsModel::$pluginDir.$name).'/install/uninstall.sql';
             if (is_file($sql_file)) {
-                $info       = PluginsModel::getInfoByFile($plugin_info['name']);
+                $info       = PluginsModel::getInfoByFile($name);
                 $sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
                 if (!$sql_status) {
                     $this->error('执行插件SQL卸载语句失败');
                 }
             }
+
+            $static_path = realpath($this->pluginDir.$name).'/static';
+            $_static_path = ROOT_PATH.'public/static/plugins/'.$name;
+            if (is_dir($_static_path)) {
+                if(is_writable(ROOT_PATH.'public/static/plugins') && is_writable(realpath($this->pluginDir.$name))){
+                    if (!rename($_static_path,$static_path)) {
+                        trace('插件静态资源移动失败：'.'public/static/plugins/'.$name.'->'.$static_path,'error');
+                    } 
+                } else{
+                    PluginsModel::where('name',$name)->update(['status'=>0]);
+                    $this->error('卸载失败，原因：插件静态资源目录不可写');
+                }
+            }
+
             $this->success('卸载成功',url('index'));
         } else{
             $this->error('卸载插件失败');
@@ -599,17 +640,17 @@ class Plugins extends Admin {
         }
     }
 
-    /*
-    *插件模板
-    *
-    */
-    public function fetch($templateFile='',$vars = [], $replace ='', $config = ''){
-        if ($template = '') {
-            $template =T('Plugins://'.$name.'@'.CONTROLLER_NAME.'/'.ACTION_NAME);
-        }     
-        return $this->fetch($template);
+    // /*
+    // *插件模板
+    // *
+    // */
+    // public function fetch($templateFile='',$vars = [], $replace ='', $config = ''){
+    //     if ($template = '') {
+    //         $template =T('Plugins://'.$name.'@'.CONTROLLER_NAME.'/'.ACTION_NAME);
+    //     }     
+    //     return $this->fetch($template);
         
-    }
+    // }
 
     /**
      * 钩子列表
@@ -698,4 +739,49 @@ class Plugins extends Admin {
         }
     }
 
+    /**
+     * 获取插件市场数据
+     * @return [type] [description]
+     * @date   2017-09-21
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    private function getAppstorePlugins($paged = 1)
+    {
+        $store_data = cache('eacoo_appstore_plugins_'.$paged);
+        if (empty($store_data) || !$store_data) {
+            $url        = 'http://www.eacoo123.com/server_appstore_plugins';
+            $params = [
+                'paged'=>$paged
+            ];
+            $result     = curl_post($url,$params);
+            $result = json_decode($result,true);
+            $store_data = $result['data'];
+            cache('eacoo_appstore_plugins_'.$paged,$store_data,3600);
+        }
+        if (!empty($store_data)) {
+            foreach ($store_data as $key => &$val) {
+                $local_plugins = $this->pluginModel->localPlugins();
+
+                $val['downloaded'] = '<i class="fa fa-star color-warning"></i> '.$val['downloaded'];
+                $val['publish_time'] = friendly_date($val['publish_time']);
+                $val['right_button'] = '<a class="label label-primary" href="http://www.eacoo123.com">现在安装</a> ';
+                if (!empty($local_plugins)) {
+                    foreach ($local_plugins as $key => $row) {
+                        if ($row['name']==$val['name']) {
+                            if ($row['version']<$val['version']) {
+                                $val['right_button'] = '<a class="label label-success" href="http://www.eacoo123.com">升级</a> ';
+                            } else{
+                                $val['right_button'] = '<a class="label label-default" href="#">已安装</a> ';
+                            }
+                            
+                        }
+                    }
+                }
+                $val['status'] = '<i class="fa fa-ban">可安装</i>';
+
+                $val['right_button'] .= '<a class="label label-info " href="http://www.eacoo123.com" target="_blank">更多详情</a> ';
+            }
+        }
+        return $store_data;
+    }
 }
