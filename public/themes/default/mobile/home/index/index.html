@@ -1,0 +1,144 @@
+{extend name="$_theme_public_layout"/}
+{block name="style"}
+<style type="text/css">
+.feature-content{background-color: #fff;}
+.box-title{line-height: 36px;margin-bottom: 30px;}
+.flexslider,ul.slides li a img{height: auto!important;}
+</style>
+{/block}
+
+{block name="main"}
+ 
+  {:hook('ImageGallery')}
+
+  <div class="content-wrapper bg-color-fff">
+       <!-- Full Width Column -->
+        <section class="feature-content pt-20">
+          <div class="container">
+              <div class="text-line text-center box-title">
+                  <h2> <span>功能特性</span></h2>
+                  <div class="subtitle">EacooPHP更高效优雅的开发！</div>
+              </div>
+              <div class="row">
+
+                  <div class="col-md-4 fadeInDown text-center animated">
+                      <img class="rotate" src="__THEME_IMG__/149074.svg" width="100" alt="Generic placeholder image">
+                          <h4>权限管理</h4>
+                          <p class="">基于完善的Auth权限控制管理、无限父子级权限分组、可自由分配子级权限、一个管理员可同时属于多个组别</p>
+                  </div>
+
+                  <div class="col-sm-4 fadeInDown text-center animated">
+                      <img class="rotate" src="__THEME_IMG__/223173.svg" width="100" alt="Generic placeholder image">
+                          <h4>多端设备浏览体验</h4>
+                          <p class="">基于Bootstrap和AdminLTE进行二次开发,手机、平板、PC均自动适配,无需要担心兼容性问题</p>
+                  </div>
+
+                  <div class="col-sm-4 fadeInDown text-center animated">
+                      <img class="rotate" src="__THEME_IMG__/148991.svg" width="100" alt="Generic placeholder image">
+                          <h4>Builder构建器</h4>
+                          <p class="">EacooPHP提供Builder构建器来构建后台表单和列表，内置丰富的表单项组件来构建表单页面。让您开发更简单，高效</p>
+                  </div>
+
+              </div>
+              <div class="row tworow mt-50">
+
+                  <div class="col-sm-4  fadeInDown text-center animated">
+                      <img class="rotate" src="__THEME_IMG__/138849.svg" width="100" alt="Generic placeholder image">
+                          <h4>模块化</h4>
+                          <p class="">模块化的开发模式，遵循MVC结构，在保证模块独立的同时，大大降低代码、数据的沉余，保证了应用程序的高内聚低耦合。</p>
+                  </div>
+
+                  <div class="col-sm-4 fadeInDown text-center animated">
+                      <img class="rotate" src="__THEME_IMG__/297462.png" width="100" alt="Generic placeholder image">
+                          <h4>插件机制</h4>
+                          <p class="">基于钩子行为实现插件化的功能扩展，提供线上插件市场，插件随时安装卸载来增加自己想要的功能。</p>
+                  </div>
+
+                  <div class="col-sm-4 fadeInDown text-center animated">
+                      <img class="rotate" src="__THEME_IMG__/149064.svg" width="100" alt="Generic placeholder image">
+                          <h4>多主题支持</h4>
+                          <p class="">系统支持多主题机制，允许用户建立自己的个性化主题，每个主题支持只对部分模块进行个性化。</p>
+                  </div>
+
+                  
+
+              </div>
+          </div>
+
+      </section>
+    <hr>
+      <!-- Main content -->
+      <section class="demo-content">
+        <div class="container">
+            <div class="row">
+              <div class="oh">
+                  <div class="col-md-6 text-center">
+                    <img src="http://eacoo123.oss-cn-beijing.aliyuncs.com/static/demo-eacoophp/eacoophp-demo-attachment.png" width="80%">
+                  </div>
+                  <div class="col-md-6">
+                      <div>
+                        <h4>附件管理</h4>
+                        <p>人性化，更好的交互体验的媒体附件管理器，可自定义裁剪，<br/>添加水印，并已经集成阿里云OSS。上传到云端存储，图片处理更任性。</p>
+                      </div>
+                      
+                  </div>
+              </div>
+
+            </div>
+        </div>
+      
+      </section>
+      <hr>
+      <section>
+        <div class="container">
+          <div class="box box-success">
+            <div class="box-header with-border">
+              <h3 class="box-title">快速开始</h3>
+            </div>
+            <div class="box-body">
+               <p >EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求高效，简单，灵活。具有灵活的应用和插件机制，模块式开发，大大降低开发成本。</p>
+              <p>使用EacooPHP框架开发定制您的系统前，建议熟悉官方的tp5.0完全开发手册。</p>
+
+              <div>
+                <h4>仓库地址：(记得加个star哦！！)</h4>
+                <p>
+                  GitHub仓库：<a href="https://github.com/fengdou902/EacooPHP.git">https://github.com/fengdou902/EacooPHP.git</a> 
+                  <br>
+  码云仓库：<a href="https://git.oschina.net/ZhaoJunfeng/EacooPHP.git">https://git.oschina.net/ZhaoJunfeng/EacooPHP.git</a> </p>
+              </div>
+
+              <div>
+                <h4>文档地址：</h4>
+                <p><a href="https://www.kancloud.cn/youpzt/eacoo" target="_blank">https://www.kancloud.cn/youpzt/eacoo</a></p>
+              </div>
+
+              <div>
+                <h4>社区问答：</h4>
+                <p><a href="http://forum.eacoo123.com" target="_blank">http://forum.eacoo123.com</a></p>
+              </div>
+
+              <div>
+                <h4>官方QQ群：</h4>
+                <p>436491685</p>
+                <p class="text-center">
+                  <img src="__THEME_IMG__/EacooPHP-qq-qrcode1.png" title="" alt="EacooPHP-qq-qrcode">
+                  <span>手机QQ扫描二维码</span>
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        
+
+      </section>
+      <!-- /.content -->
+
+  </div>
+  <!-- /.content-wrapper -->
+
+{/block}
+
+{block name="script"}
+ 
+{/block}

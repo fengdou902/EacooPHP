@@ -56,7 +56,7 @@ class Config {
             if (is_dir($theme_public_path)) {
                 $ec_config['theme_public']  = $theme_public_path;
 
-                $theme_static_public_path = '/theme/'.$current_theme.'/'.'public/';
+                $theme_static_public_path = '/themes/'.$current_theme.'/'.'public/';
                 $ec_config['view_replace_str']['__THEME_IMG__']   = $theme_static_public_path.'img';
                 $ec_config['view_replace_str']['__THEME_CSS__']   = $theme_static_public_path.'css';
                 $ec_config['view_replace_str']['__THEME_JS__']    = $theme_static_public_path.'js';
@@ -74,7 +74,7 @@ class Config {
                 // 各模块自带静态资源路径
                 $module_public_path = $current_theme_module_path.'public/';
                 if (is_dir($module_public_path) ) {
-                    $module_public_url = '/theme/'.$current_theme.'/'.MODULE_NAME.'/'.'public';//资源路径url
+                    $module_public_url = '/themes/'.$current_theme.'/'.MODULE_NAME.'/'.'public';//资源路径url
 
                     $ec_config['view_replace_str']['__IMG__']  = $module_public_url.'/img';
                     $ec_config['view_replace_str']['__CSS__']  = $module_public_url.'/css';
@@ -113,7 +113,7 @@ class Config {
            /* $system_config['FORM_ITEM_TYPE'] = config('FORM_ITEM_TYPE form_item_type');
             //$formbuilder_extend = explode(',', db('Hook')->getFieldByName('FormBuilderExtend', 'plugins'));
             if ($formbuilder_extend) {
-                $plugin_object = db('Addon');
+                $plugin_object = db('plugins');
                 foreach ($formbuilder_extend as $val) {
                     $temp = json_decode($plugin_object->getFieldByName($val, 'config'), true);
                     if ($temp['status']) {

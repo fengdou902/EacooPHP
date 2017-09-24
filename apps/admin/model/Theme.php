@@ -55,7 +55,7 @@ class Theme extends Base {
 
         if ($installed_theme_list) {
             foreach ($installed_theme_list as $theme) {
-                $theme_list[$theme['name']] = $theme;
+                $theme_list[$theme['name']] = $theme->toArray();
             }
             //系统已经安装的主题信息与文件夹下主题信息合并
             $theme_list = array_merge($theme_list, $theme_list);

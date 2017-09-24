@@ -23,7 +23,7 @@ define('APP_PATH', __DIR__ . '/../apps/');
 define('PUBLIC_PATH', __DIR__ . '/');
 
 //主题目录
-define('THEME_PATH',__DIR__ . '/theme/');
+define('THEME_PATH',__DIR__ . '/themes/');
 
 /**
  * 定义标记

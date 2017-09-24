@@ -29,7 +29,11 @@ return [
                     'text' =>['title'=>'文字','type'=>'text','default'=>'','placeholder'=>'输入文字'],
                 ]
             ],
-        'value' => ''
+        'value' => [
+                ['img'=>94,'url'=>'http://www.eacoo123.com','text'=>'EacooPHP快速开发框架'],
+                ['img'=>95,'url'=>'http://forum.eacoo123.com','text'=>'EacooPHP讨论社区'],
+                ['img'=>94,'url'=>'http://www.eacoo123.com','text'=>'EacooPHP快速开发框架'],
+            ]
     ],
     'second'=>[
         'title' =>'轮播间隔时间:',
@@ -56,7 +60,7 @@ return [
         'title' =>'容器高度',
         'tip'   =>'（单位:像素）',
         'type'  =>'number',
-        'value' =>'560'
+        'value' =>'880'
     ],
     
 ];

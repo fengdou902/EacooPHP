@@ -281,8 +281,8 @@ class Plugins extends Admin {
                 ->setMetaTitle('准备卸载插件')  // 设置页面标题
                 ->setPostUrl(url('uninstall'))     // 设置表单提交地址
                 ->addFormItem('id', 'hidden', 'ID', 'ID')
-                ->addFormItem('clear', 'radio', '是否清除数据', '是否清除数据', array(1=> '是', 0=> '否（禁用）'))
-                ->setFormData(array('id' => $id))
+                ->addFormItem('clear', 'radio', '清除数据：', '是否清除数据，默认否', [1=> '是', 0=> '否（等于禁用）'])
+                ->setFormData(['id' => $id])
                 ->addButton('submit')->addButton('back')    // 设置表单按钮
                 ->fetch();
     }
@@ -304,7 +304,7 @@ class Plugins extends Admin {
         }
         cache('hooks', null);
         if ($clear) {
-            $result = PluginsModel::destroy($id);
+            $result = PluginsModel::where('id',$id)->delete();
         } else{
             $result = PluginsModel::where('id',$id)->update(['status'=>0]);
         }
