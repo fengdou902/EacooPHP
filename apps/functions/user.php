@@ -36,6 +36,21 @@ function get_user_info($uid) {
 }
 
 /**
+ * 获取用户名
+ * @param  integer $uid [description]
+ * @return [type] [description]
+ * @date   2017-09-25
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function get_nickname($uid=0)
+{
+    if ($uid>0) {
+        return User::where('uid',$uid)->value('nickname');
+    }
+    return false;
+}
+
+/**
  * 数据签名认证
  * @param  array $data 被认证的数据
  * @return string       签名

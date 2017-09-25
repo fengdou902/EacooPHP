@@ -175,7 +175,7 @@ class Upload {
             } else {
                 $res = false;
                 //使用云存储
-                $name = get_addon_class($driver);
+                $name = get_plugin_class($driver);
                 if (class_exists($name)) {
                     $class = new $name();
                     if (method_exists($class, 'uploadBase64')) {
@@ -325,7 +325,7 @@ class Upload {
             } else {
                 $res = false;
                 //使用云存储
-                $name = get_addon_class($driver);
+                $name = get_plugin_class($driver);
                 if (class_exists($name)) {
                     $class = new $name();
                     if (method_exists($class, 'uploadBase64')) {

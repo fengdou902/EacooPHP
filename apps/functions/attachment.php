@@ -301,7 +301,7 @@ function getThumbImageById($img_id,$thumb_type='small')
 
     } else {
         $new_img = $info['path'];
-        $name = get_addon_class($info['location']);
+        $name = get_plugin_class($info['location']);
         if (class_exists($name)) {
             $class = new $name();
             if (method_exists($class, 'small')) {
