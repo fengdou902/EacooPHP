@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 2017-09-07 08:25:53
+-- Generation Time: 2017-09-25 04:39:22
 -- 服务器版本： 5.7.15
 -- PHP Version: 7.0.14
 
@@ -29,9 +29,9 @@ SET time_zone = "+00:00";
 CREATE TABLE `eacoo_action` (
   `id` int(11) UNSIGNED NOT NULL COMMENT '主键',
   `module` varchar(16) NOT NULL DEFAULT '' COMMENT '所属模块名',
-  `name` char(30) NOT NULL DEFAULT '' COMMENT '行为唯一标识（组合控制器名+操作名）',
-  `title` char(80) NOT NULL DEFAULT '' COMMENT '行为说明',
-  `remark` char(140) NOT NULL DEFAULT '' COMMENT '行为描述',
+  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '行为唯一标识（组合控制器名+操作名）',
+  `title` varchar(80) NOT NULL DEFAULT '' COMMENT '行为说明',
+  `remark` varchar(140) NOT NULL DEFAULT '' COMMENT '行为描述',
   `rule` text NOT NULL COMMENT '行为规则',
   `log` text NOT NULL COMMENT '日志规则',
   `action_type` tinyint(2) UNSIGNED NOT NULL DEFAULT '1' COMMENT '执行类型。1自定义操作，2记录操作',
@@ -47,8 +47,8 @@ CREATE TABLE `eacoo_action` (
 INSERT INTO `eacoo_action` (`id`, `module`, `name`, `title`, `remark`, `rule`, `log`, `action_type`, `create_time`, `update_time`, `status`) VALUES
 (1, 'user', 'user_login', '用户登录', '积分+10，每天一次', 'table:users|field:score|condition:uid={$self} AND status>-1|rule:score+10|cycle:24|max:1;', '[user|get_nickname]在[time|time_format]登录了后台', 1, 1466957785, 1466957785, 1),
 (2, 'cms', 'add_article', '发布文章', '积分+5，每天上限5次', 'table:users|field:score|condition:uid={$self}|rule:score+5|cycle:24|max:5', '', 1, 1380173180, 1380173180, 0),
-(3, '', 'clear_actionlog', '日志清空', '清空日志', '', '', 2, 1383285646, 1383285646, 1),
-(5, 'admin', 'user_login_admin', '登录后台', '用户登录后台', '', '', 1, 1383285551, 1383285551, 1),
+(3, '', 'clear_actionlog', '清空行为日志', '后台清空行为日志', '', '', 1, 0, 0, 1),
+(5, 'admin', 'user_login_admin', '登录后台', '用户登录后台', '', '[user|get_nickname]在[time|time_format]登录了后台', 1, 1383285551, 1383285551, 1),
 (6, '', 'update_config', '更新配置', '新增或修改或删除配置', '', '', 2, 1383294988, 1383294988, 1),
 (7, '', 'update_channel', '更新导航', '新增或修改或删除导航', '', '', 2, 1383296301, 1383296301, 1),
 (8, '', 'update_menu', '更新菜单', '新增或修改或删除菜单', '', '', 2, 1383296392, 1383296392, 1),
@@ -60,7 +60,7 @@ INSERT INTO `eacoo_action` (`id`, `module`, `name`, `title`, `remark`, `rule`, `
 (14, '', 'database_backup_delete', '备份文件删除', '数据库管理-》备份文件删除', '', '', 1, 0, 0, 1),
 (15, '', 'database_import', '数据库完成', '数据库管理-》数据还原', '', '', 1, 0, 0, 1),
 (16, '', 'delete_actionlog', '删除行为日志', '后台删除用户行为日志', '', '', 1, 0, 0, 1),
-(17, '', 'clear_actionlog', '清空行为日志', '后台清空行为日志', '', '', 1, 0, 0, 1);
+(17, '', 'user_register', '注册', '', '', '', 1, 1506262430, 1506262430, 1);
 
 -- --------------------------------------------------------
 
@@ -71,7 +71,7 @@ INSERT INTO `eacoo_action` (`id`, `module`, `name`, `title`, `remark`, `rule`, `
 CREATE TABLE `eacoo_action_log` (
   `id` int(10) UNSIGNED NOT NULL COMMENT '主键',
   `action_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '行为id',
-  `uid` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '执行用户id',
+  `uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '执行用户id',
   `action_ip` varchar(18) NOT NULL DEFAULT '' COMMENT '执行行为者ip',
   `model` varchar(50) NOT NULL DEFAULT '' COMMENT '触发行为的表',
   `record_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '触发行为的数据id',
@@ -79,37 +79,6 @@ CREATE TABLE `eacoo_action_log` (
   `create_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '执行行为的时间',
   `status` tinyint(2) NOT NULL DEFAULT '1' COMMENT '状态'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='行为日志表' ROW_FORMAT=DYNAMIC;
-
--- --------------------------------------------------------
-
---
--- 表的结构 `eacoo_addons`
---
-
-CREATE TABLE `eacoo_addons` (
-  `id` int(11) UNSIGNED NOT NULL COMMENT '主键',
-  `name` varchar(32) NOT NULL DEFAULT '' COMMENT '插件名或标识',
-  `title` varchar(32) NOT NULL DEFAULT '' COMMENT '中文名',
-  `description` text NOT NULL COMMENT '插件描述',
-  `config` text COMMENT '配置',
-  `author` varchar(32) NOT NULL DEFAULT '' COMMENT '作者',
-  `version` varchar(8) NOT NULL DEFAULT '' COMMENT '版本号',
-  `has_adminmanage` tinyint(4) UNSIGNED NOT NULL DEFAULT '0' COMMENT '是否有后台管理',
-  `type` tinyint(4) UNSIGNED NOT NULL DEFAULT '0' COMMENT '插件类型',
-  `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '安装时间',
-  `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '修改时间',
-  `sort` tinyint(4) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
-  `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='插件表';
-
---
--- 转存表中的数据 `eacoo_addons`
---
-
-INSERT INTO `eacoo_addons` (`id`, `name`, `title`, `description`, `config`, `author`, `version`, `has_adminmanage`, `type`, `create_time`, `update_time`, `sort`, `status`) VALUES
-(2, 'ImageSlider', '图片轮播', '图片轮播', '{"status":"0","type":0,"position":"1","category":"","sliders":"","second":"3000","direction":"horizontal","imgWidth":"960","imgHeight":"200"}', '心云间、凝听', '1.0', 0, 0, 1504346507, 1504346507, 0, 1),
-(3, 'SyncLogin', '第三方账号登录', '第三方账号登录', '{"type":"","meta":"","WeixinKey":"","WeixinSecret":"","QqKey":"","QqSecret":"","SinaKey":"","SinaSecret":"","RenrenKey":"","RenrenSecret":""}', '心云间、凝听', '0.1', 0, 0, 1504346511, 1504346511, 0, 1),
-(5, 'Alidayu', '阿里大鱼-短信接口', '通过阿里大鱼短信接口发送短信', '{"status":"1","appkey":"","secret":""}', '心云间、凝听', '1.0', 0, 0, 1504541647, 1504541647, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -134,8 +103,8 @@ CREATE TABLE `eacoo_attachment` (
   `download` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '下载次数',
   `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '上传时间',
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '修改时间',
-  `sort` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
-  `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '状态'
+  `sort` mediumint(8) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文件上传表';
 
 --
@@ -229,7 +198,10 @@ INSERT INTO `eacoo_attachment` (`id`, `uid`, `name`, `path`, `url`, `location`, 
 (90, 1, 'wx1image_14751588708117', '/uploads/picture/2016-09-29/wx1image_14751588708117.jpg', '', 'local', 'picture', 'jpg', '', 24226, NULL, '', '', 0, 1475158870, 0, 0, 1),
 (91, 1, 'meinv_admin_avatar', '/uploads/picture/2016-09-30/57edd952ba0e0.jpg', '', 'local', 'picture', 'jpg', '', 7006, NULL, '89b678fa35106c7a0f7579cb8426bd7a', '7d10ddb80359255e58c04bd30412b00bba6938a5', 0, 1475205458, 1475205458, 0, 1),
 (92, 1, '57e0a9c03a61b', '/uploads/picture/2016-10-03/57f2076c4e997.jpg', '', 'local', 'picture', 'jpg', '', 110032, NULL, 'e3694c361707487802476e81709c863f', 'd5381f24235ee72d9fd8dfe2bb2e3d128217c8ce', 0, 1475479404, 1475479404, 0, 1),
-(93, 1, '9812496129086622', '/uploads/picture/2016-10-06/57f6136b5bd4e.jpg', '', 'local', 'picture', 'jpg', '', 164177, NULL, '983944832c987b160ae409f71acc7933', 'bce6147f4070989fc0349798acf6383938e5563a', 0, 1475744619, 1475744619, 0, 1);
+(93, 1, '9812496129086622', '/uploads/picture/2016-10-06/57f6136b5bd4e.jpg', '', 'local', 'picture', 'jpg', '', 164177, NULL, '983944832c987b160ae409f71acc7933', 'bce6147f4070989fc0349798acf6383938e5563a', 0, 1475744619, 1475744619, 0, 1),
+(94, 1, 'eacoophp-xuanc-demo1.jpeg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-xuanc-demo1.jpeg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-xuanc-demo1.jpeg', 'url', 'picture', 'jpeg', 'image', 171045, 'eacoophp-xuanc-demo1', '', '', 0, 1506215777, 1506215780, 0, 1),
+(95, 1, 'eacoophp-banner-3', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-banner-3.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-banner-3.jpg', 'url', 'picture', 'jpg', 'image', 356040, 'eacoophp-banner-3', '', '', 0, 1506215801, 1506215803, 0, 1),
+(96, 1, 'eacoophp-banner-2', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-banner-2.jpeg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-banner-2.jpeg', 'url', 'picture', 'jpeg', 'image', 356040, 'eacoophp-banner-2', '', '', 0, 1506215801, 1506215803, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -284,9 +256,10 @@ CREATE TABLE `eacoo_auth_rule` (
   `id` smallint(6) NOT NULL,
   `name` char(80) NOT NULL DEFAULT '0' COMMENT '导航链接',
   `title` char(20) NOT NULL DEFAULT '0' COMMENT '导航名字',
-  `module` varchar(50) NOT NULL DEFAULT '' COMMENT '模块',
+  `from_type` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '来源类型。1module，2plugin，3theme',
+  `from_flag` varchar(50) NOT NULL DEFAULT '' COMMENT '来源标记',
+  `type` tinyint(1) DEFAULT '1' COMMENT '是否支持规则表达式',
   `pid` smallint(6) UNSIGNED DEFAULT '0' COMMENT '上级id',
-  `type` tinyint(1) DEFAULT '1' COMMENT '1-url;2-主菜单',
   `icon` varchar(50) DEFAULT NULL COMMENT '图标',
   `sort` smallint(6) UNSIGNED DEFAULT '0' COMMENT '排序',
   `condition` char(200) DEFAULT NULL,
@@ -300,125 +273,60 @@ CREATE TABLE `eacoo_auth_rule` (
 -- 转存表中的数据 `eacoo_auth_rule`
 --
 
-INSERT INTO `eacoo_auth_rule` (`id`, `name`, `title`, `module`, `pid`, `type`, `icon`, `sort`, `condition`, `is_menu`, `developer`, `update_time`, `status`) VALUES
-(1, 'admin', '系统设置', 'admin', 0, 1, 'fa-cog', 2, NULL, 1, 0, 0, 1),
-(3, 'cms', '文章', 'cms', 0, 1, 'fa-file-text', 7, NULL, 1, 0, 0, 1),
-(4, 'admin/user/', '用户管理', 'user', 0, 1, 'fa-users', 5, NULL, 1, 0, 0, 1),
-(5, 'admin/attachment/index', '附件空间', 'admin', 0, 1, 'fa-picture-o', 8, NULL, 1, 0, 0, 1),
-(6, 'admin/extend/index', '扩展中心', 'admin', 0, 1, 'fa-cloud', 10, NULL, 0, 0, 0, 1),
-(7, 'admin/nav/index', '导航管理', 'admin', 0, 1, 'fa-leaf', 9, NULL, 1, 0, 0, 0),
-(8, 'cms/posts/index', '文章列表', 'cms', 3, 1, 'fa-list-alt', 1, NULL, 1, 0, 0, 1),
-(9, 'cms/posts/edit', '文章编辑', 'cms', 3, 1, '', 2, NULL, 1, 0, 0, 0),
-(10, 'cms/posts/page', '页面列表', 'cms', 3, 1, '', 5, NULL, 1, 0, 0, 1),
-(11, 'comment/comment/comments', '评论', 'cms', 3, 1, 'fa-comments', 8, NULL, 1, 0, 0, 1),
-(12, 'admin/comments/edit', '评论编辑', 'comment', 11, 1, '', 0, NULL, 1, 0, 0, 0),
-(13, 'cms/posts/postTerm', '文章分类', 'cms', 3, 1, '', 3, NULL, 1, 0, 0, 1),
-(14, 'admin/user/index', '用户列表', 'user', 4, 1, '', 1, NULL, 1, 0, 0, 1),
-(15, 'admin/auth/role', '角色管理', 'user', 151, 1, '', 3, NULL, 1, 0, 0, 1),
-(16, 'admin/auth/rule', '后台菜单管理', 'admin', 1, 1, '', 11, NULL, 1, 1, 0, 1),
-(18, 'tools', '工具', 'admin', 0, 1, '', 12, NULL, 1, 1, 0, 1),
-(19, 'admin/database', '安全', 'admin', 18, 1, 'fa-database', 12, NULL, 0, 0, 0, 1),
-(20, 'admin/attachment/setting', '设置', 'admin', 5, 1, '', 0, NULL, 0, 0, 0, 1),
-(22, 'admin/link/index', '友情链接', 'cms', 18, 1, '', 6, NULL, 1, 0, 0, 1),
-(23, 'admin/link/edit', '链接编辑', 'admin', 22, 1, '', 1, NULL, 1, 0, 0, 0),
-(24, 'admin/addons/config?id=5', '图片轮播', 'admin', 21, 1, 'fa-briefcase', 2, NULL, 1, 0, 0, 1),
-(25, 'admin/slide/edit', '幻灯片编辑', 'admin', 24, 1, '', 0, NULL, 1, 0, 0, 0),
-(26, 'admin/mailer', '邮箱配置', 'admin', 18, 1, '', 6, NULL, 1, 0, 0, 0),
-(27, 'admin/addons/config?id=1', '第三方登录', 'admin', 165, 1, '', 9, NULL, 0, 0, 0, 1),
-(28, 'admin/config/website', '网站设置', 'admin', 1, 1, '', 4, NULL, 1, 0, 0, 1),
-(29, 'admin/database/index', '数据库管理', 'admin', 18, 1, 'fa-database', 13, NULL, 1, 0, 0, 1),
-(30, 'admin/option/url', '永久链接', 'admin', 18, 1, '', 14, NULL, 1, 0, 0, 0),
-(31, 'admin/theme/index', '主题', 'admin', 6, 1, '', 3, NULL, 1, 0, 0, 1),
-(32, 'admin/addons/index', '插件', 'admin', 6, 1, '', 2, NULL, 1, 0, 0, 1),
-(33, 'admin/module/index', '模块', 'admin', 6, 1, '', 0, NULL, 1, 0, 0, 1),
-(34, 'admin/config/index', '配置管理', 'admin', 1, 1, '', 15, NULL, 1, 1, 0, 1),
-(35, 'admin/config/group', '系统设置', 'admin', 1, 1, '', 1, NULL, 1, 0, 0, 1),
-(36, 'cms/posts/trash', '回收站', 'cms', 3, 1, '', 7, NULL, 1, 0, 0, 1),
-(37, 'cms/posts/postTerm?taxonomy=post_tag', '文章标签', 'cms', 3, 1, '', 4, NULL, 1, 0, 0, 1),
-(38, 'user/action', '日志管理', 'user', 0, 1, 'fa-list-alt', 4, NULL, 1, 0, 0, 1),
-(39, 'admin/action/index', '用户行为', 'user', 38, 1, NULL, 1, NULL, 1, 0, 0, 1),
-(40, 'admin/action/log', '行为日志', 'user', 38, 1, NULL, 2, NULL, 1, 0, 0, 1),
-(41, 'user/message/', '站内信', 'user', 0, 1, 'fa-envelope-o', 11, NULL, 1, 0, 0, 1),
-(42, 'user/message/messages', '收件箱', 'user', 41, 1, NULL, 1, NULL, 1, 0, 0, 1),
-(43, 'user/message/message_detail', '信息详情', 'user', 41, 1, NULL, 1, NULL, 1, 0, 0, 0),
-(44, 'user/message/messages?box_type=outbox', '发件箱', 'user', 41, 1, '', 1, NULL, 1, 0, 0, 1),
-(45, 'admin/addons/hooks', '钩子管理', 'admin', 6, 1, NULL, 1, NULL, 1, 1, 0, 1),
-(46, 'admin/mailer/smtp', 'SMTP配置', 'admin', 26, 1, NULL, 1, NULL, 1, 0, 0, 1),
-(47, 'admin/mailer/mailer_template', '邮件模板', 'admin', 18, 1, NULL, 5, NULL, 1, 0, 0, 1),
-(48, 'admin/addons/config?id=2', '通用社交化评论', 'admin', 165, 1, '', 7, NULL, 0, 0, 0, 1),
-(50, 'comment/comment/messages', '留言板', 'cms', 3, 1, 'fa-comment', 9, NULL, 1, 0, 0, 0),
-(51, 'admin/addons/adminManage', '广告管理', 'admin', 21, 1, 'fa-flag-o', 3, NULL, 1, 0, 0, 1),
-(52, 'admin/addons/adminManage?name=Advs', '广告列表', 'admin', 51, 1, '', 1, NULL, 1, 0, 0, 1),
-(53, 'admin/addons/adminManage?name=Advs&action=index&controller=AdminAdvertising', '广告位置', 'admin', 51, 1, '', 1, NULL, 1, 0, 0, 1),
-(77, 'admin/Attachment/attachmentCategory', '附件分类', 'admin', 5, 1, NULL, 1, NULL, 0, 0, 0, 1),
-(94, 'admin/attachment/upload', '文件上传', 'admin', 5, 1, NULL, 1, NULL, 0, 0, 0, 1),
-(95, 'admin/attachment/uploadPicture', '上传图片', 'admin', 5, 1, NULL, 1, NULL, 0, 0, 0, 1),
-(96, 'admin/attachment/upload_onlinefile', '添加外链附件', 'admin', 5, 1, NULL, 1, NULL, 0, 0, 0, 1),
-(97, 'admin/attachment/attachmentInfo', '附件详情', 'admin', 5, 1, NULL, 1, NULL, 0, 0, 0, 1),
-(98, 'admin/attachment/uploadAvatar', '上传头像', 'admin', 5, 1, NULL, 1, NULL, 0, 0, 0, 1),
-(112, 'admin/dashboard/index', '仪表盘', 'admin', 0, 1, 'fa-tachometer', 1, NULL, 1, 0, 0, 1),
-(113, 'admin/tongji/index', '统计', 'admin', 0, 1, 'fa-bar-chart-o', 6, NULL, 1, 0, 0, 0),
-(137, 'user/tags/index', '标签管理', 'user', 4, 1, '', 2, NULL, 1, 0, 0, 0),
-(141, 'user/tongji/analyze', '会员统计', 'user', 140, 1, '', 4, NULL, 1, 0, 0, 1),
-(151, 'user/auth', '权限管理', 'user', 4, 1, 'fa-sun-o', 3, NULL, 1, 0, 0, 1),
-(152, 'admin/api/index', '接口配置', 'admin', 18, 1, '', 3, NULL, 1, 0, 0, 1);
-
--- --------------------------------------------------------
-
---
--- 表的结构 `eacoo_comments`
---
-
-CREATE TABLE `eacoo_comments` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `from` tinyint(1) UNSIGNED NOT NULL COMMENT '评论来源。',
-  `object_id` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '评论内容 id',
-  `url` varchar(255) DEFAULT NULL COMMENT '原文地址',
-  `uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '发表评论的用户id',
-  `author_name` varchar(60) NOT NULL DEFAULT '' COMMENT '评论者昵称',
-  `author_ip` varchar(100) NOT NULL DEFAULT '' COMMENT '评论者IP',
-  `email` varchar(255) DEFAULT NULL COMMENT '评论者邮箱',
-  `content` text NOT NULL COMMENT '评论内容',
-  `type` smallint(1) NOT NULL DEFAULT '1' COMMENT '评论类型；1实名评论',
-  `pid` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '被回复的评论id',
-  `zan` int(11) UNSIGNED NOT NULL DEFAULT '0',
-  `path` varchar(500) DEFAULT NULL,
-  `create_time` int(11) UNSIGNED NOT NULL COMMENT '评论时间',
-  `status` smallint(1) NOT NULL DEFAULT '1' COMMENT '状态，1已审核，0未审核'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论表';
-
---
--- 转存表中的数据 `eacoo_comments`
---
-
-INSERT INTO `eacoo_comments` (`id`, `from`, `object_id`, `url`, `uid`, `author_name`, `author_ip`, `email`, `content`, `type`, `pid`, `zan`, `path`, `create_time`, `status`) VALUES
-(1, 0, 23, NULL, 1, '创始人', '0.0.0.0', '981248356@qq.com', '发送拉风', 1, 0, 0, NULL, 1470322848, 1);
-
--- --------------------------------------------------------
-
---
--- 表的结构 `eacoo_comment_zan`
---
-
-CREATE TABLE `eacoo_comment_zan` (
-  `id` int(11) UNSIGNED NOT NULL,
-  `comment_id` int(11) UNSIGNED NOT NULL COMMENT '评论ID',
-  `uid` int(11) UNSIGNED NOT NULL DEFAULT '0',
-  `create_time` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- 转存表中的数据 `eacoo_comment_zan`
---
-
-INSERT INTO `eacoo_comment_zan` (`id`, `comment_id`, `uid`, `create_time`) VALUES
-(5, 47, 1, 1476189600),
-(6, 46, 1, 1476189724),
-(7, 39, 1, 1476189726),
-(8, 38, 1, 1476203060),
-(9, 45, 1, 1477018562),
-(11, 23, 1, 1477020996),
-(12, 48, 1, 1477022089);
+INSERT INTO `eacoo_auth_rule` (`id`, `name`, `title`, `from_type`, `from_flag`, `type`, `pid`, `icon`, `sort`, `condition`, `is_menu`, `developer`, `update_time`, `status`) VALUES
+(1, 'admin/dashboard/index', '仪表盘', 1, 'admin', 1, 0, 'fa-tachometer', 1, NULL, 1, 0, 1505816276, 1),
+(2, 'admin', '系统设置', 1, 'admin', 1, 0, 'fa-cog', 2, NULL, 1, 0, 1505816276, 1),
+(3, 'admin/user/', '用户管理', 1, 'user', 1, 0, 'fa-users', 4, NULL, 1, 0, 1505816276, 1),
+(4, 'admin/attachment/index', '附件空间', 1, 'admin', 1, 0, 'fa-picture-o', 5, NULL, 1, 0, 1505816276, 1),
+(5, 'admin/extend/index', '扩展中心', 1, 'admin', 1, 0, 'fa-cloud', 9999, NULL, 1, 0, 1505816276, 1),
+(6, 'admin/nav/index', '导航管理', 1, 'admin', 1, 0, 'fa-leaf', 6, NULL, 1, 0, 1505816276, 0),
+(7, 'admin/user/index', '用户列表', 1, 'user', 1, 3, '', 1, NULL, 1, 0, 1505816276, 1),
+(8, 'admin/auth/role', '角色管理', 1, 'user', 1, 45, '', 3, NULL, 1, 0, 1505816276, 1),
+(9, 'admin/auth/rule', '后台菜单管理', 1, 'admin', 1, 2, '', 11, NULL, 1, 1, 1505816276, 1),
+(10, 'tools', '工具', 1, 'admin', 1, 0, 'fa-gavel', 8, NULL, 1, 1, 1505816276, 1),
+(11, 'admin/database', '安全', 1, 'admin', 1, 10, 'fa-database', 12, NULL, 0, 0, 1505816276, 1),
+(12, 'admin/attachment/setting', '设置', 1, 'admin', 1, 2, '', 0, NULL, 0, 0, 1505816276, 1),
+(13, 'admin/link/index', '友情链接', 1, 'admin', 1, 10, '', 6, NULL, 1, 0, 1505816276, 1),
+(14, 'admin/link/edit', '链接编辑', 1, 'admin', 1, 13, '', 1, NULL, 1, 0, 1505816276, 0),
+(16, 'admin/slide/edit', '幻灯片编辑', 1, 'admin', 1, 15, '', 0, NULL, 1, 0, 1505816276, 0),
+(17, 'admin/mailer', '邮箱配置', 1, 'admin', 1, 10, '', 6, NULL, 1, 0, 1505816276, 0),
+(19, 'admin/config/website', '网站设置', 1, 'admin', 1, 2, '', 4, NULL, 1, 0, 1505816276, 1),
+(20, 'admin/database/index', '数据库管理', 1, 'admin', 1, 10, 'fa-database', 13, NULL, 1, 0, 1505816276, 1),
+(22, 'admin/theme/index', '主题', 1, 'admin', 1, 5, '', 3, NULL, 1, 0, 1505816276, 1),
+(23, 'admin/plugins/index', '插件', 1, 'admin', 1, 5, '', 2, NULL, 1, 0, 1505816276, 1),
+(24, 'admin/modules/index', '模块', 1, 'admin', 1, 5, '', 0, NULL, 1, 0, 1505816276, 1),
+(25, 'admin/config/index', '配置管理', 1, 'admin', 1, 2, '', 15, NULL, 1, 1, 1505816276, 1),
+(26, 'admin/config/group', '系统设置', 1, 'admin', 1, 2, '', 1, NULL, 1, 0, 1505816276, 1),
+(27, 'user/action', '日志管理', 1, 'user', 1, 0, 'fa-list-alt', 3, NULL, 1, 0, 1505816276, 1),
+(28, 'admin/action/index', '用户行为', 1, 'user', 1, 27, NULL, 1, NULL, 1, 0, 1505816276, 1),
+(29, 'admin/action/log', '行为日志', 1, 'user', 1, 27, NULL, 2, NULL, 1, 0, 1505816276, 1),
+(30, 'admin/plugins/hooks', '钩子管理', 1, 'admin', 1, 23, '', 1, NULL, 0, 1, 1505816276, 1),
+(32, 'admin/mailer/mailer_template', '邮件模板', 1, 'admin', 1, 10, NULL, 5, NULL, 1, 0, 1505816276, 1),
+(33, 'admin/addons/config?id=2', '通用社交化评论', 1, 'admin', 1, 10, '', 7, NULL, 0, 0, 1505816276, 1),
+(37, 'admin/attachment/attachmentCategory', '附件分类', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 1505816276, 1),
+(38, 'admin/attachment/upload', '文件上传', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 1505816276, 1),
+(39, 'admin/attachment/uploadPicture', '上传图片', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 1505816276, 1),
+(40, 'admin/attachment/upload_onlinefile', '添加外链附件', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 1505816276, 1),
+(41, 'admin/attachment/attachmentInfo', '附件详情', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 1505816276, 1),
+(42, 'admin/attachment/uploadAvatar', '上传头像', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 1505816276, 1),
+(43, 'user/tags/index', '标签管理', 1, 'user', 1, 3, '', 2, NULL, 1, 0, 1505816276, 0),
+(44, 'user/tongji/analyze', '会员统计', 1, 'user', 1, 3, '', 4, NULL, 1, 0, 1505816276, 1),
+(45, 'user/auth', '权限管理', 1, 'user', 1, 3, 'fa-sun-o', 3, NULL, 1, 0, 1505816276, 1),
+(46, 'admin/api/index', '接口配置', 1, 'admin', 1, 10, '', 3, NULL, 1, 0, 1505816276, 1),
+(47, 'user/message/', '站内信', 1, 'user', 1, 0, 'fa-envelope-o', 7, NULL, 1, 0, 1505816276, 1),
+(48, 'user/message/messages', '收件箱', 1, 'user', 1, 47, NULL, 1, NULL, 1, 0, 1505816276, 1),
+(49, 'user/message/message_detail', '信息详情', 1, 'user', 1, 47, NULL, 1, NULL, 1, 0, 1505816276, 0),
+(50, 'user/message/messages?box_type=outbox', '发件箱', 1, 'user', 1, 47, '', 1, NULL, 1, 0, 1505816276, 1),
+(51, 'cms/posts', '门户CMS', 1, 'cms', 1, 0, 'fa fa-file-text', 99, NULL, 1, 0, 1506008326, 1),
+(52, 'cms/posts/index', '文章列表', 1, 'cms', 1, 51, NULL, 99, NULL, 1, 0, 1506008326, 1),
+(53, 'cms/posts/edit', '文章编辑', 1, 'cms', 1, 51, NULL, 99, NULL, 0, 0, 1506008326, 1),
+(54, 'cms/posts/postTerm', '文章分类', 1, 'cms', 1, 51, NULL, 99, NULL, 1, 0, 1506008326, 1),
+(55, 'cms/posts/postTerm?taxonomy=post_tag', '文章标签', 1, 'cms', 1, 51, NULL, 99, NULL, 1, 0, 1506008326, 1),
+(56, 'cms/posts/page', '页面列表', 1, 'cms', 1, 51, NULL, 99, NULL, 1, 0, 1506008326, 1),
+(57, 'cms/posts/trash', '回收站', 1, 'cms', 1, 51, NULL, 99, NULL, 1, 0, 1506008326, 1),
+(58, 'admin/plugins/config?name=Alidayu', '阿里大于-短信接口', 2, 'Alidayu', 1, 10, '', 99, NULL, 1, 0, 1506008352, 1),
+(59, 'admin/plugins/config?name=SocialLogin', '第三方登录', 2, 'SocialLogin', 1, 10, '', 99, NULL, 1, 0, 1506008358, 1),
+(60, 'admin/plugins/config?name=ImageGallery', '图片轮播', 2, 'ImageGallery', 1, 10, 'fa fa-file-text', 99, NULL, 1, 0, 1506217608, 1);
 
 -- --------------------------------------------------------
 
@@ -449,19 +357,19 @@ CREATE TABLE `eacoo_config` (
 
 INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `function`, `group`, `sub_group`, `type`, `remark`, `create_time`, `update_time`, `sort`, `status`) VALUES
 (1, 'toggle_web_site', '站点开关', '1', '0:关闭\r\n1:开启', '', 1, 0, 'select', '站点关闭后将提示网站已关闭，不能正常访问', 1378898976, 1406992386, 1, 1),
-(2, 'web_site_title', '网站标题', 'EacooPHP快速开发框架', '', '', 6, 0, 'text', '网站标题前台显示标题', 1378898976, 1504542295, 2, 1),
-(4, 'web_site_logo', '网站LOGO', '250', '', '', 6, 0, 'picture', '网站LOGO', 1407003397, 1504542295, 4, 1),
-(5, 'web_site_description', 'SEO描述', 'EacooPHP开发系统', '', '', 6, 1, 'textarea', '网站搜索引擎描述', 1378898976, 1468593817, 6, 1),
-(6, 'web_site_keyword', 'SEO关键字', 'EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求高效，简单，灵活。', '', '', 6, 1, 'textarea', '网站搜索引擎关键字', 1378898976, 1468593827, 4, 1),
+(2, 'web_site_title', '网站标题', 'EacooPHP', '', '', 6, 0, 'text', '网站标题前台显示标题', 1378898976, 1506258177, 2, 1),
+(4, 'web_site_logo', '网站LOGO', '250', '', '', 6, 0, 'picture', '网站LOGO', 1407003397, 1506258177, 4, 1),
+(5, 'web_site_description', 'SEO描述', 'EacooPHP框架基于统一核心的通用互联网+信息化服务解决方案，追求简单、高效、卓越。可轻松实现支持多终端的WEB产品快速搭建、部署、上线。系统功能采用模块化、组件化、插件化等开放化低耦合设计，应用商城拥有丰富的功能模块、插件、主题，便于用户灵活扩展和二次开发。', '', '', 6, 1, 'textarea', '网站搜索引擎描述', 1378898976, 1506257875, 6, 1),
+(6, 'web_site_keyword', 'SEO关键字', '开源框架 EacooPHP ThinkPHP', '', '', 6, 1, 'textarea', '网站搜索引擎关键字', 1378898976, 1506257874, 4, 1),
 (7, 'web_site_copyright', '版权信息', 'Copyright © ******有限公司 All rights reserved.', '', '', 1, 0, 'text', '设置在网站底部显示的版权信息', 1406991855, 1468493911, 7, 1),
-(8, 'web_site_icp', '网站备案号', '豫ICP备14003306号', '', '', 6, 0, 'text', '设置在网站底部显示的备案号，如“苏ICP备1502009-2号"', 1378900335, 1504542295, 8, 1),
+(8, 'web_site_icp', '网站备案号', '豫ICP备14003306号', '', '', 6, 0, 'text', '设置在网站底部显示的备案号，如“苏ICP备1502009-2号"', 1378900335, 1506258177, 8, 1),
 (9, 'web_site_statistics', '站点统计', '', '', '', 1, 0, 'textarea', '支持百度、Google、cnzz等所有Javascript的统计代码', 1378900335, 1415983236, 9, 1),
-(10, 'index_url', '首页地址', 'http://localhost', '', '', 2, 0, 'text', '可以通过配置此项自定义系统首页的地址，比如：http://www.xxx.com', 1471579753, 1501769488, 0, 1),
+(10, 'index_url', '首页地址', 'http://www.eacoo123.com', '', '', 2, 0, 'text', '可以通过配置此项自定义系统首页的地址，比如：http://www.xxx.com', 1471579753, 1506099586, 0, 1),
 (11, 'upload_file_size', '文件上传大小', '20', '', '', 9, 0, 'number', '文件上传大小单位：MB', 1428681031, 1428681031, 1, 1),
 (12, 'upload_image_size', '图片上传大小', '2', '', '', 9, 0, 'number', '图片上传大小单位：MB', 1428681071, 1428681071, 2, 1),
-(13, 'admin_tags', '后台多标签', '0', '0:关闭\r\n1:开启', '', 2, 0, 'radio', '', 1453445526, 1501769488, 3, 1),
-(14, 'admin_page_rows', '分页数量', '20', '', '', 2, 0, 'number', '分页时每页的记录数', 1434019462, 1501769488, 4, 1),
-(15, 'admin_theme', '后台主题', 'default', 'default:默认主题\r\nblue:蓝色理想\r\ngreen:绿色生活', '', 2, 0, 'select', '后台界面主题', 1436678171, 1501769488, 5, 1),
+(13, 'admin_tags', '后台多标签', '0', '0:关闭\r\n1:开启', '', 2, 0, 'radio', '', 1453445526, 1506099586, 3, 1),
+(14, 'admin_page_rows', '分页数量', '20', '', '', 2, 0, 'number', '分页时每页的记录数', 1434019462, 1506099586, 4, 1),
+(15, 'admin_theme', '后台主题', 'default', 'default:默认主题\r\nblue:蓝色理想\r\ngreen:绿色生活', '', 2, 0, 'select', '后台界面主题', 1436678171, 1506099586, 5, 1),
 (16, 'develop_mode', '开发模式', '1', '1:开启\r\n0:关闭', '', 3, 0, 'select', '开发模式下会显示菜单管理、配置管理、数据字典等开发者工具', 1432393583, 1504700766, 1, 1),
 (17, 'app_trace', '是否显示页面Trace', '0', '1:开启\r\n0:关闭', '', 3, 0, 'select', '是否显示页面Trace信息', 1387165685, 1504700742, 2, 1),
 (18, 'auth_key', '系统加密KEY', 'vzxI=vf[=xV)?a^XihbLKx?pYPw$;Mi^R*<mV;yJh$wy(~~E?<.JA&ANdIZ#QhPq', '', '', 3, 0, 'textarea', '轻易不要修改此项，否则容易造成用户无法登录；如要修改，务必备份原key', 1438647773, 1504700766, 3, 1),
@@ -469,13 +377,13 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `function
 (21, 'config_group_list', '配置分组', '1:基本\r\n2:系统\r\n3:开发\r\n4:部署\r\n5:授权\r\n6:网站信息\r\n7:用户\r\n8:邮箱\r\n9:多媒体', '', '', 3, 0, 'array', '配置分组的键值对不要轻易改变', 1379228036, 1467557143, 5, 1),
 (22, 'eacoo_username', '官网账号', 'eacoo', '', '', 5, 0, 'text', '官网登陆账号（支持用户名、邮箱、手机号）', 1438647815, 1464602856, 1, 1),
 (23, 'eacoo_password', '官网密码', 'eacoo', '', '', 5, 0, 'text', '官网密码', 1438647815, 1464602874, 2, 1),
-(24, 'eacoo_sn', '密钥', '', '', '', 5, 0, 'textarea', '密钥请通过登陆http://www.eacoo123.com至个人中心获取', 1438647815, 1468493748, 3, 1),
+(24, 'eacoo_sn', '密钥', '', '', '', 5, 0, 'textarea', '密钥请通过登陆http://www.eacoomall.com至个人中心获取', 1438647815, 1468493748, 3, 1),
 (25, 'form_item_type', '表单项目类型', 'hidden:隐藏\r\nonlyreadly:仅读文本\r\nnumber:数字\r\ntext:单行文本\r\ntextarea:多行文本\r\narray:数组\r\npassword:密码\r\nradio:单选框\r\ncheckbox:复选框\r\nselect:下拉框\r\nicon:字体图标\r\ndate:日期\r\ndatetime:时间\r\npicture:单张图片\r\npictures:多张图片\r\nfile:单个文件\r\nfiles:多个文件\r\nwangeditor:wangEditor编辑器\r\nueditor:百度富文本编辑器\r\neditormd:Markdown编辑器\r\ntags:标签\r\njson:JSON\r\nboard:拖', '', '', 3, 0, 'array', '专为配置管理设定\r\n', 1464533806, 1500174666, 0, 1),
 (26, 'term_taxonomy', '分类法', 'post_category:分类目录\r\npost_tag:标签\r\nmedia_cat:多媒体分类', '', '', 3, 0, 'array', '', 1465267993, 1468421717, 0, 1),
-(27, 'data_backup_path', '数据库备份根路径', '../data/backup', '', '', 2, 0, 'text', '', 1465478225, 1501769488, 0, 1),
-(28, 'data_backup_part_size', '数据库备份卷大小', '20971520', '', '', 2, 0, 'number', '', 1465478348, 1501769488, 0, 1),
-(29, 'data_backup_compress_level', '数据库备份文件压缩级别', '4', '1:普通\r\n4:一般\r\n9:最高', '', 2, 0, 'radio', '', 1465478496, 1501769488, 0, 1),
-(30, 'data_backup_compress', '数据库备份文件压缩', '1', '0:不压缩\r\n1:启用压缩', '', 2, 0, 'radio', '', 1465478578, 1501769488, 0, 1),
+(27, 'data_backup_path', '数据库备份根路径', '../data/backup', '', '', 2, 0, 'text', '', 1465478225, 1506099586, 0, 1),
+(28, 'data_backup_part_size', '数据库备份卷大小', '20971520', '', '', 2, 0, 'number', '', 1465478348, 1506099586, 0, 1),
+(29, 'data_backup_compress_level', '数据库备份文件压缩级别', '4', '1:普通\r\n4:一般\r\n9:最高', '', 2, 0, 'radio', '', 1465478496, 1506099586, 0, 1),
+(30, 'data_backup_compress', '数据库备份文件压缩', '1', '0:不压缩\r\n1:启用压缩', '', 2, 0, 'radio', '', 1465478578, 1506099586, 0, 1),
 (31, 'hooks_type', '钩子的类型', '1:视图\r\n2:控制器', '', '', 3, 0, 'array', '', 1465478697, 1465478697, 0, 1),
 (32, 'addon_path', '插件目录', '../addons/', '', '', 2, 0, 'text', '', 1465657982, 1497887712, 0, 0),
 (33, 'action_type', '行为类型', '1:系统\r\n2:用户', '1:系统\r\n2:用户', '', 7, 0, 'array', '配置说明', 1466953086, 1466953086, 0, 1),
@@ -488,16 +396,17 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `function
 (40, 'attachment_options', '附件配置选项', '{"page_number":"30","cut":"1","small_size":{"width":"150","height":"150"},"medium_size":{"width":"320","height":"280"},"large_size":{"width":"560","height":"430"},"watermark_scene":"2","watermark_type":"1","water_position":"9","water_img":"\\/logo.png","water_opacity":"100"}', '', '', 9, 0, 'hidden', '以JSON格式保存', 1467858734, 1499957776, 0, 1),
 (41, 'attachment_show_type', '附件选择器显示方式', '0', '0:显示所有\r\n1:只显示作者的上传', '', 9, 1, 'radio', '在附件选择器中显示的附件内容', 1468421212, 1468422705, 0, 1),
 (42, 'user_deny_username', '保留用户名和昵称', '管理员,测试,admin,垃圾', '', '', 7, 0, 'textarea', '禁止注册用户名和昵称，包含这些即无法注册,用&quot; , &quot;号隔开，用户只能是英文，下划线_，数字等', 1468493201, 1468493201, 0, 1),
-(43, 'verify_open', '验证码配置', 'reg,login,reset', 'reg:注册显示\r\nlogin:登陆显示\r\nreset:密码重置', '', 2, 0, 'checkbox', '验证码开启配置', 1468494419, 1501769488, 0, 1),
-(44, 'verify_type', '验证码类型', '2', '1:中文\r\n2:英文\r\n3:数字\r\n4:英文+数字', '', 2, 0, 'select', '验证码类型', 1468494591, 1501769488, 0, 1),
-(45, 'web_site_subtitle', '网站副标题', '让我们一起迎接未来', '', '', 6, 0, 'textarea', '用简洁的文字描述本站点（网站口号、宣传标语、一句话介绍）', 1468593713, 1504542295, 2, 1),
+(43, 'verify_open', '验证码配置', 'reg,login,reset', 'reg:注册显示\r\nlogin:登陆显示\r\nreset:密码重置', '', 2, 0, 'checkbox', '验证码开启配置', 1468494419, 1506099586, 0, 1),
+(44, 'verify_type', '验证码类型', '2', '1:中文\r\n2:英文\r\n3:数字\r\n4:英文+数字', '', 2, 0, 'select', '验证码类型', 1468494591, 1506099586, 0, 1),
+(45, 'web_site_subtitle', '网站副标题', '基于ThinkPHP5的开发框架', '', '', 6, 0, 'textarea', '用简洁的文字描述本站点（网站口号、宣传标语、一句话介绍）', 1468593713, 1506258177, 2, 1),
 (46, 'adv_advlimitdate', '点击限制时间', '5', '', '', 6, 5, 'number', '同一个用户规定时间之后点击广告才能再获得一毛钱，单位：分钟', 1470845297, 1470845297, 0, 1),
 (49, 'reg_default_roleid', '注册默认角色', '4', '', 'role_type', 7, 0, 'select', '', 1471681620, 1471689765, 0, 1),
 (50, 'open_register', '开放注册', '', '1:是\r\n0:否', '', 7, 0, 'radio', '', 1471681674, 1471681674, 0, 1),
 (56, 'meanwhile_user_online', '允许同时登录', '1', '1:是\r\n0:否', '', 7, 0, 'radio', '是否允许同一帐号在不同地方同时登录', 1473437355, 1473437355, 0, 1),
-(57, 'aliyun_oss', '阿里云oss', '{"enable":"1","bucket":"eacoo123","access_key_id":"","access_key_secret":"","root_path":"images","domain":"http:\\/\\/img.eacoomall.com","endpoint":"http:\\/\\/oss-cn-beijing.aliyuncs.com","style":[{"name":"wap-thumb"},{"name":"small"},{"name":"medium"},{"name":"large"}]}', '', '', 0, 0, 'json', '阿里云OSS配置', 1473437355, 1505118117, 0, 1),
+(57, 'aliyun_oss', '阿里云oss', '{"enable":"1","bucket":"eacoomall-shop","access_key_id":"","access_key_secret":"","root_path":"images","domain":"http:\\/\\/img.eacoomall.com","endpoint":"http:\\/\\/oss-cn-beijing.aliyuncs.com","style":[{"name":"wap-thumb"},{"name":"small"},{"name":"medium"},{"name":"large"}]}', '', '', 0, 0, 'json', '阿里云OSS配置', 1473437355, 1500182001, 0, 1),
 (58, 'api_kdniao', '快递鸟', '', '', '', 0, 0, 'json', '\n快递鸟设置，应用于电子面单中使用，未配置，将导致商家无法使用电子面单\n系统在调取物流信息时将调用快递鸟的“即时查询API”接口获取物流数据\n您可以通过 测试物流查询 链接测试物流信息查询', 1473437355, 1500182001, 0, 1),
 (59, 'user_administrator', '超级管理员', '1', '', '', 7, 0, 'text', '填写用户UID，多个用户用英文逗号","分开', 1503412286, 1503412339, 0, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -508,8 +417,8 @@ CREATE TABLE `eacoo_hooks` (
   `id` int(10) UNSIGNED NOT NULL COMMENT '钩子ID',
   `name` varchar(32) NOT NULL DEFAULT '' COMMENT '钩子名称',
   `description` varchar(300) NOT NULL DEFAULT '' COMMENT '描述',
-  `addons` varchar(255) NOT NULL DEFAULT '' COMMENT '钩子挂载的插件',
-  `type` tinyint(4) UNSIGNED NOT NULL DEFAULT '1' COMMENT '类型',
+  `plugins` varchar(255) NOT NULL DEFAULT '' COMMENT '钩子挂载的插件',
+  `type` tinyint(4) UNSIGNED NOT NULL DEFAULT '1' COMMENT '类型。1视图，2控制器',
   `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态'
@@ -519,22 +428,21 @@ CREATE TABLE `eacoo_hooks` (
 -- 转存表中的数据 `eacoo_hooks`
 --
 
-INSERT INTO `eacoo_hooks` (`id`, `name`, `description`, `addons`, `type`, `create_time`, `update_time`, `status`) VALUES
+INSERT INTO `eacoo_hooks` (`id`, `name`, `description`, `plugins`, `type`, `create_time`, `update_time`, `status`) VALUES
 (1, 'AdminIndex', '后台首页小工具', '后台首页小工具', 1, 1446522155, 1446522155, 1),
 (2, 'FormBuilderExtend', 'FormBuilder类型扩展Builder', '', 1, 1447831268, 1447831268, 1),
 (3, 'UploadFile', '上传文件钩子', '', 1, 1407681961, 1407681961, 1),
-(4, 'PageHeader', '页面header钩子，一般用于加载插件CSS文件和代码', 'SyncLogin', 1, 1407681961, 1407681961, 1),
+(4, 'PageHeader', '页面header钩子，一般用于加载插件CSS文件和代码', 'SocialLogin', 1, 1407681961, 1407681961, 1),
 (5, 'PageFooter', '页面footer钩子，一般用于加载插件CSS文件和代码', '', 1, 1407681961, 1407681961, 1),
-(6, 'SyncLogin', '第三方账号登陆', 'SyncLogin', 1, 1465057122, 1465057122, 1),
+(6, 'SocialLogin', '第三方账号登陆', 'SocialLogin', 1, 1465057122, 1465057122, 1),
 (7, 'SendMessage', '发送消息钩子，用于消息发送途径的扩展', '', 2, 1467423450, 1467423450, 1),
-(8, 'sms', '短信插件钩子', '', 2, 1467424112, 1467424112, 1),
+(8, 'sms', '短信插件钩子', 'Alidayu', 2, 1467424112, 1467424112, 1),
 (9, 'dealPicture', '上传图片处理', '', 2, 1467424195, 1467424195, 1),
-(10, 'ImageSlider', '图片轮播钩子', 'ImageSlider', 1, 1467424242, 1467424242, 1),
+(10, 'ImageGallery', '图片轮播钩子', 'ImageGallery', 1, 1467424242, 1467424242, 1),
 (11, 'J_China_City', '每个系统都需要的一个中国省市区三级联动插件。', '', 1, 1467424257, 1467424257, 1),
 (12, 'checkIn', '签到', '', 1, 1467424298, 1467424298, 1),
 (13, 'app_begin', '应用开始', '', 2, 1467424315, 1467424315, 1),
-(14, 'adminEditor', '后台内容编辑页编辑器', '', 1, 1467424354, 1467424354, 1),
-(15, 'Advs', '广告插件专用', '', 1, 1468162932, 1468162932, 1);
+(14, 'adminEditor', '后台内容编辑页编辑器', '', 1, 1467424354, 1467424354, 1);
 
 -- --------------------------------------------------------
 
@@ -595,41 +503,104 @@ INSERT INTO `eacoo_messages` (`id`, `pid`, `title`, `content`, `type`, `to_uid`,
 -- --------------------------------------------------------
 
 --
--- 表的结构 `eacoo_module`
+-- 表的结构 `eacoo_modules`
 --
 
-CREATE TABLE `eacoo_module` (
+CREATE TABLE `eacoo_modules` (
   `id` int(11) UNSIGNED NOT NULL COMMENT 'ID',
   `name` varchar(31) NOT NULL DEFAULT '' COMMENT '名称',
   `title` varchar(63) NOT NULL DEFAULT '' COMMENT '标题',
   `logo` varchar(63) NOT NULL DEFAULT '' COMMENT '图片图标',
   `description` varchar(127) NOT NULL DEFAULT '' COMMENT '描述',
-  `developer` varchar(31) NOT NULL DEFAULT '' COMMENT '开发者',
+  `author` varchar(31) NOT NULL DEFAULT '' COMMENT '开发者',
   `version` varchar(7) NOT NULL DEFAULT '' COMMENT '版本',
-  `user_nav` text NOT NULL COMMENT '个人中心导航',
   `config` text NOT NULL COMMENT '配置',
   `is_system` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '是否允许卸载',
-  `website` varchar(120) DEFAULT NULL COMMENT '站点',
+  `url` varchar(120) DEFAULT NULL COMMENT '站点',
+  `admin_manage_into` varchar(60) DEFAULT '' COMMENT '后台管理入口',
   `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   `sort` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
-  `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '状态'
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模块功能表';
 
 --
--- 转存表中的数据 `eacoo_module`
+-- 转存表中的数据 `eacoo_modules`
 --
 
-INSERT INTO `eacoo_module` (`id`, `name`, `title`, `logo`, `description`, `developer`, `version`, `user_nav`, `config`, `is_system`, `website`, `create_time`, `update_time`, `sort`, `status`) VALUES
-(2, 'user', '用户中心', '', '系统用户中心核心模块', '赵俊峰', '1.2.0', '{"center":[{"title":"\\u6211\\u7684\\u6587\\u6863","icon":"fa fa-list","url":"Cms\\/Index\\/my"}]}', '{"status":"1","reg_toggle":"1","allow_reg_type":["username"],"deny_username":"","user_protocol":"","behavior":["User"]}', 0, NULL, 1470274208, 1475817119, 6, 1),
-(4, 'weixin', '微信公众号', '', '专注微信公众号平台开发', '赵俊峰', '1.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, NULL, 1471694178, 1471694178, 7, 1),
-(5, 'vcloud', '直播系统', '', '一款专注直播系统方案', '赵俊峰', '1.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, NULL, 1475822984, 1475822984, 9, 0),
-(6, 'mall', 'mall商城', '', '专注电商一体化方案', '赵俊峰', '1.2.0', '{"center":[{"title":"\\u6211\\u7684\\u4ea7\\u54c1","icon":"fa fa-list","url":"Shop\\/Index\\/my"}]}', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Shop"]}', 0, NULL, 1470274220, 1470274220, 8, 1),
-(7, 'shop', 'shop商城', '', '一款专注单用户商城方案', '赵俊峰', '1.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, 'http://www.eacoo123.com', 0, 0, 1, 1),
-(8, 'home', '前台模块', '', '一款基础前台模块', '赵俊峰', '1.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, 'http://www.eacoo123.com', 1496732323, 1496732323, 2, 1),
-(9, 'shop', '单用户商城', '', '一款专注单用户商城方案', '赵俊峰', '1.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, 'http://www.eacoo123.com', 1497889916, 1497889916, 3, 1),
-(10, 'cms', 'CMS', '', '内容管理系统，网站建设方案', '赵俊峰', '1.2.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Cms"]}', 0, 'http://www.eacoo123.com', 1497890313, 1497890313, 4, 1),
-(11, 'wechat', '微信公众号', '', '专注微信公众号平台开发', '心云间、凝听', '1.0', '', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, 'http://www.eacoo123.com', 1498061286, 1498061286, 5, 1);
+INSERT INTO `eacoo_modules` (`id`, `name`, `title`, `logo`, `description`, `author`, `version`, `config`, `is_system`, `url`, `admin_manage_into`, `create_time`, `update_time`, `sort`, `status`) VALUES
+(1, 'user', '用户', '', '用户模块，系统核心模块，不可卸载', '心云间、凝听', '1.0.0', '', 1, 'http://www.eacoo123.com', '', 1470274208, 1505663942, 6, 1),
+(3, 'wechat', '微信公众号', '', '专注微信公众号平台开发', '心云间、凝听', '1.0', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, 'http://www.eacoo123.com', '', 1498061286, 1498061286, 5, 1),
+(15, 'home', '前台Home', '', '一款基础前台Home模块', '心云间、凝听', '1.0.0', '', 1, NULL, '', 1505923537, 1505923556, 0, 1),
+(17, 'cms', '门户CMS', '', '门户网站管理、CMS、内容管理', '心云间、凝听', '1.0.0', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["cms"]}', 0, NULL, '', 1506008326, 1506008326, 0, 1);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `eacoo_nav`
+--
+
+CREATE TABLE `eacoo_nav` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `title` varchar(60) NOT NULL DEFAULT '' COMMENT '标题',
+  `position` varchar(30) NOT NULL DEFAULT '' COMMENT '位置。头部：top，用户中心：usercenter',
+  `type` tinyint(2) UNSIGNED NOT NULL COMMENT '类型。1模块',
+  `value` varchar(120) NOT NULL DEFAULT '' COMMENT 'url地址',
+  `icon` varchar(120) NOT NULL DEFAULT '' COMMENT '图标',
+  `create_time` int(10) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(10) UNSIGNED NOT NULL COMMENT '更新时间',
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `eacoo_plugins`
+--
+
+CREATE TABLE `eacoo_plugins` (
+  `id` int(11) UNSIGNED NOT NULL COMMENT '主键',
+  `name` varchar(32) NOT NULL DEFAULT '' COMMENT '插件名或标识',
+  `title` varchar(32) NOT NULL DEFAULT '' COMMENT '中文名',
+  `description` text NOT NULL COMMENT '插件描述',
+  `config` text COMMENT '配置',
+  `author` varchar(32) NOT NULL DEFAULT '' COMMENT '作者',
+  `version` varchar(8) NOT NULL DEFAULT '' COMMENT '版本号',
+  `admin_manage_into` varchar(60) DEFAULT '0' COMMENT '后台管理入口',
+  `type` tinyint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '插件类型',
+  `create_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '安装时间',
+  `update_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '修改时间',
+  `sort` tinyint(4) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='插件表';
+
+--
+-- 转存表中的数据 `eacoo_plugins`
+--
+
+INSERT INTO `eacoo_plugins` (`id`, `name`, `title`, `description`, `config`, `author`, `version`, `admin_manage_into`, `type`, `create_time`, `update_time`, `sort`, `status`) VALUES
+(1, 'Alidayu', '阿里大于-短信接口', '通过阿里大于短信接口发送短信', '{"status":"1","appkey":"","secret":""}', '心云间、凝听', '1.0.0', '', 1, 1506008352, 1506008352, 0, 1),
+(2, 'SocialLogin', '第三方账号登录', '集成第三方授权登录，包括微博、QQ、微信', '{"type":"","meta":"","WeixinKey":"","WeixinSecret":"","QqKey":"","QqSecret":"","SinaKey":"","SinaSecret":"","RenrenKey":"","RenrenSecret":""}', '心云间、凝听', '0.0.1', '', 1, 1506008358, 1506008358, 0, 1),
+(3, 'ImageGallery', '幻灯片', '图片轮播滑块器，可用于图片展示', '{"status":1,"type":"flexslider","sliders":[{"img":96,"url":"http:\\/\\/www.eacoo123.com","text":"EacooPHP\\u5feb\\u901f\\u5f00\\u53d1\\u6846\\u67b6"},{"img":95,"url":"http:\\/\\/forum.eacoo123.com","text":"EacooPHP\\u8ba8\\u8bba\\u793e\\u533a"},{"img":94,"url":"http:\\/\\/www.eacoo123.com","text":"EacooPHP\\u5feb\\u901f\\u5f00\\u53d1\\u6846\\u67b6"}],"second":"3000","direction":"horizontal","imgWidth":"","imgHeight":"880"}', '心云间、凝听', '1.0.0', '0', 1, 1506217608, 1506217608, 0, 1);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `eacoo_plugin_social_login`
+--
+
+CREATE TABLE `eacoo_plugin_social_login` (
+  `id` int(11) UNSIGNED NOT NULL COMMENT 'ID',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
+  `type` varchar(15) NOT NULL DEFAULT '' COMMENT '类别',
+  `openid` varchar(64) NOT NULL DEFAULT '' COMMENT 'OpenID',
+  `access_token` varchar(64) NOT NULL DEFAULT '' COMMENT 'AccessToken',
+  `refresh_token` varchar(64) NOT NULL DEFAULT '' COMMENT 'RefreshToken',
+  `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `sort` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='第三方登陆插件表';
 
 -- --------------------------------------------------------
 
@@ -1137,7 +1108,7 @@ CREATE TABLE `eacoo_themes` (
   `title` varchar(64) NOT NULL DEFAULT '' COMMENT '标题',
   `cover` varchar(80) DEFAULT NULL COMMENT '封面',
   `description` varchar(127) NOT NULL DEFAULT '' COMMENT '描述',
-  `developer` varchar(32) NOT NULL DEFAULT '' COMMENT '开发者',
+  `author` varchar(32) NOT NULL DEFAULT '' COMMENT '开发者',
   `version` varchar(8) NOT NULL DEFAULT '' COMMENT '版本',
   `config` text COMMENT '主题配置',
   `current` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '是否当前主题',
@@ -1152,11 +1123,8 @@ CREATE TABLE `eacoo_themes` (
 -- 转存表中的数据 `eacoo_themes`
 --
 
-INSERT INTO `eacoo_themes` (`id`, `name`, `title`, `cover`, `description`, `developer`, `version`, `config`, `current`, `website`, `sort`, `create_time`, `update_time`, `status`) VALUES
-(1, 'blog', '博客主题', '/theme/shop/cover.png', '个人博客主题', '心灵旅行', '1.0', NULL, 0, NULL, 0, 1468510877, 1468510877, 1),
-(2, 'sns', 'SNS定制主题', '/theme/shop/cover.png', '社交化主题', '心灵旅行', '1.0', NULL, 0, NULL, 0, 1468511857, 1468512447, 1),
-(3, 'default', '官方默认主题', '/theme/shop/cover.png', '内置于系统中，是其它主题的基础主题', '心云间、凝听', '1.0.0', NULL, 1, 'http://www.eacoo123.com', 0, 1475899420, 1504109169, 1),
-(4, 'shop', '单用户商城模板', '/theme/shop/cover.png', '商城主题', '心灵旅行', '1.0', NULL, 0, 'http://www.eacoo123.com', 0, 0, 0, 1);
+INSERT INTO `eacoo_themes` (`id`, `name`, `title`, `cover`, `description`, `author`, `version`, `config`, `current`, `website`, `sort`, `create_time`, `update_time`, `status`) VALUES
+(1, 'default', '官方默认主题', '/themes/default/cover.jpeg', '内置于系统中，是其它主题的基础主题', '心云间、凝听', '1.0.0', '', 1, 'http://www.eacoo123.com', 0, 1475899420, 1506010201, 1);
 
 -- --------------------------------------------------------
 
@@ -1168,7 +1136,7 @@ CREATE TABLE `eacoo_users` (
   `uid` bigint(20) UNSIGNED NOT NULL,
   `username` varchar(32) NOT NULL DEFAULT '' COMMENT '用户名',
   `password` char(32) NOT NULL DEFAULT '' COMMENT '登录密码',
-  `nickname` varchar(50) NOT NULL DEFAULT '' COMMENT '用户昵称',
+  `nickname` varchar(60) NOT NULL DEFAULT '' COMMENT '用户昵称',
   `email` varchar(100) NOT NULL DEFAULT '' COMMENT '登录邮箱',
   `mobile` varchar(20) DEFAULT NULL COMMENT '手机号',
   `avatar` varchar(150) DEFAULT NULL COMMENT '用户头像，相对于Uploads/Avatar目录',
@@ -1201,18 +1169,13 @@ CREATE TABLE `eacoo_users` (
 -- Indexes for table `eacoo_action`
 --
 ALTER TABLE `eacoo_action`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name` (`name`);
 
 --
 -- Indexes for table `eacoo_action_log`
 --
 ALTER TABLE `eacoo_action_log`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `eacoo_addons`
---
-ALTER TABLE `eacoo_addons`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1241,21 +1204,6 @@ ALTER TABLE `eacoo_auth_rule`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `eacoo_comments`
---
-ALTER TABLE `eacoo_comments`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_from_object_id` (`from`,`object_id`);
-
---
--- Indexes for table `eacoo_comment_zan`
---
-ALTER TABLE `eacoo_comment_zan`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_comment_id` (`comment_id`),
-  ADD KEY `idx_uid` (`uid`);
-
---
 -- Indexes for table `eacoo_config`
 --
 ALTER TABLE `eacoo_config`
@@ -1281,9 +1229,27 @@ ALTER TABLE `eacoo_messages`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `eacoo_module`
+-- Indexes for table `eacoo_modules`
 --
-ALTER TABLE `eacoo_module`
+ALTER TABLE `eacoo_modules`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `eacoo_nav`
+--
+ALTER TABLE `eacoo_nav`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `eacoo_plugins`
+--
+ALTER TABLE `eacoo_plugins`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `eacoo_plugin_social_login`
+--
+ALTER TABLE `eacoo_plugin_social_login`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1355,17 +1321,12 @@ ALTER TABLE `eacoo_action`
 -- 使用表AUTO_INCREMENT `eacoo_action_log`
 --
 ALTER TABLE `eacoo_action_log`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=136;
---
--- 使用表AUTO_INCREMENT `eacoo_addons`
---
-ALTER TABLE `eacoo_addons`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=7;
 --
 -- 使用表AUTO_INCREMENT `eacoo_attachment`
 --
 ALTER TABLE `eacoo_attachment`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=96;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=97;
 --
 -- 使用表AUTO_INCREMENT `eacoo_auth_group`
 --
@@ -1375,17 +1336,7 @@ ALTER TABLE `eacoo_auth_group`
 -- 使用表AUTO_INCREMENT `eacoo_auth_rule`
 --
 ALTER TABLE `eacoo_auth_rule`
-  MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=153;
---
--- 使用表AUTO_INCREMENT `eacoo_comments`
---
-ALTER TABLE `eacoo_comments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
---
--- 使用表AUTO_INCREMENT `eacoo_comment_zan`
---
-ALTER TABLE `eacoo_comment_zan`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 --
 -- 使用表AUTO_INCREMENT `eacoo_config`
 --
@@ -1395,7 +1346,7 @@ ALTER TABLE `eacoo_config`
 -- 使用表AUTO_INCREMENT `eacoo_hooks`
 --
 ALTER TABLE `eacoo_hooks`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '钩子ID', AUTO_INCREMENT=16;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '钩子ID', AUTO_INCREMENT=15;
 --
 -- 使用表AUTO_INCREMENT `eacoo_links`
 --
@@ -1407,10 +1358,25 @@ ALTER TABLE `eacoo_links`
 ALTER TABLE `eacoo_messages`
   MODIFY `id` int(10) NOT NULL AUTO_INCREMENT COMMENT '消息ID', AUTO_INCREMENT=2;
 --
--- 使用表AUTO_INCREMENT `eacoo_module`
+-- 使用表AUTO_INCREMENT `eacoo_modules`
 --
-ALTER TABLE `eacoo_module`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=12;
+ALTER TABLE `eacoo_modules`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=18;
+--
+-- 使用表AUTO_INCREMENT `eacoo_nav`
+--
+ALTER TABLE `eacoo_nav`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
+-- 使用表AUTO_INCREMENT `eacoo_plugins`
+--
+ALTER TABLE `eacoo_plugins`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=4;
+--
+-- 使用表AUTO_INCREMENT `eacoo_plugin_social_login`
+--
+ALTER TABLE `eacoo_plugin_social_login`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID';
 --
 -- 使用表AUTO_INCREMENT `eacoo_postmeta`
 --
@@ -1440,7 +1406,7 @@ ALTER TABLE `eacoo_term_relationships`
 -- 使用表AUTO_INCREMENT `eacoo_themes`
 --
 ALTER TABLE `eacoo_themes`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=5;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=2;
 --
 -- 使用表AUTO_INCREMENT `eacoo_users`
 --
