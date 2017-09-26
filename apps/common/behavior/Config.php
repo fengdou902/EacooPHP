@@ -11,6 +11,7 @@ namespace app\common\behavior;
 use think\Config as thinkConfig;
 use app\common\model\Config as ConfigModel;
 use think\Cache;
+
 /**
  * 根据不同情况读取数据库的配置信息并与本地配置合并
  * 本行为扩展很重要会影响核心系统前后台、模块功能及模版主题使用
@@ -22,8 +23,17 @@ class Config {
      */
     public function run(&$params) {
         defined('MODULE_NAME') or define('MODULE_NAME',$params['module'][0] ? $params['module'][0]:config('default_module'));
-        
-        define('EACOOPHP_V','1.0.3');
+
+        //定义环境类型
+        if (strpos($_SERVER["SERVER_SOFTWARE"],'nginx')!==false) {
+            define('SERVER_SOFTWARE_TYPE','nginx');
+        } elseif(strpos($_SERVER["SERVER_SOFTWARE"],'apache')!==false){
+            define('SERVER_SOFTWARE_TYPE','apache');
+        } else{
+            define('SERVER_SOFTWARE_TYPE','no');
+        }
+
+        define('EACOOPHP_V','1.0.4');
         // 安装模式下直接返回
         if(defined('MODULE_NAME') && MODULE_NAME === 'install') return;
         // 当前模块模版参数配置

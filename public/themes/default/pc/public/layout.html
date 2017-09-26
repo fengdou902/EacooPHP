@@ -175,22 +175,25 @@
               </ul>
             </li>
 
-            <li class="dropdown user user-menu">
+            {empty name="current_user"}
+              <li><a href="__ROOT__/admin.php?s=/admin/index/login">登录后台</a></li>
+            {else/}
+              <li class="dropdown user user-menu">
               <!-- Menu Toggle Button -->
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <!-- The user image in the navbar-->
                 <img src="http://img.eacoomall.com/images/uploads/avatar/1/594e7fcad7d91.jpg" class="user-image" alt="User Image">
                 <!-- hidden-xs hides the username on small devices so only the image appears. -->
-                <span class="hidden-xs">心云间、凝听</span>
+                <span class="hidden-xs">{$current_user.nickname}</span>
               </a>
               <ul class="dropdown-menu">
                 <!-- The user image in the menu -->
                 <li class="user-header">
-                  <img src="http://img.eacoomall.com/images/uploads/avatar/1/594e7fcad7d91.jpg" class="img-circle" alt="User Image">
+                  <img src="{$current_user.avatar|root_full_path}" class="img-circle" alt="User Image">
 
                   <p>
-                    心云间、凝听 - 管理者
-                    <small>注册时间：2017-09-12</small>
+                    {$current_user.nickname} - {/*$current_user.role_name*/}
+                    <small>注册时间：{$current_user.reg_time}</small>
                   </p>
                 </li>
                 <!-- Menu Body -->
@@ -211,14 +214,15 @@
                 <!-- Menu Footer-->
                 <li class="user-footer">
                   <div class="pull-left">
-                    <a href="#" class="btn btn-default btn-flat">个人资料</a>
+                    <a href="__ROOT__/admin.php?s=/admin/user/profile&uid=1" class="btn btn-default btn-flat">个人资料</a>
                   </div>
                   <div class="pull-right">
-                    <a href="#" class="btn btn-default btn-flat">退出</a>
+                    <a href="__ROOT__/admin.php?s=/admin/index/logout" class="btn btn-default btn-flat">退出</a>
                   </div>
                 </li>
               </ul>
             </li>
+            {/empty}
           </ul>
         </div>
         <!-- /.navbar-custom-menu -->

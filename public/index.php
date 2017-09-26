@@ -23,29 +23,23 @@ define('PUBLIC_PATH', __DIR__ . '/');
 
 //主题目录
 define('THEME_PATH',__DIR__ . '/themes/');
-
 /**
  * 定义标记
  */
 define('MODULE_MARK', 'front');
-
-//定义环境类型
-if (strpos($_SERVER["SERVER_SOFTWARE"],'nginx')!==false) {
-	define('SERVER_SOFTWARE_TYPE','nginx');
-} elseif(strpos($_SERVER["SERVER_SOFTWARE"],'apache')!==false){
-	define('SERVER_SOFTWARE_TYPE','apache');
-} else{
-	define('SERVER_SOFTWARE_TYPE','no');
-}
 
 /**
  * 项目定义
  * 扩展类库目录
  */
 define('BASE_PATH', substr($_SERVER['SCRIPT_NAME'], 0, -10));
-// define('ROOT_PATH', dirname(APP_PATH) . DIRECTORY_SEPARATOR);
-// define('EXTEND_PATH', ROOT_PATH . 'core' . DIRECTORY_SEPARATOR . 'extend' . DIRECTORY_SEPARATOR);
-// define('VENDOR_PATH', ROOT_PATH . 'core' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR);
+
+if ($_SERVER['REQUEST_URI']==='/admin') {
+	//重定向到后台地址
+    header("Location:/admin.php?s=/admin/index/login"); 
+    exit;
+}
+
 // 加载框架引导文件
 require __DIR__ . '/../thinkphp/start.php';
 // // 读取自动生成定义文件

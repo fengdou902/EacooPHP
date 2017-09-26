@@ -350,6 +350,12 @@ $config = [
 $setting_config = [];
 if (MODULE_MARK=='admin') {
     $setting_config=[
+        // 默认模块名
+        'default_module'         => 'admin',
+        // 默认控制器名
+        'default_controller'     => 'Index',
+        // 默认操作名
+        'default_action'         => 'login',
         // +----------------------------------------------------------------------
         // | 会话设置
         // +----------------------------------------------------------------------

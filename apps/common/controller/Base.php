@@ -38,9 +38,9 @@ class Base extends Controller {
 
 	// 	if (!empty($mc) && !empty($op) && !empty($ac)) {
 	// 		$ops    = ucwords($op);
-	// 		$class  = "\\addons\\{$mc}\\controller\\{$ops}";
-	// 		$addons = new $class;
-	// 		$addons->$ac();
+	// 		$class  = "\\plugins\\{$mc}\\controller\\{$ops}";
+	// 		$plugins = new $class;
+	// 		$plugins->$ac();
 	// 	} else {
 	// 		$this->error('没有指定插件名称，控制器或操作！');
 	// 	}
