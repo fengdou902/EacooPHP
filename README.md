@@ -7,7 +7,9 @@ EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求
 ## 前言
 
 使用EacooPHP框架开发定制您的系统前，建议熟悉官方的tp5.0完全开发手册。
-![](http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg =560x360)
+
+![eacoophp封面图](http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg width="560" height="360")
+
 ## 功能特性
 1.Auth权限管理：基于Auth验证的权限管理系统，一个管理员可同时属于多个用户组；  
 2.Builder构建器：提供Builder构建器来构建后台表单和列表，内置丰富的表单项组件来构建表单页面。让您开发更简单，高效；  
