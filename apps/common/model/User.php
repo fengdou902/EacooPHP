@@ -126,7 +126,7 @@ class User extends Base
      * @return int               [登录成功-用户ID，登录失败-错误编号]
      * @param bool $rememberme 记住登录
      */
-    public function login($login, $password, $rememberme = false, $type = 6){
+    public static function login($login, $password, $rememberme = false, $type = 6){
         $map = '';
         switch ($type) {
             case 1:
@@ -153,18 +153,18 @@ class User extends Base
         }
 
         /* 获取用户数据 */
-        $user = $this->whereOr([$map => $login,'status'=>1])->find();
+        $user = self::where([$map => $login,'status'=>1])->find();
 
-        if($user){   
+        if(!empty($user)){   
             /* 验证用户密码 */
             if(encrypt($password) === $user['password']){
                 self::autoLogin($user,$rememberme); //更新用户登录信息
-                return $user['uid']; //登录成功，返回用户ID
+                return ['code'=>1,'msg'=>'登录成功','data'=>['uid'=>$user['uid']]];
             } else {
-                $this->error = '密码错误！';
+                return ['code'=>0,'msg'=>'密码错误！'];
             }
         } else {
-        	$this->error = '用户不存在或被禁用！';
+            return ['code'=>0,'msg'=>'用户不存在或被禁用！'];
         }
 
         return false;
@@ -206,7 +206,7 @@ class User extends Base
 
         // 记住登录
         if ($rememberme) {
-            $signin_token = $user['username'].$user['uid'].$user['last_login_time'];
+            $signin_token = $user['username'].$user['uid'].$auth_login['last_login_time'];
             cookie('uid', $user['uid'], 24 * 3600 * 7);
             cookie('signin_token', data_auth_sign($signin_token), 24 * 3600 * 7);
         }

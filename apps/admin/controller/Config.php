@@ -31,7 +31,7 @@ class Config extends Admin {
      */
     public function index($group = 1) {
         // 搜索
-        $keyword = $this->input('keyword');
+        $keyword = input('keyword');
         if ($keyword) {
             $this->configModel->where('id|name|title','like','%'.$keyword.'%');
         }
@@ -86,14 +86,14 @@ class Config extends Admin {
      * 编辑配置
      */
     public function edit($id=0){
-        $title=$id ? "编辑" : "新增";
+        $title = $id ? "编辑" : "新增";
         if ($id != 0) {
             $Config_data=$this->configModel->find($id);
-        }elseif ($id==0) {
-            $Config_data['group']=$this->input('get.group_id',0);
+        } elseif ($id==0) {
+            $Config_data['group']=input('get.group_id',0);
         }
         if (IS_POST) {
-            $data = $this->input('post.');
+            $data = input('post.');
             $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
             if ($this->configModel->editData($data,$id)) {
                 if ($id != 0) {
@@ -189,7 +189,7 @@ EOF;
         // 构造表单名、解析options
         foreach ($data_list as &$data) {
             $data['name']    = 'config['.$data['name'].']';
-            $data['tip']    =$data['remark'];
+            $data['description']    =$data['remark'];
             $data['confirm'] = $data['extra_class'] = $data['extra_attr']='';
             if ($data['function']!='0'&&$data['function']) {
                 $data['options'] = call_user_func_array($data['function'],array('1'));
@@ -249,7 +249,7 @@ EOF;
         // 构造表单名、解析options
         foreach ($data_list as &$data) {
             $data['name']    = 'config['.$data['name'].']';
-            $data['tip']     = $data['remark'];
+            $data['description'] = $data['remark'];
             $data['confirm'] = $data['extra_class'] = $data['extra_attr']='';
             $data['options'] = parse_config_attr($data['options']);
         }
@@ -270,9 +270,9 @@ EOF;
      */
     public function moveGroup() {
         if (IS_POST) {
-            $ids      = $this->input('post.ids');
-            $from_gid = $this->input('post.from_gid');
-            $to_gid   = $this->input('post.to_gid');
+            $ids      = input('post.ids');
+            $from_gid = input('post.from_gid');
+            $to_gid   = input('post.to_gid');
             if ($from_gid === $to_gid) {
                 $this->error('目标分类与当前分类相同');
             }

@@ -15,7 +15,7 @@
              <input type="text" class="form-control" name="{$field.name}_detail" id="{$field.name}_detail" value="{$json_city_detail.detail}" placeholder="填写详细地址" {$field.extra_attr}>   
             </div>
             <input type="hidden" name="{$field.name}" id="{$field.name}" value='{$field.value}'>
-	        {notempty name="field.tip"}<p class="help-block"><i class="fa fa-info-circle color-info1"></i> {$field.tip}</p>{/notempty}
+	        {notempty name="field.description"}<p class="help-block"><i class="fa fa-info-circle color-info1"></i> {$field.description}</p>{/notempty}
         </div>
         <script type="text/javascript">
         $('.citys_field').citys({province:'{$json_city_detail.province}',city:'{$json_city_detail.city}',area:'{$json_city_detail.area}',onChange:function(data){

@@ -4,7 +4,7 @@
 	"description":"门户网站管理、CMS、内容管理",
 	"author":"心云间、凝听",
 	"admin_manage_into":"",
-	"version":"1.0.0",
+	"version":"1.0.3",
 	"dependences":{
 		"plugins":{
 

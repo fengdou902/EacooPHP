@@ -24,7 +24,7 @@ class User extends Admin {
     //用户列表
     public function index(){
         // 搜索
-        $keyword = $this->input('keyword');
+        $keyword = input('keyword');
         if ($keyword) {
             $this->user_model->where('uid|username|nickname','like','%'.$keyword.'%');
         }
@@ -87,7 +87,7 @@ class User extends Admin {
                 unset($_POST['password']);
             }
 
-            $data = $this->input('post.');
+            $data = input('post.');
             $uid  = isset($data['uid']) ? intval($data['uid']) : false;
             // 提交数据
             $result = $this->user_model->editData($data,$uid,'uid');
@@ -270,7 +270,7 @@ EOF;
             // if ($_POST['password'] === '') {
             //     unset($_POST['password']);
             // }
-            $data = $this->input('post.');
+            $data = input('post.');
             
             // 提交数据
             $result = $this->user_model->editData($data,$uid,'uid');
@@ -302,10 +302,10 @@ EOF;
     public function resetPassword(){
         if (IS_POST) {
             //$oldpassword=input('post.oldpassword',false);
-            $newpassword = $this->input('post.newpassword',false);
-            $repassword  = $this->input('post.repassword',false);
+            $newpassword = input('post.newpassword',false);
+            $repassword  = input('post.repassword',false);
             if ($newpassword == $repassword) {
-                $uid          =$this->input('post.uid',is_login(),'intval');
+                $uid          =input('post.uid',is_login(),'intval');
                 $new_password =encrypt($newpassword);
                 $res= UserModel::where(['uid'=>$uid])->setField('password',$new_password);
                 if ($res) {
@@ -332,7 +332,7 @@ EOF;
      * 设置用户的状态
      */
     public function setStatus($model = CONTROLLER_NAME,$script=false){
-        $ids = $this->input('request.ids/a');
+        $ids = input('request.ids/a');
         if (is_array($ids)) {
             if(in_array('1', $ids)) {
                 $this->error('超级管理员不允许操作');

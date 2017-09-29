@@ -8,8 +8,9 @@
 // +----------------------------------------------------------------------
 
 namespace app\install\controller;
-
-class Index extends \think\Controller {
+use think\Controller;
+use think\Db;
+class Index extends Controller {
 
 	protected $status;
 
@@ -22,7 +23,7 @@ class Index extends \think\Controller {
 			'complete' => 'info',
 		];
 
-		if (request()->action() != 'complete' && is_file(APP_PATH . 'database.php') && is_file(APP_PATH . 'install.lock')) {
+		if ($this->request->action() != 'complete' && is_file(APP_PATH . 'database.php') && is_file(APP_PATH . 'install.lock')) {
 			return $this->redirect('index/index/index');
 		}
 		$this->assign('product_name',config('product_name'));//产品名
@@ -31,7 +32,6 @@ class Index extends \think\Controller {
 	public function index() {
 		$this->status['index'] = 'primary';
 		$this->assign('status', $this->status);
-
         
         $this->assign('company_name',config('company_name'));//公司名
         $this->assign('company_website_domain',config('company_website_domain'));
@@ -81,7 +81,7 @@ class Index extends \think\Controller {
 	 * @author 心云间、凝听 <981248356@qq.com>
 	 */
 	public function config($db = null, $admin = null, $webconfig = null) {
-		if (request()->IsPost()) {
+		if ($this->request->isPost()) {
 			//检测管理员信息
 			if (!is_array($admin) || empty($admin[0]) || empty($admin[1]) || empty($admin[3])) {
 				return $this->error('请填写完整管理员信息');

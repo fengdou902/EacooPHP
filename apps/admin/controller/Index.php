@@ -36,15 +36,16 @@ class Index extends Base
             if(!$captcha->check($this->param['captcha'],1)){
                 $this->error('验证码错误');
             }
-            $rememberme = $this->input('post.rememberme')==1 ? true : false;
+            $rememberme = input('post.rememberme')==1 ? true : false;
 
-            $user_model = new User();
-            $uid        = $user_model->login($this->param['username'],$this->param['password'], $rememberme);
-            if (!$uid) {
-                $this->error($user_model->getError());
-            } elseif (0 < $uid) {
-                action_log('user_login_admin', 'user', $uid, $uid,1);
+            $result = User::login($this->param['username'],$this->param['password'], $rememberme);
+            if ($result['code']==1) {
+                $uid = !empty($result['data']['uid']) ? $result['data']['uid']:0;
+                action_log('user_login', 'user', $uid, $uid,1);
                 $this->success('登录成功！',url('admin/dashboard/index'));
+
+            } elseif ($result['code']==0) {
+                $this->error($result['msg']);
             } else {
                 $this->logout();
             }

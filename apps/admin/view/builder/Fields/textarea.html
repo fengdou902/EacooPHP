@@ -3,7 +3,7 @@
     <label for="{$field.name}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{/present}{$field.title}</label>
     <div class="col-md-6">
     	<textarea name="{$field.name}" class="form-control" length="120" rows='5' {$field.extra_attr|default=''}>{present name="field.value"}{$field.value|htmlspecialchars}{/present}</textarea>
-        {notempty name="field.tip"}<p class="help-block"><i class="fa fa-info-circle color-info1"></i> {$field.tip}</p>{/notempty}
+        {notempty name="field.description"}<p class="help-block"><i class="fa fa-info-circle color-info1"></i> {$field.description}</p>{/notempty}
      </div>
     </div>
 

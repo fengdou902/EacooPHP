@@ -10,7 +10,7 @@
 namespace app\admin\controller;
 use app\admin\builder\Builder;
 
-use app\admin\model\Terms as TermsModel;
+use app\common\model\Terms as TermsModel;
 
 class Terms extends Admin {
 
@@ -33,15 +33,21 @@ class Terms extends Admin {
         }
         
         list($data_list,$page) = $this->termsModel->getListByPage($map,'sort desc,create_time desc','*',20);
+        $addnew_href=null;
+        if ($edit_U) {
+           $addnew_href=['href'=>$edit_U];//新增按钮URL
+        }
+        if (!empty($data_list)) {
+            foreach ($data_list as $key => &$row) {
+                $row['object_count'] = TermsModel::termRelationCount($row['term_id'],$fromTable);
+            }
+        }
         $builder = Builder::run('List');
         $builder->setMetaTitle('分类管理'); // 设置页面标题
         if (!empty($tab_obj)) {//构建tab
             $builder->setTabNav($tab_obj['tab_list'],$tab_obj['current']);  // 设置页面Tab导航
         }
-        $addnew_href=null;
-        if ($edit_U) {
-           $addnew_href=['href'=>$edit_U];//新增按钮URL
-        }
+        
         $builder->addTopButton('addnew',$addnew_href)  // 添加新增按钮
                 ->addTopButton('resume')  // 添加启用按钮
                 ->addTopButton('forbid')  // 添加禁用按钮
@@ -52,7 +58,7 @@ class Terms extends Admin {
                 ->keyListItem('slug', '别名')
                 ->keyListItem('parent', '父分类')
                 ->keyListItem('seo_description', '描述')
-                ->keyListItem('term_id', '对象数','callback', ['callback_fun'=>[ $this->termsModel,'term_relation_count'],'sub_param'=>[$fromTable]])
+                ->keyListItem('object_count', '对象数')
                 ->keyListItem('status', '状态', 'status')
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListDataKey('term_id')
@@ -69,7 +75,7 @@ class Terms extends Admin {
         $title = $term_id>0 ? "编辑" : "新增";
         if (IS_POST) {
             // 提交数据
-            $data = $this->input('post.');
+            $data = input('post.');
             // seo标题
             if ($data['seo_title'] === '') {
                 $data['seo_title']=$data['name'];

@@ -20,7 +20,7 @@
       <label for="{$field.name}" class="col-md-2 control-label">{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{$field.title}</label>
       <div class="col-md-10">
       	{:widget('common/editor/wangeditor',[$wangeditor_attributes,$wangeditor_param])}
-        {notempty name="field.tip"}<p class="help-block">{$field.tip}</p>{/notempty}
+        {notempty name="field.description"}<p class="help-block">{$field.description}</p>{/notempty}
       </div>
   </div>
 

@@ -77,13 +77,13 @@ class Message extends Admin {
            $from_uid = is_login();
         }
         if(IS_POST && $from_uid){
-            $to_uids = $this->input('post.to_uids');
+            $to_uids = input('post.to_uids');
             $to_uids = explode(',',$to_uids);
             foreach ($to_uids as $key => $to_uid) {
                 $data['from_uid'] = $from_uid;
                 $data['to_uid']   = $to_uid;
-                $data['title']    = $this->input('post.title');
-                $data['content']  = $this->input('post.content','','htmlspecialchars_decode');
+                $data['title']    = input('post.title');
+                $data['content']  = input('post.content','','htmlspecialchars_decode');
                 $data['type']     = $type;
                 $data['pid']      = 0;
 

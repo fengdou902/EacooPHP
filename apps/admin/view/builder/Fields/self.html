@@ -3,7 +3,7 @@
         <label for="{$field.name}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{/present}{$field.title}</label>
         <div class="col-md-9">
 	        {$field.options}
-	        {notempty name="field.tip"}<p class="help-block"> {$field.tip}</p>{/notempty}
+	        {notempty name="field.description"}<p class="help-block"> {$field.description}</p>{/notempty}
 
         </div>
     </div>

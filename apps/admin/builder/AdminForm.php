@@ -108,20 +108,20 @@ class AdminForm extends Builder
 
     /**
      * 加入一个表单项
-     * @param $type 表单类型(取值参考系统配置FORM_ITEM_TYPE)
+     * @param $type 表单类型(取值参考系统配置form_item_type)
      * @param $title 表单标题
-     * @param $tip 表单提示说明
+     * @param $description 表单项描述说明
      * @param $name 表单名
      * @param $options 表单options
      * @param $extra_class 表单项是否隐藏
      * @param $extra_attr 表单项额外属性
      * @return $this
      */
-    public function addFormItem($name, $type, $title, $tip = '',$options = [],$confirm='',$extra_attr = '',$extra_class = '') {
+    public function addFormItem($name, $type, $title, $description = '',$options = [],$confirm='',$extra_attr = '',$extra_class = '') {
         $item['name']        = $name;
         $item['type']        = $type;
         $item['title']       = $title;
-        $item['tip']         = $tip;
+        $item['description'] = $description;
         $item['options']     = $options;
         $item['confirm']     = $confirm;//验证。required必填，
         $item['extra_class'] = $extra_class;

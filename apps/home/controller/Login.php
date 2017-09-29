@@ -31,7 +31,7 @@ class Login extends Home {
             if(!$captcha->check($this->param['captcha'],1)){
                 $this->error('验证码错误');
             }
-            $rememberme = $this->input('post.rememberme')==1 ? true : false;
+            $rememberme = input('post.rememberme')==1 ? true : false;
 
             $uid = $this->user_model->login($this->param['username'],$this->param['password'], $rememberme);
             if (!$uid) {

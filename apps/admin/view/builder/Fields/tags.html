@@ -4,7 +4,7 @@
         <div class="col-md-4">
             <input type="text" class="form-control" id="tokeninput_{$field.name}" name="{$field.name}" value="{$field.value|default=''}" {$field.extra_attr|default=''}>
         </div>
-        {notempty name="field.tip"}<div class="col-md-5 help-block"><i class="fa fa-info-circle color-info1"></i> {$field.tip}</div>{/notempty}
+        {notempty name="field.description"}<div class="col-md-5 help-block"><i class="fa fa-info-circle color-info1"></i> {$field.description}</div>{/notempty}
     </div>
     <link rel="stylesheet" type="text/css" href="__PUBLIC__/libs/tokeninput/css/token-input.css">
     <link rel="stylesheet" type="text/css" href="__PUBLIC__/libs/tokeninput/css/token-input-bootstrap.css">

@@ -29,7 +29,7 @@ class Link extends Admin{
 
     public function index() {
         // 搜索
-        $keyword =$this->input('keyword');
+        $keyword =input('keyword');
         if ($keyword) {
             $this->linkModel->where('id|title','like','%'.$keyword.'%');
         }
@@ -67,7 +67,7 @@ class Link extends Admin{
     public function edit($id=0) {
         $title = $id ? "编辑":"新增";
         if (IS_POST) {
-            $data =$this->input('post.');
+            $data =input('post.');
             //验证数据
             $this->validateData('Link',$data);
             $id   =isset($data['id']) && $data['id']>0 ? $data['id']:false;

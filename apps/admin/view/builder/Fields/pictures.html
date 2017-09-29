@@ -15,7 +15,7 @@
         <span class="btn btn-info ml-10 btn-sm" data-url="{:url('admin/Attachment/attachmentLayer',['input_id_name'=>$field['id'],'path_type'=>$path_type,'select_type'=>'multiple'])}" onclick="openAttachmentLayer(this);"><i class="fa fa-photo"></i> 选择多图</span>
             <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field.value|default=''}"/>
         </div>
-        {notempty name="field.tip"}<div class="help-block col-md-8 col-md-offset-2 fn" style="color:#E74C3C;padding-left: 20px;">{$field.tip}</div>{/notempty}
+        {notempty name="field.description"}<div class="help-block col-md-8 col-md-offset-2 fn" style="color:#E74C3C;padding-left: 20px;">{$field.description}</div>{/notempty}
         <div id="{$field.id}-gallery-box" class="uploader-list col-md-9 col-md-offset-2 img-box {notempty name="field.value"}gallery-box-bg{/notempty}">
             
            {notempty name="field.value"}

@@ -12,9 +12,9 @@
        <div class="col-md-4">
 					<input type="date" class="datepicker form-control" name="{$field.name}" id="{$field.id}" value="{notempty name='field.value'}{$field.value|time_format='Y-m-d'}{/notempty}" {$field.extra_attr|default=''}>
 
-					{notempty name="field.tip"}<p class="help-block">{$field.tip}</p>{/notempty}
+					{notempty name="field.description"}<p class="help-block">{$field.description}</p>{/notempty}
 			</div>
-        {notempty name="field.tip"}<div class="col-md-5 help-block"><i class="fa fa-info-circle color-info1"></i> {$field.tip}</div>{/notempty}
+        {notempty name="field.description"}<div class="col-md-5 help-block"><i class="fa fa-info-circle color-info1"></i> {$field.description}</div>{/notempty}
   </div>
      <script type="text/javascript">
         $(function(){

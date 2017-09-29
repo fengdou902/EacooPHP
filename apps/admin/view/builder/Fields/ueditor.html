@@ -19,7 +19,7 @@
         <label for="{$field.name}" class="col-md-2 control-label">{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{$field.title|htmlspecialchars}</label>
         <div class="col-md-9">
 	         {:widget('common/editor/ueditor',[$ueditor_attributes,$ueditor_param])}
-	        {notempty name="field.tip"}<p class="help-block">{$field.tip}</p>{/notempty}
+	        {notempty name="field.description"}<p class="help-block">{$field.description}</p>{/notempty}
         </div>
     </div>
 

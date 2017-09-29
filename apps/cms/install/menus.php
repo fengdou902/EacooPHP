@@ -37,17 +37,17 @@ return [
                 ],
                 [
                     'title'=>'文章分类',
-                    'name' => 'cms/posts/postTerm',
+                    'name' => 'cms/category/index',
                     'is_menu'=>1
                 ],
                 [
                     'title'=>'文章标签',
-                    'name' => 'cms/posts/postTerm?taxonomy=post_tag',
+                    'name' => 'cms/category/index?taxonomy=post_tag',
                     'is_menu'=>1
                 ],
                 [
                     'title'=>'页面列表',
-                    'name' => 'cms/posts/page',
+                    'name' => 'cms/page/index',
                     'is_menu'=>1
                 ],
                 [

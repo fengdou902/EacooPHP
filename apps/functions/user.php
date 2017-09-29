@@ -243,7 +243,7 @@ if (!function_exists('execute_action')) {
 
             // 执行数据库操作
             $field = $rule['field'];
-            $res   = Db::name($rule['table'])->where($rule['condition'])->setField($field, array('exp', $rule['rule']));
+            $res   = db($rule['table'])->where($rule['condition'])->setField($field, array('exp', $rule['rule']));
 
             if(!$res){
                 $return = false;

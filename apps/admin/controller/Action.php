@@ -90,7 +90,7 @@ class Action extends Admin {
 		$title = $id ? "编辑":"新增";
 
 		if (IS_POST) {
-			$data =$this->input('post.');
+			$data =input('post.');
             //验证数据
             $this->validateData('Action',$data);
             $id   =isset($data['id']) && $data['id']>0 ? $data['id'] : false;
@@ -223,7 +223,7 @@ class Action extends Admin {
 	 * @author 心云间、凝听 <981248356@qq.com>
 	 */
 	public function dellog() {
-		$ids = $this->input('post.ids/a');
+		$ids = input('post.ids/a');
 		if (empty($ids)) {
 			$this->error("非法操作！", '');
 		}

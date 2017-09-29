@@ -46,7 +46,7 @@ class Plugins extends Admin {
             'oneline'=>['title'=>'插件市场','href'=>url('index',['from_type'=>'oneline'])],
         ];
         // 获取所有插件信息
-        //$paged = $this->input('get.p',1);
+        //$paged = input('get.p',1);
         if ($from_type == 'local') {
             //本地插件
             $plugins = $this->pluginModel->getAll();
@@ -97,7 +97,7 @@ class Plugins extends Admin {
     public function config() {
         if (IS_POST) {
             $id     = input('param.id');
-            $config = $this->input('post.config/a');
+            $config = input('post.config/a');
             $flag   = $this->pluginModel->save(['config'=>json_encode($config)],['id'=>$id]);
             if ($flag !== false) {
                 $this->success('保存成功');
@@ -614,7 +614,7 @@ class Plugins extends Admin {
         $param = $pluginModel_object->adminList;
         if ($param) {
             if (IS_POST) {
-                $data = $this->input('post.');
+                $data = input('post.');
                 $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
                 if ($pluginModel_object->editData($data,$id)) {
                     $result = $pluginModel_object->save($data);
@@ -685,7 +685,7 @@ class Plugins extends Admin {
     public function edithook($id=0){
         $title=$id ? "编辑" : "新增";
         if (IS_POST) {
-            $data = $this->input('post.');
+            $data = input('post.');
             //验证数据
             $this->validateData('Hook',$data);
             $id = isset($data['id']) && $data['id']>0 ? $data['id']:false;

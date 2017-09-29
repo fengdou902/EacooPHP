@@ -12,33 +12,33 @@
                   <h3 class="box-title">{$meta_title}</h3>
             </div>
              <div class="box-body">
-                {notempty name="post_obj.id"}
-                    <input type="hidden" name="id" value="{$post_obj.id|default='0'}" />
+                {notempty name="info.id"}
+                    <input type="hidden" name="id" value="{$info.id|default='0'}" />
                 {/notempty}
                 <div class="form-group w">
                   <!--<label class="col-sm-1 control-label" for="title">标题</label>-->
                   <div class="col-sm-12">
-                    <input class="form-control" name="title" value="{$post_obj.title|default=''}" type="text" placeholder="请输入标题">
+                    <input class="form-control" name="title" value="{$info.title|default=''}" type="text" placeholder="请输入标题">
                   </div>
                   
                 </div>
              
                 <!--编辑器-->
                 <div class="form-group col-sm-12">
-                {:widget('common/Editor/wangeditor',[['id'=>'cmscontent','name'=>'content','default'=>$post_obj['content'],'width'=>'100%','height'=>'360px','config'=>'all'],['importWangEditor'=>1,'open_attachmentModal'=>'multiple']])}
+                {:widget('common/Editor/wangeditor',[['id'=>'cmscontent','name'=>'content','default'=>$info['content'],'width'=>'100%','height'=>'360px','config'=>'all'],['importWangEditor'=>1,'open_attachmentModal'=>'multiple']])}
                 </div>
                 <!--编辑器-->
                 <div class="form-group w">
                   <label class="col-sm-2 control-label" for="excerpt">SEO摘要</label>
                   <div class="col-sm-10">
-                    <textarea class="form-control" name="excerpt" rows='5'>{$post_obj.excerpt|default=''}</textarea>
+                    <textarea class="form-control" name="excerpt" rows='5'>{$info.excerpt|default=''}</textarea>
                   </div>
                   
                 </div>
                 <div class="form-group w">
                   <label class="col-sm-2 control-label" for="seo_keywords">SEO关键字</label>
                   <div class="col-sm-10">
-                    <input class="form-control" name="seo_keywords" value="{$post_obj.seo_keywords|default=''}" type="text">
+                    <input class="form-control" name="seo_keywords" value="{$info.seo_keywords|default=''}" type="text">
                     <p class="help-block">多关键词之间用英文逗号隔开</p>
                   </div>
                   
@@ -57,7 +57,7 @@
          <div class="box-body">
             <div class="form-group">
                 <label class="control-label col-md-3" style="padding:0;" for="date_d">发布时间:</label>
-                <div class="col-md-8"> <input id="date_d" class="form-control form-datetime" type="text" value="{$post_obj.publish_time|default=date('Y-m-d H:i:s',time())}" name="publish_time" readonly></div>  
+                <div class="col-md-8"> <input id="date_d" class="form-control form-datetime" type="text" value="{$info.publish_time|default=date('Y-m-d H:i:s',time())}" name="publish_time" readonly></div>  
             </div>
             <!--<div class="form-group">
                 <label class="control-label col-md-4" for="status">审核状态:</label>
@@ -111,7 +111,7 @@
             
              <div class="form-group">
               <label class="control-label col-md-3" for="title">缩略图:</label>
-                <div class="col-md-offset-3">{:widget('common/Upload/picture',[['id'=>'img','class'=>'uploadsingleimg','name'=>'img','value'=>$post_obj['img'],'config'=>'','width'=>false,'height'=>false]])}
+                <div class="col-md-offset-3">{:widget('common/Upload/picture',[['id'=>'img','class'=>'uploadsingleimg','name'=>'img','value'=>$info['img'],'config'=>'','width'=>false,'height'=>false]])}
                 </div>
             </div>
             </div>
@@ -121,7 +121,7 @@
         <div class="box box-solid">
 
             <div class="box-body">
-            {notempty name="post_obj.id"}
+            {notempty name="info.id"}
                 <button class="btn btn-primary ajax-post" id="login" align="center" type="submit" name="status" value="1" target-form="form-post">更新</button>
             {else/}
                 <button class="btn btn-primary ajax-post" id="login" align="center" type="submit" name="status" value="1" target-form="form-post">保存并发布</button>

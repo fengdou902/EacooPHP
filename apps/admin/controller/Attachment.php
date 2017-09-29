@@ -38,7 +38,7 @@ class Attachment extends Admin {
                   </ul>
                 </div>']);
         // 搜索
-        $keyword = $this->input('get.keyword');
+        $keyword = input('get.keyword');
         if ($keyword) {
             $this->attachmentModel->where('id|name','like','%'.$keyword.'%');
         }
@@ -51,7 +51,7 @@ class Attachment extends Admin {
                 4=>'文件',
             ]);//媒体类型列表
 
-        $path_type = $this->input('get.path_type',false);//路径类型
+        $path_type = input('get.path_type',false);//路径类型
         if ($path_type) {
             $map['path_type'] = $path_type;
         } else {
@@ -67,7 +67,7 @@ class Attachment extends Admin {
             }
         }
 
-        $media_type = $this->input('get.media_type',false,'intval');
+        $media_type = input('get.media_type',false,'intval');
         if ($media_type>0) {
             switch ($media_type) {
                 case '1':
@@ -87,7 +87,7 @@ class Attachment extends Admin {
                     break;
             }
         }
-        $choice_date_range = $this->input('get.choice_date_range',false);
+        $choice_date_range = input('get.choice_date_range',false);
         if (!empty($choice_date_range)) {//日期筛选
             $this->assign('choice_date_range',$choice_date_range);
             $choice_date_range                 = explode('—', $choice_date_range);
@@ -128,15 +128,15 @@ class Attachment extends Admin {
      */
     public function editAttachment($data=[]){
         if (IS_POST) {
-            $id          = $this->input('post.id',0,'intval');
-            $data['alt'] = $this->input('post.alt','');
-            $term_id     = $this->input('post.term_id',false,'intval');
+            $id          = input('post.id',0,'intval');
+            $data['alt'] = input('post.alt','');
+            $term_id     = input('post.term_id',false,'intval');
             $result      = $this->attachmentModel->save($data,['id'=>$id]);
             if ($result) {
-                update_media_term($data['id'],$term_id);
-                cache('Attachment_'.$data['id'],null);
+                update_media_term($id,$term_id);
+                cache('Attachment_'.$id,null);
                 $this->success('更新成功',url('index'));
-            }else{
+            } else{
                 $this->error($this->attachmentModel->getError());
             }
         }
@@ -148,9 +148,9 @@ class Attachment extends Admin {
      */
     public function moveCategory() {
         if (IS_POST) {
-            $ids      = $this->input('post.ids');
-            $from_cid = $this->input('post.from_cid');
-            $to_cid   = $this->input('post.to_cid');
+            $ids      = input('post.ids');
+            $from_cid = input('post.from_cid');
+            $to_cid   = input('post.to_cid');
             if ($from_cid === $to_cid) {
                 $this->error('目标分类与当前分类相同');
             }
@@ -214,7 +214,7 @@ class Attachment extends Admin {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function attachmentCategory(){
-        $tab_list=[
+        $tab_list = [
                 'index'              =>['title'=>'媒体文件','href'=>url('index')],
                 'attachmentCategory' =>['title'=>'附件分类','href'=>url('attachmentCategory')],
                 'setting'            =>['title'=>'设置','href'=>url('setting')]
@@ -349,7 +349,7 @@ class Attachment extends Admin {
      */
     public function attachmentLayer()
     {
-        $data = $this->input('get.');
+        $data = input('get.');
         $path_type = $data['path_type'] ? $data['path_type'] : 'picture';
         $from = isset($data['from']) ? $data['from'] : '';
 
@@ -605,7 +605,7 @@ class Attachment extends Admin {
      */
     public function uploadAvatar(){
 
-        $uid = $this->input('get.uid',0,'intval');
+        $uid = input('get.uid',0,'intval');
 
         $controller = controller('common/Upload');
         $return = $controller->uploadAvatar($uid);
@@ -667,8 +667,8 @@ class Attachment extends Admin {
      * 设置附件的状态
      */
     public function setStatus($model ='attachment', $script = false){
-        $ids    = $this->input('request.ids/a');
-        $status = $this->input('request.status');
+        $ids    = input('request.ids/a');
+        $status = input('request.status');
         if (empty($ids)) {
             $this->error('请选择要操作的数据');
         }

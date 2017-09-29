@@ -45,9 +45,9 @@ class Auth extends Admin {
      * @return [type] [description]
      */
     public function rule(){
-        $manage_type = $this->input('get.manage_type','menu');//管理类型
+        $manage_type = input('get.manage_type','menu');//管理类型
         // 获取所有节点信息
-        $map['pid'] = $this->input('get.pid',0);//是否存在父ID
+        $map['pid'] = input('get.pid',0);//是否存在父ID
         //$map['is_menu']=1;//只显示菜单
         if ($map['pid']>0) {
             $current_submenu_name = $this->authRuleModel->where(['id'=>(int)$map['pid']])->value('title');
@@ -124,14 +124,14 @@ class Auth extends Admin {
     public function rule_edit($id=0){
         $title=$id ? "编辑":"新增";
         if ($id==0) {//新增
-            $pid       = (int)$this->input('get.pid');
+            $pid       = (int)input('get.pid');
             $pid_data  = $this->authRuleModel->find($pid);
             $menu_data = array('from_flag'=>$pid_data['from_flag'],'pid'=>$pid);
         }
         
         if(IS_POST){
             // 提交数据
-            $data =$this->input('post.');
+            $data =input('post.');
             //验证数据
             $this->validateData('AuthRule',$data);
             
@@ -139,7 +139,7 @@ class Auth extends Admin {
 
             if ($this->authRuleModel->editData($data,$id)) {
                 cache('admin_sidebar_menus',null);//清空后台菜单缓存
-                $this->success($title.'菜单成功', url('rule',array('pid'=>$this->input('pid'))));
+                $this->success($title.'菜单成功', url('rule',array('pid'=>input('pid'))));
             } else {
                 $this->error($this->authRuleModel->getError());
             }
@@ -179,7 +179,7 @@ class Auth extends Admin {
     public function rule_sort($ids = null)
     {
         $builder    = Builder::run('Sort');
-        $map['pid'] = $this->input('get.pid',0,'intval');//是否存在父ID
+        $map['pid'] = input('get.pid',0,'intval');//是否存在父ID
         if (IS_POST) {
             cache('admin_sidebar_menus',null);//清空后台菜单缓存
             $builder->doSort('auth_rule', $ids);
@@ -248,8 +248,8 @@ class Auth extends Admin {
      */
     public function moveModule() {
         if (IS_POST) {
-            $ids       = $this->input('post.ids');
-            $to_module = $this->input('post.to_module');
+            $ids       = input('post.ids');
+            $to_module = input('post.to_module');
             if ($to_module) {
                 $map['id'] = ['in',$ids];
                 $data      = ['from_flag' => $to_module];
@@ -267,8 +267,8 @@ class Auth extends Admin {
      */
     public function moveMenuParent() {
         if (IS_POST) {
-            $ids    = $this->input('post.ids');
-            $to_pid = $this->input('post.to_pid');
+            $ids    = input('post.ids');
+            $to_pid = input('post.to_pid');
             if ($to_pid || $to_pid==0) {
                 cache('admin_sidebar_menus',null);
                 $map['id'] = ['in',$ids];
@@ -386,7 +386,7 @@ EOF;
     //角色管理
     public function role(){
         // 搜索
-        $keyword = $this->input('keyword');
+        $keyword = input('keyword');
         if ($keyword) {
             $this->authGroupModel->where('title','like','%'.$keyword.'%');
         }
@@ -425,7 +425,7 @@ EOF;
         $this->assign('meta_title',$title.'角色');
          $info =$this->authGroupModel->find($group_id);
          if (IS_POST) {
-            $data = $this->input('post.');
+            $data = input('post.');
             $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
 
             if ($this->authGroupModel->editData($data,$id)) {
@@ -457,7 +457,7 @@ EOF;
 
         if (IS_POST && $group_id!=0) {
             $data['id']    = $group_id;
-            $menu_auth     = $this->input('post.menu_auth/a','');//获取所有授权菜单
+            $menu_auth     = input('post.menu_auth/a','');//获取所有授权菜单
             $data['rules'] = implode(',',$menu_auth);
             $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
 
@@ -539,7 +539,7 @@ EOF;
      * @author 朱亚杰 <zhuyajie@topthink.net>
      */
     public function writeGroup(){
-        $data = $this->input('post.');
+        $data = input('post.');
         if(isset($data['rules'])){
             sort($data['rules']);
             $data['rules']  = implode( ',' , array_unique($data['rules']));
@@ -558,9 +558,9 @@ EOF;
      */
     public function descriptionGroup()
     {
-        $title               = $this->input('post.title');
-        $description         = $this->input('post.description');
-        $id                  = $this->input('post.id');
+        $title               = input('post.title');
+        $description         = input('post.description');
+        $id                  = input('post.id');
         $data['description'] = $description;
         $data['title']       = $title;
         $res=$this->authGroupModel->where('id='.$id)->save($data);
@@ -578,14 +578,14 @@ EOF;
      * @author 朱亚杰 <zhuyajie@topthink.net>
      */
     public function addToGroup(){
-        $uids = $this->input('uids',false);//新增批量用户
+        $uids = input('uids',false);//新增批量用户
         if ($uids) {
             $uid = explode(',',$uids);
         }else{
-            $uid = $this->input('uid');
+            $uid = input('uid');
         }
         
-        $gid = $this->input('group_id');
+        $gid = input('group_id');
         if( empty($uid) ){
             $this->error('参数有误');
         }
@@ -613,8 +613,8 @@ EOF;
      * @author 朱亚杰 <zhuyajie@topthink.net>
      */
     public function removeFromGroup(){
-        $uid = $this->input('uid');
-        $gid = $this->input('group_id');
+        $uid = input('uid');
+        $gid = input('group_id');
         if( $uid==UID ){
             $this->error('不允许解除自身授权');
         }
@@ -634,7 +634,7 @@ EOF;
      * 设置角色的状态
      */
     public function setStatus($model ='auth_rule',$script = false){
-        $ids = $this->input('request.ids/a');
+        $ids = input('request.ids/a');
         if (is_array($ids)) {
             if(in_array('1', $ids)) {
                 $this->error('超级管理员不允许操作');

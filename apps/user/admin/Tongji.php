@@ -20,15 +20,15 @@ class Tongji extends Admin {
     function _initialize()
     {
         parent::_initialize();
-        $timegap = $this->input('timegap');
+        $timegap = input('timegap');
         if($timegap){
             $gap = explode('—', $timegap);
             $begin = $gap[0];
             $end = $gap[1];
         } else {
             $lastweek = date('Y-m-d',strtotime("-1 month"));//30天前
-            $begin = $this->input('begin',$lastweek);
-            $end =  $this->input('end',date('Y-m-d'));
+            $begin = input('begin',$lastweek);
+            $end =  input('end',date('Y-m-d'));
         }
         $this->begin = strtotime($begin);
         $this->end = strtotime($end)+86399;

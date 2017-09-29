@@ -10,7 +10,7 @@
 <div class="row">
     <div class="form-group controls item_{$field.name} {$field.extra_class|default=''}">
     <label for="{$field.name}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{/present}{$field.title}</label>
-    <div class="col-md-6" style="padding-bottom: 5px;"><span class="btn btn-info ml-10 btn-sm" id="upload_avatar_{$field.name}"><i class="fa fa-upload"></i> 上传头像</span>{notempty name="field.tip"}<span class="color-red f12 ml-10">{$field.tip}</span>{/notempty}
+    <div class="col-md-6" style="padding-bottom: 5px;"><span class="btn btn-info ml-10 btn-sm" id="upload_avatar_{$field.name}"><i class="fa fa-upload"></i> 上传头像</span>{notempty name="field.description"}<span class="color-red f12 ml-10">{$field.description}</span>{/notempty}
       
         <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field.value}"/>
 
