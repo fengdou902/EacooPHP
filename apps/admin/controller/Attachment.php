@@ -12,6 +12,7 @@ use app\admin\builder\Builder;
 
 use app\common\controller\Upload;
 use app\common\model\Attachment as AttachmentModel;
+use app\common\model\TermRelationships;
 
 class Attachment extends Admin {
 
@@ -59,11 +60,13 @@ class Attachment extends Admin {
         }
         //筛选start
         if ($term_id>0) {
-            $media_ids = db('term_relationships')->where(['term_id'=>$term_id,'table'=>'attachment'])->select();
+            $media_ids = TermRelationships::where(['term_id'=>$term_id,'table'=>'attachment'])->select();
             if(count($media_ids)){
                 $media_ids = array_column($media_ids,'object_id');
                 //$post_ids=array_merge(array($post_ids),$post_ids);
                 $map['id'] = ['in',$media_ids];
+            } else{
+                $map['id']  = 0;
             }
         }
 
@@ -121,6 +124,7 @@ class Attachment extends Admin {
         $return = get_attachment_info($id);//附件信息 
         return json($return);
     }
+
     /**
      * 编辑附件信息
      * @param  int $id id
@@ -349,9 +353,9 @@ class Attachment extends Admin {
      */
     public function attachmentLayer()
     {
-        $data = input('get.');
-        $path_type = $data['path_type'] ? $data['path_type'] : 'picture';
-        $from = isset($data['from']) ? $data['from'] : '';
+        $data = input('param.');
+        $path_type = !empty($data['path_type']) ? $data['path_type'] : 'picture';
+        $from = !empty($data['from']) ? $data['from'] : '';
 
         $map['path_type'] = ['in',$path_type];
 
@@ -360,12 +364,14 @@ class Attachment extends Admin {
           $map['uid'] = is_login();
         }
         //分类
-        if (isset($data['cat']) && $data['cat']>0) {
-            $media_ids = db('term_relationships')->where(['term_id'=>$data['cat'],'table'=>'attachment'])->select();
+        if (!empty($data['cat']) && $data['cat']>0) {
+            $media_ids = TermRelationships::where(['term_id'=>$data['cat'],'table'=>'attachment'])->select();
             if(count($media_ids)){
                 $media_ids = array_column($media_ids,'object_id');
                 //$post_ids=array_merge(array($post_ids),$post_ids);
                 $map['id']=['in',$media_ids];
+            } else{
+                $map['id']=0;
             }
         }
         $map['status'] = 1;

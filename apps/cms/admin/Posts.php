@@ -66,7 +66,7 @@ class Posts extends Admin {
             }
         }
         // 获取所有文章
-        $map['status'] = ['egt', '0']; // 禁用和正常状态
+        $map['status'] = 1; // 禁用和正常状态
         $map['type']='post';
         $data_list = $this->postModel->where($map)->field(true)->order('create_time desc')->paginate(20);
         //遍历posts遍历的数据
@@ -107,6 +107,7 @@ class Posts extends Admin {
             //->addSelect('作者','author_id',array_merge(array(array('id'=>0,'value'=>'所有作者')),$optCategory))//添加分类筛选
             ->setSearch('输入标题','')
             ->keyListItem('id', 'ID')
+            ->keyListItem('img','缩略图','picture')
             ->keyListItem('title', '标题','link',['link'=>url('edit',['id'=>'__data_id__'])])
             ->keyListItem('category_name','分类')
             ->keyListItem('views','浏览量')
@@ -126,12 +127,15 @@ class Posts extends Admin {
     //编辑
     public function edit($id = 0){
 
-        $title = $id ? "编辑":"新增"; 
+        $title = $id>0 ? "编辑":"新增"; 
         
         $this->assign('hide_panel',true);//隐藏base模板面板
         $this->assign('meta_title',$title.'文章');
 
-        $info = ['content'=>'','img'=>''];
+        $info = [
+            'content'=>'',
+            'img'=>''
+        ];
         if ($id>0) {
             $info = PostsModel::get($id);
             $this->assign('category_id',get_the_category($id));
@@ -166,7 +170,7 @@ class Posts extends Admin {
             if($result){
                 update_post_term($id,input('post.category_id',false));
                 $this ->success($title.'成功');
-            }else{
+            } else{
                 $this ->error($this->postModel->getError());
             }
 

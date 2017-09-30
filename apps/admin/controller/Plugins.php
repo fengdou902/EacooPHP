@@ -56,6 +56,7 @@ class Plugins extends Admin {
                     ->setTabNav($tab_list,$from_type) 
                     ->addTopButton('resume')   // 添加启用按钮
                     ->addTopButton('forbid')   // 添加禁用按钮
+                    ->keyListItem('logo', 'LOGO')
                     ->keyListItem('name', '标识')
                     ->keyListItem('title', '名称')
                     ->keyListItem('description', '描述')
@@ -73,6 +74,7 @@ class Plugins extends Admin {
                     ->setTabNav($tab_list,$from_type) 
                     ->addTopButton('resume')   // 添加启用按钮
                     ->addTopButton('forbid')   // 添加禁用按钮
+                    ->keyListItem('logo', 'LOGO')
                     ->keyListItem('name', '标识')
                     ->keyListItem('title', '名称')
                     ->keyListItem('description', '描述')
@@ -263,6 +265,18 @@ class Plugins extends Admin {
                         $this->error('安装失败，原因：插件静态资源目录不可写');
                     }
                 }
+
+                //logo文件
+                // $logo_file = PluginsModel::getLogo($name,false);
+                // if ($logo_file) {
+                //     if(is_writable(ROOT_PATH.'public/static/plugins')){
+                //         if (!copy($logo_file,ROOT_PATH.'public/static/plugins/'.$name.'/logo.jpg')) {
+                //             trace('插件LOGO移动失败','error');
+                //         } 
+                //     } else{
+                //         $this->success('安装成功，但LOGO失效');
+                //     }
+                // }
                 $this->success('安装成功');
             } else {
                 $this->pluginModel->where("name='{$name}'")->delete();

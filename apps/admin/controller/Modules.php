@@ -228,6 +228,20 @@ class Modules extends Admin {
 			if (!empty($navigation) && is_array($navigation)) {
 				
 			}
+
+			//静态资源文件
+            $static_path = realpath(APP_PATH.$name).'/static';
+            if (is_dir($static_path)) {
+                if(is_writable(ROOT_PATH.'public/static') && is_writable($static_path)){
+                    if (!rename($static_path,ROOT_PATH.'public/static/'.$name)) {
+                        trace('模块静态资源移动失败','error');
+                    } 
+                } else{
+                    PluginsModel::where('name',$name)->update(['status'=>0]);
+                    $this->error('安装失败，原因：模块静态资源目录不可写');
+                }
+            }
+
 			$this->success('安装成功', url('index'));
 		} else {
 			$this->error($this->moduleModel->getError());
@@ -258,6 +272,7 @@ class Modules extends Admin {
 	 */
 	public function uninstall($id, $clear = false) {
 		$module_info = ModuleModel::get($id);
+		$name = $module_info['name'];
 		if ($module_info['is_system'] == 1) {
 			$this->error('系统模块不允许卸载！');
 		}
@@ -269,15 +284,31 @@ class Modules extends Admin {
 		
 		if ($result) {
 			// 删除后台菜单
-		    $this->removeAdminMenus($module_info['name'],$clear);
+		    $this->removeAdminMenus($name,$clear);
 			if ($clear) {
 		        //执行卸载sql
-				$sql_file   = realpath(APP_PATH.$module_info['name']).'/install/uninstall.sql';
-				$info       = ModuleModel::getInfoByFile($module_info['name']);
-				$sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
-				if ($sql_status) {
-					$this->success('卸载成功，相关数据彻底删除！', url('index'));
+				$sql_file   = realpath(APP_PATH.$name).'/install/uninstall.sql';
+				if (is_file($sql_file)) {
+					$info       = ModuleModel::getInfoByFile($name);
+					$sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
+					if (!$sql_status) {
+						 $this->error('执行模块SQL卸载语句失败');
+					}
 				}
+				
+	            $_static_path = ROOT_PATH.'public/static/'.$name;
+	            if (is_dir($_static_path)) {
+	                if(is_writable(ROOT_PATH.'public/static') && is_writable(realpath(APP_PATH.$name))){
+	                	$static_path = realpath(APP_PATH.$name).'/static';
+	                    if (!rename($_static_path,$static_path)) {
+	                        trace('插件静态资源移动失败：'.'public/static/'.$name.'->'.$static_path,'error');
+	                    } 
+	                } else{
+	                    PluginsModel::where('name',$name)->setField('status',0);
+	                    $this->error('卸载失败，原因：模块静态资源目录不可写');
+	                }
+	            }
+	            $this->success('卸载成功',url('index'));
 			} else {
 				$this->success('卸载成功，相关数据未卸载！', url('index'));
 			}
