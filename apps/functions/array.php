@@ -127,36 +127,43 @@ function convert_arr_key($arr, $key_name='id')
 }
 
 /**
- * 数组转换为对象
- * @param  [type] $array [description]
- * @return [type]        [description]
+ * 数组 转 对象
+ *
+ * @param array $arr 数组
+ * @return object
  */
-function arrayToObject($array) {
-  if (is_array($array)) {
-    $obj = new StdClass();
-    foreach ($array as $key => $val){
-      $obj->$key = $val;
+ function array_to_object($arr) {
+    if (gettype($arr) != 'array') {
+        return;
     }
-  }
-  else { $obj = $array; }
-  return $obj;
-}
-
-/**
- * 对象转换为数组
- * @param  [type] $array [description]
- * @return [type]        [description]
+    foreach ($arr as $k => $v) {
+        if (gettype($v) == 'array' || getType($v) == 'object') {
+            $arr[$k] = (object)array_to_object($v);
+        }
+    }
+ 
+    return (object)$arr;
+ }
+ 
+ /**
+ * 对象 转 数组
+ *
+ * @param object $obj 对象
+ * @return array
  */
-function objectToArray($object) {
-  if (is_object($object)) {
-    foreach ($object as $key => $value) {
-      $array[$key] = $value;
+ function object_to_array($obj) {
+    $obj = (array)$obj;
+    foreach ($obj as $k => $v) {
+        if (gettype($v) == 'resource') {
+            return;
+        }
+        if (gettype($v) == 'object' || gettype($v) == 'array') {
+            $obj[$k] = (array)object_to_array($v);
+        }
     }
-  } else {
-    $array = $object;
-  }
-  return $array;
-}
+ 
+    return $obj;
+ }
 
 /**
  * array_delete  删除数组中的某个值

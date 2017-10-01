@@ -213,7 +213,7 @@ class Posts extends Admin {
                 ->setListDataKey('id')
                 ->setListData($data_list)    // 数据列表
                 ->setListPage($totalCount,20) // 数据列表分页
-                ->addRightButton('edit',array('href'=>url('page_edit',['id'=>'__data_id__'])))  // 添加编辑按钮
+                ->addRightButton('edit',array('href'=>url('page/edit',['id'=>'__data_id__'])))  // 添加编辑按钮
                 ->addRightButton('delete')  // 添加删除按钮
                ->fetch();
     }

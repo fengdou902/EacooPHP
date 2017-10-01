@@ -52,10 +52,10 @@ class AuthGroup extends Base
         $gid = is_array($gid)? $gid:explode( ',',trim($gid,',') );
 
         $Access = model(self::AUTH_GROUP_ACCESS);
-        if( isset($_REQUEST['batch']) ){
+        //if( isset($_REQUEST['batch']) ){
             //为单个用户批量添加用户组时,先删除旧数据
             $del = $Access->where(array('uid'=>array('in',$uid)))->delete();
-        }
+        //}
 
         $uid_arr = explode(',',$uid);
         $uid_arr = array_diff($uid_arr,array(config('user_administrator')));
@@ -64,22 +64,22 @@ class AuthGroup extends Base
             foreach ($uid_arr as $u){
                 foreach ($gid as $g){
                     if( is_numeric($u) && is_numeric($g) ){
-                        $add[] = array('group_id'=>$g,'uid'=>$u);
+                        $add[] = ['group_id'=>$g,'uid'=>$u];
                     }
                 }
-                $user_auth_role = db('users')->where(array('uid'=>$u))->value('auth_groups');
-                if ($user_auth_role) {
-                    $user_auth_role = explode(',', $user_auth_role);
-                    $user_auth_role = array_merge($user_auth_role,$gid);
-                } else{
-                    $user_auth_role = $gid;
-                }
-                db('users')->where(array('uid'=>$u))->update(['auth_groups',implode(',',$user_auth_role)]);//同时将用户角色关联（16/07/06新增）
+                // $user_auth_role = db('users')->where(array('uid'=>$u))->value('auth_groups');
+                // if ($user_auth_role) {
+                //     $user_auth_role = explode(',', $user_auth_role);
+                //     $user_auth_role = array_merge($user_auth_role,$gid);
+                // } else{
+                //     $user_auth_role = $gid;
+                // }
+                // db('users')->where(array('uid'=>$u))->update(['auth_groups',implode(',',$user_auth_role)]);//同时将用户角色关联（16/07/06新增）
                 
             }
             $Access->saveAll($add);
         }
-        if ($Access->getDbError()) {
+        if ($Access->getError()) {
             if( count($uid_arr)==1 && count($gid)==1 ){
                 //单个添加时定制错误提示
                 $this->error = "不能重复添加";

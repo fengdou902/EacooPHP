@@ -101,9 +101,9 @@ class Page extends Admin {
             }
         } else {
             if ($id!=0) {
-               $page_data =$this->postModel->find($id);
+               $info = PostsModel::get($id);
             } else{
-                $page_data=[];
+                $info = [];
             }
             
             Builder::run('Form')
@@ -114,7 +114,7 @@ class Page extends Admin {
                     ->addFormItem('author_id', 'number', '作者', '')
                     ->addFormItem('tags', 'tags', '标签', '')
                     ->addFormItem('seo_keywords', 'text', 'SEO关键字', '')
-                    ->setFormData($page_data)
+                    ->setFormData($info)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
         }

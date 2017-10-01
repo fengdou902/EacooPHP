@@ -41,18 +41,94 @@ class Auth extends Admin {
     }
     
     /**
-     * 菜单管理(规则)
+     * 规则管理
      * @return [type] [description]
      */
-    public function rule(){
+    public function index(){
         $manage_type = input('get.manage_type','menu');//管理类型
         // 获取所有节点信息
-        $map['pid'] = input('get.pid',0);//是否存在父ID
+        $map['pid'] = input('param.pid',0);//是否存在父ID
         //$map['is_menu']=1;//只显示菜单
         if ($map['pid']>0) {
             $current_submenu_name = $this->authRuleModel->where(['id'=>(int)$map['pid']])->value('title');
             $meta_title='<a onclick="javascript:history.back(-1);return false;">'.$current_submenu_name.'</a>》子菜单管理';
-        }else{
+        } else{
+            $meta_title='规则管理';
+        }
+        
+        list($data_list,$totalCount) = $this->authRuleModel->getListByPage($map,'sort asc','*',20);
+        foreach ($data_list as $key=>$list) {
+            $data_list[$key]['p_menu']= $this->authRuleModel->where(['id'=>(int)$list['pid']])->value('title');
+        }
+
+        //是否标记为菜单：0否，1是
+        $marker_menu0_attr['title'] = '取消菜单标记';
+        $marker_menu0_attr['class'] = 'btn btn-primary btn-sm confirm ajax-post';
+        $marker_menu0_attr['href'] = url('markerMenu',['status'=>0]);
+        $marker_menu0_attr['target-form'] ="ids";
+
+        $marker_menu1_attr['title'] = '标记为菜单';
+        $marker_menu1_attr['class'] = 'btn btn-primary btn-sm ajax-post';
+        $marker_menu1_attr['href'] = url('markerMenu',['status'=>1]);
+        $marker_menu1_attr['target-form'] ="ids";
+
+         //移动模块按钮属性
+        $movemodule_attr['title'] = '<i class="fa fa-exchange"></i> 移动模块';
+        $movemodule_attr['class'] = 'btn btn-info btn-sm';
+        $movemodule_attr['onclick'] = 'move_module()';
+
+        //移动上级按钮属性
+        $moveparent_attr['title'] = '<i class="fa fa-exchange"></i> 移动位置';
+        $moveparent_attr['class'] = 'btn btn-info btn-sm';
+        $moveparent_attr['onclick'] = 'move_menuparent()';
+
+        $extra_html=$this->moveMenuHtml();//添加移动按钮html
+
+        Builder::run('List')
+            ->setMetaTitle($meta_title)
+            ->addTopBtn('addnew',array('href'=>url('rule_edit',array('pid'=>$map['pid']))))  // 添加新增按钮
+            ->addTopBtn('resume',array('model'=>'auth_rule'))  // 添加启用按钮
+            ->addTopBtn('forbid',array('model'=>'auth_rule'))  // 添加禁用按钮
+            ->addTopBtn('delete',array('model'=>'auth_rule'))  // 添加删除按钮
+            //->addTopButton('self', $movemodule_attr) //移动模块
+            ->addTopButton('self', $moveparent_attr) //移动菜单位置
+            ->addTopBtn('sort',array('model'=>'auth_rule','href'=>url('rule_sort',array('pid'=>$map['pid']))))  // 添加排序按钮
+            //->setSearch('', url('rule'))
+            ->keyListItem('id','ID')
+            ->keyListItem('title','名称','link',['link'=>url('Auth/rule',array('pid'=>'__data_id__'))])
+            ->keyListItem('p_menu','上级菜单')
+            ->keyListItem('name', 'URL')
+            ->keyListItem('from_flag', '来源标识')
+            ->keyListItem('sort', '排序')
+            ->keyListItem('is_menu','菜单','array',[0=>'否',1=>'是'])
+            ->keyListItem('status','状态','status')
+            ->keyListItem('right_button', '操作', 'btn')
+            ->setListDataKey('id')
+            ->setListData($data_list)    // 数据列表
+            ->setListPage($totalCount) // 数据列表分页
+            ->setExtraHtml($extra_html)
+            ->addRightButton('edit',array('href'=>url('rule_edit',array('id'=>'__data_id__'))))      // 添加编辑按钮
+            ->addRightButton('forbid',array('model'=>'auth_rule'))// 添加删除按钮
+            ->addFootBtn('self', $marker_menu0_attr)->addFootBtn('self', $marker_menu1_attr)
+            ->alterListData(
+                array('key' => 'pid', 'value' =>'0'),
+                array('p_menu' => '无'))
+            ->fetch();
+    }
+
+    /**
+     * 后台菜单管理(规则)
+     * @return [type] [description]
+     */
+    public function adminMenu(){
+        $manage_type = input('get.manage_type','menu');//管理类型
+        // 获取所有节点信息
+        $map['pid'] = input('param.pid',0);//是否存在父ID
+        //$map['is_menu']=1;//只显示菜单
+        if ($map['pid']>0) {
+            $current_submenu_name = $this->authRuleModel->where(['id'=>(int)$map['pid']])->value('title');
+            $meta_title = '<a onclick="javascript:history.back(-1);return false;">'.$current_submenu_name.'</a>》子菜单管理';
+        } else{
             $meta_title='菜单管理';
         }
         
@@ -90,12 +166,12 @@ class Auth extends Admin {
             ->addTopBtn('resume',array('model'=>'auth_rule'))  // 添加启用按钮
             ->addTopBtn('forbid',array('model'=>'auth_rule'))  // 添加禁用按钮
             ->addTopBtn('delete',array('model'=>'auth_rule'))  // 添加删除按钮
-            ->addTopButton('self', $movemodule_attr) //移动模块
+            //->addTopButton('self', $movemodule_attr) //移动模块
             ->addTopButton('self', $moveparent_attr) //移动菜单位置
             ->addTopBtn('sort',array('model'=>'auth_rule','href'=>url('rule_sort',array('pid'=>$map['pid']))))  // 添加排序按钮
             //->setSearch('', url('rule'))
             ->keyListItem('id','ID')
-            ->keyListItem('title','名称','link',['link'=>url('Auth/rule',array('pid'=>'__data_id__'))])
+            ->keyListItem('title','名称','link',['link'=>url('Auth/adminMenu',array('pid'=>'__data_id__'))])
             ->keyListItem('p_menu','上级菜单')
             ->keyListItem('name', 'URL')
             ->keyListItem('from_flag', '来源标识')
@@ -133,7 +209,7 @@ class Auth extends Admin {
             // 提交数据
             $data =input('post.');
             //验证数据
-            $this->validateData('AuthRule',$data);
+            $this->validate($data,'AuthRule');
             
             $id   =isset($data['id']) && $data['id']>0 ? $data['id']:false;
 
@@ -144,7 +220,7 @@ class Auth extends Admin {
                 $this->error($this->authRuleModel->getError());
             }
 
-        }else{
+        } else{
             // 获取菜单数据
             if ($id!=0) {
                 $menu_data = $this->authRuleModel->find($id);
@@ -179,7 +255,7 @@ class Auth extends Admin {
     public function rule_sort($ids = null)
     {
         $builder    = Builder::run('Sort');
-        $map['pid'] = input('get.pid',0,'intval');//是否存在父ID
+        $map['pid'] = input('param.pid',0,'intval');//是否存在父ID
         if (IS_POST) {
             cache('admin_sidebar_menus',null);//清空后台菜单缓存
             $builder->doSort('auth_rule', $ids);
@@ -417,7 +493,7 @@ EOF;
 	
     //角色编辑
     public function role_edit($group_id=0){
-        $title=$group_id ? '编辑':'新增';
+        $title = $group_id ? '编辑':'新增';
         if ($group_id!=0) {
             $this->assign('group_id',$group_id);
         }
@@ -446,7 +522,7 @@ EOF;
      * @param  integer $group_id 组ID
      * @return [type] [description]
      * @date   2017-08-27
-     * @author 赵俊峰 <981248356@qq.com>
+     * @author 心云间、凝听 <981248356@qq.com>
      */
     public function access($group_id=0){
         if ($group_id!=0) {
@@ -585,7 +661,7 @@ EOF;
             $uid = input('uid');
         }
         
-        $gid = input('group_id');
+        $gid = input('param.group_id');
         if( empty($uid) ){
             $this->error('参数有误');
         }
@@ -593,8 +669,8 @@ EOF;
             if ( is_administrator($uid) ) {
                 $this->error('该用户为超级管理员');
             }
-            if( !$this->userModel->where(array('uid'=>$uid))->find() ){
-                $this->error('管理员用户不存在');
+            if( !$this->userModel->where(['uid'=>$uid])->find() ){
+                $this->error('用户不存在');
             }
         }
 

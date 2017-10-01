@@ -3,7 +3,7 @@ namespace app\admin\validate;
 
 use think\Validate;
 
-class Hook extends Validate
+class Link extends Validate
 {
     // 验证规则
     protected $rule = [

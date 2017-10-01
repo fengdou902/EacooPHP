@@ -43,7 +43,7 @@
                     <td>{$vo.nickname}</td>
                     <td><span>{$vo.last_login_time|time_format}</span></td>
                     <td><span>{$vo.last_login_ip|long2ip}</span></td>
-                    <td>{switch name="vo.status_text"}
+                    <td>{switch name="vo.status"}
                             {case value="-1"}删除{/case}
                             {case value="0"}禁用{/case}
                             {case value="1"}正常{/case}
@@ -59,25 +59,24 @@
             </tbody>
             </table>
 
-            </div>
-            <div class="main-title">
-                <div class="page_nav fl">
-                    {$_list->render()}
+            </div>          
+    </div>   
+    <div class="main-title">
+        <div class="page_nav col-md-8">
+            {$_list->render()}
+        </div>
+        <div id="add-to-group" class="tools col-md-4">
+            <form class="add-user" action="{:url('addToGroup')}" method="post" enctype="application/x-www-form-urlencoded" >
+            <div class="form-group">
+                <div class="col-md-10">
+                    <input class="form-control" type="text" name="uid" placeholder="请输入uid,多个用英文逗号分隔">
                 </div>
-                <div id="add-to-group" class="tools fr">
-                    <form class="add-user" action="{:url('addToGroup')}" method="post" enctype="application/x-www-form-urlencoded" >
-                    <div class="form-group">
-                        <div class="col-md-8">
-                            <input class="form-control" type="text" name="uid" placeholder="请输入uid,多个用英文逗号分隔">
-                        </div>
-                        <input type="hidden" name="group_id" value="{:input('group_id')}">
-                        <button type="submit" class="btn btn-info btn-raised btn-sm ajax-post" target-form="add-user">新 增</button>
-                    </div>
-                    </form>
-                </div>
+                <input type="hidden" name="group_id" value="{:input('group_id')}">
+                <button type="submit" class="btn btn-info btn-raised btn-sm ajax-post col-md-2" target-form="add-user">新 增</button>
             </div>
-                      
-    </div>    
+            </form>
+        </div>
+    </div> 
    </div>
  </div>
 

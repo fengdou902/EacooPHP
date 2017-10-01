@@ -19,6 +19,10 @@ class AuthGroupAccess extends Base
     // 设置数据表（不含前缀）
     // protected $name = 'auth_rule';
 
+    // 定义时间戳字段名
+    protected $createTime = false;
+    protected $updateTime = false;
+
 	// 设置birthday为时间戳类型（整型）
     // protected $type       = [
     //     'birthday' => 'timestamp',

@@ -32,18 +32,18 @@ class Home extends Base {
      * @param  string $scene 场景标识
      * @return [type]                [description]
      */
-    public function validateData($validate_name='',$data=[],$scene='')
-    {
-        if (!$validate_name || empty($data)) return false;
-        $validate = Loader::validate($validate_name);
-        if ($scene) {
-            $validate->scene($scene);
-        }
-        if(!$validate->check($data)){
-            $this->error($validate->getError());
-        }
-        return true;
-    }
+    // public function validateData($validate_name='',$data=[],$scene='')
+    // {
+    //     if (!$validate_name || empty($data)) return false;
+    //     $validate = Loader::validate($validate_name);
+    //     if ($scene) {
+    //         $validate->scene($scene);
+    //     }
+    //     if(!$validate->check($data)){
+    //         $this->error($validate->getError());
+    //     }
+    //     return true;
+    // }
 
     /**
      * 页面配置信息

@@ -65,11 +65,11 @@ class Link extends Admin{
      * 编辑链接
      */
     public function edit($id=0) {
-        $title = $id ? "编辑":"新增";
+        $title = $id>0 ? "编辑":"新增";
         if (IS_POST) {
-            $data =input('post.');
+            $data = input('post.');
             //验证数据
-            $this->validateData('Link',$data);
+            $this->validate($data,'Link');
             $id   =isset($data['id']) && $data['id']>0 ? $data['id']:false;
             if ($this->linkModel->editData($data,$id)) {
                 $this->success($title.'成功', url('index'));
@@ -98,6 +98,7 @@ class Link extends Admin{
                     ->fetch();
         }
     }
+    
     /**
      * 对链接进行排序
      * @author 心云间、凝听 <981248356@qq.com>

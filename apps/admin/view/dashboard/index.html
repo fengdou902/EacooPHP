@@ -32,55 +32,13 @@
                 <!-- /.box-header -->
                 <div class="box-body no-padding">
                   <ul class="users-list clearfix">
-                    <li>
-                        <img src="http://wx.qlogo.cn/mmopen/ajNVdqHZLLBUbyX40qPgDyU57GDQ4xxxIVibSywVXl0pDdJpqrQDp5Yp1iaPlkU3QhZ2r3h1etngXv8hL6BMKOUg/0" width="45" height="45">
-                        <a class="users-list-name" href="/admin.php?s=/Admin/User/edit/uid/326795.html">新宇若水</a>
+                    {volist name="user_list" id="row"}
+                      <li>
+                        <img src="{$row.avatar}" width="45" height="45">
+                        <a class="users-list-name" href="{:url('admin/user/edit',['uid'=>$row['uid']])}">{$row.nickname}/a>
                         <span class="users-list-date">32分钟前</span>
-                      </li><li>
-                        <img src="http://wx.qlogo.cn/mmopen/9UjCmequjUib5ywquUZY1ibbK663y8qiaGXlcxQ4Hgjem9Hp2tVsnMbwErjuMuerBQMnrrK8NlmmeiaHT58ic9rG4SXI0l05IYQq1/0" width="45" height="45">
-                        <a class="users-list-name" href="/admin.php?s=/Admin/User/edit/uid/326794.html">可爱</a>
-                        <span class="users-list-date">38分钟前</span>
-                      </li><li>
-                        <img src="http://wx.qlogo.cn/mmopen/eCXtiatJG2qA7d9wjNKktQUMjaiajx4SCoL5Phc5NqRKg4bltVHI94hpZl7x1R2E14Xbb5x7wDJkiaMrYgJx0Nb8nGuvicWcEymc/0" width="45" height="45">
-                        <a class="users-list-name" href="/admin.php?s=/Admin/User/edit/uid/326793.html">王晓雪</a>
-                        <span class="users-list-date">57分钟前</span>
-                      </li><li>
-                        <img src="http://wx.qlogo.cn/mmopen/RlLibmYfibwCs6EPOR9ZRxyckic1kLZMqAibdQgC5RXIuaoIAQAYL1IWfxcuzBfqwuicxr246CszaXmmZViaDprDibR4mlMBib6lz30j/0" width="45" height="45">
-                        <a class="users-list-name" href="/admin.php?s=/Admin/User/edit/uid/326792.html">陈学映</a>
-                        <span class="users-list-date">1小时前</span>
-                      </li><li>
-                        <img src="http://wx.qlogo.cn/mmopen/LIQXXYlOuN2jy45Uy8FrA1XpHMaUGvtGYrC9XIcgI2MKvzlPsb4uISBUpLxOXZ6nlqXpCvMoEicDM4HSltm9O4nGyvU11Lzib1/0" width="45" height="45">
-                        <a class="users-list-name" href="/admin.php?s=/Admin/User/edit/uid/326787.html">安妮</a>
-                        <span class="users-list-date">2小时前</span>
-                      </li><li>
-                        <img src="http://wx.qlogo.cn/mmopen/PiajxSqBRaELGyaDWOrqGfF7JibvU3hbuA7yYHJne8fw68wFQHjZTibcMxoR4keH7DSia4QuREIskmpe3mdxiaGwfJw/0" width="45" height="45">
-                        <a class="users-list-name" href="/admin.php?s=/Admin/User/edit/uid/326782.html">蒂默波尔</a>
-                        <span class="users-list-date">2小时前</span>
-                      </li><li>
-                        <img src="http://wx.qlogo.cn/mmopen/ajNVdqHZLLA7FINjLK0kxvyX9BhicrMF31ldiaiagMZhv8crokiavvNuLC1od9K8lGluATGZhFdA1eCeIllqXGO1Sw/0" width="45" height="45">
-                        <a class="users-list-name" href="/admin.php?s=/Admin/User/edit/uid/326781.html">老孟ღ</a>
-                        <span class="users-list-date">2小时前</span>
-                      </li><li>
-                        <img src="http://wx.qlogo.cn/mmopen/RLZcTUr4lyhBYRz8vKMAVicmHdShyTG9DA1jEg9PMkBKy8M2KwAX9mOHD3TudcoL8Ph8gXwSlaBRW6MpsqKibd8Y8oXETIsUsic/0" width="45" height="45">
-                        <a class="users-list-name" href="/admin.php?s=/Admin/User/edit/uid/326780.html">若相惜♀不弃</a>
-                        <span class="users-list-date">2小时前</span>
-                      </li><li>
-                        <img src="http://wx.qlogo.cn/mmopen/l4fl4iboCt9RZUw8sVElUyz3dQchzKcpiaTZicLIH2YhkA3Qypvhc2ZyjLzxzUIYsf9NtFpicibeJfGF8AQZSiaBq8zju3Mias6YZsC/0" width="45" height="45">
-                        <a class="users-list-name" href="/admin.php?s=/Admin/User/edit/uid/326779.html"> 靖子玉，</a>
-                        <span class="users-list-date">3小时前</span>
-                      </li><li>
-                        <img src="http://wx.qlogo.cn/mmopen/RLZcTUr4lygZUPVuuJaW7VAZnjrKjZwuGgLopnfaKLSGmecg1U7IItQdvvynWicZxNKGUiaySp1b79NDsx0hgmfzd0Uic8LmnhI/0" width="45" height="45">
-                        <a class="users-list-name" href="/admin.php?s=/Admin/User/edit/uid/326778.html">倪远</a>
-                        <span class="users-list-date">3小时前</span>
-                      </li><li>
-                        <img src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM6hlc1tcs5ya8Qdgeph73AW9Bl4tGbmg1yGtyaDJjgKuqSe4PialEfsdH3icVG3ILSZISDicT5HiaU9lqRiaibMLWd2rZnxYAP8HClE4/0" width="45" height="45">
-                        <a class="users-list-name" href="/admin.php?s=/Admin/User/edit/uid/326777.html">子森</a>
-                        <span class="users-list-date">3小时前</span>
-                      </li><li>
-                        <img src="http://wx.qlogo.cn/mmopen/9UjCmequjUib5ywquUZY1ibYhLogodtGeVc7E7jTG9XyrLn4BwPB7MicQ58KIOkJrxbTqk5snhXOlTYoglSm1HIXcGzAAo251so/0" width="45" height="45">
-                        <a class="users-list-name" href="/admin.php?s=/Admin/User/edit/uid/326776.html">紳士自己</a>
-                        <span class="users-list-date">3小时前</span>
-                      </li>                  
+                      </li>
+                    {/volist}
                   </ul>
                   <!-- /.users-list -->
                 </div>

@@ -701,7 +701,7 @@ class Plugins extends Admin {
         if (IS_POST) {
             $data = input('post.');
             //验证数据
-            $this->validateData('Hook',$data);
+            $this->validate($data,'Hook');
             $id = isset($data['id']) && $data['id']>0 ? $data['id']:false;
             if ($this->hooksModel->editData($data,$id)) {
                 $this->success($title.'成功', url('hooks'));

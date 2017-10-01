@@ -238,15 +238,15 @@ class Admin extends Base
      * @param  array  $data          [description]
      * @return [type]                [description]
      */
-    public function validateData($validate_name='',$data=[])
-    {
-        if (!$validate_name || empty($data)) return false;
-        $validate = Loader::validate($validate_name);
-        if(!$validate->check($data)){
-            $this->error($validate->getError());
-        }
-        return true;
-    }
+    // public function validateData($validate_name='',$data=[])
+    // {
+    //     if (!$validate_name || empty($data)) return false;
+    //     $validate = Loader::validate($validate_name);
+    //     if(!$validate->check($data)){
+    //         $this->error($validate->getError());
+    //     }
+    //     return true;
+    // }
     /**
      * [fuck 非法操作转404]
      */

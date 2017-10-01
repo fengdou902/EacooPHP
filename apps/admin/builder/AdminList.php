@@ -647,7 +647,7 @@ class AdminList extends Builder
                         break;
                     case 'avatar':
                         if (!$data[$column['name']] || empty($data[$column['name']])) {
-                            $data[$column['name']] = config('view_replace_str.__PUBLIC__').'/img/default-avatar.jpeg';
+                            $data[$column['name']] = config('view_replace_str.__PUBLIC__').'/img/default-avatar.svg';
                         }
                         $data[$column['name']] = '<img style="width:40px;height:40px;" src="'.path_to_url($data[$column['name']]).'">';
                         break;

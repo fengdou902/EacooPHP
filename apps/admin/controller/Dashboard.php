@@ -48,6 +48,8 @@ class Dashboard extends Admin
         ];
         $this->assign('server_info', $server_info);
 
+        $user_list = db('users')->where(['status'=>1])->field('uid,username,nickname,avatar,reg_time')->limit(12)->order('reg_time desc')->select();
+        $this->assign('user_list',$user_list);
         //用户数据分析
         $result = [
             'data'=>[10,26,21,35,43,45,50],

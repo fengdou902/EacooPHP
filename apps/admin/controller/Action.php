@@ -92,7 +92,7 @@ class Action extends Admin {
 		if (IS_POST) {
 			$data =input('post.');
             //验证数据
-            $this->validateData('Action',$data);
+            $this->validate($data,'Action');
             $id   =isset($data['id']) && $data['id']>0 ? $data['id'] : false;
             if ($this->actionModel->editData($data,$id)) {
             	// action_log('edit_action', 'Action', $id, session('user_auth.uid'));

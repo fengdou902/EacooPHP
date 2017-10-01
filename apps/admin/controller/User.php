@@ -31,9 +31,9 @@ class User extends Admin {
         // 获取所有用户
         $map['status'] = ['egt', '0']; // 禁用和正常状态
         list($data_list,$page) = $this->user_model->getListByPage($map,'reg_time desc','*',20);
-        foreach($data_list as $k=>$user){
-            $data_list[$k]['role_name']= isset(get_role_info($user['uid'],'title')[0]['title']) ? get_role_info($user['uid'],'title')[0]['title']: '无';//获取角色名
-        }
+        // foreach($data_list as $k=>$user){
+        //     $data_list[$k]['role_name']= isset(get_role_info($user['uid'],'title')[0]['title']) ? get_role_info($user['uid'],'title')[0]['title']: '无';//获取角色名
+        // }
         
         $send_message_attr['title']   = '<i class="fa fa-comment-o"></i> 发送消息';
         $send_message_attr['class']   = 'btn btn-info btn-raised btn-sm';
@@ -51,8 +51,8 @@ class User extends Admin {
         Builder::run('List')
                 ->setMetaTitle('用户管理') // 设置页面标题
                 ->addTopButton('addnew')  // 添加新增按钮
-                // ->addTopButton('resume')  // 添加启用按钮
-                // ->addTopButton('forbid')  // 添加禁用按钮
+                //->addTopButton('resume')  // 添加启用按钮
+                //->addTopButton('forbid')  // 添加禁用按钮
                 ->addTopButton('delete')  // 添加删除按钮
                 ->addTopButton('self', $send_message_attr) //发送消息按钮按钮
                 ->addTopButton('self', $move_role_attr)//添加移动角色按钮
@@ -61,10 +61,10 @@ class User extends Admin {
                 ->keyListItem('avatar', '头像', 'avatar')
                 ->keyListItem('nickname', '昵称')
                 ->keyListItem('username', '用户名')
-                ->keyListItem('role_name', '角色')
                 ->keyListItem('email', '邮箱')
                 ->keyListItem('mobile', '手机号')
                 ->keyListItem('reg_time', '注册时间')
+                ->keyListItem('allow_admin', '是否管理员','status')
                 ->keyListItem('status', '状态', 'array',[0=>'禁用',1=>'正常',2=>'待验证'])
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListDataKey('uid')
@@ -88,17 +88,22 @@ class User extends Admin {
             }
 
             $data = input('post.');
-            $uid  = isset($data['uid']) ? intval($data['uid']) : false;
-            // 提交数据
-            $result = $this->user_model->editData($data,$uid,'uid');
+            $result = $this->validate($data,'User.edit');
+            if(true !== $result){
+                $this->error($result);
+            } else{
+                $uid  = isset($data['uid']) ? intval($data['uid']) : false;
+                // 提交数据
+                $result = $this->user_model->editData($data,$uid,'uid');
 
-            if ($result) {
-                if ($uid>0) {//如果是编辑状态下
-                    $this->user_model->update_login_session($uid);
+                if ($result) {
+                    if ($uid>0) {//如果是编辑状态下
+                        $this->user_model->update_login_session($uid);
+                    }
+                    $this->success($title.'成功', url('index'));
+                } else {
+                    $this->error($this->user_model->getError());
                 }
-                $this->success($title.'成功', url('index'));
-            } else {
-                $this->error($this->user_model->getError());
             }
 
         } else {

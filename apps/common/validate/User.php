@@ -3,7 +3,7 @@ namespace app\common\validate;
 
 use think\Validate;
 
-class Users extends Validate
+class User extends Validate
 {
     // 验证规则
     protected $rule = [
@@ -34,6 +34,6 @@ class Users extends Validate
     ];
 
     protected $scene=[
-        'edit' => ['nickname','username','email','mobile'],
+        'edit' => ['nickname','username','email','mobile'=>'between|unique'],
     ];
 }
