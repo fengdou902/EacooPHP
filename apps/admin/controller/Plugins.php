@@ -778,12 +778,12 @@ class Plugins extends Admin {
 
                 $val['downloaded'] = '<i class="fa fa-star color-warning"></i> '.$val['downloaded'];
                 $val['publish_time'] = friendly_date($val['publish_time']);
-                $val['right_button'] = '<a class="label label-primary" href="http://www.eacoo123.com">现在安装</a> ';
+                $val['right_button'] = '<a class="label label-primary" href="javascript:void(0);" onclick="layer.alert(\'暂不支持在线安装\n请加QQ群：436491685\', {icon:6});">现在安装</a> ';
                 if (!empty($local_plugins)) {
                     foreach ($local_plugins as $key => $row) {
                         if ($row['name']==$val['name']) {
                             if ($row['version']<$val['version']) {
-                                $val['right_button'] = '<a class="label label-success" href="http://www.eacoo123.com">升级</a> ';
+                                $val['right_button'] = '<a class="label label-success" href="javascript:void(0);" onclick="layer.alert(\'暂不支持在线安装\n请加QQ群：436491685\', {icon:6});">升级</a> ';
                             } else{
                                 $val['right_button'] = '<a class="label label-default" href="#">已安装</a> ';
                             }
