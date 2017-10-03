@@ -14,6 +14,7 @@ use app\admin\model\Action as ActionModel;
 use app\common\model\ActionLog;
 
 use app\admin\builder\Builder;
+use think\Db;
 
 class Action extends Admin {
 
@@ -173,6 +174,7 @@ class Action extends Admin {
 
         Builder::run('List')
         		->setMetaTitle('行为日志')  // 设置页面标题
+        		->addTopButton('self', ['title'=>'清空日志','href'=>url('clearLog'),'class'=>'btn btn-warning btn-sm ajax-post confirm','hide-data'=>'true']) //清空
                 ->addTopButton('delete',['href'=>url('admin/Action/dellog')])  // 添加禁用按钮
         		->keyListItem('name','行为标识')
                 ->keyListItem('nickname','执行者')
@@ -184,7 +186,7 @@ class Action extends Admin {
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListData($data_list)     // 数据列表
                 ->setListPage($data_list->render())  // 数据列表分页
-                ->addRightButton('edit',['href'=>url('detail',['id'=>'__data_id__']),'title'=>'查看'])->addRightButton('delete')  // 添加删除按钮
+                ->addRightButton('edit',['href'=>url('detail',['id'=>'__data_id__']),'title'=>'详情'])->addRightButton('delete')  // 添加删除按钮
                 ->fetch();
 
 	}
@@ -238,7 +240,7 @@ class Action extends Admin {
 	 * 清空日志
 	 */
 	public function clearLog($id = '') {
-		$res = ActionLog::where('1=1')->delete();
+		$res = Db::execute('truncate table '.config('database.prefix').'action_log');
 		if ($res !== false) {
 			$this->success('日志清空成功！');
 		} else {

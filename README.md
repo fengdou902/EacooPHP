@@ -41,7 +41,7 @@ EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求
 官方QQ群: 436491685  
 
 ### 演示地址
-[http://demo1.eacoo123.com/admin.php?s=/admin/index/login](http://demo1.eacoo123.com/admin.php?s=/admin/index/login)  
+[http://demo1.eacoo123.com/admin](http://demo1.eacoo123.com/admin)  
 账号：admin  
 密码：123456  
 
