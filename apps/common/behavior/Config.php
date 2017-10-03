@@ -33,7 +33,7 @@ class Config {
             define('SERVER_SOFTWARE_TYPE','no');
         }
 
-        define('EACOOPHP_V','1.0.4');
+        define('EACOOPHP_V','1.0.5');
         // 安装模式下直接返回
         if(defined('MODULE_NAME') && MODULE_NAME === 'install') return;
         // 当前模块模版参数配置

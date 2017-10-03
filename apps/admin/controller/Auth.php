@@ -27,6 +27,7 @@ class Auth extends Admin {
     function _initialize()
     {
         parent::_initialize();
+
         $this->authRuleModel  = new AuthRule();
         $this->authGroupModel = new AuthGroup();
         $this->userModel     = new User;
@@ -95,10 +96,10 @@ class Auth extends Admin {
             ->addTopBtn('sort',array('model'=>'auth_rule','href'=>url('rule_sort',array('pid'=>$map['pid']))))  // 添加排序按钮
             //->setSearch('', url('rule'))
             ->keyListItem('id','ID')
-            ->keyListItem('title','名称','link',['link'=>url('Auth/rule',array('pid'=>'__data_id__'))])
+            ->keyListItem('title','名称','link',['link'=>url('Auth/index',array('pid'=>'__data_id__'))])
             ->keyListItem('p_menu','上级菜单')
             ->keyListItem('name', 'URL')
-            ->keyListItem('from_flag', '来源标识')
+            ->keyListItem('depend_flag', '来源标识')
             ->keyListItem('sort', '排序')
             ->keyListItem('is_menu','菜单','array',[0=>'否',1=>'是'])
             ->keyListItem('status','状态','status')
@@ -168,13 +169,13 @@ class Auth extends Admin {
             ->addTopBtn('delete',array('model'=>'auth_rule'))  // 添加删除按钮
             //->addTopButton('self', $movemodule_attr) //移动模块
             ->addTopButton('self', $moveparent_attr) //移动菜单位置
-            ->addTopBtn('sort',array('model'=>'auth_rule','href'=>url('rule_sort',array('pid'=>$map['pid']))))  // 添加排序按钮
+            ->addTopBtn('sort',array('model'=>'auth_rule','href'=>url('rule_sort',['pid'=>$map['pid']])))  // 添加排序按钮
             //->setSearch('', url('rule'))
             ->keyListItem('id','ID')
-            ->keyListItem('title','名称','link',['link'=>url('Auth/adminMenu',array('pid'=>'__data_id__'))])
+            ->keyListItem('title','名称','link',['link'=>url('Auth/adminMenu',['pid'=>'__data_id__'])])
             ->keyListItem('p_menu','上级菜单')
             ->keyListItem('name', 'URL')
-            ->keyListItem('from_flag', '来源标识')
+            ->keyListItem('depend_flag', '来源标识')
             ->keyListItem('sort', '排序')
             ->keyListItem('is_menu','菜单','array',[0=>'否',1=>'是'])
             ->keyListItem('status','状态','status')
@@ -202,7 +203,7 @@ class Auth extends Admin {
         if ($id==0) {//新增
             $pid       = (int)input('get.pid');
             $pid_data  = $this->authRuleModel->find($pid);
-            $menu_data = array('from_flag'=>$pid_data['from_flag'],'pid'=>$pid);
+            $menu_data = array('depend_flag'=>$pid_data['depend_flag'],'pid'=>$pid);
         }
         
         if(IS_POST){
@@ -234,7 +235,7 @@ class Auth extends Admin {
                     ->setMetaTitle($title.'菜单')  // 设置页面标题
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
                     ->addFormItem('title', 'text', '标题', '用于后台显示的配置标题')
-                    ->addFormItem('from_flag', 'select', '所属模块', '所属的模块，模块菜单必须选择，否则无法导出',$this->moduleList)  
+                    ->addFormItem('depend_flag', 'select', '所属模块', '所属的模块，模块菜单必须选择，否则无法导出',$this->moduleList)  
                     ->addFormItem('pid', 'multilayer_select', '上级菜单', '上级菜单',$menus)
                     ->addFormItem('icon', 'icon', '字体图标', '字体图标')
                     ->addFormItem('name', 'text', '链接', '链接')
@@ -276,7 +277,7 @@ class Auth extends Admin {
      * 标记菜单
      * @return [type] [description]
      * @date   2017-08-27
-     * @author 赵俊峰 <981248356@qq.com>
+     * @author 心云间、凝听 <981248356@qq.com>
      */
     public function markerMenu(){
         //是否标记菜单：0否，1是
@@ -328,7 +329,7 @@ class Auth extends Admin {
             $to_module = input('post.to_module');
             if ($to_module) {
                 $map['id'] = ['in',$ids];
-                $data      = ['from_flag' => $to_module];
+                $data      = ['depend_flag' => $to_module];
                 $this->editRow('auth_rule', $data, $map, array('success'=>'移动成功','error'=>'移动失败',U('index')));
 
             } else {
@@ -462,21 +463,19 @@ EOF;
     //角色管理
     public function role(){
         // 搜索
-        $keyword = input('keyword');
+        $keyword = input('param.keyword');
         if ($keyword) {
             $this->authGroupModel->where('title','like','%'.$keyword.'%');
         }
         // 获取所有角色
         $map['status'] = array('egt', '0'); // 禁用和正常状态
-        list($data_list,$page) = $this->authGroupModel->getListByPage($map,'title desc','*',20);
+        list($data_list,$page) = $this->authGroupModel->getListByPage($map,'id asc','*',20);
         // 使用Builder快速建立列表页面。
 
         Builder::run('List')        
                 ->setMetaTitle('角色管理') // 设置页面标题
-                ->addTopButton('addnew',array('href'=>url('role_edit')))  // 添加新增按钮
-                ->addTopButton('resume')  // 添加启用按钮
-                ->addTopButton('forbid')  // 添加禁用按钮
-                ->addTopButton('delete')  // 添加删除按钮
+                ->addTopButton('addnew',array('href'=>url('roleEdit')))  // 添加新增按钮
+                ->addTopButton('delete',['model'=>'AuthGroup'])  // 添加删除按钮
                 ->setSearch('搜索角色','')
                 ->keyListItem('id', 'ID')
                 ->keyListItem('title', '角色名')
@@ -485,14 +484,14 @@ EOF;
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListData($data_list)    // 数据列表
                 ->setListPage($page) // 数据列表分页
-                ->addRightButton('edit',array('href'=>url('role_edit',array('group_id'=>'__data_id__')))) 
-                ->addRightButton('edit',array('title'=>'权限分配','href'=>url('access',array('group_id'=>'__data_id__'))))  
+                ->addRightButton('edit',['href'=>url('roleEdit',['group_id'=>'__data_id__']),'class'=>'btn btn-success btn-xs']) 
+                ->addRightButton('edit',['title'=>'权限分配','href'=>url('access',['group_id'=>'__data_id__']),'class'=>'btn btn-info btn-xs'])  
                 ->addRightButton('edit',array('title'=>'成员授权','href'=>url('accessUser',array('group_id'=>'__data_id__'))))    
                 ->fetch();
     }
 	
     //角色编辑
-    public function role_edit($group_id=0){
+    public function roleEdit($group_id=0){
         $title = $group_id ? '编辑':'新增';
         if ($group_id!=0) {
             $this->assign('group_id',$group_id);
@@ -689,8 +688,8 @@ EOF;
      * @author 朱亚杰 <zhuyajie@topthink.net>
      */
     public function removeFromGroup(){
-        $uid = input('uid');
-        $gid = input('group_id');
+        $uid = input('param.uid');
+        $gid = input('param.group_id');
         if( $uid==UID ){
             $this->error('不允许解除自身授权');
         }
@@ -706,21 +705,26 @@ EOF;
             $this->error('操作失败');
         }
     }
+
     /**
      * 设置角色的状态
      */
     public function setStatus($model ='auth_rule',$script = false){
         $ids = input('request.ids/a');
-        if (is_array($ids)) {
-            if(in_array('1', $ids)) {
-                $this->error('超级管理员不允许操作');
+        if ($model =='AuthGroup') {
+            if (is_array($ids)) {
+                if(in_array(1, $ids)) {
+                    $this->error('超级管理员不允许操作');
+                }
+            } else{
+                if($ids === 1) {
+                    $this->error('超级管理员不允许操作');
+                }
             }
         } else{
-            if($ids === '1') {
-                $this->error('超级管理员不允许操作');
-            }
+            cache('admin_sidebar_menus',null);//清空后台菜单缓存
         }
-        cache('admin_sidebar_menus',null);//清空后台菜单缓存
+        
         parent::setStatus($model);
     }
 }

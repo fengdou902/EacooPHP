@@ -3,7 +3,7 @@
 // +----------------------------------------------------------------------
 // | PHP version 5.4+                
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014-2016 http://www.eacoo123.com, All rights reserved.
+// | Copyright (c) 2014-2017 http://www.eacoo123.com, All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: 心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
@@ -11,7 +11,7 @@
 namespace app\admin\controller;
 
 use app\admin\model\Action as ActionModel;
-use app\admin\model\ActionLog;
+use app\common\model\ActionLog;
 
 use app\admin\builder\Builder;
 
@@ -67,7 +67,6 @@ class Action extends Admin {
 			$data   = input('post.');
 			$result = $this->actionModel->save($data);
 			if (false != $result) {
-				action_log('add_action', 'Action', $result, session('user_auth.uid'));
 				return $this->success('添加成功！', url('index'));
 			} else {
 				return $this->error($this->actionModel->getError());
@@ -90,12 +89,11 @@ class Action extends Admin {
 		$title = $id ? "编辑":"新增";
 
 		if (IS_POST) {
-			$data =input('post.');
+			$data = input('post.');
             //验证数据
             $this->validate($data,'Action');
             $id   =isset($data['id']) && $data['id']>0 ? $data['id'] : false;
             if ($this->actionModel->editData($data,$id)) {
-            	// action_log('edit_action', 'Action', $id, session('user_auth.uid'));
                 $this->success($title.'成功', url('index'));
             } else {
                 $this->error($this->actionModel->getError());
@@ -129,14 +127,13 @@ class Action extends Admin {
 	 * @author 心云间、凝听 <981248356@qq.com>
 	 */
 	public function del() {
-		$id = $this->getArrayParam('id');
+		$id = input('param.id');
 		if (empty($id)) {
 			return $this->error("非法操作！", '');
 		}
 		$map['id'] = array('IN', $id);
-		$result    = db('Action')->where($map)->delete();
+		$result    = Action::where($map)->delete();
 		if ($result) {
-			action_log('delete_action', 'Action', $id, session('user_auth.uid'));
 			return $this->success('删除成功！');
 		} else {
 			return $this->error('删除失败！');
@@ -157,7 +154,6 @@ class Action extends Admin {
 	// 	$map['id'] = array('IN', $id);
 	// 	$result    = db('Action')->where($map)->setField('status', $status);
 	// 	if ($result !== false) {
-	// 		action_log('setstatus_action', 'Action', $id, session('user_auth.uid'));
 	// 		return $this->success('设置' . $message . '状态成功！');
 	// 	} else {
 	// 		return $this->error('设置' . $message . '状态失败！');
@@ -173,18 +169,18 @@ class Action extends Admin {
 		//获取列表数据
 		$map['status']  = ['gt',-1];  // 禁用和正常状态
 		//list($data_list,$page) = $this->actionLogModel->getListByPage($map,'id desc','*',15);
-		$data_list = $this->actionLogModel->alias('a')->join('__USERS__ b','a.uid = b.uid')->join('__ACTION__ c','a.action_id = c.id')->order('a.create_time desc')->field('a.*,b.nickname,c.name,c.title')->paginate(15);
+		$data_list = $this->actionLogModel->alias('a')->join('__USERS__ b','a.uid = b.uid')->join('__ACTION__ c','a.action_id = c.id')->order('a.create_time desc')->field('a.*,b.nickname,c.name')->paginate(15);
 
         Builder::run('List')
         		->setMetaTitle('行为日志')  // 设置页面标题
                 ->addTopButton('delete',['href'=>url('admin/Action/dellog')])  // 添加禁用按钮
         		->keyListItem('name','行为标识')
-        		->keyListItem('title','行为名称')
                 ->keyListItem('nickname','执行者')
-                ->keyListItem('action_ip','行为ip')
-                ->keyListItem('remark','日志备注')
+                ->keyListItem('request_method','请求类型')
+                ->keyListItem('url','URL')
+                ->keyListItem('remark','备注')
+                ->keyListItem('ip','IP')
                 ->keyListItem('create_time','执行时间')
-                ->keyListItem('status', '状态', 'status')
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListData($data_list)     // 数据列表
                 ->setListPage($data_list->render())  // 数据列表分页
@@ -205,12 +201,14 @@ class Action extends Admin {
 		}
 
 		$info = $this->actionLogModel->alias('a')->join('__USERS__ b','a.uid = b.uid')->join('__ACTION__ c','a.action_id = c.id')->order('a.create_time desc')->field('a.*,b.nickname,c.name,c.title')->find();
-		$info['nickname']    = db('users')->where('uid',$info['uid'])->value('nickname');
+		$info['nickname']= db('users')->where('uid',$info['uid'])->value('nickname');
 		//$info['action_ip']   = long2ip($info['action_ip']);
-		$ip_info         = curl_get('http://www.ip.cn/?ip='.$info['action_ip']);
-		$sub_content     = get_sub_content($ip_info,'<div class="well">','</div>');
-		$sub_content     = get_sub_content($sub_content,'<p>所在地理位置','<p>GeoIP');
-		$info['ip_city'] = get_sub_content($sub_content,'<code>','</p>');
+		if ($info['ip']!='' && $info['ip']!='127.0.0.1') {
+			$ip_info         = curl_get('http://www.ip.cn/?ip='.$info['ip']);
+			$sub_content     = get_sub_content($ip_info,'<div class="well">','</div>');
+			$sub_content     = get_sub_content($sub_content,'<p>所在地理位置','<p>GeoIP');
+			$info['ip_city'] = get_sub_content($sub_content,'<code>','</p>');
+		}
 		
 		$this->assign('info',$info);
 		
@@ -222,28 +220,26 @@ class Action extends Admin {
 	 * @param mixed $id
 	 * @author 心云间、凝听 <981248356@qq.com>
 	 */
-	public function dellog() {
+	public function delLog() {
 		$ids = input('post.ids/a');
 		if (empty($ids)) {
 			$this->error("非法操作！", '');
 		}
 		$map['id'] = array('IN', $ids);
-		$res       = db('ActionLog')->where($map)->delete();
+		$res       = ActionLog::where($map)->delete();
 		if ($res !== false) {
-			action_log('delete_actionlog', 'ActionLog', $ids,1, is_login());
 			$this->success('删除成功！');
 		} else {
 			$this->error('删除失败！');
 		}
 	}
+
 	/**
 	 * 清空日志
 	 */
-	public function clear($id = '') {
-		$res = db('ActionLog')->where('1=1')->delete();
+	public function clearLog($id = '') {
+		$res = ActionLog::where('1=1')->delete();
 		if ($res !== false) {
-			//记录行为
-			action_log('clear_actionlog', 'ActionLog', $id,1, is_login());
 			$this->success('日志清空成功！');
 		} else {
 			$this->error('日志清空失败！');

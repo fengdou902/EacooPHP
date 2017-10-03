@@ -52,7 +52,7 @@ class Attachment extends Admin {
                 4=>'文件',
             ]);//媒体类型列表
 
-        $path_type = input('get.path_type',false);//路径类型
+        $path_type = input('param.path_type',false);//路径类型
         if ($path_type) {
             $map['path_type'] = $path_type;
         } else {
@@ -70,7 +70,7 @@ class Attachment extends Admin {
             }
         }
 
-        $media_type = input('get.media_type',false,'intval');
+        $media_type = input('param.media_type',false,'intval');
         if ($media_type>0) {
             switch ($media_type) {
                 case '1':
@@ -90,7 +90,7 @@ class Attachment extends Admin {
                     break;
             }
         }
-        $choice_date_range = input('get.choice_date_range',false);
+        $choice_date_range = input('param.choice_date_range',false);
         if (!empty($choice_date_range)) {//日期筛选
             $this->assign('choice_date_range',$choice_date_range);
             $choice_date_range                 = explode('—', $choice_date_range);
@@ -188,7 +188,7 @@ class Attachment extends Admin {
         cache('Attachment_'.$id,null);//删除缓存信息
         if ($return['location']=='local') {
             //$realpath = realpath('.'.getRootUrl().$return['path']);
-            $realpath =$return['real_path'];
+            $realpath = $return['real_path'];
 
             $imgInfo = pathinfo($realpath);//图片信息
             if (unlink($realpath)===false) {//本地文件已经不存在了

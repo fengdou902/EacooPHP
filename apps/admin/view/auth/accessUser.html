@@ -42,7 +42,7 @@
                     <td>{$vo.uid} </td>
                     <td>{$vo.nickname}</td>
                     <td><span>{$vo.last_login_time|time_format}</span></td>
-                    <td><span>{$vo.last_login_ip|long2ip}</span></td>
+                    <td><span>{$vo.last_login_ip}</span></td>
                     <td>{switch name="vo.status"}
                             {case value="-1"}删除{/case}
                             {case value="0"}禁用{/case}

@@ -64,7 +64,7 @@
          </div>
           <!--搜索-->
           <div class="col-xs-3 col-sm-3 clearfix">
-              <form class="form" method="get" action="__ACTION__">
+              <form class="form" method="get" action="{:url('admin/attachment/index')}">
                   <div class="form-group">
                       <div class="input-group search-form">
                           <input type="text" name="keyword" class="search-input form-control" value="{$_GET.keyword|default=""}" placeholder="请输入名称">
@@ -79,6 +79,7 @@
           </div>
     </div>
       <hr/>
+      {notempty name="attachment_list_data"}
     <div class="row pl-75 mt-20 ml0 mr0">
     <ul class="attachment_list">
        {volist name="attachment_list_data" id="row"}
@@ -98,6 +99,9 @@
       {/volist}
       </ul>      
   </div>
+  {else/}
+  <p class="text-center">暂无结果</p>
+  {/notempty}
   <div class="tc">{$table_data_page}</div>
   <!-- Modal Structure -->
   <div class="modal fade" id="attachmentInfoModal" tabindex="-1" role="dialog" aria-labelledby="attachmentInfoModalLabel">

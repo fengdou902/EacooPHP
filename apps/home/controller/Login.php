@@ -37,7 +37,6 @@ class Login extends Home {
             if (!$uid) {
                 $this->error($this->user_model->getError());
             } elseif (0 < $uid) {
-                //action_log('user_login', 'users', $uid, $uid,1);
                 $this->success('登录成功！','home/usercenter/profile');
             } else {
                 $this->logout();

@@ -41,7 +41,6 @@ class Index extends Base
             $result = User::login($this->param['username'],$this->param['password'], $rememberme);
             if ($result['code']==1) {
                 $uid = !empty($result['data']['uid']) ? $result['data']['uid']:0;
-                action_log('user_login', 'user', $uid, $uid,1);
                 $this->success('登录成功！',url('admin/dashboard/index'));
 
             } elseif ($result['code']==0) {

@@ -84,8 +84,6 @@ class Database extends Admin {
                 $list   = Db::query("OPTIMIZE TABLE `{$tables}`");
 
                 if ($list) {
-                    // 记录行为
-                    action_log('database_optimize', 'database', 0, is_login(),1, "`{$tables}`");
                     $this->success("数据表优化完成！");
                 } else {
                     $this->error("数据表优化出错请重试！");
@@ -93,8 +91,6 @@ class Database extends Admin {
             } else {
                 $list = Db::query("OPTIMIZE TABLE `{$tables}`");
                 if ($list) {
-                    // 记录行为
-                    action_log('database_optimize', 'database', 0, is_login(),1, $tables);
                     $this->success("数据表'{$tables}'优化完成！");
                 } else {
                     $this->error("数据表'{$tables}'优化出错请重试！");
@@ -117,8 +113,6 @@ class Database extends Admin {
                 $list   = Db::query("REPAIR TABLE `{$tables}`");
 
                 if ($list) {
-                    // 记录行为
-                    action_log('database_repair', 'database', 0, is_login(),1, "`{$tables}`");
                     $this->success("数据表修复完成！");
                 } else {
                     $this->error("数据表修复出错请重试！");
@@ -126,8 +120,6 @@ class Database extends Admin {
             } else {
                 $list = Db::query("REPAIR TABLE `{$tables}`");
                 if ($list) {
-                    // 记录行为
-                    action_log('database_repair', 'database', 0, is_login(),1, $tables);
                     $this->success("数据表'{$tables}'修复完成！");
                 } else {
                     $this->error("数据表'{$tables}'修复出错请重试！");
@@ -143,7 +135,7 @@ class Database extends Admin {
      * @param  Integer $time 备份时间
      * @author 麦当苗儿 <zuojiazi@vip.qq.com>
      */
-    public function del($time = 0) {
+    public function delBackup($time = 0) {
         if ($time) {
             $name = date('Ymd-His', $time) . '-*.sql*';
             $path = realpath(config('data_backup_path')) . DIRECTORY_SEPARATOR . $name;
@@ -151,8 +143,6 @@ class Database extends Admin {
             if (count(glob($path))) {
                 $this->error('备份文件删除失败，请检查权限！');
             } else {
-                // 记录行为
-                action_log('database_backup_delete', 'database', 0, is_login(),1, date('Ymd-His', $time));
                 $this->success('备份文件删除成功！');
             }
         } else {
@@ -230,7 +220,6 @@ class Database extends Admin {
                     session('backup_tables', null);
                     session('backup_file', null);
                     session('backup_config', null);
-                    action_log('database_export', 'database', 0, is_login(),1, implode(',', $tables));
                     $this->success('备份完成！');
                 }
             } else {
@@ -287,7 +276,6 @@ class Database extends Admin {
                     $this->success("正在还原...#{$part}", '', $data);
                 } else {
                     session('backup_list', null);
-                    action_log('database_import', 'database', 0, is_login(),1, date('Ymd-His', $time));
                     $this->success('还原完成！');
                 }
             } else {

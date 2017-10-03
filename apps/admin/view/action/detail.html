@@ -7,6 +7,10 @@
    <table class="table table-bordered">
 	    <tbody>
 	    <tr>
+	      <th>ID</th>
+	      <td>{$info.id}</td>
+	    </tr>
+	    <tr>
 	      <th>执行者</th>
 	      <td>{$info.nickname}</td>
 	    </tr>
@@ -20,7 +24,7 @@
 	    </tr>
 	    <tr>
 	      <th>行为ip</th>
-	      <td>{$info.action_ip},所在地理位置：{$info.ip_city}</td>
+	      <td>{$info.ip},所在地理位置：{$info.ip_city|default="未知"}</td>
 	    </tr>
 	    <tr>
 	      <th>日志备注</th>

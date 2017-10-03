@@ -73,31 +73,31 @@ class Base extends Controller {
      * @param string    $filter 过滤方法
 	 * @return mixed
 	 */
-	public function input($key='',$default=false, $filter = '')
-	{
-		if (!$key) return false;
-		if ($pos = strpos($key, '.')) {
-            // 指定参数来源
-            list($method, $key) = explode('.', $key);
-            if (!in_array($method, ['get', 'post', 'put', 'patch', 'delete', 'param', 'request', 'session', 'cookie', 'server', 'env', 'path', 'file'])) {
-                $key    = $method . '.' . $key;
-                $method = 'param';
-            }
-        } else {
-            // 默认为自动判断
-            $method = 'param';
-        }
-		return $this->request->param($key, $default, $filter);
-	}
+	// public function input($key='',$default=false, $filter = '')
+	// {
+	// 	if (!$key) return false;
+	// 	if ($pos = strpos($key, '.')) {
+ //            // 指定参数来源
+ //            list($method, $key) = explode('.', $key);
+ //            if (!in_array($method, ['get', 'post', 'put', 'patch', 'delete', 'param', 'request', 'session', 'cookie', 'server', 'env', 'path', 'file'])) {
+ //                $key    = $method . '.' . $key;
+ //                $method = 'param';
+ //            }
+ //        } else {
+ //            // 默认为自动判断
+ //            $method = 'param';
+ //        }
+	// 	return $this->request->param($key, $default, $filter);
+	// }
 
 	/**
 	 * 获取单个参数的数组形式
 	 */
-	protected function getArrayParam($param) {
-		if (isset($this->param['id'])) {
-			return array_unique((array) $this->param[$param]);
-		} else {
-			return [];
-		}
-	}
+	// protected function getArrayParam($param) {
+	// 	if (isset($this->param['id'])) {
+	// 		return array_unique((array) $this->param[$param]);
+	// 	} else {
+	// 		return [];
+	// 	}
+	// }
 }
