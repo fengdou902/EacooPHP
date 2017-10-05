@@ -66,8 +66,6 @@ class Modules extends Admin {
 			Builder::run('List')
 					->setMetaTitle('模块列表')  // 设置页面标题
 					->setTabNav($tab_list,$from_type) 
-					->addTopButton('resume')   // 添加启用按钮
-					->addTopButton('forbid')   // 添加禁用按钮
 					->keyListItem('name', '标识')
                     ->keyListItem('title', '名称')
                     ->keyListItem('description', '描述')

@@ -54,20 +54,6 @@ function get_role_info($uid=0,$field=true)
     return $role_info;
 }
 
-/**
- * 更新用户角色信息
- * @param int $uid
- * @return int
- * @author 赵俊峰<981248356@qq.com>
- */
-function set_user_role($uid=0,$role=0)
-{   
-    if ($uid==0||$role==0) return false;
-    model('users')->where(array('uid'=>$uid))->setField('role_id',$role);
-    model('admin/AuthGroup')->addToGroup($uid,$role);//添加授权组
-    return true;
-}
-
 /*获取角色类型
 *$unids 排除的角色id
 */

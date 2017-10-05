@@ -10,6 +10,7 @@
 namespace app\install\controller;
 use think\Controller;
 use think\Db;
+
 class Index extends Controller {
 
 	protected $status;
@@ -24,7 +25,7 @@ class Index extends Controller {
 		];
 
 		if ($this->request->action() != 'complete' && is_file(APP_PATH . 'database.php') && is_file(APP_PATH . 'install.lock')) {
-			return $this->redirect('index/index/index');
+			return $this->redirect('admin/index/login');
 		}
 		$this->assign('product_name',config('product_name'));//产品名
 	}
@@ -82,49 +83,41 @@ class Index extends Controller {
 	 */
 	public function config($db = null, $admin = null, $webconfig = null) {
 		if ($this->request->isPost()) {
-			//检测管理员信息
-			if (!is_array($admin) || empty($admin[0]) || empty($admin[1]) || empty($admin[3])) {
-				return $this->error('请填写完整管理员信息');
-			} else if ($admin[1] != $admin[2]) {
-				return $this->error('确认密码和密码不一致');
-			} else {
-				$info = [];
-				list($info['username'], $info['password'], $info['repassword'], $info['email']) = $admin;
-				//缓存管理员信息
-				session('admin_info', $info);
-			}
-
-			//检测网站配置信息
-			if (!is_array($webconfig) || empty($webconfig[0]) || empty($webconfig[1]) || empty($webconfig[3])) {
-				return $this->error('请填写完整管理员信息');
-			} else {
-				$web_config = [];
-				list($web_config['web_site_title'], $web_config['index_url'], $web_config['web_site_description'], $web_config['web_site_keyword']) = $webconfig;
-				//缓存管理员信息
-				session('web_config', $web_config);
-			}
-
+			//$admin = $this->request->param('admin');
 			//检测数据库配置
-			if (!is_array($db) || empty($db[0]) || empty($db[1]) || empty($db[2]) || empty($db[3])) {
-				return $this->error('请填写完整的数据库配置');
-			} else {
-				$DB = [];
-				list($DB['type'], $DB['hostname'], $DB['database'], $DB['username'], $DB['password'],
-					$DB['hostport'], $DB['prefix']) = $db;
-				//缓存数据库配置
-				session('db_config', $DB);
+			$result = $this->validate($db,'InstallConfig.db_config');
+            if(true !== $result){
+                $this->error($result);
+            }
+            //检测网站配置信息
+            $result = $this->validate($webconfig,'InstallConfig.web_config');
+            if(true !== $result){
+                $this->error($result);
+            }
 
-				//创建数据库
-				$dbname = $DB['database'];
-				unset($DB['database']);
-				$db  = \think\Db::connect($DB);
-				$sql = "CREATE DATABASE IF NOT EXISTS `{$dbname}` DEFAULT CHARACTER SET utf8";
-				if (!$db->execute($sql)) {
-					return $this->error($db->getError());
-				} else {
-					$this->redirect('install/index/sql');
-				}
+            $result = $this->validate($admin,'InstallConfig.admin_info');
+            if(true !== $result){
+                $this->error($result);
+            }
+
+			//缓存管理员信息
+			session('admin_info', $admin);
+			//缓存管理员信息
+			session('web_config', $webconfig);
+			//缓存数据库配置
+			session('db_config', $db);
+
+			//创建数据库
+			$dbname = $db['database'];
+			unset($db['database']);
+			$db_obj  = \think\Db::connect($db);
+			$sql = "CREATE DATABASE IF NOT EXISTS `{$dbname}` DEFAULT CHARACTER SET utf8";
+			if (!$db_obj->execute($sql)) {
+				return $this->error($db_obj->getError());
+			} else {
+				$this->redirect('install/index/sql');
 			}
+			
 		} else {
 			$this->status['index']  = 'success';
 			$this->status['check']  = 'success';

@@ -20,7 +20,8 @@ define('APP_PATH', __DIR__ . '/../apps/');
 
 // 定义资源目录
 define('PUBLIC_PATH', __DIR__ . '/');
-
+// 定义插件目录
+define('PLUGIN_PATH', APP_PATH . 'plugins/');
 //主题目录
 define('THEME_PATH',__DIR__ . '/themes/');
 /**

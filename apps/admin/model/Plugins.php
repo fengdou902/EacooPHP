@@ -10,8 +10,6 @@ class Plugins extends Model {
     protected $insert = ['sort'=>0,'status'=>1];
     // protected $auto = ['update_time'];
     static public $pluginName;
-    //插件目录
-    static public $pluginDir = ROOT_PATH.'plugins/'; 
     //安装描述文件名
     static public $infoFile = 'info.json';
 
@@ -27,7 +25,7 @@ class Plugins extends Model {
      */
     public function getAll() {
         //$plugin_dir = config('plugin_path');
-        $plugin_dir = self::$pluginDir;
+        $plugin_dir = PLUGINS_PATH;
         $dirs = array_map('basename', glob($plugin_dir.'*', GLOB_ONLYDIR));
         if ($dirs == false || !file_exists($plugin_dir)) {
             $this->error = '插件目录不可读或者不存在';
@@ -197,7 +195,7 @@ class Plugins extends Model {
 
         $plugins = cache('local_plugins');
         if (empty($plugins) || !$plugins) {
-            $plugin_dir = self::$pluginDir;
+            $plugin_dir = PLUGIN_PATH;
             $dirs = array_map('basename', glob($plugin_dir.'*', GLOB_ONLYDIR));
             if ($dirs == false || !file_exists($plugin_dir)) {
                 $this->error = '插件目录不可读或者不存在';
@@ -234,7 +232,7 @@ class Plugins extends Model {
         if ($name=='' || !$name) {
             return false;
         }
-        $info_file = realpath(self::$pluginDir.$name).'/install/'.self::$infoFile;
+        $info_file = realpath(PLUGIN_PATH.$name).'/install/'.self::$infoFile;
         if (is_file($info_file)) {
             $module_info = file_get_contents($info_file);
             $module_info = json_decode($module_info,true);
@@ -263,7 +261,7 @@ class Plugins extends Model {
         if ($name=='' || !$name) {
             return false;
         }
-        $file = realpath(self::$pluginDir.$name).'/install/'.self::$menusFile;
+        $file = realpath(PLUGIN_PATH.$name).'/install/'.self::$menusFile;
 
         if (is_file($file)) {
 
@@ -288,7 +286,7 @@ class Plugins extends Model {
         if ($name=='' || !$name) {
             return false;
         }
-        $file = realpath(self::$pluginDir.$name).'/install/'.self::$menusFile;
+        $file = realpath(PLUGIN_PATH.$name).'/install/'.self::$menusFile;
 
         if (is_file($file)) {
 
@@ -313,7 +311,7 @@ class Plugins extends Model {
         if ($name=='' || !$name) {
             return false;
         }
-        $file = realpath(self::$pluginDir.$name).'/install/'.self::$optionsFile;
+        $file = realpath(PLUGIN_PATH.$name).'/install/'.self::$optionsFile;
 
         if (is_file($file)) {
 
@@ -373,7 +371,7 @@ class Plugins extends Model {
             $file_ext = ['png','jpg','jpeg','svg'];
             $is_exist_logo = false;
             foreach ($file_ext as $key => $ext) {
-                $logo = realpath(self::$pluginDir.$name).'/static/logo.'.$ext;
+                $logo = realpath(PLUGIN_PATH.$name).'/static/logo.'.$ext;
                 if (is_file($logo)) {
                     $is_exist_logo = true;
                     break;

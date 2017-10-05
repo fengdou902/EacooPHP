@@ -20,7 +20,6 @@ class Plugins extends Admin {
 
     protected $pluginModel;
     protected $hooksModel;
-    protected $pluginDir;
 
     function _initialize()
     {
@@ -28,7 +27,6 @@ class Plugins extends Admin {
         
         $this->pluginModel = new PluginsModel();
         $this->hooksModel  = new Hooks();
-        $this->pluginDir   = PluginsModel::$pluginDir;
     }
 
     /**
@@ -72,8 +70,6 @@ class Plugins extends Admin {
             Builder::run('List')
                     ->setMetaTitle('插件市场')  // 设置页面标题
                     ->setTabNav($tab_list,$from_type) 
-                    ->addTopButton('resume')   // 添加启用按钮
-                    ->addTopButton('forbid')   // 添加禁用按钮
                     ->keyListItem('logo', 'LOGO')
                     ->keyListItem('name', '标识')
                     ->keyListItem('title', '名称')
@@ -231,7 +227,7 @@ class Plugins extends Admin {
         }
 
         // 安装数据库
-        $sql_file = realpath($this->pluginDir.$name).'/install/install.sql';
+        $sql_file = realpath(PLUGIN_PATH.$name).'/install/install.sql';
         if (is_file($sql_file)) {
             $sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
             if (!$sql_status) {
@@ -254,7 +250,7 @@ class Plugins extends Admin {
                 }
 
                 //静态资源文件
-                $static_path = realpath($this->pluginDir.$name).'/static';
+                $static_path = realpath(PLUGIN_PATH.$name).'/static';
                 if (is_dir($static_path)) {
                     if(is_writable(ROOT_PATH.'public/static/plugins') && is_writable($static_path)){
                         if (!rename($static_path,ROOT_PATH.'public/static/plugins/'.$name)) {
@@ -326,7 +322,7 @@ class Plugins extends Admin {
             // 删除后台菜单
             $this->removeAdminMenus($name,$clear);
             // 卸载数据库
-            $sql_file = realpath(PluginsModel::$pluginDir.$name).'/install/uninstall.sql';
+            $sql_file = realpath(PLUGIN_PATH.$name).'/install/uninstall.sql';
             if (is_file($sql_file)) {
                 $info       = PluginsModel::getInfoByFile($name);
                 $sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
@@ -335,10 +331,10 @@ class Plugins extends Admin {
                 }
             }
 
-            $static_path = realpath($this->pluginDir.$name).'/static';
+            $static_path = realpath(PLUGIN_PATH.$name).'/static';
             $_static_path = ROOT_PATH.'public/static/plugins/'.$name;
             if (is_dir($_static_path)) {
-                if(is_writable(ROOT_PATH.'public/static/plugins') && is_writable(realpath($this->pluginDir.$name))){
+                if(is_writable(ROOT_PATH.'public/static/plugins') && is_writable(realpath(PLUGIN_PATH.$name))){
                     if (!rename($_static_path,$static_path)) {
                         trace('插件静态资源移动失败：'.'public/static/plugins/'.$name.'->'.$static_path,'error');
                     } 
