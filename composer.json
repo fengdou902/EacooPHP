@@ -27,7 +27,6 @@
         "topthink/think-worker": "^1.0",
         "topthink/think-queue": "^1.0",
         "topthink/think-testing": "^1.0",
-        "anerg2046/sns_auth": "^1.0",
         "swiftmailer/swiftmailer": "^5.4",
         "overtrue/wechat": "~3.1",
         "aliyuncs/oss-sdk-php": "^2.2"

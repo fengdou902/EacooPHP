@@ -12,4 +12,4 @@ CREATE TABLE `eacoo_plugin_social_login` (
   `sort` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '排序',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='第三方登陆插件表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='第三方登陆插件表';

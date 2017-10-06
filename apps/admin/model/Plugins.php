@@ -25,13 +25,13 @@ class Plugins extends Model {
      */
     public function getAll() {
         //$plugin_dir = config('plugin_path');
-        $plugin_dir = PLUGINS_PATH;
+        $plugin_dir = PLUGIN_PATH;
         $dirs = array_map('basename', glob($plugin_dir.'*', GLOB_ONLYDIR));
         if ($dirs == false || !file_exists($plugin_dir)) {
             $this->error = '插件目录不可读或者不存在';
             return false;
         }
-        $plugins      = [];
+        $plugins     = [];
         $map['name'] = ['in', $dirs];
         $list = $this->where($map)
                      ->field(true)

@@ -180,21 +180,9 @@ class User extends Base
         if (empty($user)) return false;
 
         // 记录登录SESSION和COOKIES
-        $auth_login = [
-            'uid'             => $user['uid'],
-            'username'        => $user['username'],
-            'nickname'        => $user['nickname'],
-            'email'           => $user['email'],
-            'mobile'          => $user['mobile'],
-            'avatar'          => $user['avatar'],
-            'auth_group'      => model('admin/auth_group_access')->userGroupInfo($user['uid']),
-            'reg_time'        => $user['reg_time'],
-            'last_login_time' => time()
-        ];
-
-        $auth_login_sign = data_auth_sign($auth_login);
-        session('user_login_auth', $auth_login);
-        session('activation_auth_sign', $auth_login_sign);
+        $result = self::setUserAuthSession($user);
+        $auth_login = $result['auth_login'];
+        $auth_login_sign = $result['auth_login_sign'];
         // 更新登录信息
         $data = [
             'last_login_ip'        => request()->ip(),
@@ -236,25 +224,42 @@ class User extends Base
 
         if ($uid == is_login()) {            
             $user        = self::get($uid);
+            $result = $this->setUserAuthSession($user);
 
-            $auth_login = [
-                'uid'             => $user['uid'],
-                'username'        => $user['username'],
-                'nickname'        => $user['nickname'],
-                'email'           => $user['email'],
-                'mobile'          => $user['mobile'],
-                'avatar'          => $user['avatar'],
-                'auth_group'      => model('admin/auth_group_access')->userGroupInfo($user['uid']),
-                'reg_time'        => $user['reg_time'],
-                'last_login_time' => time()
-            ];
-            $activation_auth_sign = data_auth_sign($auth_login);
-            session('user_login_auth', $auth_login);            
-            session('activation_auth_sign',$activation_auth_sign);
-
-            return $this->where('uid',$uid)->update(['activation_auth_sign' => $activation_auth_sign]);
+            return $this->where('uid',$uid)->update(['activation_auth_sign' => $result['auth_login_sign']]);
         }
         return false;
+    }
+
+    /**
+     * 设置用户授权session
+     * @param  [type] $user [description]
+     * @date   2017-10-06
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    private static function setUserAuthSession($user)
+    {
+         // 记录登录SESSION和COOKIES
+        $auth_login = [
+            'uid'             => $user['uid'],
+            'username'        => $user['username'],
+            'nickname'        => $user['nickname'],
+            'email'           => $user['email'],
+            'mobile'          => $user['mobile'],
+            'avatar'          => $user['avatar'],
+            'auth_group'      => model('admin/auth_group_access')->userGroupInfo($user['uid']),
+            'reg_time'        => $user['reg_time'],
+            'last_login_time' => time()
+        ];
+
+        $auth_login_sign = data_auth_sign($auth_login);
+        session('user_login_auth', $auth_login);
+        session('activation_auth_sign', $auth_login_sign);
+
+        return [
+            'auth_login'      =>$auth_login,
+            'auth_login_sign' =>$auth_login_sign
+        ];
     }
 
     /**

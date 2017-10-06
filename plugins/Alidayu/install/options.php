@@ -14,12 +14,12 @@ return [
         'title'=>'APPKEY:',
         'type'=>'text',
         'value'=>'',
-        'tip'=>'请通过<a href="http://www.alidayu.com" target="_blank">www.alidayu.com</a>申请',
+        'description'=>'请通过<a href="http://www.alidayu.com" target="_blank">www.alidayu.com</a>申请',
     ],
     'secret'=>[
         'title' => 'SECRET:',
         'type'  => 'text',
         'value' => '',
-        'tip'=>'请通过<a href="http://www.alidayu.com" target="_blank">www.alidayu.com</a>申请',
+        'description'=>'请通过<a href="http://www.alidayu.com" target="_blank">www.alidayu.com</a>申请',
     ],
 ];
