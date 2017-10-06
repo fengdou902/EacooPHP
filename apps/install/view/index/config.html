@@ -9,10 +9,10 @@
 			数据库连接信息
 		</h2>
 		<table class="table-hover table">
-			<input type="hidden" name="db['type']" value="mysql" >
+			<input type="hidden" name="db[type]" value="mysql" >
 			<tr>
 				<td width="360">
-					<input class="form-control input-sm" name="db['hostname']" type="text" value="127.0.0.1" />
+					<input class="form-control input-sm" name="db[hostname]" type="text" value="127.0.0.1" />
 				</td>
 				<td>
 					<span>
@@ -22,7 +22,7 @@
 			</tr>
 			<tr>
 				<td width="360">
-					<input class="form-control input-sm" name="db['database']" type="text" value="eacoophp" />
+					<input class="form-control input-sm" name="db[database]" type="text" value="eacoophp" />
 				</td>
 				<td>
 					<span>
@@ -32,7 +32,7 @@
 			</tr>
 			<tr>
 				<td width="360">
-					<input class="form-control input-sm" name="db['username']" type="text" value="root" />
+					<input class="form-control input-sm" name="db[username]" type="text" value="root" />
 				</td>
 				<td>
 					<span>
@@ -42,7 +42,7 @@
 			</tr>
 			<tr>
 				<td width="360">
-					<input class="form-control input-sm" name="db['password']" type="password" value="" />
+					<input class="form-control input-sm" name="db[password]" type="password" value="" />
 				</td>
 				<td>
 					<span>
@@ -52,7 +52,7 @@
 			</tr>
 			<tr>
 				<td width="360">
-					<input class="form-control input-sm" name="db['hostport']" type="text" value="3306" />
+					<input class="form-control input-sm" name="db[hostport]" type="text" value="3306" />
 				</td>
 				<td>
 					<span>
@@ -62,7 +62,7 @@
 			</tr>
 			<tr>
 				<td width="360">
-					<input class="form-control input-sm" name="db['prefix']" type="text" value="{:config('original_table_prefix')}" class="form-control" />
+					<input class="form-control input-sm" name="db[prefix]" type="text" value="{:config('original_table_prefix')}" class="form-control" />
 				</td>
 				<td>
 					<span>
@@ -79,7 +79,7 @@
 		<table class="table-hover table">
 			<tr>
 				<td width="360">
-					<input class="form-control input-sm" name="webconfig['web_site_title']" type="text" value="EacooPHP快速开发框架" />
+					<input class="form-control input-sm" name="webconfig[web_site_title]" type="text" value="EacooPHP快速开发框架" />
 				</td>
 				<td>
 					<span>
@@ -89,7 +89,7 @@
 			</tr>
 			<tr>
 				<td width="360">
-					<input class="form-control input-sm" name="webconfig['index_url']" type="text" value="{$Request.domain}" />
+					<input class="form-control input-sm" name="webconfig[index_url]" type="text" value="{$Request.domain}" />
 				</td>
 				<td>
 					<span>
@@ -99,7 +99,7 @@
 			</tr>
 			<tr>
 				<td width="360">
-					<input class="form-control input-sm" name="webconfig['web_site_description']" type="text" value="开源框架 EacooPHP ThinkPHP" />
+					<input class="form-control input-sm" name="webconfig[web_site_description]" type="text" value="开源框架 EacooPHP ThinkPHP" />
 				</td>
 				<td>
 					<span>
@@ -109,7 +109,7 @@
 			</tr>
 			<tr>
 				<td width="360">
-					<input class="form-control input-sm" name="webconfig['web_site_keyword']" type="text" value="EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求高效，简单，灵活。" />
+					<input class="form-control input-sm" name="webconfig[web_site_keyword]" type="text" value="EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求高效，简单，灵活。" />
 				</td>
 				<td>
 					<span>
@@ -127,7 +127,7 @@
 		<table class="table-hover table">
 			<tr>
 				<td width="360">
-					<input class="form-control input-sm" name="admin['username']" type="text" value="admin" /> 
+					<input class="form-control input-sm" name="admin[admin_username]" type="text" value="admin" /> 
 				</td>
 				<td>
 					<span>
@@ -141,7 +141,7 @@
 			</tr>
 			<tr>
 				<td width="360">
-					<input class="form-control input-sm" name="admin['password']" type="text" value="123456" />
+					<input class="form-control input-sm" name="admin[admin_password]" type="text" value="123456" />
 				</td>
 				<td>
 					<span>
@@ -151,7 +151,7 @@
 			</tr>
 			<tr>
 				<td width="360">
-					<input class="form-control input-sm" name="admin['repassword']" type="text" value="123456" / >
+					<input class="form-control input-sm" name="admin[admin_repassword]" type="text" value="123456" / >
 				</td>
 				<td>
 					<span>
@@ -161,7 +161,7 @@
 			</tr>
 			<tr>
 				<td width="360">
-					<input class="form-control input-sm" name="admin['email']" type="text" value="admin@admin.com" />
+					<input class="form-control input-sm" name="admin[admin_email]" type="text" value="admin@admin.com" />
 				</td>
 				<td>
 					<span>

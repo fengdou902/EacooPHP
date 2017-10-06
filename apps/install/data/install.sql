@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 2017-10-01 13:43:46
+-- Generation Time: 2017-10-06 11:41:41
 -- 服务器版本： 5.7.15
 -- PHP Version: 7.0.14
 
@@ -28,13 +28,14 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `eacoo_action` (
   `id` int(11) UNSIGNED NOT NULL COMMENT '主键',
-  `module` varchar(16) NOT NULL DEFAULT '' COMMENT '所属模块名',
-  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '行为唯一标识（组合控制器名+操作名）',
+  `name` varchar(30) NOT NULL COMMENT '行为唯一标识（组合控制器名+操作名）',
+  `depend_type` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '来源类型。0系统,1module，2plugin，3theme',
+  `depend_flag` varchar(16) NOT NULL DEFAULT '' COMMENT '所属模块名',
   `title` varchar(80) NOT NULL DEFAULT '' COMMENT '行为说明',
   `remark` varchar(140) NOT NULL DEFAULT '' COMMENT '行为描述',
-  `rule` text NOT NULL COMMENT '行为规则',
-  `log` text NOT NULL COMMENT '日志规则',
-  `action_type` tinyint(2) UNSIGNED NOT NULL DEFAULT '1' COMMENT '执行类型。1自定义操作，2记录操作',
+  `rule` varchar(255) NOT NULL DEFAULT '' COMMENT '行为规则',
+  `log` varchar(255) NOT NULL DEFAULT '' COMMENT '日志规则',
+  `action_type` tinyint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '执行类型。1自定义操作，2记录操作',
   `create_time` int(10) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '修改时间',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态'
@@ -44,23 +45,28 @@ CREATE TABLE `eacoo_action` (
 -- 转存表中的数据 `eacoo_action`
 --
 
-INSERT INTO `eacoo_action` (`id`, `module`, `name`, `title`, `remark`, `rule`, `log`, `action_type`, `create_time`, `update_time`, `status`) VALUES
-(1, 'user', 'user_login', '用户登录', '积分+10，每天一次', 'table:users|field:integral|condition:uid={$self} AND status>-1|rule:integral+10|cycle:24|max:1;', '[user|get_nickname]在[time|time_format]登录了后台', 1, 1466957785, 1466957785, 1),
-(2, 'cms', 'add_article', '发布文章', '积分+5，每天上限5次', 'table:users|field:integral|condition:uid={$self}|rule:integral+5|cycle:24|max:5', '', 1, 1380173180, 1380173180, 0),
-(3, '', 'clear_actionlog', '清空行为日志', '后台清空行为日志', '', '', 1, 0, 0, 1),
-(5, 'admin', 'user_login_admin', '登录后台', '用户登录后台', '', '[user|get_nickname]在[time|time_format]登录了后台', 1, 1383285551, 1383285551, 1),
-(6, '', 'update_config', '更新配置', '新增或修改或删除配置', '', '', 2, 1383294988, 1383294988, 1),
-(7, '', 'update_channel', '更新导航', '新增或修改或删除导航', '', '', 2, 1383296301, 1383296301, 1),
-(8, '', 'update_menu', '更新菜单', '新增或修改或删除菜单', '', '', 2, 1383296392, 1383296392, 1),
-(9, '', 'update_category', '更新分类', '新增或修改或删除分类', '', '', 2, 1383296765, 1383296765, 1),
-(10, 'admin', 'dashboard_index', '进入仪表盘', '进入仪表盘', '', '', 1, 0, 0, 0),
-(11, '', 'database_export', '数据库备份', '后台进行数据库备份操作', '', '', 1, 0, 0, 1),
-(12, '', 'database_optimize', '数据表优化', '数据库管理-》数据表优化', '', '', 1, 0, 0, 1),
-(13, '', 'database_repair', '数据表修复', '数据库管理-》数据表修复', '', '', 1, 0, 0, 1),
-(14, '', 'database_backup_delete', '备份文件删除', '数据库管理-》备份文件删除', '', '', 1, 0, 0, 1),
-(15, '', 'database_import', '数据库完成', '数据库管理-》数据还原', '', '', 1, 0, 0, 1),
-(16, '', 'delete_actionlog', '删除行为日志', '后台删除用户行为日志', '', '', 1, 0, 0, 1),
-(17, '', 'user_register', '注册', '', '', '', 1, 1506262430, 1506262430, 1);
+INSERT INTO `eacoo_action` (`id`, `name`, `depend_type`, `depend_flag`, `title`, `remark`, `rule`, `log`, `action_type`, `create_time`, `update_time`, `status`) VALUES
+(1, 'login_login', 1, 'home', '用户登录', '积分+10，每天一次', 'table:users|field:score|condition:uid={$self} AND status>-1|rule:score+10|cycle:24|max:1;', '[user|get_nickname]在[time|time_format]登录了后台', 1, 1466957785, 1466957785, 1),
+(2, 'posts_edit', 1, 'cms', '发布文章', '积分+5，每天上限5次', 'table:users|field:score|condition:uid={$self}|rule:score+5|cycle:24|max:5', '', 1, 1380173180, 1380173180, 0),
+(3, 'action_clearlog', 1, 'admin', '清空行为日志', '后台清空行为日志', '', '', 1, 0, 0, 1),
+(4, 'action_dellog', 1, 'admin', '删除行为日志', '删除行为日志', '', '', 1, 0, 0, 0),
+(5, 'index_login', 1, 'admin', '登录后台', '用户登录后台', '', '[user|get_nickname]在[time|time_format]登录了后台', 1, 1383285551, 1383285551, 1),
+(6, 'update_config', 1, 'admin', '更新配置', '新增或修改或删除配置', '', '', 2, 1383294988, 1383294988, 1),
+(7, 'update_channel', 1, 'admin', '更新导航', '新增或修改或删除导航', '', '', 2, 1383296301, 1383296301, 1),
+(8, 'update_menu', 1, 'admin', '更新菜单', '新增或修改或删除菜单', '', '', 2, 1383296392, 1383296392, 1),
+(9, 'update_category', 1, 'admin', '更新分类', '新增或修改或删除分类', '', '', 2, 1383296765, 1383296765, 1),
+(10, 'dashboard_index', 1, 'admin', '进入仪表盘', '进入仪表盘', '', '', 1, 0, 0, 0),
+(11, 'database_export', 1, 'admin', '数据库备份', '后台进行数据库备份操作', '', '', 1, 0, 0, 1),
+(12, 'database_optimize', 1, 'admin', '数据表优化', '数据库管理-》数据表优化', '', '', 1, 0, 0, 1),
+(13, 'database_repair', 1, 'admin', '数据表修复', '数据库管理-》数据表修复', '', '', 1, 0, 0, 1),
+(14, 'database_delbackup', 1, 'admin', '备份文件删除', '数据库管理-》备份文件删除', '', '', 1, 0, 0, 1),
+(15, 'database_import', 1, 'admin', '数据库完成', '数据库管理-》数据还原', '', '', 1, 0, 0, 1),
+(16, 'delete_actionlog', 1, 'admin', '删除行为日志', '后台删除用户行为日志', '', '', 1, 0, 0, 1),
+(17, 'user_register', 1, 'admin', '注册', '', '', '', 1, 1506262430, 1506262430, 1),
+(18, 'action_add', 1, 'admin', '添加行为', '', '', '', 1, 0, 0, 1),
+(19, 'action_edit', 1, 'admin', '编辑用户行为', '', '', '', 1, 0, 0, 1),
+(20, 'action_del', 1, 'admin', '行为删除', '行为删除', '', '', 1, 0, 1507032480, 1),
+(21, 'action_setstatus', 1, 'admin', '行为设置状态', '', '', '', 1, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -69,15 +75,17 @@ INSERT INTO `eacoo_action` (`id`, `module`, `name`, `title`, `remark`, `rule`, `
 --
 
 CREATE TABLE `eacoo_action_log` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT '主键',
-  `action_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '行为id',
+  `id` int(11) UNSIGNED NOT NULL COMMENT '主键',
+  `action_id` int(10) UNSIGNED NOT NULL COMMENT '行为ID',
   `uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '执行用户id',
-  `action_ip` varchar(18) NOT NULL DEFAULT '' COMMENT '执行行为者ip',
-  `model` varchar(50) NOT NULL DEFAULT '' COMMENT '触发行为的表',
-  `record_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '触发行为的数据id',
+  `nickname` varchar(60) NOT NULL DEFAULT '' COMMENT '用户名',
+  `request_method` varchar(20) NOT NULL DEFAULT '' COMMENT '请求类型',
+  `url` varchar(120) NOT NULL DEFAULT '' COMMENT '操作页面',
+  `data` varchar(200) NOT NULL DEFAULT '0' COMMENT '相关数据,json格式',
+  `ip` varchar(18) NOT NULL COMMENT 'IP',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '日志备注',
-  `create_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '执行行为的时间',
-  `status` tinyint(2) NOT NULL DEFAULT '1' COMMENT '状态'
+  `user_agent` varchar(230) NOT NULL DEFAULT '' COMMENT 'User-Agent',
+  `create_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '操作时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='行为日志表' ROW_FORMAT=DYNAMIC;
 
 -- --------------------------------------------------------
@@ -244,13 +252,8 @@ CREATE TABLE `eacoo_auth_group_access` (
 --
 
 INSERT INTO `eacoo_auth_group_access` (`uid`, `group_id`, `status`) VALUES
-(1, 1, 1),
-(2, 3, 1),
-(3, 3, 1),
-(4, 3, 1),
-(5, 3, 1),
-(6, 3, 1),
-(7, 4, 1);
+(1, 1, 1);
+
 
 -- --------------------------------------------------------
 
@@ -260,10 +263,10 @@ INSERT INTO `eacoo_auth_group_access` (`uid`, `group_id`, `status`) VALUES
 
 CREATE TABLE `eacoo_auth_rule` (
   `id` smallint(6) NOT NULL,
-  `name` char(80) NOT NULL DEFAULT '0' COMMENT '导航链接',
+  `name` char(80) NOT NULL DEFAULT '' COMMENT '导航链接',
   `title` char(20) NOT NULL DEFAULT '0' COMMENT '导航名字',
-  `from_type` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '来源类型。1module，2plugin，3theme',
-  `from_flag` varchar(50) NOT NULL DEFAULT '' COMMENT '来源标记',
+  `depend_type` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '来源类型。1module，2plugin，3theme',
+  `depend_flag` varchar(50) NOT NULL DEFAULT '' COMMENT '来源标记',
   `type` tinyint(1) DEFAULT '1' COMMENT '是否支持规则表达式',
   `pid` smallint(6) UNSIGNED DEFAULT '0' COMMENT '上级id',
   `icon` varchar(50) DEFAULT NULL COMMENT '图标',
@@ -279,7 +282,7 @@ CREATE TABLE `eacoo_auth_rule` (
 -- 转存表中的数据 `eacoo_auth_rule`
 --
 
-INSERT INTO `eacoo_auth_rule` (`id`, `name`, `title`, `from_type`, `from_flag`, `type`, `pid`, `icon`, `sort`, `condition`, `is_menu`, `developer`, `update_time`, `status`) VALUES
+INSERT INTO `eacoo_auth_rule` (`id`, `name`, `title`, `depend_type`, `depend_flag`, `type`, `pid`, `icon`, `sort`, `condition`, `is_menu`, `developer`, `update_time`, `status`) VALUES
 (1, 'admin/dashboard/index', '仪表盘', 1, 'admin', 1, 0, 'fa-tachometer', 1, NULL, 1, 0, 1505816276, 1),
 (2, 'admin', '系统设置', 1, 'admin', 1, 0, 'fa-cog', 2, NULL, 1, 0, 1505816276, 1),
 (3, 'admin/user/', '用户管理', 1, 'user', 1, 0, 'fa-users', 5, NULL, 1, 0, 1505816276, 1),
@@ -304,7 +307,7 @@ INSERT INTO `eacoo_auth_rule` (`id`, `name`, `title`, `from_type`, `from_flag`, 
 (24, 'admin/modules/index', '模块', 1, 'admin', 1, 5, '', 0, NULL, 1, 0, 1505816276, 1),
 (25, 'admin/config/index', '配置管理', 1, 'admin', 1, 2, '', 15, NULL, 1, 1, 1505816276, 1),
 (26, 'admin/config/group', '系统设置', 1, 'admin', 1, 2, '', 1, NULL, 1, 0, 1505816276, 1),
-(27, 'user/action', '日志管理', 1, 'user', 1, 0, 'fa-list-alt', 3, NULL, 1, 0, 1505816276, 1),
+(27, 'user/action', '系统安全', 1, 'user', 1, 0, 'fa-list-alt', 3, NULL, 1, 0, 1505816276, 1),
 (28, 'admin/action/index', '用户行为', 1, 'user', 1, 27, NULL, 1, NULL, 1, 0, 1505816276, 1),
 (29, 'admin/action/log', '行为日志', 1, 'user', 1, 27, NULL, 2, NULL, 1, 0, 1505816276, 1),
 (30, 'admin/plugins/hooks', '钩子管理', 1, 'admin', 1, 23, '', 1, NULL, 0, 1, 1505816276, 1),
@@ -337,43 +340,6 @@ INSERT INTO `eacoo_auth_rule` (`id`, `name`, `title`, `from_type`, `from_flag`, 
 -- --------------------------------------------------------
 
 --
--- 表的结构 `eacoo_comments`
---
-
-CREATE TABLE `eacoo_comments` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `from` tinyint(1) UNSIGNED NOT NULL COMMENT '评论来源。',
-  `object_id` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '评论内容 id',
-  `url` varchar(255) DEFAULT NULL COMMENT '原文地址',
-  `uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '发表评论的用户id',
-  `author_name` varchar(60) NOT NULL DEFAULT '' COMMENT '评论者昵称',
-  `author_ip` varchar(100) NOT NULL DEFAULT '' COMMENT '评论者IP',
-  `email` varchar(255) DEFAULT NULL COMMENT '评论者邮箱',
-  `content` text NOT NULL COMMENT '评论内容',
-  `type` smallint(1) NOT NULL DEFAULT '1' COMMENT '评论类型；1实名评论',
-  `pid` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '被回复的评论id',
-  `zan` int(11) UNSIGNED NOT NULL DEFAULT '0',
-  `path` varchar(500) DEFAULT NULL,
-  `create_time` int(11) UNSIGNED NOT NULL COMMENT '评论时间',
-  `status` smallint(1) NOT NULL DEFAULT '1' COMMENT '状态，1已审核，0未审核'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论表';
-
--- --------------------------------------------------------
-
---
--- 表的结构 `eacoo_comment_zan`
---
-
-CREATE TABLE `eacoo_comment_zan` (
-  `id` int(11) UNSIGNED NOT NULL,
-  `comment_id` int(11) UNSIGNED NOT NULL COMMENT '评论ID',
-  `uid` int(11) UNSIGNED NOT NULL DEFAULT '0',
-  `create_time` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
 -- 表的结构 `eacoo_config`
 --
 
@@ -400,12 +366,12 @@ CREATE TABLE `eacoo_config` (
 
 INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `function`, `group`, `sub_group`, `type`, `remark`, `create_time`, `update_time`, `sort`, `status`) VALUES
 (1, 'toggle_web_site', '站点开关', '1', '0:关闭\r\n1:开启', '', 1, 0, 'select', '站点关闭后将提示网站已关闭，不能正常访问', 1378898976, 1406992386, 1, 1),
-(2, 'web_site_title', '网站标题', 'EacooPHP', '', '', 6, 0, 'text', '网站标题前台显示标题', 1378898976, 1506258177, 2, 1),
-(4, 'web_site_logo', '网站LOGO', '250', '', '', 6, 0, 'picture', '网站LOGO', 1407003397, 1506258177, 4, 1),
+(2, 'web_site_title', '网站标题', 'EacooPHP', '', '', 6, 0, 'text', '网站标题前台显示标题', 1378898976, 1507036190, 2, 1),
+(4, 'web_site_logo', '网站LOGO', '250', '', '', 6, 0, 'picture', '网站LOGO', 1407003397, 1507036190, 4, 1),
 (5, 'web_site_description', 'SEO描述', 'EacooPHP框架基于统一核心的通用互联网+信息化服务解决方案，追求简单、高效、卓越。可轻松实现支持多终端的WEB产品快速搭建、部署、上线。系统功能采用模块化、组件化、插件化等开放化低耦合设计，应用商城拥有丰富的功能模块、插件、主题，便于用户灵活扩展和二次开发。', '', '', 6, 1, 'textarea', '网站搜索引擎描述', 1378898976, 1506257875, 6, 1),
 (6, 'web_site_keyword', 'SEO关键字', '开源框架 EacooPHP ThinkPHP', '', '', 6, 1, 'textarea', '网站搜索引擎关键字', 1378898976, 1506257874, 4, 1),
 (7, 'web_site_copyright', '版权信息', 'Copyright © ******有限公司 All rights reserved.', '', '', 1, 0, 'text', '设置在网站底部显示的版权信息', 1406991855, 1468493911, 7, 1),
-(8, 'web_site_icp', '网站备案号', '豫ICP备14003306号', '', '', 6, 0, 'text', '设置在网站底部显示的备案号，如“苏ICP备1502009-2号"', 1378900335, 1506258177, 8, 1),
+(8, 'web_site_icp', '网站备案号', '豫ICP备14003306号', '', '', 6, 0, 'text', '设置在网站底部显示的备案号，如“苏ICP备1502009-2号"', 1378900335, 1507036190, 8, 1),
 (9, 'web_site_statistics', '站点统计', '', '', '', 1, 0, 'textarea', '支持百度、Google、cnzz等所有Javascript的统计代码', 1378900335, 1415983236, 9, 1),
 (10, 'index_url', '首页地址', 'http://www.eacoo123.com', '', '', 2, 0, 'text', '可以通过配置此项自定义系统首页的地址，比如：http://www.xxx.com', 1471579753, 1506099586, 0, 1),
 (11, 'upload_file_size', '文件上传大小', '20', '', '', 9, 0, 'number', '文件上传大小单位：MB', 1428681031, 1428681031, 1, 1),
@@ -441,7 +407,7 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `function
 (42, 'user_deny_username', '保留用户名和昵称', '管理员,测试,admin,垃圾', '', '', 7, 0, 'textarea', '禁止注册用户名和昵称，包含这些即无法注册,用&quot; , &quot;号隔开，用户只能是英文，下划线_，数字等', 1468493201, 1468493201, 0, 1),
 (43, 'verify_open', '验证码配置', 'reg,login,reset', 'reg:注册显示\r\nlogin:登陆显示\r\nreset:密码重置', '', 2, 0, 'checkbox', '验证码开启配置', 1468494419, 1506099586, 0, 1),
 (44, 'verify_type', '验证码类型', '2', '1:中文\r\n2:英文\r\n3:数字\r\n4:英文+数字', '', 2, 0, 'select', '验证码类型', 1468494591, 1506099586, 0, 1),
-(45, 'web_site_subtitle', '网站副标题', '基于ThinkPHP5的开发框架', '', '', 6, 0, 'textarea', '用简洁的文字描述本站点（网站口号、宣传标语、一句话介绍）', 1468593713, 1506258177, 2, 1),
+(45, 'web_site_subtitle', '网站副标题', '基于ThinkPHP5的开发框架', '', '', 6, 0, 'textarea', '用简洁的文字描述本站点（网站口号、宣传标语、一句话介绍）', 1468593713, 1507036190, 2, 1),
 (46, 'adv_advlimitdate', '点击限制时间', '5', '', '', 6, 5, 'number', '同一个用户规定时间之后点击广告才能再获得一毛钱，单位：分钟', 1470845297, 1470845297, 0, 1),
 (49, 'reg_default_roleid', '注册默认角色', '4', '', 'role_type', 7, 0, 'select', '', 1471681620, 1471689765, 0, 1),
 (50, 'open_register', '开放注册', '', '1:是\r\n0:否', '', 7, 0, 'radio', '', 1471681674, 1471681674, 0, 1),
@@ -512,8 +478,8 @@ CREATE TABLE `eacoo_links` (
 --
 
 INSERT INTO `eacoo_links` (`id`, `title`, `image`, `url`, `target`, `type`, `rating`, `create_time`, `update_time`, `sort`, `status`) VALUES
-(13, '淘宝', 89, 'http://www.taobao.com', '_blank', 1, 9, 1465053539, 1506825148, 1, 1),
-(14, '百度', 96, 'http://www.baidu.com', '_blank', 2, 8, 1467863440, 1506825187, 2, 1);
+(1, '百度', 96, 'http://www.baidu.com', '_blank', 2, 8, 1467863440, 1506825187, 2, 1),
+(2, '淘宝', 89, 'http://www.taobao.com', '_blank', 1, 9, 1465053539, 1506825148, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -574,8 +540,8 @@ CREATE TABLE `eacoo_modules` (
 INSERT INTO `eacoo_modules` (`id`, `name`, `title`, `logo`, `description`, `author`, `version`, `config`, `is_system`, `url`, `admin_manage_into`, `create_time`, `update_time`, `sort`, `status`) VALUES
 (1, 'user', '用户', '', '用户模块，系统核心模块，不可卸载', '心云间、凝听', '1.0.0', '', 1, 'http://www.eacoo123.com', '', 1470274208, 1505663942, 6, 1),
 (2, 'home', '前台Home', '', '一款基础前台Home模块', '心云间、凝听', '1.0.0', '', 1, NULL, '', 1505923537, 1505923556, 0, 1),
-(4, 'wechat', '微信公众号', '', '专注微信公众号平台开发', '心云间、凝听', '1.0', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, 'http://www.eacoo123.com', '', 1498061286, 1498061286, 5, 1),
-(5, 'cms', '门户CMS', '', '门户网站管理、CMS、内容管理', '心云间、凝听', '1.0.3', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["cms"]}', 0, NULL, '', 1506823803, 1506823803, 0, 1);
+(3, 'wechat', '微信公众号', '', '专注微信公众号平台开发', '心云间、凝听', '1.0', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["Comment"]}', 0, 'http://www.eacoo123.com', '', 1498061286, 1498061286, 5, 1),
+(4, 'cms', '门户CMS', '', '门户网站管理、CMS、内容管理', '心云间、凝听', '1.0.3', '{"need_check":"0","toggle_comment":"1","group_list":"1:\\u9ed8\\u8ba4","cate":"a:1","taglib":["cms"]}', 0, NULL, '', 1506823803, 1506823803, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -836,7 +802,7 @@ CREATE TABLE `eacoo_users` (
   `nickname` varchar(60) NOT NULL DEFAULT '' COMMENT '用户昵称',
   `email` varchar(100) NOT NULL DEFAULT '' COMMENT '登录邮箱',
   `mobile` varchar(20) DEFAULT '' COMMENT '手机号',
-  `avatar` varchar(150) DEFAULT '' COMMENT '用户头像，相对于Uploads/Avatar目录',
+  `avatar` varchar(150) DEFAULT '' COMMENT '用户头像，相对于uploads/avatar目录',
   `sex` smallint(1) UNSIGNED DEFAULT '0' COMMENT '性别；0：保密，1：男；2：女',
   `birthday` date DEFAULT '0000-00-00' COMMENT '生日',
   `description` varchar(200) DEFAULT '' COMMENT '个人描述',
@@ -845,7 +811,7 @@ CREATE TABLE `eacoo_users` (
   `last_login_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '最后登录时间',
   `activation_auth_sign` varchar(60) DEFAULT '' COMMENT '激活码',
   `url` varchar(100) DEFAULT '' COMMENT '用户个人网站',
-  `integral` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户积分',
+  `score` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户积分',
   `money` decimal(10,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT '金额',
   `freeze_money` decimal(10,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT '冻结金额，和金币相同换算',
   `pay_pwd` char(32) DEFAULT '' COMMENT '支付密码',
@@ -854,32 +820,28 @@ CREATE TABLE `eacoo_users` (
   `level` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '等级',
   `p_uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '推荐人会员ID',
   `allow_admin` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '允许后台。0不允许，1允许',
-  `role_id` smallint(6) UNSIGNED NOT NULL DEFAULT '0' COMMENT '角色',
   `reg_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '注册时间',
   `status` tinyint(3) UNSIGNED NOT NULL DEFAULT '1' COMMENT '用户状态 0：禁用； 1：正常 ；2：待验证'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
 
---
--- 转存表中的数据 `eacoo_users`
---
-
-INSERT INTO `eacoo_users` (`uid`, `username`, `password`, `nickname`, `email`, `mobile`, `avatar`, `sex`, `birthday`, `description`, `register_ip`, `last_login_ip`, `last_login_time`, `activation_auth_sign`, `url`, `integral`, `money`, `freeze_money`, `pay_pwd`, `type`, `reg_from`, `level`, `p_uid`, `allow_admin`, `role_id`, `reg_time`, `status`) VALUES
-(2, 'U1472444313', '0a32eab5fe6068489679aab59c5f8ee1', '心灵旅行', '', NULL, 'http://wx.qlogo.cn/mmopen/mzvibibVqk5CPdWnUU5PBfzGTY6tnj4nXOlWJ3Irpnl8ecAwDZgyMhVR2U8Q12FPleJ8BpEsr1j0wE4c88r0aibZHuG8CBiau3Hd/0', 1, NULL, '这是个人简介', NULL, '1928388295', 1474208324, '44157fe4582f9e433c7add3a0d623c669900cea6', NULL, 0, '1.00', '0.00', '', 1, 0, 0, 0, 0, 0, 1472444313, 1),
-(3, 'U1471610993', '1e61aecd6a4a5417f9c2692d57d34efa', '陈婧', '', NULL, 'http://wx.qlogo.cn/mmopen/fWJhv9xMFTvh8TOSlQkjjkuaj4sIhBpHDRO9romGQ3TFTv3LA6wNqq0fCR7AtT7KCLIctaKq7hd2wkbBveCkia57p7D6lqMTe/0', 2, NULL, NULL, NULL, '2937347650', 1473755335, 'a525c9259ff2e51af1b6e629dd47766f99f26c69', NULL, 0, '2.00', '0.00', '', 1, 0, 0, 0, 0, 0, 1471610993, 1),
-(4, 'U1472438063', '89dd53a2da06a47fc40394b359a5a80b', '妍冰', '', NULL, 'http://wx.qlogo.cn/mmopen/eCXtiatJG2qA7d9wjNKktQUMjaiajx4SCoL5Phc5NqRKg4bltVHI94hpZl7x1R2E14Xbb5x7wDJkiaMrYgJx0Nb8nGuvicWcEymc/0', 2, NULL, '承接大型商业演出和传统文化学习班', NULL, '2073504306', 1472438634, 'ed587cf103c3f100be20f7b8fdc7b5a8e2fda264', NULL, 0, '0.00', '0.00', '', 1, 0, 0, 0, 0, 0, 1472438063, 1),
-(5, 'U1472522409', 'a5eee991430384bd76398c0f0e3852ab', '久柳', '', NULL, 'http://wx.qlogo.cn/mmopen/RLZcTUr4lyhBYRz8vKMAVicmHdShyTG9DA1jEg9PMkBKy8M2KwAX9mOHD3TudcoL8Ph8gXwSlaBRW6MpsqKibd8Y8oXETIsUsic/0', 1, NULL, NULL, NULL, '1872836895', 1472522621, '5e542dc0c77b3749f2270cb3ec1d91acc895edc8', NULL, 0, '0.00', '0.00', '', 1, 0, 0, 0, 0, 0, 1472522409, 1),
-(6, 'U1472739566', 'fe1552121baa4d206b7c84e144cbfded', 'Ray', '', NULL, 'http://wx.qlogo.cn/mmopen/l4fl4iboCt9RZUw8sVElUyz3dQchzKcpiaTZicLIH2YhkA3Qypvhc2ZyjLzxzUIYsf9NtFpicibeJfGF8AQZSiaBq8zju3Mias6YZsC/0', 1, NULL, NULL, NULL, '1394764909', 1472739567, '6321b4d8ecb1ce1049eab2be70c44335856c840d', NULL, 0, '0.00', '0.00', '', 1, 0, 0, 0, 0, 0, 1472739567, 1),
-(7, 'U1471602501', '043fbac9765d914e705f473c36eabbda', '风尚', '', '', '/static/assets/img/default-avatar.svg', 1, NULL, '一个好人', NULL, '2073532707', 1474906424, '28d203804358325d41bef03f16c194994bef561c', NULL, 0, '0.00', '0.00', '', 1, 0, 0, 0, 0, 0, 1471602501, 1),
-(8, 'U1472877421', '65b5fea1e22ae9a8863b18d45f8a2e9b', '印文博律师', '', NULL, 'http://wx.qlogo.cn/mmopen/ajNVdqHZLLA7FINjLK0kxvyX9BhicrMF31ldiaiagMZhv8crokiavvNuLC1od9K8lGluATGZhFdA1eCeIllqXGO1Sw/0', 1, NULL, NULL, NULL, '2073529233', 1473494692, 'e99521af40a282e84718f759ab6b1b4a989d8eb1', NULL, 0, '0.00', '0.00', '', 1, 0, 0, 0, 0, 0, 1472877421, 1),
-(9, 'U1472966655', '3356a455c1f1503f70f7649fc0869fdd', '嘉伟', '', NULL, 'http://wx.qlogo.cn/mmopen/nyPpZGsicVpC68EYXh6m41AicibcMIZa5VA04sIt8LWBFbS7sn9tGibkKPQ3ibPOAic3urGomGn4rvc4ITdia9ssZ0uibzk27L6zoh9P/0', 1, NULL, NULL, NULL, '720909644', 1473397571, 'f1075223be5f53b9c2c1abea8288258545365d96', NULL, 0, '0.00', '0.00', '', 1, 0, 0, 0, 0, 0, 1472966655, 1),
-(10, 'U1473304718', '0f07f4e63ad283dde05c09f57a49a203', '鬼谷学猛虎流', '', NULL, 'http://wx.qlogo.cn/mmopen/PiajxSqBRaELGyaDWOrqGfF7JibvU3hbuA7yYHJne8fw68wFQHjZTibcMxoR4keH7DSia4QuREIskmpe3mdxiaGwfJw/0', 1, NULL, NULL, NULL, '2946996753', 1473399843, '039fc7a3f9366adf55ee9e707c371a2459c17bd7', NULL, 0, '0.00', '0.00', '', 1, 0, 0, 0, 0, 0, 1473304719, 1),
-(11, 'U1473391063', '3ba08148e4fde24dbc69dcaf83e31e56', '@Gyb.', '', NULL, 'http://wx.qlogo.cn/mmopen/OHrKu638Lt0WowUCElh711VTFOXGviatZ61VLCsGkfKCeETPIgGGjibn26v0Zd9ztIHkMYGC08hKYAic5zuEGyGW9eCicMNqpzPw/0', 1, NULL, NULL, NULL, '2003622040', 1473391063, '70d80a9f7599c81270a986abaea73e63101b3ecb', NULL, 0, '0.00', '0.00', '', 1, 0, 0, 0, 0, 0, 1473391063, 1),
-(12, 'U1473396778', '4028d6d5a4cf4c3e75fc12f7d1749456', '董超楠', '', NULL, 'http://wx.qlogo.cn/mmopen/LIQXXYlOuN2jy45Uy8FrA1XpHMaUGvtGYrC9XIcgI2MKvzlPsb4uISBUpLxOXZ6nlqXpCvMoEicDM4HSltm9O4nGyvU11Lzib1/0', 2, NULL, NULL, NULL, '1911132108', 1473396778, '8bbf5242300e5e8e4917b287a31efcb0c9feedfd', NULL, 0, '0.00', '0.00', '', 1, 0, 0, 0, 0, 0, 1473396778, 1),
-(13, 'U1473396819', '17ab2bff43b57cf46776728344f52969', '七里林', '', NULL, 'http://wx.qlogo.cn/mmopen/RlLibmYfibwCs6EPOR9ZRxyckic1kLZMqAibdQgC5RXIuaoIAQAYL1IWfxcuzBfqwuicxr246CszaXmmZViaDprDibR4mlMBib6lz30j/0', 2, NULL, NULL, NULL, '2073504303', 1474331920, '33eaf519d0d42de5a67112e2728880db7a293c8b', NULL, 0, '0.00', '0.00', '', 1, 0, 0, 0, 0, 0, 1506490927, 1),
-(14, 'U1473396839', '3928540f538d3da96aee311b9a7dc4b3', '求真实者', '', NULL, 'http://wx.qlogo.cn/mmopen/9UjCmequjUib5ywquUZY1ibYhLogodtGeVc7E7jTG9XyrLn4BwPB7MicQ58KIOkJrxbTqk5snhXOlTYoglSm1HIXcGzAAo251so/0', 0, NULL, NULL, NULL, '2004314620', 1473396839, '8f7579a85981e1c1f726704b0865320dfadbef2e', NULL, 0, '0.00', '0.00', '', 1, 0, 0, 0, 0, 0, 1506503387, 1),
-(15, 'U1473397391', '5b14c283863c7a9854421f3d650ca628', 'peter', '', NULL, 'http://wx.qlogo.cn/mmopen/PwJLJ0FGzVTsG2K1CtNGibzTSGD1788aslVUUSPBDq5Jpv8JxCzmCSbdRgW3wUJYCJTU8kgshcNn7g8Ox6LmscmM8YuicrgwNf/0', 1, NULL, NULL, NULL, '1701480067', 1473397391, 'c66d3a0e16a81a13173756a2832ba424b34a095c', NULL, 0, '0.00', '0.00', '', 1, 0, 0, 0, 0, 0, 1506491950, 1),
-(16, 'U1473397426', '2ffb46af26a16e32a6187aaa10a85656', '随风而去的心情', '', NULL, 'http://wx.qlogo.cn/mmopen/9UjCmequjUib5ywquUZY1ibbK663y8qiaGXlcxQ4Hgjem9Hp2tVsnMbwErjuMuerBQMnrrK8NlmmeiaHT58ic9rG4SXI0l05IYQq1/0', 1, NULL, NULL, NULL, '2073532567', 1473397426, '14855b00775de46b451c8255e6a73a5c044fc188', NULL, 0, '0.00', '0.00', '', 1, 0, 0, 0, 0, 0, 1506527057, 1),
-(17, 'U1474181145', '965c4aab5c6c73930930ef1cfc6f8802', '班鱼先生', '', NULL, 'http://wx.qlogo.cn/mmopen/PiajxSqBRaELgx8NFX4Nz0FtAPkwlouDOErFLmsbvXeJlwzYeMJDoSw5X59FuE86uRh49777cYCVyw2KNQWc6Bw/0', 1, NULL, NULL, NULL, '2938851779', 1474181146, '86d19a7b1f15db4fd25e0b64bfc17870a70f67e2', NULL, 0, '0.00', '0.00', '', 1, 0, 0, 0, 0, 0, 1506526964, 1);
+INSERT INTO `eacoo_users` (`uid`, `username`, `password`, `nickname`, `email`, `mobile`, `avatar`, `sex`, `birthday`, `description`, `register_ip`, `last_login_ip`, `last_login_time`, `activation_auth_sign`, `url`, `score`, `money`, `freeze_money`, `pay_pwd`, `type`, `reg_from`, `level`, `p_uid`, `allow_admin`, `reg_time`, `status`)
+VALUES
+  (2, 'U1472444313', '0a32eab5fe6068489679aab59c5f8ee1', '心灵旅行', '', NULL, 'http://wx.qlogo.cn/mmopen/mzvibibVqk5CPdWnUU5PBfzGTY6tnj4nXOlWJ3Irpnl8ecAwDZgyMhVR2U8Q12FPleJ8BpEsr1j0wE4c88r0aibZHuG8CBiau3Hd/0', 1, NULL, '这是个人简介', NULL, '1928388295', 1474208324, '44157fe4582f9e433c7add3a0d623c669900cea6', NULL, 0, 1.00, 0.00, '', 1, 0, 0, 0, 0, 1472444313, 1),
+  (3, 'U1471610993', '1e61aecd6a4a5417f9c2692d57d34efa', '陈婧', '', NULL, 'http://wx.qlogo.cn/mmopen/fWJhv9xMFTvh8TOSlQkjjkuaj4sIhBpHDRO9romGQ3TFTv3LA6wNqq0fCR7AtT7KCLIctaKq7hd2wkbBveCkia57p7D6lqMTe/0', 2, NULL, NULL, NULL, '2937347650', 1473755335, 'a525c9259ff2e51af1b6e629dd47766f99f26c69', NULL, 0, 2.00, 0.00, '', 1, 0, 0, 0, 0, 1471610993, 1),
+  (4, 'U1472438063', '89dd53a2da06a47fc40394b359a5a80b', '妍冰', '', NULL, 'http://wx.qlogo.cn/mmopen/eCXtiatJG2qA7d9wjNKktQUMjaiajx4SCoL5Phc5NqRKg4bltVHI94hpZl7x1R2E14Xbb5x7wDJkiaMrYgJx0Nb8nGuvicWcEymc/0', 2, NULL, '承接大型商业演出和传统文化学习班', NULL, '2073504306', 1472438634, 'ed587cf103c3f100be20f7b8fdc7b5a8e2fda264', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1472438063, 1),
+  (5, 'U1472522409', 'a5eee991430384bd76398c0f0e3852ab', '久柳', '', NULL, 'http://wx.qlogo.cn/mmopen/RLZcTUr4lyhBYRz8vKMAVicmHdShyTG9DA1jEg9PMkBKy8M2KwAX9mOHD3TudcoL8Ph8gXwSlaBRW6MpsqKibd8Y8oXETIsUsic/0', 1, NULL, NULL, NULL, '1872836895', 1472522621, '5e542dc0c77b3749f2270cb3ec1d91acc895edc8', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1472522409, 1),
+  (6, 'U1472739566', 'fe1552121baa4d206b7c84e144cbfded', 'Ray', '', NULL, 'http://wx.qlogo.cn/mmopen/l4fl4iboCt9RZUw8sVElUyz3dQchzKcpiaTZicLIH2YhkA3Qypvhc2ZyjLzxzUIYsf9NtFpicibeJfGF8AQZSiaBq8zju3Mias6YZsC/0', 1, NULL, NULL, NULL, '1394764909', 1472739567, '6321b4d8ecb1ce1049eab2be70c44335856c840d', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1472739567, 1),
+  (7, 'U1471602501', '043fbac9765d914e705f473c36eabbda', '风尚', '', '', '/static/assets/img/default-avatar.svg', 1, NULL, '一个好人', NULL, '2073532707', 1474906424, '28d203804358325d41bef03f16c194994bef561c', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1471602501, 1),
+  (8, 'U1472877421', '65b5fea1e22ae9a8863b18d45f8a2e9b', '印文博律师', '', NULL, 'http://wx.qlogo.cn/mmopen/ajNVdqHZLLA7FINjLK0kxvyX9BhicrMF31ldiaiagMZhv8crokiavvNuLC1od9K8lGluATGZhFdA1eCeIllqXGO1Sw/0', 1, NULL, NULL, NULL, '2073529233', 1473494692, 'e99521af40a282e84718f759ab6b1b4a989d8eb1', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1472877421, 1),
+  (9, 'U1472966655', '3356a455c1f1503f70f7649fc0869fdd', '嘉伟', '', NULL, 'http://wx.qlogo.cn/mmopen/nyPpZGsicVpC68EYXh6m41AicibcMIZa5VA04sIt8LWBFbS7sn9tGibkKPQ3ibPOAic3urGomGn4rvc4ITdia9ssZ0uibzk27L6zoh9P/0', 1, NULL, NULL, NULL, '720909644', 1473397571, 'f1075223be5f53b9c2c1abea8288258545365d96', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1472966655, 1),
+  (10, 'U1473304718', '0f07f4e63ad283dde05c09f57a49a203', '鬼谷学猛虎流', '', NULL, 'http://wx.qlogo.cn/mmopen/PiajxSqBRaELGyaDWOrqGfF7JibvU3hbuA7yYHJne8fw68wFQHjZTibcMxoR4keH7DSia4QuREIskmpe3mdxiaGwfJw/0', 1, NULL, NULL, NULL, '2946996753', 1473399843, '039fc7a3f9366adf55ee9e707c371a2459c17bd7', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1473304719, 1),
+  (11, 'U1473391063', '3ba08148e4fde24dbc69dcaf83e31e56', '@Gyb.', '', NULL, 'http://wx.qlogo.cn/mmopen/OHrKu638Lt0WowUCElh711VTFOXGviatZ61VLCsGkfKCeETPIgGGjibn26v0Zd9ztIHkMYGC08hKYAic5zuEGyGW9eCicMNqpzPw/0', 1, NULL, NULL, NULL, '2003622040', 1473391063, '70d80a9f7599c81270a986abaea73e63101b3ecb', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1473391063, 1),
+  (12, 'U1473396778', '4028d6d5a4cf4c3e75fc12f7d1749456', '董超楠', '', NULL, 'http://wx.qlogo.cn/mmopen/LIQXXYlOuN2jy45Uy8FrA1XpHMaUGvtGYrC9XIcgI2MKvzlPsb4uISBUpLxOXZ6nlqXpCvMoEicDM4HSltm9O4nGyvU11Lzib1/0', 2, NULL, NULL, NULL, '1911132108', 1473396778, '8bbf5242300e5e8e4917b287a31efcb0c9feedfd', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1473396778, 1),
+  (13, 'U1473396819', '17ab2bff43b57cf46776728344f52969', '七里林', '', NULL, 'http://wx.qlogo.cn/mmopen/RlLibmYfibwCs6EPOR9ZRxyckic1kLZMqAibdQgC5RXIuaoIAQAYL1IWfxcuzBfqwuicxr246CszaXmmZViaDprDibR4mlMBib6lz30j/0', 2, NULL, NULL, NULL, '2073504303', 1474331920, '33eaf519d0d42de5a67112e2728880db7a293c8b', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1506490927, 1),
+  (14, 'U1473396839', '3928540f538d3da96aee311b9a7dc4b3', '求真实者', '', NULL, 'http://wx.qlogo.cn/mmopen/9UjCmequjUib5ywquUZY1ibYhLogodtGeVc7E7jTG9XyrLn4BwPB7MicQ58KIOkJrxbTqk5snhXOlTYoglSm1HIXcGzAAo251so/0', 0, NULL, NULL, NULL, '2004314620', 1473396839, '8f7579a85981e1c1f726704b0865320dfadbef2e', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1506503387, 1),
+  (15, 'U1473397391', '5b14c283863c7a9854421f3d650ca628', 'peter', '', NULL, 'http://wx.qlogo.cn/mmopen/PwJLJ0FGzVTsG2K1CtNGibzTSGD1788aslVUUSPBDq5Jpv8JxCzmCSbdRgW3wUJYCJTU8kgshcNn7g8Ox6LmscmM8YuicrgwNf/0', 1, NULL, NULL, NULL, '1701480067', 1473397391, 'c66d3a0e16a81a13173756a2832ba424b34a095c', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1506491950, 1),
+  (16, 'U1473397426', '2ffb46af26a16e32a6187aaa10a85656', '随风而去的心情', '', NULL, 'http://wx.qlogo.cn/mmopen/9UjCmequjUib5ywquUZY1ibbK663y8qiaGXlcxQ4Hgjem9Hp2tVsnMbwErjuMuerBQMnrrK8NlmmeiaHT58ic9rG4SXI0l05IYQq1/0', 1, NULL, NULL, NULL, '2073532567', 1473397426, '14855b00775de46b451c8255e6a73a5c044fc188', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1506527057, 1),
+  (17, 'U1474181145', '965c4aab5c6c73930930ef1cfc6f8802', '班鱼先生', '', NULL, 'http://wx.qlogo.cn/mmopen/PiajxSqBRaELgx8NFX4Nz0FtAPkwlouDOErFLmsbvXeJlwzYeMJDoSw5X59FuE86uRh49777cYCVyw2KNQWc6Bw/0', 1, NULL, NULL, NULL, '2938851779', 1474181146, '86d19a7b1f15db4fd25e0b64bfc17870a70f67e2', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1506526964, 1);
 
 --
 -- Indexes for dumped tables
@@ -890,13 +852,14 @@ INSERT INTO `eacoo_users` (`uid`, `username`, `password`, `nickname`, `email`, `
 --
 ALTER TABLE `eacoo_action`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `name` (`name`);
+  ADD KEY `idx_name` (`name`);
 
 --
 -- Indexes for table `eacoo_action_log`
 --
 ALTER TABLE `eacoo_action_log`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_uid` (`uid`);
 
 --
 -- Indexes for table `eacoo_attachment`
@@ -922,21 +885,6 @@ ALTER TABLE `eacoo_auth_group_access`
 --
 ALTER TABLE `eacoo_auth_rule`
   ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `eacoo_comments`
---
-ALTER TABLE `eacoo_comments`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_from_object_id` (`from`,`object_id`);
-
---
--- Indexes for table `eacoo_comment_zan`
---
-ALTER TABLE `eacoo_comment_zan`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_comment_id` (`comment_id`),
-  ADD KEY `idx_uid` (`uid`);
 
 --
 -- Indexes for table `eacoo_config`
@@ -1047,12 +995,12 @@ ALTER TABLE `eacoo_users`
 -- 使用表AUTO_INCREMENT `eacoo_action`
 --
 ALTER TABLE `eacoo_action`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=18;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=22;
 --
 -- 使用表AUTO_INCREMENT `eacoo_action_log`
 --
 ALTER TABLE `eacoo_action_log`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=12;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=9;
 --
 -- 使用表AUTO_INCREMENT `eacoo_attachment`
 --
@@ -1069,16 +1017,6 @@ ALTER TABLE `eacoo_auth_group`
 ALTER TABLE `eacoo_auth_rule`
   MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 --
--- 使用表AUTO_INCREMENT `eacoo_comments`
---
-ALTER TABLE `eacoo_comments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
---
--- 使用表AUTO_INCREMENT `eacoo_comment_zan`
---
-ALTER TABLE `eacoo_comment_zan`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
---
 -- 使用表AUTO_INCREMENT `eacoo_config`
 --
 ALTER TABLE `eacoo_config`
@@ -1092,7 +1030,7 @@ ALTER TABLE `eacoo_hooks`
 -- 使用表AUTO_INCREMENT `eacoo_links`
 --
 ALTER TABLE `eacoo_links`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=15;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=3;
 --
 -- 使用表AUTO_INCREMENT `eacoo_messages`
 --
@@ -1102,7 +1040,7 @@ ALTER TABLE `eacoo_messages`
 -- 使用表AUTO_INCREMENT `eacoo_modules`
 --
 ALTER TABLE `eacoo_modules`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=6;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=5;
 --
 -- 使用表AUTO_INCREMENT `eacoo_nav`
 --

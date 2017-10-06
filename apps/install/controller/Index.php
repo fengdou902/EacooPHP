@@ -101,7 +101,13 @@ class Index extends Controller {
             }
 
 			//缓存管理员信息
-			session('admin_info', $admin);
+			$admin_info = [
+				'username'   => $admin['admin_username'],
+				'password'   => $admin['admin_password'],
+				'repassword' => $admin['admin_repassword'],
+				'email'      => $admin['admin_email'],
+			];
+			session('admin_info', $admin_info);
 			//缓存管理员信息
 			session('web_config', $webconfig);
 			//缓存数据库配置
