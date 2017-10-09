@@ -451,8 +451,8 @@ class Plugins extends Admin {
             foreach ($data as $key => $menu) {
                 $pid = isset($menu['pid']) ? (int)$menu['pid'] : $pid;
 
-                $menu['from_type'] = 2;//2代表plugin
-                $menu['from_flag'] = $flag_name;
+                $menu['depend_type'] = 2;//2代表plugin
+                $menu['depend_flag'] = $flag_name;
                 $menu['pid']    = $pid;
                 $menu['sort']   = isset($menu['sort']) ? $menu['sort'] : 99;
                 $authRuleModel->allowField(true)->isUpdate(false)->data($menu)->save();
@@ -479,8 +479,8 @@ class Plugins extends Admin {
     {
         if ($flag_name!='') {
             $map = [
-                'from_type'=>2,
-                'from_flag'=>$flag_name
+                'depend_type'=>2,
+                'depend_flag'=>$flag_name
             ];
             if ($delete) {
                 $res = AuthRule::where($map)->delete();

@@ -15,7 +15,7 @@ class Plugin extends Base {
 	
 	public $name = '';
 	public $info             = [];
-	public $hooks             = [];
+	public $hooks            = [];
 	public $pluginPath       = '';
 	//public $optionsFile    = '';
 	public $custom_config    = '';
@@ -68,7 +68,7 @@ class Plugin extends Base {
 	 * @author 心云间、凝听 <981248356@qq.com>
 	 */
 	final public function getPluginInfo() {
-		$name = input('mc', '', 'trim');
+		$name = input('param._plugin', '', 'trim');
 		if ($name) {
 			return Plugins::getInfoByFile($name);
 		} else {

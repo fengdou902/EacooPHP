@@ -60,37 +60,29 @@ function get_plugin_config($name)
  * 插件显示内容里生成访问插件的url
  * @param string $url url
  * @param array $param 参数
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
-function plugins_url($url, $param = array()) {
-    $url        = parse_url($url);
-    $case       = config('url_case_insensitive');
-    $plugins     = $case ? parse_name($url['scheme']) : $url['scheme'];
-    $controller = $case ? parse_name($url['host']) : $url['host'];
-    $action     = trim($case ? strtolower($url['path']) : $url['path'], '/');
+// function plugin_url($url, $param = []) {
+//     $url        = parse_url($url);
+//     $case       = config('url_case_insensitive');
+//     $plugins    = $case ? parse_name($url['scheme']) : $url['scheme'];
+//     $controller = $case ? parse_name($url['host']) : $url['host'];
+//     $action     = trim($case ? strtolower($url['path']) : $url['path'], '/');
 
-    /* 解析URL带的参数 */
-    if (isset($url['query'])) {
-        parse_str($url['query'], $query);
-        $param = array_merge($query, $param);
-    }
+//     /* 解析URL带的参数 */
+//     if (isset($url['query'])) {
+//         parse_str($url['query'], $query);
+//         $param = array_merge($query, $param);
+//     }
 
-    /* 基础参数 */
-    $params = array(
-        'ad' => $plugins,
-        'co' => $controller,
-        'ac' => $action,
-    );
-    $params = array_merge($params, $param); //添加额外参数
-    if (strtolower(MODULE_NAME) == 'admin') {
-        return url('admin/plugins/execute', $params, $suffix, $domain);
-    } elseif (strtolower(MODULE_NAME) == 'home') {
-        return url('Home/plugins/execute', $params, $suffix, $domain);
-    } else{
-        return url(MODULE_NAME.'/plugins/execute', $params, $suffix, $domain);
-    }
-    //return \think\Url::build('index/plugins/execute', $params);
-}
+//     /* 基础参数 */
+//     $params = [
+//         'ad' => $plugins,
+//         'co' => $controller,
+//         'ac' => $action,
+//     ];
+//     $params = array_merge($params, $param); //添加额外参数
+//     return \think\Url::build('home/plugin/execute', $params);
+// }
 
 /**
  * 获取插件地址
@@ -98,17 +90,17 @@ function plugins_url($url, $param = array()) {
  * @param  [type] $param [description]
  * @return [type]        [description]
  */
-function tox_plugins_url($url, $param)
+function plugin_url($url, $param)
 {
     // 拆分URL
-    $url = explode('/', $url);
-    $plugin = $url[0];
+    $url        = explode('/', $url);
+    $plugin     = $url[0];
     $controller = $url[1];
-    $action = $url[2];
+    $action     = $url[2];
 
     // 调用u函数
-    $param['_plugins'] = $plugin;
+    $param['_plugin']     = $plugin;
     $param['_controller'] = $controller;
-    $param['_action'] = $action;
-    return url("Home/Addons/execute", $param);
+    $param['_action']     = $action;
+    return url("home/plugin/execute", $param);
 }

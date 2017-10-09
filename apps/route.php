@@ -12,3 +12,5 @@ use think\Route;
 
 //导航
 Route::rule('WxInterface/:wxid', 'wechat/WxInterface/index');
+//插件执行入口
+Route::rule('plugin_execute', 'home/plugin/execute');

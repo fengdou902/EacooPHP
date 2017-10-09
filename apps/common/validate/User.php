@@ -5,11 +5,11 @@ use think\Validate;
 
 class User extends Validate
 {
-    protected $regex = [ 'mobile' => '/^1[3|4|5|7|8][0-9]\d{4,8}$/u'];
+    protected $regex = [ 'username'=>'^(?!_)(?!\d)(?!.*?_$)[\w]+$','mobile' => '/^1[3|4|5|7|8][0-9]\d{4,8}$/u'];
     // 验证规则
     protected $rule = [
         'nickname'   => 'require|chsAlphaNum',
-        'username'   => 'require|length:1,32|unique|regex:^(?!_)(?!\d)(?!.*?_$)[\w]+$',
+        'username'   => 'require|length:1,32|unique:users,username,,uid|regex:username',
         'password'   => 'require|length:6,32|regex:(?!^(\d+|[a-zA-Z]+|[~!@#$%^&*()_+{}:"<>?\-=[\];\',.\/]+)$)^[\w~!@#$%^&*()_+{}:"<>?\-=[\];\',.\/]+$',
         'repassword' => 'require|confirm:password',
         'email'      => 'email|unique:users,email,,uid',
@@ -36,6 +36,6 @@ class User extends Validate
     ];
 
     protected $scene=[
-        'edit' => ['nickname','username','email','mobile'=>'length|unique'],
+        'edit' => ['nickname','username'=>'require|length:1,32|regex:username','email','mobile'=>'regex:mobile|unique:users,mobile,,uid'],
     ];
 }

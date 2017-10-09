@@ -33,7 +33,7 @@ class Hooks extends Base {
             'name'=>$name
         ];
         $gethook = $this->where($map)->find();
-        $gethook = $gethook->toArray();
+        $gethook = !empty($gethook) ? $gethook->toArray() : $gethook;
         if (!$gethook || empty($gethook)) {
             $data = [
                 'name'        => $name,

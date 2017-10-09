@@ -98,7 +98,7 @@ class User extends Admin {
 
                 if ($result) {
                     if ($uid>0) {//如果是编辑状态下
-                        $this->user_model->update_login_session($uid);
+                        $this->user_model->updateLoginSession($uid);
                     }
                     $this->success($title.'成功', url('index'));
                 } else {
@@ -128,10 +128,10 @@ class User extends Admin {
                     ->addFormItem('mobile', 'left_icon_number', '手机号', '',['icon'=>'<i class="fa fa-phone"></i>'],'','placeholder="填写手机号"')
                     ->addFormItem('sex', 'radio', '性别', '',[0=>'保密',1=>'男',2=>'女'])
                     ->addFormItem('description', 'textarea', '个人说明', '请填写个人说明');
-                    if ($uid>0) {
-            $builder->addFormItem('avatar', 'avatar', '头像', '用户头像默认随机分配',['uid'=>$info['uid']],'required');
-                    }
-            $builder->setFormData($info)
+            if ($uid>0) {
+                $builder->addFormItem('avatar', 'avatar', '头像', '用户头像默认随机分配',['uid'=>$info['uid']],'required');
+            }
+            $builder->setFormData($info)//->setAjaxSubmit(false)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
         }

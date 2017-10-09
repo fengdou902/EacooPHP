@@ -104,7 +104,7 @@ class User extends Base
      * @param  string $username 用户名
      * @return boolean ture 未禁用，false 禁止注册
      */
-    protected static function checkDenyUser($username){
+    public static function checkDenyUser($username){
         if ($username) {
             $deny = config('user_deny_username');
             $deny = explode ( ',', $deny);
@@ -223,7 +223,7 @@ class User extends Base
     public function updateLoginSession($uid){
 
         if ($uid == is_login()) {            
-            $user        = self::get($uid);
+            $user    = self::get($uid);
             $result = $this->setUserAuthSession($user);
 
             return $this->where('uid',$uid)->update(['activation_auth_sign' => $result['auth_login_sign']]);
