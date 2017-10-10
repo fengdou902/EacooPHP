@@ -23,7 +23,7 @@ EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求
 
 ### 文档
 
-[https://www.kancloud.cn/youpzt/eacoo](https://www.kancloud.cn/youpzt/eacoo)
+地址：[https://www.kancloud.cn/youpzt/eacoo](https://www.kancloud.cn/youpzt/eacoo)
 
 ### 演示地址
 [http://demo1.eacoo123.com/admin](http://demo1.eacoo123.com/admin)  
@@ -31,13 +31,14 @@ EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求
 密码：123456 
 
 ### 交流反馈
-官方QQ群: 436491685
-交流社区：[http://forum.eacoo123.com](http://forum.eacoo123.com)
+官方QQ群: 436491685  
+交流社区：[http://forum.eacoo123.com](http://forum.eacoo123.com)  
 邮件: postmaster@eacoo123.com  
 
 ### 项目地址
-码云gitee：[https://gitee.com/ZhaoJunfeng/EacooPHP.git](https://gitee.com/ZhaoJunfeng/EacooPHP.git)
-GitHub：[https://github.com/fengdou902/EacooPHP.git](https://github.com/fengdou902/EacooPHP.git)
+(记得给项目加个star哦)  
+码云gitee：[https://gitee.com/ZhaoJunfeng/EacooPHP.git](https://gitee.com/ZhaoJunfeng/EacooPHP.git)  
+GitHub：[https://github.com/fengdou902/EacooPHP.git](https://github.com/fengdou902/EacooPHP.git)  
 
 ### 鸣谢
 感谢以下的项目,排名不分先后
