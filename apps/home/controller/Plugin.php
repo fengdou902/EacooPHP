@@ -42,4 +42,23 @@ class Plugin extends Home
         }
 
     }
+
+    /**
+     * 插件模版输出
+     * @param  string $templateFile 模板文件名
+     * @param  array  $vars         模板输出变量
+     * @param  array  $replace      模板替换
+     * @param  array  $config       模板参数
+     * @param  array  $render       是否渲染内容
+     * @return [type]               [description]
+     */
+    public function fetch($template='', $vars = [], $replace = [], $config = [] ,$render=false) {
+
+        //$name  = input('param._plugin');
+
+        if ($template != '') {
+            $template = config('template.view_path').$template . '.' .config('template.view_suffix');
+            echo $this->view->fetch($template, $vars, $replace, $config, $render);
+        }
+    }
 }

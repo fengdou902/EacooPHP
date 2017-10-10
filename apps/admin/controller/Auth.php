@@ -87,7 +87,7 @@ class Auth extends Admin {
 
         Builder::run('List')
             ->setMetaTitle($meta_title)
-            ->addTopBtn('addnew',array('href'=>url('rule_edit',array('pid'=>$map['pid']))))  // 添加新增按钮
+            ->addTopBtn('addnew',array('href'=>url('ruleEdit',array('pid'=>$map['pid']))))  // 添加新增按钮
             ->addTopBtn('resume',array('model'=>'auth_rule'))  // 添加启用按钮
             ->addTopBtn('forbid',array('model'=>'auth_rule'))  // 添加禁用按钮
             ->addTopBtn('delete',array('model'=>'auth_rule'))  // 添加删除按钮
@@ -108,7 +108,7 @@ class Auth extends Admin {
             ->setListData($data_list)    // 数据列表
             ->setListPage($totalCount) // 数据列表分页
             ->setExtraHtml($extra_html)
-            ->addRightButton('edit',array('href'=>url('rule_edit',array('id'=>'__data_id__'))))      // 添加编辑按钮
+            ->addRightButton('edit',array('href'=>url('ruleEdit',array('id'=>'__data_id__'))))      // 添加编辑按钮
             ->addRightButton('forbid',array('model'=>'auth_rule'))// 添加删除按钮
             ->addFootBtn('self', $marker_menu0_attr)->addFootBtn('self', $marker_menu1_attr)
             ->alterListData(
@@ -163,7 +163,7 @@ class Auth extends Admin {
 
         Builder::run('List')
             ->setMetaTitle($meta_title)
-            ->addTopBtn('addnew',array('href'=>url('rule_edit',array('pid'=>$map['pid']))))  // 添加新增按钮
+            ->addTopBtn('addnew',array('href'=>url('ruleEdit',array('pid'=>$map['pid']))))  // 添加新增按钮
             ->addTopBtn('resume',array('model'=>'auth_rule'))  // 添加启用按钮
             ->addTopBtn('forbid',array('model'=>'auth_rule'))  // 添加禁用按钮
             ->addTopBtn('delete',array('model'=>'auth_rule'))  // 添加删除按钮
@@ -184,7 +184,7 @@ class Auth extends Admin {
             ->setListData($data_list)    // 数据列表
             ->setListPage($totalCount) // 数据列表分页
             ->setExtraHtml($extra_html)
-            ->addRightButton('edit',array('href'=>url('rule_edit',array('id'=>'__data_id__'))))      // 添加编辑按钮
+            ->addRightButton('edit',array('href'=>url('ruleEdit',array('id'=>'__data_id__'))))      // 添加编辑按钮
             ->addRightButton('forbid',array('model'=>'auth_rule'))// 添加删除按钮
             ->addFootBtn('self', $marker_menu0_attr)->addFootBtn('self', $marker_menu1_attr)
             ->alterListData(
@@ -198,10 +198,10 @@ class Auth extends Admin {
      * @param  integer $id [description]
      * @return [type]      [description]
      */
-    public function rule_edit($id=0){
+    public function ruleEdit($id=0){
         $title=$id ? "编辑":"新增";
         if ($id==0) {//新增
-            $pid       = (int)input('get.pid');
+            $pid       = (int)input('param.pid');
             $pid_data  = $this->authRuleModel->find($pid);
             $menu_data = array('depend_flag'=>$pid_data['depend_flag'],'pid'=>$pid);
         }
@@ -210,16 +210,20 @@ class Auth extends Admin {
             // 提交数据
             $data =input('post.');
             //验证数据
-            $this->validate($data,'AuthRule');
-            
-            $id   =isset($data['id']) && $data['id']>0 ? $data['id']:false;
+            $result = $this->validate($data,'AuthRule');
+            if(true !== $result){
+                // 验证失败 输出错误信息
+                $this->error($result);exit;
+            } else{
+                $id   =isset($data['id']) && $data['id']>0 ? $data['id']:false;
 
-            if ($this->authRuleModel->editData($data,$id)) {
-                cache('admin_sidebar_menus',null);//清空后台菜单缓存
-                $this->success($title.'菜单成功', url('rule',array('pid'=>input('pid'))));
-            } else {
-                $this->error($this->authRuleModel->getError());
-            }
+                if ($this->authRuleModel->editData($data,$id)) {
+                    cache('admin_sidebar_menus',null);//清空后台菜单缓存
+                    $this->success($title.'菜单成功', url('index',array('pid'=>input('param.pid'))));
+                } else {
+                    $this->error($this->authRuleModel->getError());
+                }
+            }     
 
         } else{
             // 获取菜单数据

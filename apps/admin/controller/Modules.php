@@ -190,7 +190,7 @@ class Modules extends Admin {
 		// 清除旧数据
 		if ($clear) {
 			$sql_file = $this->moduleInstallPath.'/uninstall.sql';
-			$uninstall_sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
+			if(is_file($sql_file)) $uninstall_sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
 		}
 
 		// 安装新数据表
@@ -203,7 +203,7 @@ class Modules extends Admin {
 			$sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
 			if (!$sql_status) {
 				$sql_file = $this->moduleInstallPath.'/uninstall.sql';
-				$sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
+				if(is_file($sql_file)) $sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
 				$this->error('安装失败');
 			}
 		}

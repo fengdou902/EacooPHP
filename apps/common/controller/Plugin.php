@@ -13,7 +13,7 @@ use app\admin\model\Plugins;
 
 class Plugin extends Base {
 	
-	public $name = '';
+	public $name             = '';
 	public $info             = [];
 	public $hooks            = [];
 	public $pluginPath       = '';
@@ -25,6 +25,10 @@ class Plugin extends Base {
 
 	public function _initialize() {
 		parent::_initialize();
+		
+		$class = get_class($this);
+		$path = strstr($class,substr($class, strrpos($class, '\\') + 1),true);
+		$this->pluginPath = ROOT_PATH.str_replace('\\','/',$path);
 
 		$this->info = $this->getPluginInfo();
 		$this->name = $this->info['name'];
@@ -43,12 +47,6 @@ class Plugin extends Base {
      * @return [type]               [description]
      */
 	public function fetch($template='', $vars = [], $replace = [], $config = [] ,$render=false) {
-
-		$name                                = $this->name;
-		$ac                                  = input('ac', '', 'trim,strtolower');
-		$view_replace_str                    = config('view_replace_str');
-		$view_replace_str['__PLUGIN_STATIC__'] = config('view_replace_str.__STATIC__').'/plugins/'.$name;
-		config('view_replace_str', $view_replace_str);
 		if ($template != '') {
             if (!is_file($template)) {
                 $template = $this->pluginPath. 'view/'. $template . '.' .config('template.view_suffix');
@@ -69,14 +67,11 @@ class Plugin extends Base {
 	 */
 	final public function getPluginInfo() {
 		$name = input('param._plugin', '', 'trim');
+
 		if ($name) {
 			return Plugins::getInfoByFile($name);
 		} else {
-			$class = get_class($this);
-			$path = strstr($class,substr($class, strrpos($class, '\\') + 1),true);
-			$path = ROOT_PATH.str_replace('\\','/',$path);
-			$this->pluginPath = $path;
-			$info_file = $path.'install/info.json';
+			$info_file = $this->pluginPath.'install/info.json';
 			if (is_file($info_file)) {
 				 $module_info = file_get_contents($info_file);
 	             $module_info = json_decode($module_info,true);
@@ -117,12 +112,12 @@ class Plugin extends Base {
 		if (isset($_config[$name])) {
 			return $_config[$name];
 		}
-		$config        = [];
+		$config = [];
 		$map = [
 			'name'   =>$name,
 			'status' =>1,
 		];
-		$config        = Plugins::where($map)->value('config');
+		$config  = Plugins::where($map)->value('config');
 		if ($config) {
 			$config = json_decode($config, true);
 		} else {

@@ -698,13 +698,18 @@ class Plugins extends Admin {
             $data = input('post.');
             //验证数据
             $this->validate($data,'Hook');
-            $id = isset($data['id']) && $data['id']>0 ? $data['id']:false;
-            if ($this->hooksModel->editData($data,$id)) {
-                $this->success($title.'成功', url('hooks'));
-            } else {
-                $this->error($this->hooksModel->getError());
-            }
+            if(true !== $result){
+                // 验证失败 输出错误信息
+                $this->error($result);exit;
+            } else{
 
+                $id = isset($data['id']) && $data['id']>0 ? $data['id']:false;
+                if ($this->hooksModel->editData($data,$id)) {
+                    $this->success($title.'成功', url('hooks'));
+                } else {
+                    $this->error($this->hooksModel->getError());
+                }
+            }
         } else {
             $info = [];
             if ($id!=0) {

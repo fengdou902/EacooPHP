@@ -33,12 +33,12 @@ class Config {
             define('SERVER_SOFTWARE_TYPE','no');
         }
 
-        define('EACOOPHP_V','1.0.5');
+        define('EACOOPHP_V','1.0.6');
         // 安装模式下直接返回
         if(defined('MODULE_NAME') && MODULE_NAME === 'install') return;
         // 当前模块模版参数配置
         $ec_config['view_replace_str'] = thinkConfig::get('view_replace_str',false);  // 先取出配置文件中定义的否则会被覆盖
-        
+
         if (MODULE_MARK === 'admin') {
             // 如果是后台并且不是Admin模块则设置默认控制器层为Admin
             if (MODULE_NAME!=='admin' && MODULE_NAME!=='api') {
@@ -73,12 +73,12 @@ class Config {
                 $ec_config['view_replace_str']['__THEME_LIBS__']  = $theme_static_public_path.'libs';
             }
 
-            // 主题模块化
+            // 模块化主题
             $current_theme_module_path = $current_theme_path.MODULE_NAME.'/'; //当前主题模块文件夹路径
 
             if(is_dir($current_theme_module_path)){
-                thinkConfig::get('template');
-                $ec_config['template'] = config('template');
+                
+                $ec_config['template'] = thinkConfig::get('template');
                 $ec_config['template']['view_path'] = $current_theme_module_path;
                 
                 // 各模块自带静态资源路径
@@ -91,6 +91,25 @@ class Config {
                     $ec_config['view_replace_str']['__JS__']   = $module_public_url.'/js';
                     $ec_config['view_replace_str']['__LIBS__'] = $module_public_url.'/libs';
                 }
+            }
+            
+            //插件主题化
+            $action_url = $params['module'][0].'/'.$params['module'][1].'/'.$params['module'][2];
+            //判断来源是否是插件执行入口
+            if ($action_url=='home/plugin/execute') {
+                $plugin_name = input('param._plugin');
+                $theme_plugin_path = $current_theme_path.'plugins/'.$plugin_name.'/'; //当前主题插件文件夹路径
+                if (is_dir($theme_plugin_path)) {
+                    $ec_config['template'] = thinkConfig::get('template');
+                    $ec_config['template']['view_path'] = $theme_plugin_path;
+                    
+                } else{
+                    $ec_config['template'] = thinkConfig::get('template');
+                    $ec_config['template']['view_path'] = ROOT_PATH.'plugins/'.$plugin_name.'/view/';
+                }
+                
+                //插件静态资源路径
+                $ec_config['view_replace_str']['__PLUGIN_STATIC__'] = $ec_config['view_replace_str']['__STATIC__'].'/plugins/'.$plugin_name;
             }
 
         }

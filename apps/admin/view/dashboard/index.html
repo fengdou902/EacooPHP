@@ -34,7 +34,7 @@
                   <ul class="users-list clearfix">
                     {volist name="user_list" id="row"}
                       <li>
-                        <img src="{$row.avatar}" width="45" height="45">
+                        <img src="{$row.avatar|default='/static/assets/img/default-avatar.svg'}" width="45" height="45">
                         <a class="users-list-name" href="{:url('admin/user/edit',['uid'=>$row['uid']])}">{$row.nickname}</a>
                         <span class="users-list-date">{$row.reg_time|friendly_date=###,'mohu'}</span>
                       </li>

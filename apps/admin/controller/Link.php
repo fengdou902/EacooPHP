@@ -69,12 +69,18 @@ class Link extends Admin{
         if (IS_POST) {
             $data = input('post.');
             //验证数据
-            $this->validate($data,'Link');
-            $id   =isset($data['id']) && $data['id']>0 ? $data['id']:false;
-            if ($this->linkModel->editData($data,$id)) {
-                $this->success($title.'成功', url('index'));
-            } else {
-                $this->error($this->linkModel->getError());
+            $result = $this->validate($data,'Link');
+            if(true !== $result){
+                // 验证失败 输出错误信息
+                $this->error($result);exit;
+            } else{
+
+                $id   =isset($data['id']) && $data['id']>0 ? $data['id']:false;
+                if ($this->linkModel->editData($data,$id)) {
+                    $this->success($title.'成功', url('index'));
+                } else {
+                    $this->error($this->linkModel->getError());
+                }
             }
 
         } else {
