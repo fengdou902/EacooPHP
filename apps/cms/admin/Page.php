@@ -70,7 +70,7 @@ class Page extends Admin {
                 ->keyListItem('title', '标题')
                 ->keyListItem('views','浏览量')
                 ->keyListItem('author','作者','author')
-                ->keyListItem('create_time','发布时间', 'time')
+                ->keyListItem('publish_time','发布时间')
                 ->keyListItem('status', '状态', 'status')
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListDataKey('id')
@@ -105,15 +105,16 @@ class Page extends Admin {
             } else{
                 $info = [];
             }
-            
+            $authors = db('users')->where(['allow_admin'=>1])->column('nickname','uid');
             Builder::run('Form')
                     ->setMetaTitle($title.'页面')
                     ->addFormItem('id', 'hidden', '')
                     ->addFormItem('title', 'text', '标题')
-                    ->addFormItem('content', 'ueditor', '内容','',['width'=>'100%','height'=>'200px','config'=>''])
-                    ->addFormItem('author_id', 'number', '作者', '')
+                    ->addFormItem('content', 'wangeditor', '内容','',['width'=>'100%','height'=>'300px','config'=>'all'])
+                    ->addFormItem('author_id', 'select2', '作者', '',$authors)
                     ->addFormItem('tags', 'tags', '标签', '')
                     ->addFormItem('seo_keywords', 'text', 'SEO关键字', '')
+                    ->addFormItem('excerpt', 'text', 'SEO描述', '')
                     ->setFormData($info)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();

@@ -216,8 +216,8 @@ span.show-media-info{width: 20px;text-align:center;}
 
 {block name="script"}
 <link href="__STATIC__/libs/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
-<script type="text/javascript" charset="utf-8" src="__STATIC__/libs/webuploader/js/webuploader.js"></script>
-
+<!-- webuploader -->
+<script type="text/javascript" src="__STATIC_LIBS__/webuploader/js/webuploader.min.js"></script>
   {if condition="$attachmentDaterangePicker"}
       <link href="__STATIC__/libs/daterangepicker/daterangepicker-bs3.css" type="text/css" rel="stylesheet">
       <script src="__STATIC__/libs/daterangepicker/moment.min.js"></script>
@@ -250,25 +250,26 @@ span.show-media-info{width: 20px;text-align:center;}
      /*弹窗*/
     $(function () { 
 
-        $('body').on('click','.showAttachmentInfo', function() {
-            var $this = $(this);
-            var attachmentId=$this.attr('data-id');
-            $.post("{:url('admin/Attachment/attachmentInfo')}", {id:attachmentId}, function (res) {
-                  $("#file-name").text(res.name);
-                  $("#file-type").text(res.mime_type);
-                  $("#file-size").text(res.size);
-                  $("#file-uploadtime").text(res.uploadtime);
-                  $("#file-author").text(res.author);
-                  $("#file-url").text(res.url);
+      $('body').on('click','.showAttachmentInfo', function() {
+          var $this = $(this);
+          var attachmentId=$this.attr('data-id');
+          $.post("{:url('admin/Attachment/attachmentInfo')}", {id:attachmentId}, function (res) {
+                $("#file-name").text(res.name);
+                $("#file-type").text(res.mime_type);
+                $("#file-size").text(res.size);
+                $("#file-uploadtime").text(res.uploadtime);
+                $("#file-author").text(res.author);
+                $("#file-url").text(res.url);
 
-                  $("#file-src").attr('src',res.url).attr('alt',res.alt);
-                  $("#file-href").attr('href',res.url);
-                  $("#file-alt").val(res.alt);
-                  $("#file-id").val(res.id);
-                 /* var newDelUrl=$("#delAttachmentUrl").attr('href').replace(".html","/id/"+res.id+".html");
-                  $("#delAttachmentUrl").attr('href',newDelUrl);*/
-              })
-          })
+                $("#file-src").attr('src',res.url).attr('alt',res.alt);
+                $("#file-href").attr('href',res.url);
+                $("#file-alt").val(res.alt);
+                $("#file-id").val(res.id);
+               /* var newDelUrl=$("#delAttachmentUrl").attr('href').replace(".html","/id/"+res.id+".html");
+                $("#delAttachmentUrl").attr('href',newDelUrl);*/
+            })
+        })
+      
         //选中当前图片
       $('body').on('click','.attachment-content li', function() {
             var $this              = $(this);

@@ -57,6 +57,7 @@ class Base extends Controller {
 		defined('ACTION_NAME') or define('ACTION_NAME', $this->request->action());
 		defined('IS_POST') or define('IS_POST', $this->request->isPost());
 		defined('IS_AJAX') or define('IS_AJAX', $this->request->isAjax());
+		defined('IS_PJAX') or define('IS_PJAX', $this->request->isPjax());
 		defined('IS_GET') or define('IS_GET', $this->request->isGet());
 		defined('IS_MOBILE') or define('IS_MOBILE', $this->request->isMobile());
 
@@ -65,6 +66,25 @@ class Base extends Controller {
 		$this->ip = $this->request->ip();
 		$this->url = $this->request->url(true);//完整url
 	}
+
+	/**
+     * 加载模板输出
+     * @access protected
+     * @param string $template 模板文件名
+     * @param array  $vars     模板输出变量
+     * @param array  $replace  模板替换
+     * @param array  $config   模板参数
+     * @return mixed
+     */
+    protected function fetch($template = '', $vars = [], $replace = [], $config = [])
+    {
+    	if (IS_PJAX) {
+    		echo $this->view->fetch($template, $vars, $replace, $config);
+    	} else{
+    		return $this->view->fetch($template, $vars, $replace, $config);
+    	}
+        
+    }
 
 	/**
 	 * 获取输入数据，带默认值

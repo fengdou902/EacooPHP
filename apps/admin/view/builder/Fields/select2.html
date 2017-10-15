@@ -25,7 +25,13 @@
 
         <script type="text/javascript">
         $(document).ready(function() {
-          $("#{$field.name}").select2();
+            if ($.support.pjax) {
+                $(document).on('ready pjax:end', function(event) {   
+                    $("#{$field.name}").select2();
+                })
+            } else{
+                $("#{$field.name}").select2();
+            }          
         });
         </script>
     </div>

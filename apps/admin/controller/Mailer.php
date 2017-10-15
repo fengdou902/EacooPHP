@@ -22,8 +22,8 @@ class Mailer extends Admin{
         parent::_initialize();
         $this->configModel = new Config();
         $this->tabList = [
-            'register_active' =>['title'=>'注册激活模板','href'=>url('mailer_template',['template_type'=>'register_active'])],
-            'captcha_active'  =>['title'=>'邮箱验证码模板','href'=>url('mailer_template',['template_type'=>'captcha_active'])]
+            'register_active' =>['title'=>'注册激活模板','href'=>url('template',['template_type'=>'register_active'])],
+            'captcha_active'  =>['title'=>'邮箱验证码模板','href'=>url('template',['template_type'=>'captcha_active'])]
             ];
     }
 
@@ -31,7 +31,7 @@ class Mailer extends Admin{
      * 邮箱模板
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function mailer_template($template_type='register_active'){
+    public function template($template_type='register_active'){
         if (IS_POST) {
             // 提交数据
             $template_data         = input('post.');
@@ -82,31 +82,31 @@ class Mailer extends Admin{
                 $this->error('数据为空');
             }
         } else {
-                $info = [];
-                switch ($template_type) {
-                    case 'register_active':
-                            $info             = config('mail_reg_active_template');//获取配置值
-                            $template_content = config('mail_reg_active_template_content');//获取配置值
-                        break;
-                    case 'captcha_active':
-                            $info             = config('mail_captcha_template');//获取配置值
-                            $template_content = config('mail_captcha_template_content');//获取配置值
-                        break;
-                    default:
-                            $info             = config('mail_reg_active_template');//获取配置值
-                            $template_content = config('mail_reg_active_template_content');//获取配置值
-                        break;
-                }
-                
-                $info['template_content'] = $template_content;
-            // 使用FormBuilder快速建立表单页面。
+            $info = [];
+            switch ($template_type) {
+                case 'register_active':
+                        $info             = config('mail_reg_active_template');//获取配置值
+                        $template_content = config('mail_reg_active_template_content');//获取配置值
+                    break;
+                case 'captcha_active':
+                        $info             = config('mail_captcha_template');//获取配置值
+                        $template_content = config('mail_captcha_template_content');//获取配置值
+                    break;
+                default:
+                        $info             = config('mail_reg_active_template');//获取配置值
+                        $template_content = config('mail_reg_active_template_content');//获取配置值
+                    break;
+            }
+            
+            $info['template_content'] = $template_content;
 
             Builder::run('Form')
                     ->setMetaTitle('邮箱模板')  // 设置页面标题
             		->setTabNav($this->tabList, $template_type)  // 设置Tab按钮列表
                     ->addFormItem('active', 'radio', '邮箱激活', '',[1=>'开启',0=>'关闭'])
                     ->addFormItem('subject', 'text', '邮件主题', '')
-                    ->addFormItem('template_content', 'ueditor', '邮箱激活模板', '请用http://#link#代替激活链接，#username#代替用户名',array('width'=>'100%','height'=>'260px','config'=>''))
+                    //->addFormItem('template_content', 'ueditor', '邮箱激活模板', '请用http://#link#代替激活链接，#username#代替用户名',array('width'=>'100%','height'=>'260px','config'=>''))
+                    ->addFormItem('template_content', 'wangeditor', '邮箱激活模板', '请用http://#link#代替激活链接，#username#代替用户名',['width'=>'100%','height'=>'260px','config'=>'simple'])
                     ->setFormData($info)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();

@@ -61,7 +61,7 @@
             });
             /*上传成功**/
             uploader_{$field.name}.on('uploadSuccess', function (file, result) {
-                if (result.code) {
+                if (result.code==1) {
                     var avatar=result.data;
                     $("[name='{$field.id}']").val(avatar.path);
                     $("[name='{$field.id}']").parent().find('.popup-avatar').html(

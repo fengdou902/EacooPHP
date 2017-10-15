@@ -1,4 +1,4 @@
-{extend name="public/base"/}
+{extend name="$_admin_public_base_"/}
 {block name="style"}
   <style type="text/css">
     .webmanage-item{margin: 15px 10px;text-align: center;color: #666;font-size: 16px;border-right: 1px solid #ddd;}
@@ -155,66 +155,68 @@
   </div>
 {/block}
 {block name="script"}
-<script src="__STATIC__/libs/echarts/echarts.common.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="__STATIC_LIBS__/echarts/echarts.common.min.js" ></script>
 <script type="text/javascript">
-  var myChart = echarts.init(document.getElementById('user_statistics'),'macarons');
-  var res = {$user_result};
-  option = {
-        title : {
-            text: '七日增长',
-            textStyle:{color:'#666',fontSize:12},
-        },
-        tooltip : {
-            trigger: 'axis'
-        },
-        legend: {
-            data:['用户增长','七日待返积金']
-        },
-        toolbox: {
-            show : true,
-            feature : {
-                mark : {show: true},
-                dataView : {show: true, readOnly: false},
-                magicType : {show: true, type: ['line', 'bar']},
-                restore : {show: true},
+delete(myChart);
+var myChart = echarts.init(document.getElementById('user_statistics'),'macarons');
+var res = {$user_result};
+option = {
+      title : {
+          text: '七日增长',
+          textStyle:{color:'#666',fontSize:12},
+      },
+      tooltip : {
+          trigger: 'axis'
+      },
+      legend: {
+          data:['用户增长','七日待返积金']
+      },
+      toolbox: {
+          show : true,
+          feature : {
+              mark : {show: true},
+              dataView : {show: true, readOnly: false},
+              magicType : {show: true, type: ['line', 'bar']},
+              restore : {show: true},
+          }
+      },
+      calculable : true,
+      xAxis : [
+          {
+            name:'日期',
+            type : 'category',
+            boundaryGap : false,
+            data : res.time,
+            axisLabel : {
+                //formatter: '{value}',
+                interval:0,
+                textStyle:{fontSize:8}
             }
-        },
-        calculable : true,
-        xAxis : [
-            {
-              name:'日期',
-              type : 'category',
-              boundaryGap : false,
-              data : res.time,
+          }
+      ],
+      yAxis : [
+          {
+              name:'数量（人）',
+              type : 'value',
               axisLabel : {
                   //formatter: '{value}',
-                  interval:0,
                   textStyle:{fontSize:8}
               }
-            }
-        ],
-        yAxis : [
-            {
-                name:'数量（人）',
-                type : 'value',
-                axisLabel : {
-                    //formatter: '{value}',
-                    textStyle:{fontSize:8}
-                }
-            }
-        ],
-        series : [
-            {
-                name:'增长用户',
-                type:'line',
-                data:res.data
-            }
-        ]
-    };
-    myChart.setOption(option);
+          }
+      ],
+      series : [
+          {
+              name:'增长用户',
+              type:'line',
+              data:res.data
+          }
+      ]
+  };
+  myChart.setOption(option);
 
-  </script>
-<script type="text/javascript" src="__STATIC__/libs/artTemplate/template.js"></script>
+delete(template);
+</script>
+<script type="text/javascript" src="__STATIC_LIBS__/artTemplate/template.js"></script>
 <script id="eacoo_news_list" type="text/html">
   <table class="table table-condensed f14">
     <tbody>
@@ -232,7 +234,7 @@
   $(function(){ 
     $.ajax({  
         type : "get",  
-        url : "__ROOT__{:url('admin/dashboard/getEacooNews')}",  
+        url : "{:BASE_PATH}{:url('admin/dashboard/getEacooNews')}",  
         data:{access_token:'dc364ec66f5d7c4d0a1948eecf35db73'},
         dataType : "json",
         success : function(result){

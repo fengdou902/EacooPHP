@@ -25,23 +25,82 @@
              
                 <!--编辑器-->
                 <div class="form-group col-sm-12">
-                {:widget('common/Editor/wangeditor',[['id'=>'cmscontent','name'=>'content','default'=>$info['content'],'width'=>'100%','height'=>'360px','config'=>'all'],['importWangEditor'=>1,'open_attachmentModal'=>'multiple']])}
+                {:widget('common/Editor/wangeditor',
+                [
+                    [
+                        'id'=>'cmscontent',
+                        'name'=>'content',
+                        'default'=>$info['content'],
+                        'width'=>'100%',
+                        'height'=>'360px',
+                        'config'=>'all'
+                    ],
+                    [
+                        'importWangEditor'     =>1,
+                        'open_attachmentModal' =>'multiple'
+                    ]
+                ])}
                 </div>
                 <!--编辑器-->
-                <div class="form-group w">
-                  <label class="col-sm-2 control-label" for="excerpt">SEO摘要</label>
-                  <div class="col-sm-10">
-                    <textarea class="form-control" name="excerpt" rows='5'>{$info.excerpt|default=''}</textarea>
-                  </div>
-                  
+                <div class="page-tabs">
+                    <ul class="nav nav-tabs">
+                        <li data-tab="tab_seo" class="active"><a href="#tab_seo" data-toggle="tab">SEO信息</a></li>
+                        <li data-tab="tab_meta" ><a href="#tab_meta" data-toggle="tab"><i class="fa fa-sticky-note"></i> 自定义栏目</a></li>
+                    </ul>
                 </div>
-                <div class="form-group w">
-                  <label class="col-sm-2 control-label" for="seo_keywords">SEO关键字</label>
-                  <div class="col-sm-10">
-                    <input class="form-control" name="seo_keywords" value="{$info.seo_keywords|default=''}" type="text">
-                    <p class="help-block">多关键词之间用英文逗号隔开</p>
-                  </div>
-                  
+                <div class="tab-content box-body">
+                    <div id="tab_seo" class='tab-pane active tab_seo'>
+                        <p class="help-block">填写seo信息有利于搜索引擎优化</p>
+                        <div class="form-group w">
+                          <label class="col-sm-2 control-label tl pr-0" for="excerpt">SEO描述:</label>
+                          <div class="col-sm-10">
+                            <textarea class="form-control" name="excerpt" rows='5'>{$info.excerpt|default=''}</textarea>
+                          </div>
+                          
+                        </div>
+                        <div class="form-group w">
+                          <label class="col-sm-2 control-label tl" for="seo_keywords">SEO关键字:</label>
+                          <div class="col-sm-10">
+                            <input class="form-control" name="seo_keywords" value="{$info.seo_keywords|default=''}" type="text">
+                            <p class="help-block">多关键词之间用英文逗号隔开</p>
+                          </div>
+                          
+                        </div>
+                    </div>
+
+                    <div id="tab_meta" class='tab-pane tab_meta'>
+                        <p class="help-block">自定义字段可用来添加在您的主题中可用的<a href="#">额外元数据</a>到您的文章。</p>
+                        <div class="repeatable repeatable_courseaudio" >
+                            <table class="table table-bordered " >
+                                <thead style="background-color: #f0f0f0;">
+                                  <tr>
+                                    <th >名称</th>
+                                    <th >值</th>
+                                    <th>操作</th>
+                                  </tr>
+                                </thead>
+                                <tbody data-repeater-list="postmeta">
+                                {notempty name="meta_list"}
+                                    {volist name="meta_list" id="row"}
+                                      <tr data-repeater-item >
+                                        <td><input type="text" class="form-control input-sm" name="meta_key" value="{$row.meta_key}" placeholder="元数据key"></td>
+                                        <td><textarea class="form-control input-sm" name="meta_value" placeholder="元数据value">{$row.meta_value|default=''}</textarea></td>
+                                        <td><label data-repeater-delete class="label label-danger btn-sm" style="cursor: pointer;"><i class="fa fa-trash"></i></label></td>
+                                    </tr>
+                                    {/volist}
+                                {else/}
+                                    <tr data-repeater-item >
+                                        <td><input type="text" class="form-control input-sm" name="meta_key" value="" placeholder="元数据key"></td>
+                                        <td><textarea class="form-control input-sm" name="meta_value" placeholder="元数据value"></textarea></td>
+                                        <td><label data-repeater-delete class="label label-danger btn-sm" style="cursor: pointer;"><i class="fa fa-trash"></i></label></td>
+                                    </tr>
+                                {/notempty}
+                                </tbody>
+                              </table>
+                              <button type="button" data-repeater-create class="btn btn-success btn-sm repeater-add-courseaudio fr mr-10" ><i class="fa fa-plus"></i> 添加</button>
+                        </div>
+                    </div>
+                    
                 </div>
 
             </div>
@@ -57,7 +116,7 @@
          <div class="box-body">
             <div class="form-group">
                 <label class="control-label col-md-3" style="padding:0;" for="date_d">发布时间:</label>
-                <div class="col-md-8"> <input id="date_d" class="form-control form-datetime" type="text" value="{$info.publish_time|default=date('Y-m-d H:i:s',time())}" name="publish_time" readonly></div>  
+                <div class="col-md-8"> <input id="date_d" class="form-control form-datetime" type="text" value="{$info.publish_time|default=date('Y-m-d H:i',time())}" name="publish_time" readonly></div>  
             </div>
             <!--<div class="form-group">
                 <label class="control-label col-md-4" for="status">审核状态:</label>
@@ -72,13 +131,13 @@
             <div class="form-group">
                 <label class="control-label col-md-3" for="istop">置顶:</label>
                 <div class="col-md-8">
-                    <input type="checkbox" class="" name="istop" id="istop" placeholder=""><span class="f12 pl-10 color-6">可在前台置顶显示</span>
+                    <input type="checkbox" class="" name="istop" id="istop" value="1" {present name="info.istop" }{eq name="info.istop" value="1" }checked{/eq}{/present}><span class="f12 pl-10 color-6">可在前台置顶显示</span>
                   </div>  
             </div>
             <div class="form-group">
                 <label class="control-label col-md-3" for="recommended">推荐:</label>
                 <div class="col-md-8">
-                    <input type="checkbox" class="" name="recommended" id="recommended" placeholder=""><span class="f12 pl-10 color-6">作为站内推荐</span>
+                    <input type="checkbox" class="" name="recommended" id="recommended" value="1" {present name="info.recommended" }{eq name="info.recommended" value="1" }checked{/eq}{/present}><span class="f12 pl-10 color-6">作为站内推荐</span>
                   </div>  
             </div>
             <div class="form-group">
@@ -122,7 +181,7 @@
 
             <div class="box-body">
             {notempty name="info.id"}
-                <button class="btn btn-primary ajax-post" id="login" align="center" type="submit" name="status" value="1" target-form="form-post">更新</button>
+                <button class="btn btn-primary ajax-post" data-pjax=false id="login" align="center" type="submit" name="status" value="1" target-form="form-post">更新</button>
             {else/}
                 <button class="btn btn-primary ajax-post" id="login" align="center" type="submit" name="status" value="1" target-form="form-post">保存并发布</button>
                 <a class="btn btn-default" id="preview" align="center" type="submit" >预览</a>
@@ -139,12 +198,14 @@
 {block name="script"}
     <link href="__STATIC__/libs/datetimepicker/datetimepicker.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="__STATIC__/libs/datetimepicker/datetimepicker.min.js"></script>
-
+    <script type="text/javascript" src="__STATIC__/libs/jquery-repeater/jquery.repeater.min.js"></script>
     <script>
+    $(document).ready(function () {
         $('.form-datetime').datetimepicker({
             language: "zh-CN",
             autoclose: true,
-            format: 'yyyy-mm-dd hh:ii'
+            todayBtn:true,
+            format: 'yyyy-mm-dd hh:ii',
         });
         $('.form-date').datetimepicker({
             language: "zh-CN",
@@ -166,5 +227,27 @@
             var timestamp = date.getTime();
             $('[name=' + fieldName + ']').val(Math.floor(timestamp / 1000));
         });
+
+        'use strict';
+        $('.repeatable_courseaudio').repeater({
+            show: function () {
+                $(this).slideDown();
+            },
+            hide: function (deleteElement) {
+                if(confirm('您确定要删除吗?')) {
+                    $(this).slideUp(deleteElement);
+                }
+            },
+            ready: function (setIndexes) {
+
+            }
+        });
+    });
     </script>
+
+
+<script type="text/javascript">
+    
+        
+</script>
 {/block}

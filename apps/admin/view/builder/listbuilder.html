@@ -1,6 +1,6 @@
-{extend name="../apps/admin/view/public/base.html"/}
+{extend name="$_admin_public_base_"/}
 {block name="style"}
-    {include file="../apps/admin/view/builder/style.html" /}
+    {include file="$_builder_style_" /}
 {/block}
 {block name="main"}        
 <div class="builder listbuilder-box">
@@ -10,7 +10,7 @@
             <div class="">
                 <ul class="nav nav-tabs">
                     {volist name="tab_nav.tab_list" id="tab"}
-                        <li class="{php}if($tab_nav['current_tab'] == $key) echo 'active';{/php}"><a href="{$tab.href}">{$tab.title}</a></li>
+                        <li class="{php}if($tab_nav['current_tab'] == $key) echo 'active';{/php}"><a href="{$tab.href}" {$tab.extra_attr|default=''}>{$tab.title}</a></li>
                     {/volist}
                 </ul>
             </div>

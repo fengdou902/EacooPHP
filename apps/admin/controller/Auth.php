@@ -125,7 +125,7 @@ class Auth extends Admin {
         $manage_type = input('get.manage_type','menu');//管理类型
         // 获取所有节点信息
         $map['pid'] = input('param.pid',0);//是否存在父ID
-        //$map['is_menu']=1;//只显示菜单
+        $map['is_menu']=1;//只显示菜单
         if ($map['pid']>0) {
             $current_submenu_name = $this->authRuleModel->where(['id'=>(int)$map['pid']])->value('title');
             $meta_title = '<a onclick="javascript:history.back(-1);return false;">'.$current_submenu_name.'</a>》子菜单管理';
@@ -210,20 +210,15 @@ class Auth extends Admin {
             // 提交数据
             $data =input('post.');
             //验证数据
-            $result = $this->validate($data,'AuthRule');
-            if(true !== $result){
-                // 验证失败 输出错误信息
-                $this->error($result);exit;
-            } else{
-                $id   =isset($data['id']) && $data['id']>0 ? $data['id']:false;
+            $this->validateData($data,'AuthRule');
+            $id   =isset($data['id']) && $data['id']>0 ? $data['id']:false;
 
-                if ($this->authRuleModel->editData($data,$id)) {
-                    cache('admin_sidebar_menus',null);//清空后台菜单缓存
-                    $this->success($title.'菜单成功', url('index',array('pid'=>input('param.pid'))));
-                } else {
-                    $this->error($this->authRuleModel->getError());
-                }
-            }     
+            if ($this->authRuleModel->editData($data,$id)) {
+                cache('admin_sidebar_menus',null);//清空后台菜单缓存
+                $this->success($title.'菜单成功', url('index',array('pid'=>input('param.pid'))));
+            } else {
+                $this->error($this->authRuleModel->getError());
+            }   
 
         } else{
             // 获取菜单数据
@@ -244,7 +239,7 @@ class Auth extends Admin {
                     ->addFormItem('icon', 'icon', '字体图标', '字体图标')
                     ->addFormItem('name', 'text', '链接', '链接')
                     ->addFormItem('is_menu', 'radio', '后台菜单', '是否标记为后台菜单',[1=>'是',0=>'否'])
-                    //->addFormItem('show', 'select', '显示类型', '选择显示类型',array(1=>'是',0=>'否',2=>'开发者显示'))
+                    ->addFormItem('no_pjax', 'radio', 'Pjax加载', '标记后台菜单后，是否Pjax方式打开该页面',[0=>'是',1=>'否'])
                     ->addFormItem('sort', 'number', '排序', '排序')
                     ->setFormData($menu_data)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
@@ -497,14 +492,16 @@ EOF;
     //角色编辑
     public function roleEdit($group_id=0){
         $title = $group_id ? '编辑':'新增';
-        if ($group_id!=0) {
-            $this->assign('group_id',$group_id);
-        }
-        
-        $this->assign('meta_title',$title.'角色');
+    
          $info =$this->authGroupModel->find($group_id);
          if (IS_POST) {
             $data = input('post.');
+            $this->validateData($data,  
+                                [
+                                    ['title','require|chsAlpha','用户组名称不能为空|用户组名称只能是汉字和字母'],
+                                    ['description','chsAlphaNum','描述只能是汉字字母数字']
+                                ]
+                            );
             $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
 
             if ($this->authGroupModel->editData($data,$id)) {
@@ -514,7 +511,10 @@ EOF;
             }
 
         } else {
-           
+            if ($group_id!=0) {
+                $this->assign('group_id',$group_id);
+            }
+            $this->assign('meta_title',$title.'角色');
             $this->assign('info',$info);
             return $this->fetch();
         }

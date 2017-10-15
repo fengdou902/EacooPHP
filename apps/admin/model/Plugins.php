@@ -92,20 +92,20 @@ class Plugins extends Model {
                     break;
                 case 0:  // 禁用
                     $val['status'] = '<i class="fa fa-ban" style="color:red"></i>';
-                    $val['right_button']  = '<a class="label label-info " href="'.url('config',array('id'=>$val['id'])).'">设置</a> ';
+                    $val['right_button']  = '<a class="label label-info " href="'.url('config',array('id'=>$val['id'])).'" title="设置">设置</a> ';
                     $val['right_button'] .= '<a class="label label-success ajax-get" href="'.url('setStatus',array('status'=>'resume', 'ids' => $val['id'])).'">启用</a> ';
-                    $val['right_button'] .= '<a class="label label-danger" href="'.url('uninstallBefore?id='.$val['id']).'">卸载</a> ';
+                    $val['right_button'] .= '<a class="label label-danger" href="'.url('uninstallBefore?id='.$val['id']).'" title="准备卸载">卸载</a> ';
                     if (!empty($val['admin_manage_into'])) {
-                        $val['right_button'] .= '<a class="label label-success " href="'.url('adminManage',array('name'=>$val['name'])).'">后台管理</a>';
+                        $val['right_button'] .= '<a class="label label-success " href="'.url('adminManage',array('name'=>$val['name'])).'" >后台管理</a>';
                     }
                     break;
                 case 1:  // 正常
                     $val['status'] = '<i class="fa fa-check" style="color:green"></i>';
                     $val['right_button']  = '<a class="label label-info " href="'.url('config',['id'=>$val['id']]).'">设置</a> ';
                     $val['right_button'] .= '<a class="label label-warning ajax-get" href="'.url('setStatus',['status'=>'forbid', 'ids' => $val['id']]).'">禁用</a> ';
-                    $val['right_button'] .= '<a class="label label-danger" href="'.url('uninstallBefore?id='.$val['id']).'">卸载</a> ';
+                    $val['right_button'] .= '<a class="label label-danger" href="'.url('uninstallBefore?id='.$val['id']).'" title="准备卸载">卸载</a> ';
                     if (!empty($val['admin_manage_into'])) {
-                        $val['right_button'] .= '<a class="label label-success " href="'.url('adminManage',['name'=>$val['name']]).'">后台管理</a>';
+                        $val['right_button'] .= '<a class="label label-success " href="'.url('adminManage',['name'=>$val['name']]).'"  title="后台管理">后台管理</a>';
                     }
                     break;
             }

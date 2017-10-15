@@ -92,18 +92,14 @@ class Action extends Admin {
 		if (IS_POST) {
 			$data = input('post.');
             //验证数据
-            $result = $this->validate($data,'Action');
-            if(true !== $result){
-                // 验证失败 输出错误信息
-                $this->error($result);exit;
-            } else{
-	            $id   =isset($data['id']) && $data['id']>0 ? $data['id'] : false;
-	            if ($this->actionModel->editData($data,$id)) {
-	                $this->success($title.'成功', url('index'));
-	            } else {
-	                $this->error($this->actionModel->getError());
-	            }
-	        }
+            $this->validateData($data,'Action');
+
+            $id   =isset($data['id']) && $data['id']>0 ? $data['id'] : false;
+            if ($this->actionModel->editData($data,$id)) {
+                $this->success($title.'成功', url('index'));
+            } else {
+                $this->error($this->actionModel->getError());
+            }
 
 		} else {
 
@@ -175,16 +171,15 @@ class Action extends Admin {
 		//获取列表数据
 		$map['status']  = ['gt',-1];  // 禁用和正常状态
 		//list($data_list,$page) = $this->actionLogModel->getListByPage($map,'id desc','*',15);
-		$data_list = $this->actionLogModel->alias('a')->join('__USERS__ b','a.uid = b.uid')->join('__ACTION__ c','a.action_id = c.id')->order('a.create_time desc')->field('a.*,b.nickname,c.name')->paginate(15);
-
+		$data_list = $this->actionLogModel->field(true)->paginate(15);
         Builder::run('List')
         		->setMetaTitle('行为日志')  // 设置页面标题
         		->addTopButton('self', ['title'=>'清空日志','href'=>url('clearLog'),'class'=>'btn btn-warning btn-sm ajax-post confirm','hide-data'=>'true']) //清空
                 ->addTopButton('delete',['href'=>url('admin/Action/dellog')])  // 添加禁用按钮
-        		->keyListItem('name','行为标识')
-                ->keyListItem('nickname','执行者')
-                ->keyListItem('request_method','请求类型')
+        		->keyListItem('action_name','行为标识')
                 ->keyListItem('url','URL')
+                ->keyListItem('request_method','请求类型')
+                ->keyListItem('nickname','执行者')
                 ->keyListItem('remark','备注')
                 ->keyListItem('ip','IP')
                 ->keyListItem('create_time','执行时间')
@@ -228,7 +223,7 @@ class Action extends Admin {
 	 * @author 心云间、凝听 <981248356@qq.com>
 	 */
 	public function delLog() {
-		$ids = input('post.ids/a');
+		$ids = input('param.ids/a');
 		if (empty($ids)) {
 			$this->error("非法操作！", '');
 		}

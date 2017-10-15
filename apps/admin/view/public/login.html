@@ -23,7 +23,7 @@
   <body class="hold-transition login-page">
   <div class="login-box">
     <div class="login-logo">
-      <a href=""><img src="__ROOT__/eacoophp_logo_v1.png" width="70%"></a>
+      <a href=""><img src="{:BASE_PATH}/eacoophp_logo_v1.png" width="70%"></a>
     </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
@@ -87,17 +87,17 @@
       });
 })(jQuery);
 
-  function verifys(code){
-  			document.getElementById(code).src="{:BASE_PATH}{:url('index/verify_img',['v'=>rand_string(15)])}"; 
-  }
+function verifys(code){
+			document.getElementById(code).src="{:BASE_PATH}{:url('index/verify_img',['v'=>rand_string(15)])}"; 
+}
 
-  function BindEnter(obj)
-  {
-      if(obj.keyCode == 13)
-        {
-            $("#login").click()
-        }
-  }
+function BindEnter(obj)
+{
+    if(obj.keyCode == 13)
+      {
+          $("#login").click()
+      }
+}
 
 $("#login").click(function(){
 
@@ -143,7 +143,7 @@ $("#login").click(function(){
           window.location.href = data.url; 
         }else{
           layer.msg(data.msg, {icon:5});
-          verifys('captcha');
+          verifys('code');
         }
 
       }

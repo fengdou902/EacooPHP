@@ -4,7 +4,7 @@
         {:hook('adminEditor', array('id'=>$id,'value'=>$default))}
     </label>
 
-{php}}elseif(\Think\Hook::get('editor')){{/php}
+{php}}elseif(\think\Hook::get('editor')){{/php}
 
 <label class="textarea">
     <textarea name="{$name}" id="{$id}">{$default}</textarea>
@@ -24,7 +24,7 @@
         .modal{z-index: 10002;}
         .wangEditor-menu-container .menu_attachment{color:#3bb4f2!important;cursor: pointer;}
     </style>
-    <script type="text/javascript" src="__STATIC__/libs/wangeditor/js/wangEditor.min.js"></script>
+    <!-- <script type="text/javascript" src="__STATIC__/libs/wangeditor/js/wangEditor.min.js"></script> -->
     <script type="text/javascript" src="__STATIC__/libs/wangeditor/js/custom-menu.js"></script>
 {/if}
 
@@ -32,7 +32,7 @@
 
 <!--这里引用jquery和wangEditor.js-->
 <script type="text/javascript">
-// 为页面所有的editor配置全局的密钥
+    // 为页面所有的editor配置全局的密钥
     wangEditor.config.mapAk = 'TVhjYjq1ICT2qqL5LdS8mwas';  // 此处换成自己申请的密钥
     var attachmentModal_url ="{:url('admin/Attachment/attachmentLayer',['input_id_name'=>$id,'path_type'=>$path_type,'select_type'=>'multiple','from'=>'wangeditor'])}";//附件选择器地址
     var editor_{$id} = new wangEditor('{$id}');

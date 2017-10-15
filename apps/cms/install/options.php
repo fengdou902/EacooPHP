@@ -1,35 +1,35 @@
 <?php
 // 模块配置
 return [
-    'need_check' => array(
+    'need_check' => [
         'title'   => '前台发布审核',
         'type'    => 'radio',
-        'options' => array(
+        'options' => [
             1 => '需要',
             0 => '不需要',
-        ),
+        ],
         'value'   => '0',
-    ),
-    'toggle_comment' => array(
+    ],
+    'toggle_comment' => [
         'title'  => '是否允许评论文档',
         'type'   =>'radio',
-        'options' => array(
+        'options' => [
             '1'   => '允许',
             '0'   => '不允许',
-        ),
+        ],
         'value'  => '1',
-    ),
-    'group_list' => array(
+    ],
+    'group_list' => [
         'title'  => '栏目分组',
         'type'   =>'array',
         'value'  => '1:默认',
-    ),
-    'cate' => array(
+    ],
+    'cate' => [
         'title'  => '首页栏目自定义',
         'type'   =>'array',
         'value'  => 'a:1',
-    ),
-    'taglib' => array(
+    ],
+    'taglib' => [
         'title'  => '加载标签库',
         'type'   =>'checkbox',
         'options'=> array(
@@ -38,6 +38,6 @@ return [
         'value'  => array(
             '0'  => 'cms',
         ),
-    ),
+    ],
 
 ];

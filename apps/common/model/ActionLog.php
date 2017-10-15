@@ -9,12 +9,36 @@
 // +----------------------------------------------------------------------
 namespace app\common\model;
 
+use app\admin\model\Action;
+
 use think\Model;
 use think\Request;
 
 class ActionLog extends Model {
     
     protected $updateTime = false;
+
+    //获取用户昵称
+    public function getNicknameAttr($value,$data)
+    {
+    	$nickname = '';
+    	if ($data['uid']>0) {
+    		$nickname = User::where('uid',$data['uid'])->value('nickname');
+    	}
+
+        return $nickname;
+    }
+
+    //获取行为标识
+    public function getActionNameAttr($value,$data)
+    {
+    	$name = '';
+    	if ($data['action_id']>0) {
+    		$name = Action::where('id',$data['action_id'])->value('name');
+    	}
+
+        return $name;
+    }
 
     /**
      * 行为日志记录

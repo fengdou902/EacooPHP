@@ -33,7 +33,7 @@ class Config {
             define('SERVER_SOFTWARE_TYPE','no');
         }
 
-        define('EACOOPHP_V','1.0.6');
+        define('EACOOPHP_V','1.0.7');
         // 安装模式下直接返回
         if(defined('MODULE_NAME') && MODULE_NAME === 'install') return;
         // 当前模块模版参数配置
@@ -44,6 +44,7 @@ class Config {
             if (MODULE_NAME!=='admin' && MODULE_NAME!=='api') {
                 $ec_config['url_controller_layer'] = 'admin';
             }
+
             $ec_config['view_replace_str']['__IMG__']    = '/static/'.MODULE_NAME.'/img';
             $ec_config['view_replace_str']['__CSS__']    = '/static/'.MODULE_NAME.'/css';
             $ec_config['view_replace_str']['__JS__']     = '/static/'.MODULE_NAME.'/js';
@@ -67,6 +68,7 @@ class Config {
                 $ec_config['theme_public']  = $theme_public_path;
 
                 $theme_static_public_path = '/themes/'.$current_theme.'/'.'public/';
+                $ec_config['view_replace_str']['__THEME_PUBLIC__']= $theme_static_public_path;
                 $ec_config['view_replace_str']['__THEME_IMG__']   = $theme_static_public_path.'img';
                 $ec_config['view_replace_str']['__THEME_CSS__']   = $theme_static_public_path.'css';
                 $ec_config['view_replace_str']['__THEME_JS__']    = $theme_static_public_path.'js';

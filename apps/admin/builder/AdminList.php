@@ -285,10 +285,10 @@ class AdminList extends Builder
      * @return $this
      */
     public function setTabNav($tab_list, $current_tab) {
-        $this->_tab_nav = array(
-            'tab_list' => $tab_list,
+        $this->_tab_nav = [
+            'tab_list'    => $tab_list,
             'current_tab' => $current_tab
-        );
+        ];
         return $this;
     }
 

@@ -42,7 +42,8 @@ class Builder extends Base {
      */
     public function fetch($templateFile='',$vars = [], $replace = [], $config = []) {
         //获取模版的名称
-        $template =APP_PATH.'/admin/view/builder/'.$templateFile.'.html';
+        $template = APP_PATH.'/admin/view/builder/'.$templateFile.'.html';
+        $this->assign('_builder_style_', '../apps/admin/view/builder/style.html');  // 页面样式
         //显示页面
         echo parent::fetch($template,$vars,$replace,$config);
     }

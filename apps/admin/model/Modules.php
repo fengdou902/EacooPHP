@@ -43,7 +43,7 @@ class Modules extends Base {
 
     /**
      * 获取模块列表
-     * @param string $addon_dir
+     * @param string $module_dir
      */
     public static function getAll() {
 
@@ -85,7 +85,7 @@ class Modules extends Base {
                     $val['right_button'] .= '<a class="label label-info ajax-get" href="'.url('updateInfo?id='.$val['id']).'">刷新</a> ';
                     if (!$val['is_system']) {
                         $val['right_button'] .= '<a class="label label-warning ajax-get" href="'.url('setStatus', ['status' => 'forbid', 'ids' => $val['id']]).'">禁用</a> ';
-                        $val['right_button'] .= '<a class="label label-danger" href="'.url('uninstall_before', ['id' => $val['id']]).'">卸载</a> ';
+                        $val['right_button'] .= '<a class="label label-danger" href="'.url('uninstall_before', ['id' => $val['id']]).'" >卸载</a> ';
                     }
                     break;
             }

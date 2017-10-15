@@ -65,10 +65,17 @@ class Admin extends Base
 
             $this->assign('current_message_count',0);//当前消息数量
             $this->assign('sidebar_menus',$this->getSidebarMenu());//侧边栏菜单
+            unset($_admin_public_base);
+            if (input('param.load_type')=='iframe') {
+                $_admin_public_base = '../apps/admin/view/public/iframe_base.html';
+            } else{
+                $_admin_public_base = '../apps/admin/view/public/base.html';
+            }
             $this->assign('_admin_public_base_', '../apps/admin/view/public/base.html');  // 页面公共继承模版
             $this->assign('_admin_public_iframe_base_', '../apps/admin/view/public/iframe_base.html');  // 页面公共继承模版
-        }
-        //权限验证
+            //权限验证
+        } 
+        
         if(in_array($this->currentUser['uid'],[1])) return true;
         $auth = new \org\util\Auth();
         if(!$auth->check(MODULE_NAME.'/'.CONTROLLER_NAME.'/'.ACTION_NAME,$this->currentUser['uid'])){
@@ -83,11 +90,11 @@ class Admin extends Base
      */
     private function getSidebarMenu()
     {
-        $admin_sidebar_menus = Cache::get('admin_sidebar_menus', false);
+        $admin_sidebar_menus = Cache::get('admin_sidebar_menus');
         if (!$admin_sidebar_menus) {
             
             if(!in_array(is_login(),config('auth_config.auth_admin_uids'))){//如果是非超级管理员则按存储显示
-                $rules= model('auth_group')->where(['id'=>['in',$this->currentUser['auth_group']]])->value('rules');    
+                $rules= db('auth_group')->where(['id'=>['in',$this->currentUser['auth_group']]])->value('rules');    
                 $map_rules['id']=$menu_map['id']=['in',$rules];
             }
             $map_rules['status']=1;
@@ -96,7 +103,7 @@ class Admin extends Base
             if (1!=config('develop_mode')) {
                 $map_rules['developer']=0;
             }
-            $menu= db('auth_rule')->where($map_rules)->order('sort asc')->select();
+            $menu = db('auth_rule')->where($map_rules)->field(true)->order('sort asc')->select();
             $admin_sidebar_menus = list_to_tree($menu);
             Cache::set('admin_sidebar_menus',$admin_sidebar_menus);
         }
@@ -178,8 +185,10 @@ class Admin extends Base
                 );
                 break;
             case 'delete'  :  // 删除条目
+                action_log(0, is_login(), ['param'=>$this->param],'删除操作');
                 $result = model($model)->where($map)->delete();
                 if ($result) {
+
                     $this->success('删除成功，不可恢复！');
                 } else {
                     $this->error('删除失败');
@@ -234,19 +243,22 @@ class Admin extends Base
 
     /**
      * 验证数据
-     * @param  string $validate_name [description]
+     * @param  string $validate 验证器名或者验证规则数组
      * @param  array  $data          [description]
      * @return [type]                [description]
      */
-    // public function validateData($validate_name='',$data=[])
-    // {
-    //     if (!$validate_name || empty($data)) return false;
-    //     $validate = Loader::validate($validate_name);
-    //     if(!$validate->check($data)){
-    //         $this->error($validate->getError());
-    //     }
-    //     return true;
-    // }
+    public function validateData($data,$validate)
+    {
+        if (!$validate || empty($data)) return false;
+        $result = $this->validate($data,$validate);
+        if(true !== $result){
+            // 验证失败 输出错误信息
+            $this->error($result);exit;
+        } 
+        return true;
+        
+    }
+
     /**
      * [fuck 非法操作转404]
      */

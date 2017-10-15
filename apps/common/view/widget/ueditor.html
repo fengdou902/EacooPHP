@@ -1,10 +1,10 @@
-{php} if(\Think\Hook::get('adminEditor') && MODULE_NAME == 'admin'){{/php}
+{php} if(\think\Hook::get('adminEditor') && MODULE_NAME == 'admin'){{/php}
 <label class="textarea">
     <textarea name="{$name}" id="{$id}">{$default}</textarea>
     {:hook('adminEditor', array('id'=>$id,'value'=>$default))}
 </label>
 
-{php}}elseif(\Think\Hook::get('editor')){{/php}
+{php}}elseif(\think\Hook::get('editor')){{/php}
 
 <label class="textarea">
     <textarea name="{$name}" id="{$id}">{$default}</textarea>
@@ -16,8 +16,8 @@
     <script>
         var  ue_{$id};
         $(function () {
-        var config = {{$config},'topOffset':$('#nav_bar').height()+$('#sub_nav').height()+5};
-        ue_{$id} = UE.getEditor('{$id}', config);
+            var config = {{$config},'topOffset':$('#nav_bar').height()+$('#sub_nav').height()+5};
+            ue_{$id} = UE.getEditor('{$id}', config);
         })
 
     </script>

@@ -31,7 +31,7 @@ class Config extends Admin {
      */
     public function index($group = 1) {
         // 搜索
-        $keyword = input('keyword');
+        $keyword = input('param.keyword');
         if ($keyword) {
             $this->configModel->where('id|name|title','like','%'.$keyword.'%');
         }
@@ -90,17 +90,24 @@ class Config extends Admin {
         if ($id != 0) {
             $Config_data=$this->configModel->find($id);
         } elseif ($id==0) {
-            $Config_data['group']=input('get.group_id',0);
+            $Config_data['group'] = input('get.group_id',0);
         }
         if (IS_POST) {
             $data = input('post.');
             $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
+            $result = $this->validateData($data,
+                                [
+                                    ['group','require|number|>=:0','请选择配置分组|分组必须为数字|分组格式不正确'],
+                                    ['sub_group','number|>=:0','子分组必须为数字|子分组格式不正确'],
+                                    ['name','require|alphaDash','配置名称不能为空|配置名称只限字母、数字、下划线'],
+                                    ['title','require|chsDash','标题不能为空|配置标题只限汉字、字母、数字和下划线_及破折号-'],
+                                ]);
             if ($this->configModel->editData($data,$id)) {
                 if ($id != 0) {
                     cache('db_'.$Config_data['name'].'_options',null);
                     cache('DB_CONFIG_DATA',null);
                 }
-                $this->success($title.'成功',url('index',array('group'=>$data['group'])));
+                $this->success($title.'成功',url('index',['group'=>$data['group']]));
             } else {
                 $this->error($this->configModel->getError());
             }
@@ -188,9 +195,9 @@ EOF;
 
         // 构造表单名、解析options
         foreach ($data_list as &$data) {
-            $data['name']    = 'config['.$data['name'].']';
-            $data['description']    =$data['remark'];
-            $data['confirm'] = $data['extra_class'] = $data['extra_attr']='';
+            $data['name']        = 'config['.$data['name'].']';
+            $data['description'] = $data['remark'];
+            $data['confirm']     = $data['extra_class'] = $data['extra_attr']='';
             if ($data['function']!='0'&&$data['function']) {
                 $data['options'] = call_user_func_array($data['function'],array('1'));
             }else{
@@ -221,8 +228,7 @@ EOF;
                 if ($name=='develop_mode') {
                     cache('admin_sidebar_menus',null);//清空后台菜单缓存
                 }
-                //cache('db_'.$name.'_options',null);
-                $this->configModel->save(['value'=>$value],$map);
+                $this->configModel->where($map)->update(['value'=>$value]);
             }
         }
         cache('DB_CONFIG_DATA',null);

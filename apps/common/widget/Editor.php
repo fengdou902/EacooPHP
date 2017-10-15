@@ -71,7 +71,10 @@ class Editor extends Base
         $config  = isset($attributes['config']) ? $attributes['config'] : 'simple';//菜单配置
 
         if (!$param || $param=='') {
-            $param = array('importWangEditor'=>1,'open_attachmentModal'=>'multiple');
+            $param = [
+                'importWangEditor'=>1,
+                'open_attachmentModal'=>'multiple'
+            ];
         }
         $this->assign('id',$id);
         $this->assign('name',$name);

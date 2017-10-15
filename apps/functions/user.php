@@ -1,7 +1,7 @@
 <?php
 use app\common\model\User;
 use app\admin\model\Action;
-use app\admin\model\ActionLog;
+use app\common\model\ActionLog;
 
 /**
  * 检测用户是否登录
@@ -77,7 +77,7 @@ function data_auth_sign($data)
  * @date   2017-10-03
  * @author 心云间、凝听 <981248356@qq.com>
  */
-function action_log($uid = 0, $data = [], $remark = '')
+function action_log($action_id = 0, $uid = 0, $data = [], $remark = '')
 {
     if ($uid >0 ) {
         $action_log_model = new ActionLog;
@@ -85,6 +85,6 @@ function action_log($uid = 0, $data = [], $remark = '')
             $data = json_encode($data);
         }
         // 保存日志
-        return $res = $action_log_model->record($uid,$data,$remark);
+        return $res = $action_log_model->record($action_id ,$uid,$data,$remark);
     }
 }

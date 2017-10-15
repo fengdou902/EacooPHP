@@ -12,6 +12,7 @@ use app\admin\controller\Admin;
 use app\admin\controller\Terms as TermsController;
 
 use app\cms\model\Posts as PostsModel;
+use app\cms\model\Postmeta as PostmetaModel;
 use app\common\model\Terms;
 use app\common\model\TermRelationships;
 use app\cms\admin\Category;
@@ -50,7 +51,7 @@ class Posts extends Admin {
     public function index($term_id=0){
 
         // 搜索
-        $keyword = input('keyword');
+        $keyword = input('param.keyword');
         if ($keyword) {
             $this->postModel->where('id|title','like','%'.$keyword.'%');
         }
@@ -96,7 +97,7 @@ class Posts extends Admin {
         Builder::run('List')
             ->setMetaTitle('文章管理') // 设置页面标题
             ->setTabNav($this->tab_list,'index') // 设置页面Tab导航
-            ->addTopButton('addnew')  // 添加新增按钮
+            ->addTopButton('addnew',['data-pjax'=>'true'])  // 添加新增按钮
             ->addTopButton('resume',array('model'=>'posts'))  // 添加启用按钮
             ->addTopButton('forbid',array('model'=>'posts'))  // 添加禁用按钮
             ->addTopButton('recycle',array('model'=>'posts')) //添加回收按钮
@@ -105,14 +106,14 @@ class Posts extends Admin {
             //->addTopButton('self', $recommended_attr)
             ->addSelect('分类','term_id',$optCategory)//添加分类筛选
             //->addSelect('作者','author_id',array_merge(array(array('id'=>0,'value'=>'所有作者')),$optCategory))//添加分类筛选
-            ->setSearch('输入标题','')
+            ->setSearch('输入关键字','')
             ->keyListItem('id', 'ID')
             ->keyListItem('img','缩略图','picture')
             ->keyListItem('title', '标题','link',['link'=>url('edit',['id'=>'__data_id__'])])
             ->keyListItem('category_name','分类')
             ->keyListItem('views','浏览量')
             ->keyListItem('author','作者','author')
-            ->keyListItem('create_time','发布时间', 'time')
+            ->keyListItem('publish_time','发布时间')
             ->keyListItem('istop', '置顶', 'status')
             ->keyListItem('sort', '排序')
             ->keyListItem('status', '状态', 'status')
@@ -124,63 +125,89 @@ class Posts extends Admin {
             ->fetch();
     }
 
-    //编辑
+    /**
+     * 新增或编辑
+     * @param  integer $id [description]
+     * @return [type] [description]
+     * @date   2017-10-15
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
     public function edit($id = 0){
 
         $title = $id>0 ? "编辑":"新增"; 
         
-        $this->assign('hide_panel',true);//隐藏base模板面板
-        $this->assign('meta_title',$title.'文章');
-
-        $info = [
-            'content'=>'',
-            'img'=>''
-        ];
-        if ($id>0) {
-            $info = PostsModel::get($id);
-            $this->assign('category_id',get_the_category($id));
-            $this->assign('tag_ids',get_the_category($id));
-        } else {
-            $this->assign('category_id',0);
-            $this->assign('tag_ids',0);
-        }
-        $this->assign('info',$info);
-
-        $this->assign('form_url',url('edit',['id'=>$id]));
         //修改
         if(IS_POST){
-            if ($id) {
-               $data['id']=$id ? $id : input('post.id');
-            }
+            $data = input('post.');
+    
             $data['author_id']    = is_login();
             $data['type']         = 'post';
-            $data['title']        = input('post.title');
             $data['content']      = htmlspecialchars_decode(input('post.content'));
-            $data['excerpt']      = input('post.excerpt');
-            $data['seo_keywords'] = input('post.seo_keywords');
-            $data['img']          = input('post.img');
-            $data['status']       = input('post.status');
-            $data['istop']        = input('istop',false);
-            $data['recommended']  = input('post.recommended',false);
-            $data['sort']         = input('post.sort');
             //$data['fields']     =input('fields');
-            $data=$this->param;
-            $id=$data['id'];
+            
+            //验证数据
+            $this->validateData($data,'Post.edit');
+            $id   =isset($data['id']) && $data['id']>0 ? $data['id']:false;
             $result = $this->postModel->editData($data,$id);
             if($result){
+                $postmeta = input('post.postmeta/a');
+                if (!empty($postmeta)) {
+                    $post_meta_model = new PostmetaModel;
+                    $meta_keys = $post_meta_model->where('post_id',$id)->column('meta_key');
+                     /* 提交过来的 跟数据库中比较 不存在 删除*/
+                     $del_metas = [];
+                     $postmeta_keys = array_column($postmeta,'meta_key');
+                     if (!empty($meta_keys)) {
+                         foreach ($meta_keys as $key => $value) {
+                            if(!in_array($value,$postmeta_keys)) $del_metas[] = $value; 
+                        }
+                     }
+                     //这是元数据
+                    foreach ($postmeta as $key => $val) {
+                        if (!empty($val['meta_value'])) {
+                            $post_meta_model->setMeta($id,$val['meta_key'],$val['meta_value']);
+                        }
+                        
+                    }
+                    //删除不存在的
+                    foreach ($del_metas as $key => $value) {
+                        $post_meta_model->deleteMeta($id,$value);
+                    }
+                }
                 update_post_term($id,input('post.category_id',false));
-                $this ->success($title.'成功');
+                $this ->success($title.'成功','');
             } else{
                 $this ->error($this->postModel->getError());
             }
 
-            return;
-        }
+        } else{
+            $this->assign('hide_panel',true);//隐藏base模板面板
+            $this->assign('meta_title',$title.'文章');
 
-        $this->assign('post_category',$this->optCategory);
-        $this->assign('post_tags',$this->optTags);
-        $this->assign('tag_id',1);//测试
-        return $this->fetch();
+            $info = [
+                'content'=>'',
+                'img'=>''
+            ];
+            if ($id>0) {
+                $info = PostsModel::get($id);
+                $this->assign('category_id',get_the_category($id));
+                $this->assign('tag_ids',get_the_category($id));
+                $this->assign('meta_list',PostmetaModel::getMetas($id));
+            } else {
+                $this->assign('category_id',0);
+                $this->assign('tag_ids',0);
+            }
+            $this->assign('info',$info);
+            
+
+            $this->assign('form_url',url('edit',['id'=>$id]));
+
+            $this->assign('post_category',$this->optCategory);
+            $this->assign('post_tags',$this->optTags);
+            $this->assign('tag_id',1);//测试
+            return $this->fetch();
+        }
+        
     }
 
     /**
@@ -207,7 +234,7 @@ class Posts extends Admin {
                 ->keyListItem('category_name','分类')
                 ->keyListItem('type','类型','array',['post'=>'文章','page'=>'页面'])
                 ->keyListItem('author','作者','author')
-                ->keyListItem('create_time','发布时间', 'time')
+                ->keyListItem('publish_time','发布时间')
                 ->keyListItem('status', '状态', 'status')
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListDataKey('id')

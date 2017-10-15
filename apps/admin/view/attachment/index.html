@@ -15,8 +15,8 @@
   <div class="attachment-wrap">
       <div class="h50">
         <ul class="nav nav-tabs">
-            <li class="active"><a href="{:url('index')}">媒体文件</a></li>
-            <li class=""><a href="{:url('attachmentCategory')}">附件分类</a></li>
+            <li class="active"><a href="{:url('index')}" data-pjax=false >媒体文件</a></li>
+            <li class=""><a href="{:url('category')}">附件分类</a></li>
             <li class=""><a href="{:url('setting')}">设置</a></li>
         </ul>
         <div class="form-group"></div>
@@ -170,44 +170,41 @@
    </div>
 </div>
 <div class="modal fade mt100" id="moveModal">
-      <div class="modal-dialog modal-sm">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-                  <p class="modal-title">移动至</p>
-              </div>
-              <div class="modal-body">
-                  <form action="{:url('moveCategory')}" method="post" class="form-move">
-                      <div class="form-group">
-                          <select name="to_cid" class="form-control">
-                            {php}$input_media_cat = input('get.media_cat');{/php}
-                            {volist name="media_cats" id="media_cat"}
-                              <option value="{$media_cat.term_id}" {eq name="media_cat.term_id" value="$input_media_cat"}selected{/eq}>{$media_cat.name}</option>
-                            {/volist}
-                          </select>
-                      </div>
-                      <div class="form-group">
-                          <input type="hidden" name="ids">
-                          <input type="hidden" name="from_cid" value="{$cid|default='0'}">
-                          <button class="btn btn-primary btn-block submit ajax-post" type="submit" target-form="form-move">确 定</button>
-                      </div>
-                  </form>
-              </div>
-          </div>
-      </div>
-  </div>
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+                <p class="modal-title">移动至</p>
+            </div>
+            <div class="modal-body">
+                <form action="{:url('moveCategory')}" method="post" class="form-move">
+                    <div class="form-group">
+                        <select name="to_cid" class="form-control">
+                          {php}$input_media_cat = input('get.media_cat');{/php}
+                          {volist name="media_cats" id="media_cat"}
+                            <option value="{$media_cat.term_id}" {eq name="media_cat.term_id" value="$input_media_cat"}selected{/eq}>{$media_cat.name}</option>
+                          {/volist}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="ids">
+                        <input type="hidden" name="from_cid" value="{$cid|default='0'}">
+                        <button class="btn btn-primary btn-block submit ajax-post" type="submit" target-form="form-move">确 定</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {/block}
 
 {block name="script"}
 <script type="text/javascript" src="__PUBLIC__/js/jquery.zclip.min.js"></script>
+<script type="text/javascript" src="__STATIC_LIBS__/daterangepicker/moment.min.js"></script>
+<script type="text/javascript" src="__STATIC_LIBS__/daterangepicker/daterangepicker.js"></script>
 
-<script type="text/javascript" charset="utf-8" src="__STATIC__/libs/webuploader/js/webuploader.js"></script>
-
-<!-- date-range-picker -->
-<script src="__STATIC__/libs/daterangepicker/moment.min.js"></script>
-<script src="__STATIC__/libs/daterangepicker/daterangepicker.js"></script>
-
-  <script>
+<script type="text/javascript" src="__STATIC_LIBS__/webuploader/js/webuploader.min.js"></script>
+<script type="text/javascript">
     //Date range picker
     $('#reservation').daterangepicker();
     //Date range picker with time picker
@@ -234,7 +231,7 @@
             // 选完文件后，是否自动上传。
             auto: true,
             // swf文件路径
-            swf: '__STATIC__/libs/webuploader/Uploader.swf',
+            swf: '__STATIC_LIBS__/webuploader/Uploader.swf',
             // 文件接收服务端。
             server: "{:url('admin/attachment/upload',['path_type'=>$path_type,'uploadtype'=>'picture'])}",
             fileNumLimit: 10,

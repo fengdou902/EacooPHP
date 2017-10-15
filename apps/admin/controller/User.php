@@ -18,7 +18,7 @@ class User extends Admin {
     {
         parent::_initialize();
 
-        $this->user_model = new UserModel;
+        $this->userModel = new UserModel;
     }
 
     //用户列表
@@ -26,11 +26,11 @@ class User extends Admin {
         // 搜索
         $keyword = input('keyword');
         if ($keyword) {
-            $this->user_model->where('uid|username|nickname','like','%'.$keyword.'%');
+            $this->userModel->where('uid|username|nickname','like','%'.$keyword.'%');
         }
         // 获取所有用户
         $map['status'] = ['egt', '0']; // 禁用和正常状态
-        list($data_list,$page) = $this->user_model->getListByPage($map,'reg_time desc','*',20);
+        list($data_list,$page) = $this->userModel->getListByPage($map,'reg_time desc','*',20);
         // foreach($data_list as $k=>$user){
         //     $data_list[$k]['role_name']= isset(get_role_info($user['uid'],'title')[0]['title']) ? get_role_info($user['uid'],'title')[0]['title']: '无';//获取角色名
         // }
@@ -46,7 +46,7 @@ class User extends Admin {
         $move_role_attr['onclick'] = 'role_move()';
         $Role_html=$this->moveRoleHtml();//添加移动按钮html
 
-        $extra_html=$message_html.$Role_html;
+        $extra_html = $message_html.$Role_html;
 
         Builder::run('List')
                 ->setMetaTitle('用户管理') // 设置页面标题
@@ -88,29 +88,26 @@ class User extends Admin {
             }
 
             $data = input('post.');
-            $result = $this->validate($data,'User.edit');
-            if(true !== $result){
-                $this->error($result);
-            } else{
-                $uid  = isset($data['uid']) ? intval($data['uid']) : false;
-                // 提交数据
-                $result = $this->user_model->editData($data,$uid,'uid');
+            $this->validate($data,'User.edit');
 
-                if ($result) {
-                    if ($uid>0) {//如果是编辑状态下
-                        $this->user_model->updateLoginSession($uid);
-                    }
-                    $this->success($title.'成功', url('index'));
-                } else {
-                    $this->error($this->user_model->getError());
+            $uid  = isset($data['uid']) ? intval($data['uid']) : false;
+            // 提交数据
+            $result = $this->userModel->editData($data,$uid,'uid');
+
+            if ($result) {
+                if ($uid>0) {//如果是编辑状态下
+                    $this->userModel->updateLoginSession($uid);
                 }
+                $this->success($title.'成功', url('index'));
+            } else {
+                $this->error($this->userModel->getError());
             }
-
+            
         } else {
             $info=[];
             // 获取账号信息
             if ($uid!=0) {
-                $info = $this->user_model->get($uid);
+                $info = $this->userModel->get($uid);
                 unset($info['password']);
             }
 
@@ -278,16 +275,16 @@ EOF;
             $data = input('post.');
             
             // 提交数据
-            $result = $this->user_model->editData($data,$uid,'uid');
+            $result = $this->userModel->editData($data,$uid,'uid');
             if ($result) {
                 if ($uid) {//如果是编辑状态下
-                    $this->user_model->updateLoginSession($uid);
+                    $this->userModel->updateLoginSession($uid);
                 }
 
                 $this->success('提交成功', url('profile',['uid'=>$uid]));
             } else {
 
-                $this->error($this->user_model->getError());
+                $this->error($this->userModel->getError());
             }
         } else {
             // 获取账号信息
@@ -320,7 +317,7 @@ EOF;
             }
         } else {
             // 获取账号信息
-            $info = $this->user_model->find(is_login());
+            $info = $this->userModel->find(is_login());
 
             Builder::run('Form')->setMetaTitle('重置密码')  // 设置页面标题
                     //->addFormItem('oldpassword', 'password', '原密码', '','','','placeholder="填写旧密码"')

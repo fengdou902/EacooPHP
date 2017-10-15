@@ -83,17 +83,13 @@ class Terms extends Admin {
             $data['taxonomy'] = $taxonomy;
             $term_id          = isset($data['term_id']) && $data['term_id']>0 ? $data['term_id']:false;
             //验证数据
-            $result = $this->validate($data,'Term');
-            if(true !== $result){
-                // 验证失败 输出错误信息
-                $this->error($result);exit;
-            } else{
-                $result = $this->termsModel->editData($data,$term_id,'term_id');
-                if ($result) {
-                    $this->success($title.'成功', url($tab_obj['current']));
-                } else {
-                    $this->error($this->termsModel->getError());
-                }
+            $this->validateData($data,'Term');
+
+            $result = $this->termsModel->editData($data,$term_id,'term_id');
+            if ($result) {
+                $this->success($title.'成功', url($tab_obj['current']));
+            } else {
+                $this->error($this->termsModel->getError());
             }
 
         } else {

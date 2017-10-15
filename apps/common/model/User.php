@@ -145,7 +145,7 @@ class User extends Base
                 $map = 'email';
                 break;
             case 6:
-                $map = 'username|mobile|nickname|email';
+                $map = 'username|email|mobile|nickname';
                 break;
             default:
             	$this->error = '参数错误';

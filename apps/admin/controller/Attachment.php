@@ -13,6 +13,7 @@ use app\admin\builder\Builder;
 use app\common\controller\Upload;
 use app\common\model\Attachment as AttachmentModel;
 use app\common\model\TermRelationships;
+use app\common\model\Config;
 
 class Attachment extends Admin {
 
@@ -217,15 +218,15 @@ class Attachment extends Admin {
      * @param  int $id id
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function attachmentCategory(){
+    public function category(){
         $tab_list = [
-                'index'              =>['title'=>'媒体文件','href'=>url('index')],
-                'attachmentCategory' =>['title'=>'附件分类','href'=>url('attachmentCategory')],
-                'setting'            =>['title'=>'设置','href'=>url('setting')]
+                'index'    =>['title'=>'媒体文件','href'=>url('index'),'extra_attr'=>'data-pjax=false'],
+                'category' =>['title'=>'附件分类','href'=>url('category')],
+                'setting'  =>['title'=>'设置','href'=>url('setting')]
             ];
         $tab_obj=[
             'tab_list'=>$tab_list,
-            'current'=>'attachmentCategory'
+            'current'=>'category'
             ];
         \think\Loader::action('Terms/index',['media_cat','attachment',$tab_obj,url('mediaCatEdit',['term_id'=>'__data_id__'])]);
 
@@ -236,31 +237,37 @@ class Attachment extends Admin {
      * @param  int $term_id term_id
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function mediaCatEdit($term_id=0){
+    public function mediaCatEdit($term_id = 0){
         $tab_list=[
-                'index'=>['title'=>'媒体文件','href'=>url('index')],
-                'attachmentCategory'=>['title'=>'附件分类','href'=>url('attachmentCategory')],
-                'setting'=>['title'=>'设置','href'=>url('setting')]
+                'index'    =>['title'=>'媒体文件','href'=>url('index'),'extra_attr'=>'data-pjax=false'],
+                'category' =>['title'=>'附件分类','href'=>url('category')],
+                'setting'  =>['title'=>'设置','href'=>url('setting')]
             ];
         $tab_obj=[
             'tab_list'=>$tab_list,
-            'current'=>'attachmentCategory'
+            'current'=>'category'
             ];
         \think\Loader::action('admin/Terms/edit',[$term_id,'media_cat',$tab_obj]);
 
     }
-    //设置
+
+    /**
+     * 附件设置
+     * @return [type] [description]
+     * @date   2017-10-13
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
     public function setting(){
-        $configModel = model('Config');
+        $configModel = new Config;
         $tab_list=[
-            'index'=>['title'=>'媒体文件','href'=>url('index')],
-            'attachmentCategory'=>['title'=>'附件分类','href'=>url('attachmentCategory')],
+            'index'=>['title'=>'媒体文件','href'=>url('index'),'extra_attr'=>'data-pjax=false'],
+            'category'=>['title'=>'附件分类','href'=>url('category')],
             'setting'=>['title'=>'设置','href'=>url('setting')]
         ];
         if (IS_POST) {
             // 提交数据
             $attachment_data = input('post.');
-            $data['value']=json_encode($attachment_data);
+            $data['value'] = json_encode($attachment_data);
             if ($data) {
                 $result =$configModel->allowField(true)->save($data,['name'=>'attachment_options']);
                 if ($result) {
@@ -277,7 +284,7 @@ class Attachment extends Admin {
             $info = config('attachment_options');//获取配置值
             
             if ($info) {
-                $info=json_decode($info,true);
+                $info = json_decode($info,true);
             }
             if (!isset($info['water_opacity']) || empty($info['water_opacity'])) {
                 $info['water_opacity']=100;
@@ -611,7 +618,7 @@ class Attachment extends Admin {
      */
     public function uploadAvatar(){
 
-        $uid = input('get.uid',0,'intval');
+        $uid = input('param.uid',0,'intval');
 
         $controller = controller('common/Upload');
         $return = $controller->uploadAvatar($uid);

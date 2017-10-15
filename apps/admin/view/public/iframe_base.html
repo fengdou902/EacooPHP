@@ -10,13 +10,16 @@
    {load href="__ADMIN_CSS__/AdminLTE.min.css,__ADMIN_CSS__/_all-skins.min.css,__PUBLIC__/css/base.css,__ADMIN_CSS__/style.css,__STATIC__/libs/iCheck/all.css" /}
   
     {block name="style"}{/block}
-    <script type="text/javascript" src="__PUBLIC__/js/jquery-1.10.2.min.js"></script>    
+    <script type="text/javascript" src="__PUBLIC__/js/jquery-1.12.4.min.js"></script>    
     <script type="text/javascript">
-        var ThinkPHP = window.Think = {
-            "ROOT": "{$Request.domain}", //当前网站地址
-            "APP": "__APP__", //当前项目地址
-            "PUBLIC": "__PUBLIC__", //项目公共目录地址
-            "UPLOADSURL" :'/uploads/',
+        var EacooPHP = window.EacooPHP = {
+            "url_model":2,
+            "root":'{:BASE_PATH}',
+            "root_domain": "{$Request.domain}/admin.php", //当前网站地址
+            "static": "__STATIC__", //静态资源地址
+            "public": "__PUBLIC__", //项目公共目录地址
+            "uploads_url" :'/uploads/',
+            "cdn_url":"{:config('aliyun_oss.domain')}",
         }
     </script>
 </head>

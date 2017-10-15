@@ -6,7 +6,7 @@ use think\Model;
  * 积分模型
  * @author 心云间、凝听 <981248356@qq.com>
  */
-class Integral extends Model {
+class Score extends Model {
     
     protected $updateTime = false;
     protected $type = [
