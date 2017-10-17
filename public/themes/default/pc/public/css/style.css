@@ -1,3 +1,5 @@
 .logo{padding: 12px 0 !important;width: 200px!important;background: none!important;}
 .logo .logo-img{width: 80%;}
-  
+ /*box*/
+.box{box-shadow:none;}
+.box-header .box-title{font-size: 15px;}

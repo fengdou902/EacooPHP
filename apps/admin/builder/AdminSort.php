@@ -4,7 +4,7 @@ namespace app\admin\Builder;
 /**
  * 排序构建器
  * @package app\admin\builder
- * @author 赵俊峰 <981248356@qq.com>
+ * @author 心云间、凝听 <981248356@qq.com>
  */
 class AdminSort extends Builder {
     private $_meta_title;                  // 页面标题
@@ -50,7 +50,7 @@ class AdminSort extends Builder {
      * @param  string     $title [description]
      * @param  string     $url   [description]
      * @date   2017-08-03
-     * @author 赵俊峰 <981248356@qq.com>
+     * @author 心云间、凝听 <981248356@qq.com>
      */
     public function addButton($type='submit',$title='',$url=''){
         switch ($type) {

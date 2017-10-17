@@ -4,7 +4,7 @@ namespace app\admin\builder;
 /**
  * 表单构建器
  * @package app\admin\builder
- * @author 赵俊峰 <981248356@qq.com>
+ * @author 心云间、凝听 <981248356@qq.com>
  */
 class AdminForm extends Builder
 {
@@ -52,6 +52,16 @@ class AdminForm extends Builder
     }
 
     /**
+     * 设置页面说明
+     * @param $title 标题文本
+     * @return $this
+     */
+    public function setPageTips($content,$type='info') {
+        $this->_tip = $content;
+        return $this;
+    }
+
+    /**
      * 设置Tab按钮列表
      * @param $tab_list    Tab列表  array('title' => '标题', 'href' => 'http://www.xxx.com')
      * @param $current_tab 当前tab
@@ -61,6 +71,7 @@ class AdminForm extends Builder
         $this->_tab_nav = ['tab_list' => $tab_list, 'current_tab' => $current_tab];
         return $this;
     }
+
     /**
      * 组tab
      * @param $tab_list    Tab列表  array('title' => '标题', 'href' => 'http://www.xxx.com')

@@ -27,23 +27,21 @@ class Home extends Base {
 
     /**
      * 验证数据
-     * @param  string $validate_name [description]
+     * @param  string $validate 验证器名或者验证规则数组
      * @param  array  $data          [description]
-     * @param  string $scene 场景标识
      * @return [type]                [description]
      */
-    // public function validateData($validate_name='',$data=[],$scene='')
-    // {
-    //     if (!$validate_name || empty($data)) return false;
-    //     $validate = Loader::validate($validate_name);
-    //     if ($scene) {
-    //         $validate->scene($scene);
-    //     }
-    //     if(!$validate->check($data)){
-    //         $this->error($validate->getError());
-    //     }
-    //     return true;
-    // }
+    public function validateData($data,$validate)
+    {
+        if (!$validate || empty($data)) return false;
+        $result = $this->validate($data,$validate);
+        if(true !== $result){
+            // 验证失败 输出错误信息
+            $this->error($result);exit;
+        } 
+        return true;
+        
+    }
 
     /**
      * 页面配置信息
@@ -52,14 +50,13 @@ class Home extends Base {
      * @param  string $mark   [description]
      * @return [type]         [description]
      */
-    public function pageConfig($title='',$mark='',$main_mark='',$extend=[])
+    public function pageConfig($title='',$mark='',$extend=[])
     {
         $page_config = [
             'title'  => $title,
-            'main_mark' => $main_mark,
             'mark'   => $mark
         ];
-        $page_config = array_merge($page_config,$extend);
+        if(!empty($extend) && is_array($extend)) $page_config = array_merge($page_config,$extend);
 
         //添加面包屑导航数据
         $page_config['breadcrumbs'] = $this->breadCrumbs($page_config);
@@ -74,22 +71,10 @@ class Home extends Base {
     protected function breadCrumbs($page_config = [])
     {
         $crumbs = '';
-        switch ($page_config['main_mark']) {
-            case 'qa':
-                $crumbs.=' » <a href="/wenda">讨论社区</a>';
-                if ($page_config['mark']!='question_list') {
-                    $crumbs.=' » '.$page_config['title'];
-                }
-                
-                break;
-            case 'usercenter':
-                $crumbs.=' » <a href="/profile">个人中心</a>';
-                $crumbs.=' » '.$page_config['title'];
-                break;
-            default:
-                $crumbs.=' » '.$page_config['title'];
-                break;
-        }
-        return '<a href="'.url('home/index/index').'" class="color-white">首页</a>'.$crumbs;
+        $module_info = db('modules')->where(['name'=>MODULE_NAME])->field('title')->find();
+        $crumbs.='<li><a href="'.$this->url.'">'.$module_info['title'].'</a></li>';
+        $crumbs.='<li class="active">'.$page_config['title'].'</li>';
+
+        return '<li><a href="'.url('home/index/index').'"><i class="fa fa-dashboard"></i> 首页</a></li>'.$crumbs;
     }
 }

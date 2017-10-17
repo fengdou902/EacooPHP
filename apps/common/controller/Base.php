@@ -22,7 +22,6 @@ class Base extends Controller {
 	public function _initialize() {
 		//获取request信息
 		$this->requestInfo();
-		Cookie::set('__forward__',$this->url,3600);
 		//验证安装文件
 		if (!is_file(APP_PATH . 'install.lock') || !is_file(APP_PATH . 'database.php')) {
 			$this->redirect('install/index/index');
@@ -62,7 +61,7 @@ class Base extends Controller {
 		defined('IS_MOBILE') or define('IS_MOBILE', $this->request->isMobile());
 
 		$this->param = $this->request->param();
-		$this->simple_url = strtolower($this->request->module() . '/' . $this->request->controller() . '/' . $this->request->action());
+		$this->urlRule = strtolower($this->request->module() . '/' . $this->request->controller() . '/' . $this->request->action());
 		$this->ip = $this->request->ip();
 		$this->url = $this->request->url(true);//完整url
 	}

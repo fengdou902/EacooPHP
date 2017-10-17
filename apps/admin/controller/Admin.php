@@ -18,6 +18,7 @@ use com\EacooAccredit;
 use think\Cache;
 use think\Loader;
 use think\Hook;
+use think\Cookie;
 
 class Admin extends Base
 { 
@@ -43,16 +44,18 @@ class Admin extends Base
             $this->currentUser = session('user_login_auth');
         }
 
-        if (!in_array($this->simple_url,['admin/index/login', 'admin/index/logout'])) {
-
-            // 是否是超级管理员
-            if (!is_administrator() && config('admin_allow_ip')) {
-                // 检查IP地址访问
-                if (!in_array($this->ip, explode(',', config('admin_allow_ip')))) {
-                    $this->error('403:禁止访问');
-                }
-            }
+        if (!in_array($this->urlRule,['admin/index/login', 'admin/index/logout'])) {
             // 检测系统权限
+            if(!is_administrator()){
+                if (config('admin_allow_ip')) {
+                    // 检查IP地址访问
+                    if (!in_array($this->ip, explode(',', config('admin_allow_ip')))) {
+                        $this->error('403:禁止访问');
+                    }
+                }
+                $this->checkAuth();
+            }
+            
         }
 
         if (session('activation_auth_sign') != User::where('uid',$this->currentUser['uid'])->value('activation_auth_sign')) {
@@ -72,15 +75,8 @@ class Admin extends Base
                 $_admin_public_base = '../apps/admin/view/public/base.html';
             }
             $this->assign('_admin_public_base_', '../apps/admin/view/public/base.html');  // 页面公共继承模版
-            $this->assign('_admin_public_iframe_base_', '../apps/admin/view/public/iframe_base.html');  // 页面公共继承模版
-            //权限验证
+            $this->assign('_admin_public_iframe_base_', '../apps/admin/view/public/iframe_base.html');  // 页面公共继承模版    
         } 
-        
-        if(in_array($this->currentUser['uid'],[1])) return true;
-        $auth = new \org\util\Auth();
-        if(!$auth->check(MODULE_NAME.'/'.CONTROLLER_NAME.'/'.ACTION_NAME,$this->currentUser['uid'])){
-            $this->error('没有权限');
-        }
 
 	}
 
@@ -93,7 +89,7 @@ class Admin extends Base
         $admin_sidebar_menus = Cache::get('admin_sidebar_menus');
         if (!$admin_sidebar_menus) {
             
-            if(!in_array(is_login(),config('auth_config.auth_admin_uids'))){//如果是非超级管理员则按存储显示
+            if(!is_administrator()){//如果是非超级管理员则按存储显示
                 $rules= db('auth_group')->where(['id'=>['in',$this->currentUser['auth_group']]])->value('rules');    
                 $map_rules['id']=$menu_map['id']=['in',$rules];
             }
@@ -127,17 +123,17 @@ class Admin extends Base
         }
         switch ($status) {
             case 'forbid' :  // 禁用条目
-                $data = array('status' => 0);
+                $data = ['status' => 0];
                 $this->editRow(
                     $model,
                     $data,
                     $map,
-                    array('success'=>'禁用成功','error'=>'禁用失败')
+                    ['success'=>'禁用成功','error'=>'禁用失败']
                 );
                 break;
             case 'resume' :  // 启用条目
-                $data = array('status' => 1);
-                $map  = array_merge(array('status' => 0), $map);
+                $data = ['status' => 1];
+                $map  = array_merge(['status' => 0], $map);
                 $this->editRow(
                     $model,
                     $data,
@@ -247,7 +243,7 @@ class Admin extends Base
      * @param  array  $data          [description]
      * @return [type]                [description]
      */
-    public function validateData($data,$validate)
+    protected function validateData($data,$validate)
     {
         if (!$validate || empty($data)) return false;
         $result = $this->validate($data,$validate);
@@ -260,10 +256,29 @@ class Admin extends Base
     }
 
     /**
-     * [fuck 非法操作转404]
+     * 检测授权
+     * @return [type] [description]
+     * @date   2017-10-17
+     * @author 心云间、凝听 <981248356@qq.com>
      */
-    protected function fuck()
-    {
-        return $this->error('404!');
-    }
+    protected function checkAuth()
+     {
+        $auth = new \org\util\Auth();
+        $name = $this->urlRule;
+        //当前用户id
+        $uid = is_login();
+        //执行check的模式
+        $mode = 'url';
+        //'or' 表示满足任一条规则即通过验证;
+        //'and'则表示需满足所有规则才能通过验证
+        $relation = 'and';
+
+        if(!$auth->check($name, $uid, 1, $mode, $relation) && $name!='admin/dashboard/index'){//允许进入仪表盘
+            $this->error('无权限访问',Cookie::get('__forward_url__'));
+            return false;
+        }
+        Cookie::set('__forward_url__',$this->url,3600);
+        return true;
+     } 
+
 }

@@ -18,53 +18,21 @@ class Page extends Home {
         parent::_initialize();
 
     }
-
+    
     /**
-     * 默认方法
+     * 首页
      */
     public function index() {
 
-        $this->pageConfig('首页','index','home');
-        //音频
-        $audio_list = $this->content_model->where(['status' => 1,'type' => 'audio','profession' => $this->current_user['profession']])->limit(3)->select();
-
-        $this->assign('audio_list',$audio_list);
-        //视频
-        $video_list = $this->content_model->where(['status' => 1,'type' => 'video','profession' => $this->current_user['profession']])->limit(8)->select();
+        $this->pageConfig('首页','index');
         
-        $this->assign('video_list',$video_list);
+        $map = [
+            'status'=>1,
+            'type'=>'post'
+        ];
+        $post_list = Posts::where($map)->order('sort desc,create_time desc,id desc')->paginate(15);
 
-        return $this->fetch();
-    }
-
-    /**
-     * 详情
-     * @param  integer $id [description]
-     * @return [type]      [description]
-     */
-    public function about()
-    {
-        $id = 1;
-        Posts::where('id',$id)->setInc('views', 1);//添加浏览次数
-    	$info = Posts::get($id);
-    	$this->pageConfig($info['title'],'about','page');
-
-    	$this->assign('info',$info);
-        return $this->fetch();
-    }
-
-    /**
-     * 企业介绍
-     * @return [type] [description]
-     */
-    public function companyProfile()
-    {
-        $id = 1;
-        Posts::where('id',$id)->setInc('views', 1);//添加浏览次数
-        $info = Posts::get($id);
-        $this->pageConfig($info['title'],'about','page');
-
-        $this->assign('info',$info);
+        $this->assign('post_list',$post_list);
         return $this->fetch();
     }
 }

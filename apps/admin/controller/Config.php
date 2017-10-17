@@ -86,11 +86,11 @@ class Config extends Admin {
      * 编辑配置
      */
     public function edit($id=0){
-        $title = $id ? "编辑" : "新增";
-        if ($id != 0) {
-            $Config_data=$this->configModel->find($id);
+        $title = $id>0 ? "编辑" : "新增";
+        if ($id>0) {
+            $Config_data = $this->configModel->where('id',$id)->find();
         } elseif ($id==0) {
-            $Config_data['group'] = input('get.group_id',0);
+            $Config_data['group'] = input('param.group_id');
         }
         if (IS_POST) {
             $data = input('post.');
@@ -143,19 +143,19 @@ function switch_form_item_function(type){
 </script>
 EOF;
             $switch_function_arg=[
-                'role_type'=>['title'=>'关联角色类型(role_type)','data-type'=>'1'],
-                'custom_function'=>['title'=>'关联自定义函数','data-type'=>'2']
+                'role_type'=>['title'=>'角色类型(role_type)','data-type'=>'1'],
+                'custom_function'=>['title'=>'自定义函数','data-type'=>'2']
                 ];
             // 使用FormBuilder快速建立表单页面。
 
-            Builder::run('Form')
-                    ->setMetaTitle($title.'配置')  // 设置页面标题
+            $builder = Builder::run('Form');
+            $builder->setMetaTitle($title.'配置')  // 设置页面标题
                     //->setPostUrl(url('edit'))    // 设置表单提交地址
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
                     ->addFormItem('group', 'select', '配置分组', '配置所属的分组', config('config_group_list'))
-                    ->addFormItem('sub_group','number','配置子分组','先对大分组创建一个子分组')
+                    ->addFormItem('sub_group','number','配置子分组','先对大分组创建一个子分组，一般不填写')
                     ->addFormItem('type', 'select', '配置类型', '配置类型的分组',config('form_item_type'))
-                    ->addFormItem('switch_function','select','关联开关','可选(关联一个函数返回值，生成选项值)',$switch_function_arg)
+                    ->addFormItem('switch_function','select','关联函数','可选(关联一个函数返回值，生成选项值)',$switch_function_arg)
                     ->addFormItem('name', 'text', '配置名称', '配置名称')
                     ->addFormItem('title', 'text', '配置标题', '配置标题')
                     ->addFormItem('value', 'textarea', '配置值', '配置值')
@@ -186,7 +186,7 @@ EOF;
         $config_group_list = config('config_group_list');  // 获取配置分组
         unset($config_group_list[6]);//去除不显示的分组
         //unset($config_group_list[7]);//用户
-        unset($config_group_list[5]);
+        //unset($config_group_list[5]);
         unset($config_group_list[8]);
         foreach ($config_group_list as $key => $val) {
             $tab_list[$key]['title'] = $val;
@@ -205,9 +205,18 @@ EOF;
             }
             
         }
-        // 使用FormBuilder快速建立表单页面。
-        Builder::run('Form')
-                ->setMetaTitle('系统设置')       // 设置页面标题
+
+        $builder = Builder::run('Form');
+        switch ($group) {
+            case 5:
+                $builder->setPageTips('请在官网<a href="http://www.eacoo123.com/register" target="_blank">注册账户</a>，然后填写下方注册信息');
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+        $builder->setMetaTitle('系统设置')       // 设置页面标题
                 ->setTabNav($tab_list, $group)  // 设置Tab按钮列表
                 ->setExtraItems($data_list)     // 直接设置表单数据
                 ->addButton('submit','确认',url('groupSave'))->addButton('back') // 设置表单按钮
@@ -235,7 +244,12 @@ EOF;
         $this->success('保存成功！');
     }
 
-    /**网站信息设置
+    /**
+     * 网站信息设置
+     * @param  integer $sub_group [description]
+     * @return [type] [description]
+     * @date   2017-10-17
+     * @author 心云间、凝听 <981248356@qq.com>
      */
     public function website($sub_group=0)
     {
@@ -243,7 +257,7 @@ EOF;
         $map['status'] = ['egt', '0'];  // 禁用和正常状态
         $map['group']  = 6;//6是大分组网站信息
         $map['sub_group'] = $sub_group;
-        $data_list =$this->configModel->getList($map,'*','sort asc,id asc');
+        $data_list = $this->configModel->getList($map,'*','sort asc,id asc');
 
         // 设置Tab导航数据列表
         $config_subgroup_list = config('website_group');  // 获取配置分组
@@ -270,6 +284,7 @@ EOF;
                 ->addButton('submit','确认',url('groupSave'))->addButton('back')    // 设置表单按钮
                 ->fetch();
     }
+
     /**
      * 移动配置分组
      * @author 心云间、凝听 <981248356@qq.com>

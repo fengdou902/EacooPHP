@@ -1,25 +1,60 @@
 <?php
 use app\common\model\User;
 use app\admin\model\Action;
+use app\admin\model\AuthGroupAccess;
 use app\common\model\ActionLog;
 
 /**
  * 检测用户是否登录
  * @return integer 0-未登录，大于0-当前登录用户ID
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
+ * @author 心云间、凝听 <981248356@qq.com>
  */
 function is_login() {
 	return User::isLogin();
 }
 
 /**
- * 检测当前用户是否为管理员
+ * 检测用户是否为管理员
  * @return boolean true-管理员，false-非管理员
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
+ * @author 心云间、凝听 <981248356@qq.com>
  */
 function is_administrator($uid = null) {
 	$uid = is_null($uid) ? is_login() : $uid;
-	return $uid && (intval($uid) === config('user_administrator'));
+    if ($uid==1) {
+        return true;
+    } elseif ($uid>1) {
+        if (in_array($uid, get_administrators())) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * 获取超级管理员用户
+ * @return [type] [description]
+ * @date   2017-10-17
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function get_administrators()
+{
+    return AuthGroupAccess::groupUserUids(1);
+}
+
+/**
+ * 获取用户组信息
+ * @param  string $uid [description]
+ * @return [type] [description]
+ * @date   2017-10-17
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function get_user_groups($uid='')
+{
+    if ($uid>0) {
+        $auth = new \org\util\Auth();
+        return $auth->getGroups($uid);
+    }
+    return false;
 }
 
 /**

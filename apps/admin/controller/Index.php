@@ -29,16 +29,38 @@ class Index extends Base
      * 后台登录
      */
     public function login(){ 
+
         if(session('user_login_auth')) $this->redirect('admin/dashboard/index');
 
         if (IS_POST) {
+          $data = input('post.');
+          $result = $this->validate($data,[
+                                        ['username','require|min:1','登录名不能为空|登录名格式不正确'],
+                                        ['password','require|length:6,32','请填写密码|密码格式不正确']
+                                    ]);
+          if(true !== $result){
+              // 验证失败 输出错误信息
+              $this->error($result);
+              exit;
+          }
+
+          $login = User::where(['username|email|mobile' => $data['username'],'status'=>1])->field('allow_admin')->find();
+
+          if (!empty($login)) {
+              if ($login['allow_admin']!=1) {
+                $this->error('该用户不允许登录后台');
+              }
+           } else{
+              $this->error('该用户不存在或禁用');
+           }
+
            $captcha = new Captcha();
-            if(!$captcha->check($this->param['captcha'],1)){
+            if(!$captcha->check($data['captcha'],1)){
                 $this->error('验证码错误');
             }
-            $rememberme = input('post.rememberme')==1 ? true : false;
+            $rememberme = $data['rememberme']==1 ? true : false;
 
-            $result = User::login($this->param['username'],$this->param['password'], $rememberme);
+            $result = User::login($data['username'],$data['password'], $rememberme);
             if ($result['code']==1) {
                 $uid = !empty($result['data']['uid']) ? $result['data']['uid']:0;
                 $this->success('登录成功！',url('admin/dashboard/index'));

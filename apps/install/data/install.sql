@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 2017-10-06 11:41:41
+-- Generation Time: 2017-10-16 10:35:53
 -- 服务器版本： 5.7.15
 -- PHP Version: 7.0.14
 
@@ -53,7 +53,6 @@ INSERT INTO `eacoo_action` (`id`, `name`, `depend_type`, `depend_flag`, `title`,
 (5, 'index_login', 1, 'admin', '登录后台', '用户登录后台', '', '[user|get_nickname]在[time|time_format]登录了后台', 1, 1383285551, 1383285551, 1),
 (6, 'update_config', 1, 'admin', '更新配置', '新增或修改或删除配置', '', '', 2, 1383294988, 1383294988, 1),
 (7, 'update_channel', 1, 'admin', '更新导航', '新增或修改或删除导航', '', '', 2, 1383296301, 1383296301, 1),
-(8, 'update_menu', 1, 'admin', '更新菜单', '新增或修改或删除菜单', '', '', 2, 1383296392, 1383296392, 1),
 (9, 'update_category', 1, 'admin', '更新分类', '新增或修改或删除分类', '', '', 2, 1383296765, 1383296765, 1),
 (10, 'dashboard_index', 1, 'admin', '进入仪表盘', '进入仪表盘', '', '', 1, 0, 0, 0),
 (11, 'database_export', 1, 'admin', '数据库备份', '后台进行数据库备份操作', '', '', 1, 0, 0, 1),
@@ -252,8 +251,13 @@ CREATE TABLE `eacoo_auth_group_access` (
 --
 
 INSERT INTO `eacoo_auth_group_access` (`uid`, `group_id`, `status`) VALUES
-(1, 1, 1);
-
+(1, 1, 1),
+(3, 3, 1),
+(4, 3, 1),
+(5, 3, 1),
+(6, 3, 1),
+(7, 4, 1),
+(2, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -263,7 +267,7 @@ INSERT INTO `eacoo_auth_group_access` (`uid`, `group_id`, `status`) VALUES
 
 CREATE TABLE `eacoo_auth_rule` (
   `id` smallint(6) NOT NULL,
-  `name` char(80) NOT NULL DEFAULT '' COMMENT '导航链接',
+  `name` char(80) NOT NULL DEFAULT '0' COMMENT '导航链接',
   `title` char(20) NOT NULL DEFAULT '0' COMMENT '导航名字',
   `depend_type` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '来源类型。1module，2plugin，3theme',
   `depend_flag` varchar(50) NOT NULL DEFAULT '' COMMENT '来源标记',
@@ -273,6 +277,7 @@ CREATE TABLE `eacoo_auth_rule` (
   `sort` smallint(6) UNSIGNED DEFAULT '0' COMMENT '排序',
   `condition` char(200) DEFAULT NULL,
   `is_menu` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否菜单',
+  `no_pjax` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否不使用pjax',
   `developer` tinyint(1) NOT NULL DEFAULT '0' COMMENT '开发者',
   `update_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否有效(0:无效,1:有效)'
@@ -282,60 +287,60 @@ CREATE TABLE `eacoo_auth_rule` (
 -- 转存表中的数据 `eacoo_auth_rule`
 --
 
-INSERT INTO `eacoo_auth_rule` (`id`, `name`, `title`, `depend_type`, `depend_flag`, `type`, `pid`, `icon`, `sort`, `condition`, `is_menu`, `developer`, `update_time`, `status`) VALUES
-(1, 'admin/dashboard/index', '仪表盘', 1, 'admin', 1, 0, 'fa-tachometer', 1, NULL, 1, 0, 1505816276, 1),
-(2, 'admin', '系统设置', 1, 'admin', 1, 0, 'fa-cog', 2, NULL, 1, 0, 1505816276, 1),
-(3, 'admin/user/', '用户管理', 1, 'user', 1, 0, 'fa-users', 5, NULL, 1, 0, 1505816276, 1),
-(4, 'admin/attachment/index', '附件空间', 1, 'admin', 1, 0, 'fa-picture-o', 7, NULL, 1, 0, 1505816276, 1),
-(5, 'admin/extend/index', '扩展中心', 1, 'admin', 1, 0, 'fa-cloud', 11, NULL, 1, 0, 1505816276, 1),
-(6, 'admin/nav/index', '导航管理', 1, 'admin', 1, 0, 'fa-leaf', 6, NULL, 1, 0, 1505816276, 0),
-(7, 'admin/user/index', '用户列表', 1, 'user', 1, 3, '', 1, NULL, 1, 0, 1505816276, 1),
-(8, 'admin/auth/role', '角色组', 1, 'user', 1, 15, '', 1, NULL, 1, 0, 1506843587, 1),
-(9, 'admin/auth/adminMenu', '后台菜单管理', 1, 'admin', 1, 2, '', 11, NULL, 1, 1, 1505816276, 1),
-(10, 'tools', '工具', 1, 'admin', 1, 0, 'fa-gavel', 9, NULL, 1, 1, 1505816276, 1),
-(11, 'admin/database', '安全', 1, 'admin', 1, 10, 'fa-database', 12, NULL, 0, 0, 1505816276, 1),
-(12, 'admin/attachment/setting', '设置', 1, 'admin', 1, 2, '', 0, NULL, 0, 0, 1505816276, 1),
-(13, 'admin/link/index', '友情链接', 1, 'admin', 1, 10, '', 6, NULL, 1, 0, 1505816276, 1),
-(14, 'admin/link/edit', '链接编辑', 1, 'admin', 1, 13, '', 1, NULL, 1, 0, 1505816276, 0),
-(15, 'user/auth', '权限管理', 1, 'user', 1, 0, 'fa-sun-o', 4, NULL, 1, 0, 1505816276, 1),
-(16, 'admin/auth/index', '规则管理', 1, 'admin', 1, 15, '', 2, NULL, 1, 0, 1505816276, 1),
-(17, 'admin/mailer', '邮箱配置', 1, 'admin', 1, 10, '', 6, NULL, 1, 0, 1505816276, 0),
-(19, 'admin/config/website', '网站设置', 1, 'admin', 1, 2, '', 4, NULL, 1, 0, 1505816276, 1),
-(20, 'admin/database/index', '数据库管理', 1, 'admin', 1, 10, 'fa-database', 13, NULL, 1, 0, 1505816276, 1),
-(22, 'admin/theme/index', '主题', 1, 'admin', 1, 5, '', 3, NULL, 1, 0, 1505816276, 1),
-(23, 'admin/plugins/index', '插件', 1, 'admin', 1, 5, '', 2, NULL, 1, 0, 1505816276, 1),
-(24, 'admin/modules/index', '模块', 1, 'admin', 1, 5, '', 0, NULL, 1, 0, 1505816276, 1),
-(25, 'admin/config/index', '配置管理', 1, 'admin', 1, 2, '', 15, NULL, 1, 1, 1505816276, 1),
-(26, 'admin/config/group', '系统设置', 1, 'admin', 1, 2, '', 1, NULL, 1, 0, 1505816276, 1),
-(27, 'user/action', '系统安全', 1, 'user', 1, 0, 'fa-list-alt', 3, NULL, 1, 0, 1505816276, 1),
-(28, 'admin/action/index', '用户行为', 1, 'user', 1, 27, NULL, 1, NULL, 1, 0, 1505816276, 1),
-(29, 'admin/action/log', '行为日志', 1, 'user', 1, 27, NULL, 2, NULL, 1, 0, 1505816276, 1),
-(30, 'admin/plugins/hooks', '钩子管理', 1, 'admin', 1, 23, '', 1, NULL, 0, 1, 1505816276, 1),
-(32, 'admin/mailer/mailer_template', '邮件模板', 1, 'admin', 1, 10, NULL, 5, NULL, 1, 0, 1505816276, 1),
-(33, 'admin/addons/config?id=2', '通用社交化评论', 1, 'admin', 1, 10, '', 7, NULL, 0, 0, 1505816276, 1),
-(37, 'admin/attachment/attachmentCategory', '附件分类', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 1505816276, 1),
-(38, 'admin/attachment/upload', '文件上传', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 1505816276, 1),
-(39, 'admin/attachment/uploadPicture', '上传图片', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 1505816276, 1),
-(40, 'admin/attachment/upload_onlinefile', '添加外链附件', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 1505816276, 1),
-(41, 'admin/attachment/attachmentInfo', '附件详情', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 1505816276, 1),
-(42, 'admin/attachment/uploadAvatar', '上传头像', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 1505816276, 1),
-(43, 'user/tags/index', '标签管理', 1, 'user', 1, 3, '', 2, NULL, 1, 0, 1505816276, 0),
-(44, 'user/tongji/analyze', '会员统计', 1, 'user', 1, 3, '', 4, NULL, 1, 0, 1505816276, 1),
-(46, 'admin/api/index', '接口配置', 1, 'admin', 1, 10, '', 3, NULL, 1, 0, 1505816276, 1),
-(47, 'user/message/', '站内信', 1, 'user', 1, 0, 'fa-envelope-o', 8, NULL, 1, 0, 1505816276, 1),
-(48, 'user/message/messages', '收件箱', 1, 'user', 1, 47, NULL, 1, NULL, 1, 0, 1505816276, 1),
-(49, 'user/message/message_detail', '信息详情', 1, 'user', 1, 47, NULL, 1, NULL, 1, 0, 1505816276, 0),
-(50, 'user/message/messages?box_type=outbox', '发件箱', 1, 'user', 1, 47, '', 1, NULL, 1, 0, 1505816276, 1),
-(51, 'cms/posts', '门户CMS', 1, 'cms', 1, 0, 'fa fa-file-text', 10, NULL, 1, 0, 1506823803, 1),
-(52, 'cms/posts/index', '文章列表', 1, 'cms', 1, 51, NULL, 99, NULL, 1, 0, 1506823803, 1),
-(53, 'cms/posts/edit', '文章编辑', 1, 'cms', 1, 51, NULL, 99, NULL, 0, 0, 1506823803, 1),
-(54, 'cms/category/index', '文章分类', 1, 'cms', 1, 51, NULL, 99, NULL, 1, 0, 1506823803, 1),
-(55, 'cms/category/index?taxonomy=post_tag', '文章标签', 1, 'cms', 1, 51, NULL, 99, NULL, 1, 0, 1506823803, 1),
-(56, 'cms/page/index', '页面列表', 1, 'cms', 1, 51, NULL, 99, NULL, 1, 0, 1506823803, 1),
-(57, 'cms/posts/trash', '回收站', 1, 'cms', 1, 51, NULL, 99, NULL, 1, 0, 1506823803, 1),
-(58, 'admin/plugins/config?name=ImageGallery', '图片轮播', 2, 'ImageGallery', 1, 10, 'fa fa-file-text', 99, NULL, 1, 0, 1506848328, 1),
-(59, 'admin/plugins/config?name=Alidayu', '阿里大于-短信接口', 2, 'Alidayu', 1, 10, '', 99, NULL, 1, 0, 1506848334, 1),
-(60, 'admin/plugins/config?name=SocialLogin', '第三方登录', 2, 'SocialLogin', 1, 10, '', 99, NULL, 1, 0, 1506848338, 1);
+INSERT INTO `eacoo_auth_rule` (`id`, `name`, `title`, `depend_type`, `depend_flag`, `type`, `pid`, `icon`, `sort`, `condition`, `is_menu`, `no_pjax`, `developer`, `update_time`, `status`) VALUES
+(1, 'admin/dashboard/index', '仪表盘', 1, 'admin', 1, 0, 'fa-tachometer', 1, NULL, 1, 0, 0, 1507798445, 1),
+(2, 'admin', '系统设置', 1, 'admin', 1, 0, 'fa-cog', 2, NULL, 1, 0, 0, 1507604200, 1),
+(3, 'admin/user/', '用户管理', 1, 'user', 1, 0, 'fa-users', 5, NULL, 1, 0, 0, 1505816276, 1),
+(4, 'admin/attachment/index', '附件空间', 1, 'admin', 1, 0, 'fa-picture-o', 7, NULL, 1, 1, 0, 1505816276, 1),
+(5, 'admin/extend/index', '扩展中心', 1, 'admin', 1, 0, 'fa-cloud', 11, NULL, 1, 0, 0, 1507798466, 1),
+(6, 'admin/nav/index', '导航管理', 1, 'admin', 1, 0, 'fa-leaf', 6, NULL, 1, 0, 0, 1505816276, 0),
+(7, 'admin/user/index', '用户列表', 1, 'user', 1, 3, '', 1, NULL, 1, 0, 0, 1505816276, 1),
+(8, 'admin/auth/role', '角色组', 1, 'user', 1, 15, '', 1, NULL, 1, 0, 0, 1506843587, 1),
+(9, 'admin/auth/adminMenu', '后台菜单管理', 1, 'admin', 1, 2, '', 11, NULL, 1, 0, 1, 1505816276, 1),
+(10, 'tools', '工具', 1, 'admin', 1, 0, 'fa-gavel', 9, NULL, 1, 0, 1, 1505816276, 1),
+(11, 'admin/database', '安全', 1, 'admin', 1, 10, 'fa-database', 12, NULL, 0, 0, 0, 1505816276, 1),
+(12, 'admin/attachment/setting', '设置', 1, 'admin', 1, 2, '', 0, NULL, 0, 0, 0, 1505816276, 1),
+(13, 'admin/link/index', '友情链接', 1, 'admin', 1, 10, '', 6, NULL, 1, 0, 0, 1505816276, 1),
+(14, 'admin/link/edit', '链接编辑', 1, 'admin', 1, 13, '', 1, NULL, 1, 0, 0, 1505816276, 0),
+(15, 'user/auth', '权限管理', 1, 'user', 1, 0, 'fa-sun-o', 4, NULL, 1, 0, 0, 1505816276, 1),
+(16, 'admin/auth/index', '规则管理', 1, 'admin', 1, 15, '', 2, NULL, 1, 0, 0, 1505816276, 1),
+(17, 'admin/mailer', '邮箱配置', 1, 'admin', 1, 10, '', 6, NULL, 1, 0, 0, 1505816276, 0),
+(19, 'admin/config/website', '网站设置', 1, 'admin', 1, 2, '', 4, NULL, 1, 0, 0, 1505816276, 1),
+(20, 'admin/database/index', '数据库管理', 1, 'admin', 1, 10, 'fa-database', 13, NULL, 1, 0, 0, 1505816276, 1),
+(22, 'admin/theme/index', '主题', 1, 'admin', 1, 5, '', 3, NULL, 1, 0, 0, 1505816276, 1),
+(23, 'admin/plugins/index', '插件', 1, 'admin', 1, 5, '', 2, NULL, 1, 0, 0, 1505816276, 1),
+(24, 'admin/modules/index', '模块', 1, 'admin', 1, 5, '', 0, NULL, 1, 0, 0, 1505816276, 1),
+(25, 'admin/config/index', '配置管理', 1, 'admin', 1, 2, '', 15, NULL, 1, 0, 1, 1505816276, 1),
+(26, 'admin/config/group', '系统设置', 1, 'admin', 1, 2, '', 1, NULL, 1, 0, 0, 1505816276, 1),
+(27, 'user/action', '系统安全', 1, 'user', 1, 0, 'fa-list-alt', 3, NULL, 1, 0, 0, 1507798449, 1),
+(28, 'admin/action/index', '用户行为', 1, 'user', 1, 27, NULL, 1, NULL, 1, 0, 0, 1505816276, 1),
+(29, 'admin/action/log', '行为日志', 1, 'user', 1, 27, NULL, 2, NULL, 1, 0, 0, 1505816276, 1),
+(30, 'admin/plugins/hooks', '钩子管理', 1, 'admin', 1, 23, '', 1, NULL, 0, 0, 1, 1505816276, 1),
+(32, 'admin/mailer/template', '邮件模板', 1, 'admin', 1, 10, NULL, 5, NULL, 1, 0, 0, 1505816276, 1),
+(33, 'admin/plugins/config?id=2', '通用社交化评论', 1, 'admin', 1, 10, '', 7, NULL, 0, 0, 0, 1505816276, 1),
+(37, 'admin/attachment/attachmentCategory', '附件分类', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 0, 1505816276, 1),
+(38, 'admin/attachment/upload', '文件上传', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 0, 1505816276, 1),
+(39, 'admin/attachment/uploadPicture', '上传图片', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 0, 1505816276, 1),
+(40, 'admin/attachment/upload_onlinefile', '添加外链附件', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 0, 1505816276, 1),
+(41, 'admin/attachment/attachmentInfo', '附件详情', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 0, 1505816276, 1),
+(42, 'admin/attachment/uploadAvatar', '上传头像', 1, 'admin', 1, 4, NULL, 1, NULL, 0, 0, 0, 1505816276, 1),
+(43, 'user/tags/index', '标签管理', 1, 'user', 1, 3, '', 2, NULL, 1, 0, 0, 1505816276, 0),
+(44, 'user/tongji/analyze', '会员统计', 1, 'user', 1, 3, '', 4, NULL, 1, 1, 0, 1505816276, 1),
+(46, 'admin/api/index', '接口配置', 1, 'admin', 1, 10, '', 3, NULL, 1, 0, 0, 1505816276, 1),
+(47, 'user/message/', '站内信', 1, 'user', 1, 0, 'fa-envelope-o', 8, NULL, 1, 0, 0, 1505816276, 1),
+(48, 'user/message/messages', '收件箱', 1, 'user', 1, 47, NULL, 1, NULL, 1, 0, 0, 1505816276, 1),
+(49, 'user/message/message_detail', '信息详情', 1, 'user', 1, 47, NULL, 1, NULL, 1, 0, 0, 1505816276, 0),
+(50, 'user/message/messages?box_type=outbox', '发件箱', 1, 'user', 1, 47, '', 1, NULL, 1, 0, 0, 1505816276, 1),
+(51, 'cms/posts', '门户CMS', 1, 'cms', 1, 0, 'fa fa-file-text', 10, NULL, 1, 0, 0, 1506823803, 1),
+(52, 'cms/posts/index', '文章列表', 1, 'cms', 1, 51, NULL, 99, NULL, 1, 0, 0, 1506823803, 1),
+(53, 'cms/posts/edit', '文章编辑', 1, 'cms', 1, 51, NULL, 99, NULL, 0, 0, 0, 1506823803, 1),
+(54, 'cms/category/index', '文章分类', 1, 'cms', 1, 51, NULL, 99, NULL, 1, 0, 0, 1506823803, 1),
+(55, 'cms/category/index?taxonomy=post_tag', '文章标签', 1, 'cms', 1, 51, NULL, 99, NULL, 1, 0, 0, 1506823803, 1),
+(56, 'cms/page/index', '页面列表', 1, 'cms', 1, 51, NULL, 99, NULL, 1, 0, 0, 1506823803, 1),
+(57, 'cms/posts/trash', '回收站', 1, 'cms', 1, 51, NULL, 99, NULL, 1, 0, 0, 1506823803, 1),
+(58, 'admin/plugins/config?name=ImageGallery', '图片轮播', 2, 'ImageGallery', 1, 10, 'fa fa-file-text', 99, NULL, 1, 0, 0, 1506848328, 1),
+(59, 'admin/plugins/config?name=Alidayu', '阿里大于-短信接口', 2, 'Alidayu', 1, 10, '', 99, NULL, 1, 0, 0, 1506848334, 1),
+(60, 'admin/plugins/config?name=ThirdLogin', '第三方登录', 2, 'ThirdLogin', 1, 10, '', 99, NULL, 1, 0, 0, 1507627833, 1);
 
 -- --------------------------------------------------------
 
@@ -379,9 +384,9 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `function
 (13, 'admin_tags', '后台多标签', '0', '0:关闭\r\n1:开启', '', 2, 0, 'radio', '', 1453445526, 1506099586, 3, 1),
 (14, 'admin_page_rows', '分页数量', '20', '', '', 2, 0, 'number', '分页时每页的记录数', 1434019462, 1506099586, 4, 1),
 (15, 'admin_theme', '后台主题', 'default', 'default:默认主题\r\nblue:蓝色理想\r\ngreen:绿色生活', '', 2, 0, 'select', '后台界面主题', 1436678171, 1506099586, 5, 1),
-(16, 'develop_mode', '开发模式', '1', '1:开启\r\n0:关闭', '', 3, 0, 'select', '开发模式下会显示菜单管理、配置管理、数据字典等开发者工具', 1432393583, 1504700766, 1, 1),
-(17, 'app_trace', '是否显示页面Trace', '0', '1:开启\r\n0:关闭', '', 3, 0, 'select', '是否显示页面Trace信息', 1387165685, 1504700742, 2, 1),
-(18, 'auth_key', '系统加密KEY', 'vzxI=vf[=xV)?a^XihbLKx?pYPw$;Mi^R*<mV;yJh$wy(~~E?<.JA&ANdIZ#QhPq', '', '', 3, 0, 'textarea', '轻易不要修改此项，否则容易造成用户无法登录；如要修改，务必备份原key', 1438647773, 1504700766, 3, 1),
+(16, 'develop_mode', '开发模式', '1', '1:开启\r\n0:关闭', '', 3, 0, 'select', '开发模式下会显示菜单管理、配置管理、数据字典等开发者工具', 1432393583, 1507724972, 1, 1),
+(17, 'app_trace', '是否显示页面Trace', '0', '1:开启\r\n0:关闭', '', 3, 0, 'select', '是否显示页面Trace信息', 1387165685, 1507724972, 2, 1),
+(18, 'auth_key', '系统加密KEY', 'vzxI=vf[=xV)?a^XihbLKx?pYPw$;Mi^R*<mV;yJh$wy(~~E?<.JA&ANdIZ#QhPq', '', '', 3, 0, 'textarea', '轻易不要修改此项，否则容易造成用户无法登录；如要修改，务必备份原key', 1438647773, 1507724972, 3, 1),
 (20, 'static_domain', '静态文件独立域名', '', '', '', 4, 0, 'text', '静态文件独立域名一般用于在用户无感知的情况下平和的将网站图片自动存储到腾讯万象优图、又拍云等第三方服务。', 1438564784, 1438564784, 3, 1),
 (21, 'config_group_list', '配置分组', '1:基本\r\n2:系统\r\n3:开发\r\n4:部署\r\n5:授权\r\n6:网站信息\r\n7:用户\r\n8:邮箱\r\n9:多媒体', '', '', 3, 0, 'array', '配置分组的键值对不要轻易改变', 1379228036, 1467557143, 5, 1),
 (22, 'eacoo_username', '官网账号', 'eacoo', '', '', 5, 0, 'text', '官网登陆账号（支持用户名、邮箱、手机号）', 1438647815, 1464602856, 1, 1),
@@ -394,7 +399,7 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `function
 (29, 'data_backup_compress_level', '数据库备份文件压缩级别', '4', '1:普通\r\n4:一般\r\n9:最高', '', 2, 0, 'radio', '', 1465478496, 1506099586, 0, 1),
 (30, 'data_backup_compress', '数据库备份文件压缩', '1', '0:不压缩\r\n1:启用压缩', '', 2, 0, 'radio', '', 1465478578, 1506099586, 0, 1),
 (31, 'hooks_type', '钩子的类型', '1:视图\r\n2:控制器', '', '', 3, 0, 'array', '', 1465478697, 1465478697, 0, 1),
-(32, 'addon_path', '插件目录', '../addons/', '', '', 2, 0, 'text', '', 1465657982, 1497887712, 0, 0),
+(32, 'plugin_path', '插件目录', '../plugins/', '', '', 2, 0, 'text', '', 1465657982, 1497887712, 0, 0),
 (33, 'action_type', '行为类型', '1:系统\r\n2:用户', '1:系统\r\n2:用户', '', 7, 0, 'array', '配置说明', 1466953086, 1466953086, 0, 1),
 (34, 'website_group', '网站信息子分组', '0:基本信息\r\n1:SEO设置\r\n2:URL设置\r\n3:评论设置\r\n4:性能安全\r\n5:广告设置', '', '', 6, 0, 'array', '作为网站信息配置的子分组配置，每个大分组可设置子分组作为tab切换', 1467516762, 1472487030, 20, 1),
 (35, 'mail_smtp', 'SMTP配置', '{"smtp_sender":"EacooPHP","smtp_address":"zjf2616@163.com","smtp_host":"smtp.163.com","smtp_secure":"none","smtp_port":"25","smtp_login":"zjf2616@163.com","smtp_password":""}', '', '', 8, 0, 'json', 'JSON格式保存多个配置属性', 1467519186, 1501769507, 0, 1),
@@ -402,17 +407,17 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `function
 (37, 'mail_captcha_template', '验证码邮件模板', '{"active":"0","subject":"\\u90ae\\u7bb1\\u9a8c\\u8bc1\\u7801\\u901a\\u77e5"}', '', '', 8, 0, 'json', 'JSON格式保存除了模板内容的属性', 1467519582, 1467818456, 0, 1),
 (38, 'mail_reg_active_template_content', '注册激活邮件模板内容', '<p><span style="font-family: 微软雅黑; font-size: 14px;"></span><span style="font-family: 微软雅黑; font-size: 14px;">您在{$title}的激活链接为</span><a href="{$url}" target="_blank" style="font-family: 微软雅黑; font-size: 14px; white-space: normal;">激活</a><span style="font-family: 微软雅黑; font-size: 14px;">，或者请复制链接：{$url}到浏览器打开。</span></p>', '', '', 8, 0, 'textarea', '注册激活模板邮件内容部分，模板内容单独存放', 1467818340, 1467818340, 0, 1),
 (39, 'mail_captcha_template_content', '验证码邮件模板内容', '<p><span style="font-family: 微软雅黑; font-size: 14px;">您的验证码为{$verify}验证码，账号为{$account}。</span></p>', '', '', 8, 0, 'textarea', '验证码邮件模板内容部分', 1467818435, 1467818435, 0, 1),
-(40, 'attachment_options', '附件配置选项', '{"page_number":"30","cut":"1","small_size":{"width":"150","height":"150"},"medium_size":{"width":"320","height":"280"},"large_size":{"width":"560","height":"430"},"watermark_scene":"2","watermark_type":"1","water_position":"9","water_img":"\\/logo.png","water_opacity":"100"}', '', '', 9, 0, 'hidden', '以JSON格式保存', 1467858734, 1499957776, 0, 1),
+(40, 'attachment_options', '附件配置选项', '{"page_number":"30","cut":"1","small_size":{"width":"150","height":"150"},"medium_size":{"width":"320","height":"280"},"large_size":{"width":"560","height":"430"},"watermark_scene":"2","watermark_type":"1","water_position":"9","water_img":"\\/logo.png","water_opacity":"100"}', '', '', 9, 0, 'hidden', '以JSON格式保存', 1467858734, 1507952237, 0, 1),
 (41, 'attachment_show_type', '附件选择器显示方式', '0', '0:显示所有\r\n1:只显示作者的上传', '', 9, 1, 'radio', '在附件选择器中显示的附件内容', 1468421212, 1468422705, 0, 1),
 (42, 'user_deny_username', '保留用户名和昵称', '管理员,测试,admin,垃圾', '', '', 7, 0, 'textarea', '禁止注册用户名和昵称，包含这些即无法注册,用&quot; , &quot;号隔开，用户只能是英文，下划线_，数字等', 1468493201, 1468493201, 0, 1),
 (43, 'verify_open', '验证码配置', 'reg,login,reset', 'reg:注册显示\r\nlogin:登陆显示\r\nreset:密码重置', '', 2, 0, 'checkbox', '验证码开启配置', 1468494419, 1506099586, 0, 1),
 (44, 'verify_type', '验证码类型', '2', '1:中文\r\n2:英文\r\n3:数字\r\n4:英文+数字', '', 2, 0, 'select', '验证码类型', 1468494591, 1506099586, 0, 1),
 (45, 'web_site_subtitle', '网站副标题', '基于ThinkPHP5的开发框架', '', '', 6, 0, 'textarea', '用简洁的文字描述本站点（网站口号、宣传标语、一句话介绍）', 1468593713, 1507036190, 2, 1),
-(46, 'adv_advlimitdate', '点击限制时间', '5', '', '', 6, 5, 'number', '同一个用户规定时间之后点击广告才能再获得一毛钱，单位：分钟', 1470845297, 1470845297, 0, 1),
+(46, 'adv_advlimitdate', '点击限制时间', '6', '', '', 6, 5, 'number', '同一个用户规定时间之后点击广告才能再获得一毛钱，单位：分钟', 1470845297, 1470845297, 0, 1),
 (49, 'reg_default_roleid', '注册默认角色', '4', '', 'role_type', 7, 0, 'select', '', 1471681620, 1471689765, 0, 1),
-(50, 'open_register', '开放注册', '', '1:是\r\n0:否', '', 7, 0, 'radio', '', 1471681674, 1471681674, 0, 1),
+(50, 'open_register', '开放注册', '0', '1:是\r\n0:否', '', 7, 0, 'radio', '', 1471681674, 1471681674, 0, 1),
 (56, 'meanwhile_user_online', '允许同时登录', '1', '1:是\r\n0:否', '', 7, 0, 'radio', '是否允许同一帐号在不同地方同时登录', 1473437355, 1473437355, 0, 1),
-(57, 'aliyun_oss', '阿里云oss', '{"enable":"1","bucket":"eacoomall-shop","access_key_id":"","access_key_secret":"","root_path":"images","domain":"http:\\/\\/img.eacoomall.com","endpoint":"http:\\/\\/oss-cn-beijing.aliyuncs.com","style":[{"name":"wap-thumb"},{"name":"small"},{"name":"medium"},{"name":"large"}]}', '', '', 0, 0, 'json', '阿里云OSS配置', 1473437355, 1500182001, 0, 1),
+(57, 'aliyun_oss', '阿里云oss', '{"enable":"1","bucket":"eacoomall-shop","access_key_id":"7twprgJpcw4hdEtn","access_key_secret":"HqPF1ErZpT1GrGusvPEgaDWtqykPq4","root_path":"images","domain":"http:\\/\\/img.eacoomall.com","endpoint":"http:\\/\\/oss-cn-beijing.aliyuncs.com","style":[{"name":"wap-thumb"},{"name":"small"},{"name":"medium"},{"name":"large"}]}', '', '', 0, 0, 'json', '阿里云OSS配置', 1473437355, 1500182001, 0, 1),
 (58, 'api_kdniao', '快递鸟', '', '', '', 0, 0, 'json', '\n快递鸟设置，应用于电子面单中使用，未配置，将导致商家无法使用电子面单\n系统在调取物流信息时将调用快递鸟的“即时查询API”接口获取物流数据\n您可以通过 测试物流查询 链接测试物流信息查询', 1473437355, 1500182001, 0, 1),
 (59, 'user_administrator', '超级管理员', '1', '', '', 7, 0, 'text', '填写用户UID，多个用户用英文逗号","分开', 1503412286, 1503412339, 0, 1);
 
@@ -441,9 +446,9 @@ INSERT INTO `eacoo_hooks` (`id`, `name`, `description`, `plugins`, `type`, `crea
 (1, 'AdminIndex', '后台首页小工具', '后台首页小工具', 1, 1446522155, 1446522155, 1),
 (2, 'FormBuilderExtend', 'FormBuilder类型扩展Builder', '', 1, 1447831268, 1447831268, 1),
 (3, 'UploadFile', '上传文件钩子', '', 1, 1407681961, 1407681961, 1),
-(4, 'PageHeader', '页面header钩子，一般用于加载插件CSS文件和代码', 'SocialLogin', 1, 1407681961, 1407681961, 1),
+(4, 'PageHeader', '页面header钩子，一般用于加载插件CSS文件和代码', 'ThirdLogin', 1, 1407681961, 1407681961, 1),
 (5, 'PageFooter', '页面footer钩子，一般用于加载插件CSS文件和代码', '', 1, 1407681961, 1407681961, 1),
-(6, 'SocialLogin', '第三方账号登陆', 'SocialLogin', 1, 1465057122, 1465057122, 1),
+(6, 'SocialLogin', '第三方账号登陆', '', 1, 1465057122, 1465057122, 1),
 (7, 'SendMessage', '发送消息钩子，用于消息发送途径的扩展', '', 2, 1467423450, 1467423450, 1),
 (8, 'sms', '短信插件钩子', 'Alidayu', 2, 1467424112, 1467424112, 1),
 (9, 'uploadPicture', '上传图片处理', '', 2, 1467424195, 1506825220, 1),
@@ -451,7 +456,8 @@ INSERT INTO `eacoo_hooks` (`id`, `name`, `description`, `plugins`, `type`, `crea
 (11, 'J_China_City', '每个系统都需要的一个中国省市区三级联动插件。', '', 1, 1467424257, 1467424257, 1),
 (12, 'checkIn', '签到', '', 1, 1467424298, 1467424298, 1),
 (13, 'app_begin', '应用开始', '', 2, 1467424315, 1467424315, 1),
-(14, 'adminEditor', '后台内容编辑页编辑器', '', 1, 1467424354, 1467424354, 1);
+(14, 'adminEditor', '后台内容编辑页编辑器', '', 1, 1467424354, 1467424354, 1),
+(15, 'ThirdLogin', '集成第三方授权登录，包括微博、QQ、微信、码云', 'ThirdLogin', 1, 1507627833, 1507627833, 1);
 
 -- --------------------------------------------------------
 
@@ -591,26 +597,26 @@ CREATE TABLE `eacoo_plugins` (
 INSERT INTO `eacoo_plugins` (`id`, `name`, `title`, `logo`, `description`, `config`, `author`, `version`, `admin_manage_into`, `type`, `create_time`, `update_time`, `sort`, `status`) VALUES
 (1, 'ImageGallery', '幻灯片', '', '图片轮播滑块器，可用于图片展示', '{"status":1,"type":"flexslider","sliders":[{"img":94,"url":"http:\\/\\/www.eacoo123.com","text":"EacooPHP\\u5feb\\u901f\\u5f00\\u53d1\\u6846\\u67b6"},{"img":95,"url":"http:\\/\\/forum.eacoo123.com","text":"EacooPHP\\u8ba8\\u8bba\\u793e\\u533a"},{"img":94,"url":"http:\\/\\/www.eacoo123.com","text":"EacooPHP\\u5feb\\u901f\\u5f00\\u53d1\\u6846\\u67b6"}],"second":"3000","direction":"horizontal","imgWidth":"","imgHeight":"880"}', '心云间、凝听', '1.0.0', '0', 1, 1506848328, 1506848328, 0, 1),
 (2, 'Alidayu', '阿里大于-短信接口', '/static/plugins/Alidayu/logo.jpg', '通过阿里大于短信接口发送短信', '{"status":"1","appkey":"","secret":""}', '心云间、凝听', '1.0.0', '', 1, 1506848334, 1506848334, 0, 1),
-(3, 'SocialLogin', '第三方账号登录', '', '集成第三方授权登录，包括微博、QQ、微信', '{"type":"","meta":"","WeixinKey":"","WeixinSecret":"","QqKey":"","QqSecret":"","SinaKey":"","SinaSecret":"","RenrenKey":"","RenrenSecret":""}', '心云间、凝听', '0.0.1', '', 1, 1506848338, 1506848338, 0, 1);
+(3, 'ThirdLogin', '第三方账号登录', '', '集成第三方授权登录，包括微博、QQ、微信、码云', '{"platforms":"","meta":"","WeixinKey":"","WeixinSecret":"","QqKey":"","QqSecret":"","SinaKey":"","SinaSecret":"","GiteeKey":"","GiteeSecret":"","GithubKey":"","GithubSecret":""}', '心云间、凝听', '1.0.0', '', 1, 1507627833, 1507627833, 0, 1);
 
 -- --------------------------------------------------------
 
 --
--- 表的结构 `eacoo_plugin_social_login`
+-- 表的结构 `eacoo_plugin_third_login`
 --
 
-CREATE TABLE `eacoo_plugin_social_login` (
+CREATE TABLE `eacoo_plugin_third_login` (
   `id` int(11) UNSIGNED NOT NULL COMMENT 'ID',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
-  `type` varchar(15) NOT NULL DEFAULT '' COMMENT '类别',
+  `platform` varchar(15) NOT NULL DEFAULT '' COMMENT '类别',
   `openid` varchar(64) NOT NULL DEFAULT '' COMMENT 'OpenID',
   `access_token` varchar(64) NOT NULL DEFAULT '' COMMENT 'AccessToken',
   `refresh_token` varchar(64) NOT NULL DEFAULT '' COMMENT 'RefreshToken',
   `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   `sort` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
-  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='第三方登陆插件表';
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='第三方登陆插件表';
 
 -- --------------------------------------------------------
 
@@ -624,6 +630,13 @@ CREATE TABLE `eacoo_postmeta` (
   `meta_key` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `meta_value` text COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- 转存表中的数据 `eacoo_postmeta`
+--
+
+INSERT INTO `eacoo_postmeta` (`meta_id`, `post_id`, `meta_key`, `meta_value`) VALUES
+(5, 5, 'test', '测试数据');
 
 -- --------------------------------------------------------
 
@@ -644,9 +657,9 @@ CREATE TABLE `eacoo_posts` (
   `img` int(11) UNSIGNED DEFAULT '0' COMMENT '封面图片',
   `views` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '浏览数',
   `collection` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '收藏量',
-  `comment_count` int(11) UNSIGNED DEFAULT '0',
+  `comment_count` int(10) UNSIGNED DEFAULT '0',
   `parent` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'post的父级post id,表示post层级关系',
-  `password` varchar(32) DEFAULT NULL,
+  `password` varchar(32) DEFAULT '',
   `fields` varchar(300) DEFAULT '' COMMENT 'post的扩展字段，保存相关扩展属性，如缩略图；格式为json',
   `istop` tinyint(1) UNSIGNED DEFAULT '0' COMMENT '置顶 1置顶； 0不置顶',
   `recommended` tinyint(1) DEFAULT '0' COMMENT '推荐 1推荐 0不推荐，大于1的数字可设定为不同推荐区',
@@ -662,12 +675,12 @@ CREATE TABLE `eacoo_posts` (
 --
 
 INSERT INTO `eacoo_posts` (`id`, `title`, `slug`, `type`, `source`, `excerpt`, `content`, `author_id`, `seo_keywords`, `img`, `views`, `collection`, `comment_count`, `parent`, `password`, `fields`, `istop`, `recommended`, `publish_time`, `create_time`, `update_time`, `sort`, `status`) VALUES
-(1, '揭秘eBay四大系统 从行为数据中寻找价值', '', 'post', NULL, '', '<p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 16px; color: rgb(102, 102, 102); font-family: \'Microsoft Yahei\', \'Helvetica Neue\', Helvetica, Arial, sans-serif; white-space: normal;">喜欢海淘的朋友应该对eBay并不陌生，如果你还不了解，可以把eBay+PayPal理解为淘宝+支付宝的组合，当然eBay不仅有C2C还有B2C的模式，甚至还有二手卖家。</p><p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 16px; color: rgb(102, 102, 102); font-family: \'Microsoft Yahei\', \'Helvetica Neue\', Helvetica, Arial, sans-serif; white-space: normal;">铺垫了一些背景，我们再来说说电子商务，现在还有没网购过的同学请举手，1、2、3……可能没有几个。虽然大家都在各种电子商务网站上购过物，但是你是否知道你在网上的一切行为都已经被记录并进行分析。</p><p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 16px; color: rgb(102, 102, 102); font-family: \'Microsoft Yahei\', \'Helvetica Neue\', Helvetica, Arial, sans-serif; white-space: normal;">不论国外还是国内的电子商务企业，他们的相同点都是以业务为导向。eBay的做法是用数据驱动商业，其上所有的数据产品都是针对业务而生，数据部门需要对不断变化的用户需求找到解决之法，也就是从客户的行为数据中来寻找价值。</p><h3 style="box-sizing: border-box; font-family: \'Microsoft Yahei\', \'Helvetica Neue\', Helvetica, Arial, sans-serif; font-weight: normal; line-height: 1.1; color: rgb(68, 68, 68); margin-top: 20px; margin-bottom: 16px; font-size: 16px; border-bottom-color: rgb(238, 238, 238); border-bottom-width: 1px; border-bottom-style: solid; padding-bottom: 0px; white-space: normal;"><strong style="box-sizing: border-box;">行为数据用混合的手段来处理</strong></h3><p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 16px; color: rgb(102, 102, 102); font-family: \'Microsoft Yahei\', \'Helvetica Neue\', Helvetica, Arial, sans-serif; white-space: normal;">数据是eBay发展的基础和价值所在，所以eBay数据服务和解决方案团队从eBay成立的第一天就已经存在，从数据仓库到数据分析再到数据服务，部门的名字一直随着发展在不断变化。但万变不离其宗，数据服务和解决方案团队就是一个针对数据展开想象的部门。</p><p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 16px; color: rgb(102, 102, 102); font-family: \'Microsoft Yahei\', \'Helvetica Neue\', Helvetica, Arial, sans-serif; white-space: normal;">eBay数据服务和解决方案团队分布在美国西雅图、圣何塞以及中国上海，而中国团队全职和外包人员总共将近有100人，其中有不同的职位和分工，包括数据科学家、数据工程师、商业需求分析师、产品经理四大类。两个区域的团队互相协作，共同开发核心数据的同时也支持不同的业务部门。</p><p><br/></p>', 1, '', 68, 0, 0, 0, 0, NULL, '', 0, 0, 0, 1464081408, 1506666740, 0, 1),
-(2, '谷歌数据中心安全及设计的最佳实践', '', 'post', NULL, NULL, '<p>在首次云端平台使用者大会(Google Cloud Platform Global User Conference)上，谷歌的两位领导者——数据中心的运营副总裁Joe Kava和安全隐私方面的优秀工程师Niels Provos向与会者分享了谷歌在全球范围内设计、构建、运行和保护数据中心的实践方式，其中包含一些令谷歌的数据中心独一无二的秘诀，及其对于谷歌云端平台用户的意义。\r\n\r\n安全性和数据保护sdf\r\n\r\n谷歌一直以来将重心放在数据的安全和保护上，这也是我们的关键设计准则之一。在物理安全方面，我们以分层安全模型为特色，使用了如定制的电子访问卡、警报器、车辆进出限制、围栏架设、金属探测器及生物识别技术等保障措施。数据中心的地板配备了激光束入侵探测器，并安装了高清晰度的内外监视器，全天候检测追踪入侵行为。此外为以防万一，可随时调用访问日志、活动记录以及监控录像。\r\n\r\n同时数据中心还安排了经验丰富的保安人员每日例行巡逻，他们已接受过背景调查与严格的培训(可以点击查看数据中心的360度视频)。越靠近数据中心，安全措施系数就越高，只有一条安全通道能进入数据中心，通过安全徽章和生物识别技术来实现多重访问控制，只有特定职位的员工才有权进入。在整个谷歌公司，只有不到1%的员工曾踏足此区域。\r\n\r\n我们还采用了非常严格的点对点监管链，用于储存、追踪全过程——从第一次HD输入机器直至证实其已被销毁或清除。同时，我们采用了信息安全和物理安全双管齐下的方式，由于数据通过网络传输的特性，若未经授权可随意访问的话就会非常危险。有鉴于此，谷歌将数据传输过程中的信息保护摆在优先位置上，用户设备与谷歌间的数据传输通常都是利用HTTPS/TLS(安全传输层协议)来进行加密输送。谷歌是第一个默认启用HTTPS/TLS的主要云服务提供商。</p>', 1, NULL, 93, 0, 0, 0, 0, NULL, '', 0, 0, NULL, 1464081797, 1465286960, 0, 1),
-(3, '机器学习专家带你实践LSTM语言模型', '', 'post', NULL, '', '<p>测试</p><p><br></p>', 1, '', 77, 0, 0, 0, 0, NULL, '', 0, 0, 0, 1464081899, 1506666713, 0, 1),
+(1, '揭秘eBay四大系统 从行为数据中寻找价值', '', 'post', NULL, '', '<p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 16px; color: rgb(102, 102, 102); font-family: \'Microsoft Yahei\', \'Helvetica Neue\', Helvetica, Arial, sans-serif; white-space: normal;">喜欢海淘的朋友应该对eBay并不陌生，如果你还不了解，可以把eBay+PayPal理解为淘宝+支付宝的组合，当然eBay不仅有C2C还有B2C的模式，甚至还有二手卖家。</p><p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 16px; color: rgb(102, 102, 102); font-family: \'Microsoft Yahei\', \'Helvetica Neue\', Helvetica, Arial, sans-serif; white-space: normal;">铺垫了一些背景，我们再来说说电子商务，现在还有没网购过的同学请举手，1、2、3……可能没有几个。虽然大家都在各种电子商务网站上购过物，但是你是否知道你在网上的一切行为都已经被记录并进行分析。</p><p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 16px; color: rgb(102, 102, 102); font-family: \'Microsoft Yahei\', \'Helvetica Neue\', Helvetica, Arial, sans-serif; white-space: normal;">不论国外还是国内的电子商务企业，他们的相同点都是以业务为导向。eBay的做法是用数据驱动商业，其上所有的数据产品都是针对业务而生，数据部门需要对不断变化的用户需求找到解决之法，也就是从客户的行为数据中来寻找价值。</p><h3 style="box-sizing: border-box; font-family: \'Microsoft Yahei\', \'Helvetica Neue\', Helvetica, Arial, sans-serif; font-weight: normal; line-height: 1.1; color: rgb(68, 68, 68); margin-top: 20px; margin-bottom: 16px; font-size: 16px; border-bottom-color: rgb(238, 238, 238); border-bottom-width: 1px; border-bottom-style: solid; padding-bottom: 0px; white-space: normal;"><strong style="box-sizing: border-box;">行为数据用混合的手段来处理</strong></h3><p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 16px; color: rgb(102, 102, 102); font-family: \'Microsoft Yahei\', \'Helvetica Neue\', Helvetica, Arial, sans-serif; white-space: normal;">数据是eBay发展的基础和价值所在，所以eBay数据服务和解决方案团队从eBay成立的第一天就已经存在，从数据仓库到数据分析再到数据服务，部门的名字一直随着发展在不断变化。但万变不离其宗，数据服务和解决方案团队就是一个针对数据展开想象的部门。</p><p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 16px; color: rgb(102, 102, 102); font-family: \'Microsoft Yahei\', \'Helvetica Neue\', Helvetica, Arial, sans-serif; white-space: normal;">eBay数据服务和解决方案团队分布在美国西雅图、圣何塞以及中国上海，而中国团队全职和外包人员总共将近有100人，其中有不同的职位和分工，包括数据科学家、数据工程师、商业需求分析师、产品经理四大类。两个区域的团队互相协作，共同开发核心数据的同时也支持不同的业务部门。</p><p><br/></p>', 1, '', 68, 0, 0, 0, 0, NULL, '', 0, 0, 1508063880, 1464081408, 1508063929, 0, 1),
+(2, '谷歌数据中心安全及设计的最佳实践', '', 'post', NULL, '', '<p>在首次云端平台使用者大会(Google Cloud Platform Global User Conference)上，谷歌的两位领导者——数据中心的运营副总裁Joe Kava和安全隐私方面的优秀工程师Niels Provos向与会者分享了谷歌在全球范围内设计、构建、运行和保护数据中心的实践方式，其中包含一些令谷歌的数据中心独一无二的秘诀，及其对于谷歌云端平台用户的意义。\r\n\r\n安全性和数据保护sdf\r\n\r\n谷歌一直以来将重心放在数据的安全和保护上，这也是我们的关键设计准则之一。在物理安全方面，我们以分层安全模型为特色，使用了如定制的电子访问卡、警报器、车辆进出限制、围栏架设、金属探测器及生物识别技术等保障措施。数据中心的地板配备了激光束入侵探测器，并安装了高清晰度的内外监视器，全天候检测追踪入侵行为。此外为以防万一，可随时调用访问日志、活动记录以及监控录像。\r\n\r\n同时数据中心还安排了经验丰富的保安人员每日例行巡逻，他们已接受过背景调查与严格的培训(可以点击查看数据中心的360度视频)。越靠近数据中心，安全措施系数就越高，只有一条安全通道能进入数据中心，通过安全徽章和生物识别技术来实现多重访问控制，只有特定职位的员工才有权进入。在整个谷歌公司，只有不到1%的员工曾踏足此区域。\r\n\r\n我们还采用了非常严格的点对点监管链，用于储存、追踪全过程——从第一次HD输入机器直至证实其已被销毁或清除。同时，我们采用了信息安全和物理安全双管齐下的方式，由于数据通过网络传输的特性，若未经授权可随意访问的话就会非常危险。有鉴于此，谷歌将数据传输过程中的信息保护摆在优先位置上，用户设备与谷歌间的数据传输通常都是利用HTTPS/TLS(安全传输层协议)来进行加密输送。谷歌是第一个默认启用HTTPS/TLS的主要云服务提供商。</p>', 1, '', 93, 0, 0, 0, 0, NULL, '', 0, 1, 1508063820, 1464081797, 1508063874, 0, 1),
+(3, '机器学习专家带你实践LSTM语言模型', '', 'post', NULL, '', '<p>测试</p><p><br></p>', 1, '', 77, 0, 0, 0, 0, NULL, '', 0, 0, 1508064480, 1464081899, 1508064489, 0, 1),
 (4, '大撒发送大撒发送', '', 'page', NULL, '', '<p style="text-align:center"><br/></p><p>这是编辑的内容就gsadfasdfasfd</p><p></p>', 1, '', 1164, 0, 0, 0, 0, NULL, '', 0, 0, 0, 1464153628, 1506823903, 0, 0),
-(5, '贝恩：企业大数据战略指南', '', 'post', NULL, '这是摘要dgs', '<p>企业大数据战略指南</p><p><br></p><p><img class="" src="http://localhost/ZhaoCMF/Uploads/Picture/2016-09-26/57e8ddc3e1455.jpeg" data-id="363"></p><p>fsafsaf</p><p><br></p>', 1, '关键字1', 88, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 1464791552, 1506824032, 0, 1),
-(6, '发撒范德萨', '', 'post', NULL, '', '<p>撒发达范德萨发送</p>', 1, '', 27, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 1506666754, 0, 1),
+(5, '贝恩：企业大数据战略指南', '', 'post', NULL, '这是摘要dgs', '<p>企业大数据战略指南</p><p><br></p><p><img class="" src="http://localhost/ZhaoCMF/Uploads/Picture/2016-09-26/57e8ddc3e1455.jpeg" data-id="363"></p><p>fsafsaf</p><p><br></p>', 1, '关键字1', 88, 0, 0, 0, 0, NULL, NULL, 1, 0, 1499913000, 1464791552, 1508071031, 0, 1),
+(6, '发撒范德萨', '', 'post', NULL, '', '<p>撒发达范德萨发送</p>', 1, '', 27, 0, 0, 0, 0, NULL, NULL, 0, 0, 1508064000, 0, 1508064154, 0, 1),
 (7, '关于我们', '', 'page', NULL, NULL, '<p>这是关于我们的内容，测试</p>', 1, '发达啊撒旦法撒发撒旦法按时', NULL, 0, 0, 0, 0, NULL, NULL, 0, 0, NULL, 1467857339, 1506824231, 0, 1);
 
 -- --------------------------------------------------------
@@ -757,7 +770,7 @@ INSERT INTO `eacoo_term_relationships` (`id`, `object_id`, `term_id`, `table`, `
 (14, 2, 6, 'posts', 0, 0, 1),
 (15, 1, 6, 'posts', 0, 0, 1),
 (16, 4, 1, 'posts', 0, 0, 1),
-(17, 6, 1, 'posts', 0, 0, 1);
+(17, 6, 5, 'posts', 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -787,7 +800,7 @@ CREATE TABLE `eacoo_themes` (
 --
 
 INSERT INTO `eacoo_themes` (`id`, `name`, `title`, `cover`, `description`, `author`, `version`, `config`, `current`, `website`, `sort`, `create_time`, `update_time`, `status`) VALUES
-(1, 'default', '官方默认主题', '/themes/default/cover.jpeg', '内置于系统中，是其它主题的基础主题', '心云间、凝听', '1.0.0', '', 1, 'http://www.eacoo123.com', 0, 1475899420, 1506010201, 1);
+(1, 'default', '官方默认主题', '/themes/default/cover.jpeg', '内置于系统中，是其它主题的基础主题', '心云间、凝听', '1.0.0', '', 1, 'http://www.eacoo123.com', 0, 1475899420, 1508068480, 1);
 
 -- --------------------------------------------------------
 
@@ -817,6 +830,7 @@ CREATE TABLE `eacoo_users` (
   `pay_pwd` char(32) DEFAULT '' COMMENT '支付密码',
   `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '用户类型；1个人，2店长，3平台管理员',
   `reg_from` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '注册来源。1PC端，2WAP端，3微信端，4APP端，5后台添加',
+  `reg_method` varchar(30) NOT NULL DEFAULT '' COMMENT '注册方式',
   `level` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '等级',
   `p_uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '推荐人会员ID',
   `allow_admin` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '允许后台。0不允许，1允许',
@@ -824,24 +838,28 @@ CREATE TABLE `eacoo_users` (
   `status` tinyint(3) UNSIGNED NOT NULL DEFAULT '1' COMMENT '用户状态 0：禁用； 1：正常 ；2：待验证'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
 
-INSERT INTO `eacoo_users` (`uid`, `username`, `password`, `nickname`, `email`, `mobile`, `avatar`, `sex`, `birthday`, `description`, `register_ip`, `last_login_ip`, `last_login_time`, `activation_auth_sign`, `url`, `score`, `money`, `freeze_money`, `pay_pwd`, `type`, `reg_from`, `level`, `p_uid`, `allow_admin`, `reg_time`, `status`)
-VALUES
-  (2, 'U1472444313', '0a32eab5fe6068489679aab59c5f8ee1', '心灵旅行', '', NULL, 'http://wx.qlogo.cn/mmopen/mzvibibVqk5CPdWnUU5PBfzGTY6tnj4nXOlWJ3Irpnl8ecAwDZgyMhVR2U8Q12FPleJ8BpEsr1j0wE4c88r0aibZHuG8CBiau3Hd/0', 1, NULL, '这是个人简介', NULL, '1928388295', 1474208324, '44157fe4582f9e433c7add3a0d623c669900cea6', NULL, 0, 1.00, 0.00, '', 1, 0, 0, 0, 0, 1472444313, 1),
-  (3, 'U1471610993', '1e61aecd6a4a5417f9c2692d57d34efa', '陈婧', '', NULL, 'http://wx.qlogo.cn/mmopen/fWJhv9xMFTvh8TOSlQkjjkuaj4sIhBpHDRO9romGQ3TFTv3LA6wNqq0fCR7AtT7KCLIctaKq7hd2wkbBveCkia57p7D6lqMTe/0', 2, NULL, NULL, NULL, '2937347650', 1473755335, 'a525c9259ff2e51af1b6e629dd47766f99f26c69', NULL, 0, 2.00, 0.00, '', 1, 0, 0, 0, 0, 1471610993, 1),
-  (4, 'U1472438063', '89dd53a2da06a47fc40394b359a5a80b', '妍冰', '', NULL, 'http://wx.qlogo.cn/mmopen/eCXtiatJG2qA7d9wjNKktQUMjaiajx4SCoL5Phc5NqRKg4bltVHI94hpZl7x1R2E14Xbb5x7wDJkiaMrYgJx0Nb8nGuvicWcEymc/0', 2, NULL, '承接大型商业演出和传统文化学习班', NULL, '2073504306', 1472438634, 'ed587cf103c3f100be20f7b8fdc7b5a8e2fda264', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1472438063, 1),
-  (5, 'U1472522409', 'a5eee991430384bd76398c0f0e3852ab', '久柳', '', NULL, 'http://wx.qlogo.cn/mmopen/RLZcTUr4lyhBYRz8vKMAVicmHdShyTG9DA1jEg9PMkBKy8M2KwAX9mOHD3TudcoL8Ph8gXwSlaBRW6MpsqKibd8Y8oXETIsUsic/0', 1, NULL, NULL, NULL, '1872836895', 1472522621, '5e542dc0c77b3749f2270cb3ec1d91acc895edc8', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1472522409, 1),
-  (6, 'U1472739566', 'fe1552121baa4d206b7c84e144cbfded', 'Ray', '', NULL, 'http://wx.qlogo.cn/mmopen/l4fl4iboCt9RZUw8sVElUyz3dQchzKcpiaTZicLIH2YhkA3Qypvhc2ZyjLzxzUIYsf9NtFpicibeJfGF8AQZSiaBq8zju3Mias6YZsC/0', 1, NULL, NULL, NULL, '1394764909', 1472739567, '6321b4d8ecb1ce1049eab2be70c44335856c840d', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1472739567, 1),
-  (7, 'U1471602501', '043fbac9765d914e705f473c36eabbda', '风尚', '', '', '/static/assets/img/default-avatar.svg', 1, NULL, '一个好人', NULL, '2073532707', 1474906424, '28d203804358325d41bef03f16c194994bef561c', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1471602501, 1),
-  (8, 'U1472877421', '65b5fea1e22ae9a8863b18d45f8a2e9b', '印文博律师', '', NULL, 'http://wx.qlogo.cn/mmopen/ajNVdqHZLLA7FINjLK0kxvyX9BhicrMF31ldiaiagMZhv8crokiavvNuLC1od9K8lGluATGZhFdA1eCeIllqXGO1Sw/0', 1, NULL, NULL, NULL, '2073529233', 1473494692, 'e99521af40a282e84718f759ab6b1b4a989d8eb1', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1472877421, 1),
-  (9, 'U1472966655', '3356a455c1f1503f70f7649fc0869fdd', '嘉伟', '', NULL, 'http://wx.qlogo.cn/mmopen/nyPpZGsicVpC68EYXh6m41AicibcMIZa5VA04sIt8LWBFbS7sn9tGibkKPQ3ibPOAic3urGomGn4rvc4ITdia9ssZ0uibzk27L6zoh9P/0', 1, NULL, NULL, NULL, '720909644', 1473397571, 'f1075223be5f53b9c2c1abea8288258545365d96', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1472966655, 1),
-  (10, 'U1473304718', '0f07f4e63ad283dde05c09f57a49a203', '鬼谷学猛虎流', '', NULL, 'http://wx.qlogo.cn/mmopen/PiajxSqBRaELGyaDWOrqGfF7JibvU3hbuA7yYHJne8fw68wFQHjZTibcMxoR4keH7DSia4QuREIskmpe3mdxiaGwfJw/0', 1, NULL, NULL, NULL, '2946996753', 1473399843, '039fc7a3f9366adf55ee9e707c371a2459c17bd7', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1473304719, 1),
-  (11, 'U1473391063', '3ba08148e4fde24dbc69dcaf83e31e56', '@Gyb.', '', NULL, 'http://wx.qlogo.cn/mmopen/OHrKu638Lt0WowUCElh711VTFOXGviatZ61VLCsGkfKCeETPIgGGjibn26v0Zd9ztIHkMYGC08hKYAic5zuEGyGW9eCicMNqpzPw/0', 1, NULL, NULL, NULL, '2003622040', 1473391063, '70d80a9f7599c81270a986abaea73e63101b3ecb', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1473391063, 1),
-  (12, 'U1473396778', '4028d6d5a4cf4c3e75fc12f7d1749456', '董超楠', '', NULL, 'http://wx.qlogo.cn/mmopen/LIQXXYlOuN2jy45Uy8FrA1XpHMaUGvtGYrC9XIcgI2MKvzlPsb4uISBUpLxOXZ6nlqXpCvMoEicDM4HSltm9O4nGyvU11Lzib1/0', 2, NULL, NULL, NULL, '1911132108', 1473396778, '8bbf5242300e5e8e4917b287a31efcb0c9feedfd', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1473396778, 1),
-  (13, 'U1473396819', '17ab2bff43b57cf46776728344f52969', '七里林', '', NULL, 'http://wx.qlogo.cn/mmopen/RlLibmYfibwCs6EPOR9ZRxyckic1kLZMqAibdQgC5RXIuaoIAQAYL1IWfxcuzBfqwuicxr246CszaXmmZViaDprDibR4mlMBib6lz30j/0', 2, NULL, NULL, NULL, '2073504303', 1474331920, '33eaf519d0d42de5a67112e2728880db7a293c8b', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1506490927, 1),
-  (14, 'U1473396839', '3928540f538d3da96aee311b9a7dc4b3', '求真实者', '', NULL, 'http://wx.qlogo.cn/mmopen/9UjCmequjUib5ywquUZY1ibYhLogodtGeVc7E7jTG9XyrLn4BwPB7MicQ58KIOkJrxbTqk5snhXOlTYoglSm1HIXcGzAAo251so/0', 0, NULL, NULL, NULL, '2004314620', 1473396839, '8f7579a85981e1c1f726704b0865320dfadbef2e', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1506503387, 1),
-  (15, 'U1473397391', '5b14c283863c7a9854421f3d650ca628', 'peter', '', NULL, 'http://wx.qlogo.cn/mmopen/PwJLJ0FGzVTsG2K1CtNGibzTSGD1788aslVUUSPBDq5Jpv8JxCzmCSbdRgW3wUJYCJTU8kgshcNn7g8Ox6LmscmM8YuicrgwNf/0', 1, NULL, NULL, NULL, '1701480067', 1473397391, 'c66d3a0e16a81a13173756a2832ba424b34a095c', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1506491950, 1),
-  (16, 'U1473397426', '2ffb46af26a16e32a6187aaa10a85656', '随风而去的心情', '', NULL, 'http://wx.qlogo.cn/mmopen/9UjCmequjUib5ywquUZY1ibbK663y8qiaGXlcxQ4Hgjem9Hp2tVsnMbwErjuMuerBQMnrrK8NlmmeiaHT58ic9rG4SXI0l05IYQq1/0', 1, NULL, NULL, NULL, '2073532567', 1473397426, '14855b00775de46b451c8255e6a73a5c044fc188', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1506527057, 1),
-  (17, 'U1474181145', '965c4aab5c6c73930930ef1cfc6f8802', '班鱼先生', '', NULL, 'http://wx.qlogo.cn/mmopen/PiajxSqBRaELgx8NFX4Nz0FtAPkwlouDOErFLmsbvXeJlwzYeMJDoSw5X59FuE86uRh49777cYCVyw2KNQWc6Bw/0', 1, NULL, NULL, NULL, '2938851779', 1474181146, '86d19a7b1f15db4fd25e0b64bfc17870a70f67e2', NULL, 0, 0.00, 0.00, '', 1, 0, 0, 0, 0, 1506526964, 1);
+--
+-- 转存表中的数据 `eacoo_users`
+--
+
+INSERT INTO `eacoo_users` (`uid`, `username`, `password`, `nickname`, `email`, `mobile`, `avatar`, `sex`, `birthday`, `description`, `register_ip`, `last_login_ip`, `last_login_time`, `activation_auth_sign`, `url`, `score`, `money`, `freeze_money`, `pay_pwd`, `type`, `reg_from`, `reg_method`, `level`, `p_uid`, `allow_admin`, `reg_time`, `status`) VALUES
+(1, 'admin', '031c9ffc4b280d3e78c750163d07d275', '创始人', '981248356@qq.com', '15801182251', 'http://img.eacoomall.com/images/uploads/avatar/1/594e7fcad7d91.jpg', 1, NULL, '网站创始人和超级管理员。1', NULL, '127.0.0.1', 1508143557, 'daa3aab0db0b46fa5b726339345f9ff7c4d1be5f', 'http://www.eacoo123.com', 1770, '7113.36', '0.00', 'eba6095468eb32492d20d5db6a85aa5d', 3, 0, '', 0, 0, 1, 1467536337, 1),
+(2, 'U1472444313', '0a32eab5fe6068489679aab59c5f8ee1', '心灵旅行', '', NULL, 'http://wx.qlogo.cn/mmopen/mzvibibVqk5CPdWnUU5PBfzGTY6tnj4nXOlWJ3Irpnl8ecAwDZgyMhVR2U8Q12FPleJ8BpEsr1j0wE4c88r0aibZHuG8CBiau3Hd/0', 1, NULL, '这是个人简介', NULL, '1928388295', 1474208324, '44157fe4582f9e433c7add3a0d623c669900cea6', NULL, 0, '1.00', '0.00', '', 1, 0, '', 0, 0, 0, 1472444313, 1),
+(3, 'U1471610993', '1e61aecd6a4a5417f9c2692d57d34efa', '陈婧', '', NULL, 'http://wx.qlogo.cn/mmopen/fWJhv9xMFTvh8TOSlQkjjkuaj4sIhBpHDRO9romGQ3TFTv3LA6wNqq0fCR7AtT7KCLIctaKq7hd2wkbBveCkia57p7D6lqMTe/0', 2, NULL, NULL, NULL, '2937347650', 1473755335, 'a525c9259ff2e51af1b6e629dd47766f99f26c69', NULL, 0, '2.00', '0.00', '', 1, 0, '', 0, 0, 0, 1471610993, 1),
+(4, 'U1472438063', '89dd53a2da06a47fc40394b359a5a80b', '妍冰', '', NULL, 'http://wx.qlogo.cn/mmopen/eCXtiatJG2qA7d9wjNKktQUMjaiajx4SCoL5Phc5NqRKg4bltVHI94hpZl7x1R2E14Xbb5x7wDJkiaMrYgJx0Nb8nGuvicWcEymc/0', 2, NULL, '承接大型商业演出和传统文化学习班', NULL, '2073504306', 1472438634, 'ed587cf103c3f100be20f7b8fdc7b5a8e2fda264', NULL, 0, '0.00', '0.00', '', 1, 0, '', 0, 0, 0, 1472438063, 1),
+(5, 'U1472522409', 'a5eee991430384bd76398c0f0e3852ab', '久柳', '', NULL, 'http://wx.qlogo.cn/mmopen/RLZcTUr4lyhBYRz8vKMAVicmHdShyTG9DA1jEg9PMkBKy8M2KwAX9mOHD3TudcoL8Ph8gXwSlaBRW6MpsqKibd8Y8oXETIsUsic/0', 1, NULL, NULL, NULL, '1872836895', 1472522621, '5e542dc0c77b3749f2270cb3ec1d91acc895edc8', NULL, 0, '0.00', '0.00', '', 1, 0, '', 0, 0, 0, 1472522409, 1),
+(6, 'U1472739566', 'fe1552121baa4d206b7c84e144cbfded', 'Ray', '', NULL, 'http://wx.qlogo.cn/mmopen/l4fl4iboCt9RZUw8sVElUyz3dQchzKcpiaTZicLIH2YhkA3Qypvhc2ZyjLzxzUIYsf9NtFpicibeJfGF8AQZSiaBq8zju3Mias6YZsC/0', 1, NULL, NULL, NULL, '1394764909', 1472739567, '6321b4d8ecb1ce1049eab2be70c44335856c840d', NULL, 0, '0.00', '0.00', '', 1, 0, '', 0, 0, 0, 1472739567, 1),
+(7, 'U1471602501', '043fbac9765d914e705f473c36eabbda', '风尚', '', '', '/static/assets/img/default-avatar.svg', 1, NULL, '一个好人', NULL, '2073532707', 1474906424, '28d203804358325d41bef03f16c194994bef561c', NULL, 0, '0.00', '0.00', '', 1, 0, '', 0, 0, 0, 1471602501, 1),
+(8, 'U1472877421', '65b5fea1e22ae9a8863b18d45f8a2e9b', '印文博律师', '', NULL, 'http://wx.qlogo.cn/mmopen/ajNVdqHZLLA7FINjLK0kxvyX9BhicrMF31ldiaiagMZhv8crokiavvNuLC1od9K8lGluATGZhFdA1eCeIllqXGO1Sw/0', 1, NULL, NULL, NULL, '2073529233', 1473494692, 'e99521af40a282e84718f759ab6b1b4a989d8eb1', NULL, 0, '0.00', '0.00', '', 1, 0, '', 0, 0, 0, 1472877421, 1),
+(9, 'U1472966655', '3356a455c1f1503f70f7649fc0869fdd', '嘉伟', '', NULL, 'http://wx.qlogo.cn/mmopen/nyPpZGsicVpC68EYXh6m41AicibcMIZa5VA04sIt8LWBFbS7sn9tGibkKPQ3ibPOAic3urGomGn4rvc4ITdia9ssZ0uibzk27L6zoh9P/0', 1, NULL, NULL, NULL, '720909644', 1473397571, 'f1075223be5f53b9c2c1abea8288258545365d96', NULL, 0, '0.00', '0.00', '', 1, 0, '', 0, 0, 0, 1472966655, 1),
+(10, 'U1473304718', '031c9ffc4b280d3e78c750163d07d275', '鬼谷学猛虎流', '', '15801182191', 'http://wx.qlogo.cn/mmopen/PiajxSqBRaELGyaDWOrqGfF7JibvU3hbuA7yYHJne8fw68wFQHjZTibcMxoR4keH7DSia4QuREIskmpe3mdxiaGwfJw/0', 1, NULL, '', NULL, NULL, 1473399843, '039fc7a3f9366adf55ee9e707c371a2459c17bd7', NULL, 0, '0.00', '0.00', '', 1, 0, '', 0, 0, 0, 1473304719, 1),
+(11, 'U1473391063', '', '@Gyb.', '', '', '/uploads/avatar/11/59e32aa3a75a2.jpg', 1, NULL, '', NULL, NULL, 1473391063, '70d80a9f7599c81270a986abaea73e63101b3ecb', NULL, 0, '0.00', '0.00', '', 1, 0, '', 0, 0, 0, 1473391063, 1),
+(12, 'U1473396778', '4028d6d5a4cf4c3e75fc12f7d1749456', '董超楠', '', NULL, 'http://wx.qlogo.cn/mmopen/LIQXXYlOuN2jy45Uy8FrA1XpHMaUGvtGYrC9XIcgI2MKvzlPsb4uISBUpLxOXZ6nlqXpCvMoEicDM4HSltm9O4nGyvU11Lzib1/0', 2, NULL, NULL, NULL, '1911132108', 1473396778, '8bbf5242300e5e8e4917b287a31efcb0c9feedfd', NULL, 0, '0.00', '0.00', '', 1, 0, '', 0, 0, 0, 1473396778, 1),
+(13, 'U1473396819', '17ab2bff43b57cf46776728344f52969', '七里林', '', NULL, 'http://wx.qlogo.cn/mmopen/RlLibmYfibwCs6EPOR9ZRxyckic1kLZMqAibdQgC5RXIuaoIAQAYL1IWfxcuzBfqwuicxr246CszaXmmZViaDprDibR4mlMBib6lz30j/0', 2, NULL, NULL, NULL, '2073504303', 1474331920, '33eaf519d0d42de5a67112e2728880db7a293c8b', NULL, 0, '0.00', '0.00', '', 1, 0, '', 0, 0, 0, 1506490927, 1),
+(14, 'U1473396839', '3928540f538d3da96aee311b9a7dc4b3', '求真实者', '', NULL, 'http://wx.qlogo.cn/mmopen/9UjCmequjUib5ywquUZY1ibYhLogodtGeVc7E7jTG9XyrLn4BwPB7MicQ58KIOkJrxbTqk5snhXOlTYoglSm1HIXcGzAAo251so/0', 0, NULL, NULL, NULL, '2004314620', 1473396839, '8f7579a85981e1c1f726704b0865320dfadbef2e', NULL, 0, '0.00', '0.00', '', 1, 0, '', 0, 0, 0, 1506503387, 1),
+(15, 'U1473397391', '031c9ffc4b280d3e78c750163d07d275', 'peter', '', '', 'http://wx.qlogo.cn/mmopen/PwJLJ0FGzVTsG2K1CtNGibzTSGD1788aslVUUSPBDq5Jpv8JxCzmCSbdRgW3wUJYCJTU8kgshcNn7g8Ox6LmscmM8YuicrgwNf/0', 1, NULL, '', NULL, NULL, 1473397391, 'c66d3a0e16a81a13173756a2832ba424b34a095c', NULL, 0, '0.00', '0.00', '', 1, 0, '', 0, 0, 0, 1506491950, 1),
+(16, 'U1473397426', '031c9ffc4b280d3e78c750163d07d275', '随风而去的心情', '', '15801182190', 'http://wx.qlogo.cn/mmopen/9UjCmequjUib5ywquUZY1ibbK663y8qiaGXlcxQ4Hgjem9Hp2tVsnMbwErjuMuerBQMnrrK8NlmmeiaHT58ic9rG4SXI0l05IYQq1/0', 1, NULL, '', NULL, NULL, 1473397426, '14855b00775de46b451c8255e6a73a5c044fc188', NULL, 0, '0.00', '0.00', '', 1, 0, '', 0, 0, 0, 1506527057, 1),
+(17, 'U1474181145', '965c4aab5c6c73930930ef1cfc6f8802', '班鱼先生', '', NULL, 'http://wx.qlogo.cn/mmopen/PiajxSqBRaELgx8NFX4Nz0FtAPkwlouDOErFLmsbvXeJlwzYeMJDoSw5X59FuE86uRh49777cYCVyw2KNQWc6Bw/0', 1, NULL, NULL, NULL, '2938851779', 1474181146, '86d19a7b1f15db4fd25e0b64bfc17870a70f67e2', NULL, 0, '0.00', '0.00', '', 1, 0, '', 0, 0, 0, 1506526964, 1);
 
 --
 -- Indexes for dumped tables
@@ -927,12 +945,13 @@ ALTER TABLE `eacoo_nav`
 -- Indexes for table `eacoo_plugins`
 --
 ALTER TABLE `eacoo_plugins`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name` (`name`);
 
 --
--- Indexes for table `eacoo_plugin_social_login`
+-- Indexes for table `eacoo_plugin_third_login`
 --
-ALTER TABLE `eacoo_plugin_social_login`
+ALTER TABLE `eacoo_plugin_third_login`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1000,7 +1019,7 @@ ALTER TABLE `eacoo_action`
 -- 使用表AUTO_INCREMENT `eacoo_action_log`
 --
 ALTER TABLE `eacoo_action_log`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=9;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=21;
 --
 -- 使用表AUTO_INCREMENT `eacoo_attachment`
 --
@@ -1025,7 +1044,7 @@ ALTER TABLE `eacoo_config`
 -- 使用表AUTO_INCREMENT `eacoo_hooks`
 --
 ALTER TABLE `eacoo_hooks`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '钩子ID', AUTO_INCREMENT=15;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '钩子ID', AUTO_INCREMENT=16;
 --
 -- 使用表AUTO_INCREMENT `eacoo_links`
 --
@@ -1052,15 +1071,15 @@ ALTER TABLE `eacoo_nav`
 ALTER TABLE `eacoo_plugins`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=4;
 --
--- 使用表AUTO_INCREMENT `eacoo_plugin_social_login`
+-- 使用表AUTO_INCREMENT `eacoo_plugin_third_login`
 --
-ALTER TABLE `eacoo_plugin_social_login`
+ALTER TABLE `eacoo_plugin_third_login`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID';
 --
 -- 使用表AUTO_INCREMENT `eacoo_postmeta`
 --
 ALTER TABLE `eacoo_postmeta`
-  MODIFY `meta_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `meta_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- 使用表AUTO_INCREMENT `eacoo_posts`
 --

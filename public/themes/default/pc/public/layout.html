@@ -10,8 +10,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 <meta name="wap-font-scale" content="no" />
-<meta name="Keywords" content="EacooPHP系统" />
-<meta name="Description" content="EacooPHP系统" />
+<meta name="Keywords" content="{:config('web_site_keyword')}" />
+<meta name="Description" content="{:config('web_site_description')}" />
 <meta name="frontend-mobile" content="yes" />
 <link type="text/css" rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css"/>
 <!-- Font Awesome -->
@@ -58,13 +58,8 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">CMS门户 <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Separated link</a></li>
-                <li class="divider"></li>
-                <li><a href="#">One more separated link</a></li>
+                <li><a href="{:url('cms/index/index')}">文章列表</a></li>
+                <li><a href="{:url('cms/page/index')}">页面列表</a></li>
               </ul>
             </li>
           </ul>

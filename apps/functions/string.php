@@ -17,7 +17,7 @@ function encrypt($data) {
  * @param  integer $expiry [description]
  * @return [type] [description]
  * @date   2017-08-06
- * @author 赵俊峰 <981248356@qq.com>
+ * @author 心云间、凝听 <981248356@qq.com>
  */
 function authcode($string, $operation = 'DECODE', $key = '', $expiry = 0) {
     $ckey_length = 4; // 随机密钥长度 取值 0-32;
@@ -173,6 +173,12 @@ function cut_str($str, $len = 100, $start = 0, $suffix = 1) {
         $str.=$array[$i];
     }
     return count($array) > $len ? ($suffix == 1 ? $str . "&hellip;" : $str) : $str;
+}
+
+//摘要截断
+function eacoo_strimwidth($str ,$start , $len ,$trimmarker ){
+    $output = preg_replace('/^(?:[x00-x7F]|[xC0-xFF][x80-xBF]+){0,'.$start.'}((?:[x00-x7F]|[xC0-xFF][x80-xBF]+){0,'.$len.'}).*/s','1',$str);
+    return $output.$trimmarker;
 }
 
 /**

@@ -330,6 +330,7 @@ function getImgSrcByExt($ext,$path='',$is_default=false){
     }
     return root_full_path($path);
 }
+
 /**获取第一张图（性能高但不适合带有表情的内容）
  * @param $html_content
  * @return mixed
@@ -345,6 +346,7 @@ function get_first_pic($html_content)
         return $img_path;
     }  
 }
+
 /**带有排查字符串的第一张图（性能稍低但更准确）
  * @param $html_content
  * @param $check_str 包含该字符串的去除
@@ -354,7 +356,7 @@ function get_first_img($html_content,$check_str='static/emotions')
 {
     preg_match_all("/<img.*\>/isU", $html_content, $ereg); //正则表达式把图片的整个都获取出来了
     //$img = $ereg[0][0]; //图片
-    $imgs=array();
+    $imgs = [];
     foreach ($ereg[0] as $key => $img) {
         $p = "#src=('|\")(.*)('|\")#isU"; //正则表达式
         preg_match_all($p, $img, $img1);

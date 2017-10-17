@@ -22,16 +22,6 @@ class AuthGroupAccess extends Base
     // 定义时间戳字段名
     protected $createTime = false;
     protected $updateTime = false;
-
-	// 设置birthday为时间戳类型（整型）
-    // protected $type       = [
-    //     'birthday' => 'timestamp',
-    // ];
-    // public function AuthGroupAccess()
-    // {
-    //  //   return $this->belongsTo('AuthGroupAccess','uid');
-    //      return $this->hasMany('AuthGroupAccess','art_id');
-    // }
     
     /**
      * 用户组信息
@@ -51,5 +41,16 @@ class AuthGroupAccess extends Base
         
         return false;
     }
-     
+    
+    /**
+     * 获取组对应的用户Uids
+     * @param  string $group_id [description]
+     * @return [type] [description]
+     * @date   2017-10-17
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public static function groupUserUids($group_id)
+    {
+        return $return = self::where('group_id',$group_id)->column('uid');
+    }
 }

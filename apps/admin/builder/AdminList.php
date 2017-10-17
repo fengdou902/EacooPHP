@@ -4,7 +4,7 @@ namespace app\admin\builder;
 /**
  * 列表构建器
  * @package app\admin\builder
- * @author 赵俊峰 <981248356@qq.com>
+ * @author 心云间、凝听 <981248356@qq.com>
  */
 class AdminList extends Builder
 {
@@ -56,6 +56,16 @@ class AdminList extends Builder
         return $this;
     }
 
+    /**
+     * 设置页面说明
+     * @param $title 标题文本
+     * @return $this
+     */
+    public function setPageTips($content,$type='info') {
+        $this->_tip = $content;
+        return $this;
+    }
+    
     /**
      * 加入一个列表顶部工具栏按钮
      * 在使用预置的几种按钮时，比如我想改变新增按钮的名称

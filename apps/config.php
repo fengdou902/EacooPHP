@@ -327,8 +327,8 @@ $config = [
         'driver'   => 'local',
     ),
     //权限
-    'auth_config'  =>[
-        'auth_admin_uids'=>[1],
+    'auth'  =>[
+        //'auth_admin_uids'=>[1],
     ],
     //分页配置
     'paginate'      => [
