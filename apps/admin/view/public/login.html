@@ -44,7 +44,7 @@
               <input type="text"  id="captcha" class=" form-control"  name="captcha" placeholder="验证码" size="10"/>
             </div>
             <div class="col-sm-4">
-              <img class="right" src="__ROOT__{:url('index/verify_img')}" id="code" height="34" onclick="verifys('code')"/>
+              <img class="right" src="{:BASE_PATH}{:url('index/verify_img')}" id="code" height="34" onclick="verifys('code')"/>
           </div>
           </div>
       </div>
@@ -88,7 +88,7 @@
 })(jQuery);
 
 function verifys(code){
-			document.getElementById(code).src="__ROOT__{:url('index/verify_img',['v'=>rand_string(15)])}"; 
+			document.getElementById(code).src="{:BASE_PATH}{:url('index/verify_img',['v'=>rand_string(15)])}"; 
 }
 
 function BindEnter(obj)
@@ -126,7 +126,7 @@ $("#login").click(function(){
 
     $.ajax({
       type: 'POST',
-      url: '__ROOT__{:url("index/login")}',
+      url: '{:BASE_PATH}{:url("index/login")}',
       data: {
         username:username.val(),
         password:password.val(),

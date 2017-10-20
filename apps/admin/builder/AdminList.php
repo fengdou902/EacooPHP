@@ -558,7 +558,7 @@ class AdminList extends Builder
     /**
      * 显示页面
      */
-    public function fetch($templateFile='listbuilder',$vars ='', $replace ='', $config = '') {
+    public function fetch($template_name='listbuilder',$vars ='', $replace ='', $config = '') {
         // 编译data_list中的值
         foreach ($this->_table_data_list as &$data) {
             if(!isset($data['right_button'])) $data['right_button']='';
@@ -767,6 +767,8 @@ class AdminList extends Builder
         $this->assign('right_button_list',   $this->_right_button_list);   // 表格右侧操作按钮
         $this->assign('alter_data_list',     $this->_alter_data_list);     // 表格数据列表重新修改的项目
         $this->assign('extra_html',          $this->_extra_html);          // 额外HTML代码
+
+        $templateFile = APP_PATH.'/admin/view/builder/'.$template_name.'.html';
         parent::fetch($templateFile);
     }
 

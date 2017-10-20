@@ -243,13 +243,13 @@ class AdminForm extends Builder
     }
 
     /**
-     * @param  string $templateFile 模板名
+     * @param  string $template_name 模板名
      * @param  array $vars 模板变量
      * @param  string $replace
      * @param  string $config
      * @return parent::fetch('formbuilder');
      */
-    public function fetch($templateFile='formbuilder',$vars =[], $replace ='', $config = '') {
+    public function fetch($template_name='formbuilder',$vars =[], $replace ='', $config = '') {
          //额外已经构造好的表单项目与单个组装的的表单项目进行合并
        if (!empty($this->_extra_items)) {
            $this->_form_items = array_merge($this->_form_items, $this->_extra_items);
@@ -286,6 +286,36 @@ class AdminForm extends Builder
         $this->assign('ajax_submit', $this->_ajax_submit);//是否ajax提交
         $this->assign('buttonList', $this->_buttonList);//按钮组
         $this->assign('extra_html',  $this->_extra_html);  //额外HTML代码 
+
+        $templateFile = APP_PATH.'/admin/view/builder/'.$template_name.'.html';
         parent::fetch($templateFile);
+    }
+
+    /**
+     * 字段模版
+     * @param  array $field [description]
+     * @return [type] [description]
+     * @date   2017-10-20
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function fieldType($field=[])
+    {
+        if (!is_array($field)) {
+            $field = $field->toArray();
+        }
+        $this->assign('field',$field);
+        if (PUBLIC_RELATIVE_PATH=='') {
+            $template_path_str = '../';
+        } else{
+            $template_path_str = './';
+        }
+
+        $fields_name = ['text','number','info','section','date','datetime','hidden','password','left_icon_text','right_icon_text','left_icon_number','right_icon_number','textarea','ueditor','wangeditor','radio','checkbox','select','select2','select_multiple','tags','multilayer_select','email','region','city','icon','avatar','picture','pictures','image','file','files','repeater','self','self_html'];
+        $builder_fields = [];
+        foreach ($fields_name as $key => $type) {
+            $builder_fields[$type]= $template_path_str.'apps/admin/view/builder/Fields/'.$type.'.html';
+        }
+        $field_template = isset($builder_fields[$field['type']]) ? $builder_fields[$field['type']] : '';
+        parent::fetch($field_template);
     }
 }

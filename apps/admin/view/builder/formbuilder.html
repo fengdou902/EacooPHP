@@ -16,7 +16,7 @@
     <div class="builder formbuilder-box">
 
       <div class="row">    
-      {notempty name="sub_title"}
+        {notempty name="sub_title"}
             <div class="col-xs-12 col-sm-12">
                 <span class="builder_sub_title bg-yellow disabled color-palette"><i class="fa fa-info-circle"></i> {$sub_title}</span>
             </div>
@@ -30,13 +30,9 @@
         <div class="col-md-11" style="padding: 20px;margin-left:30px;border-radius:3px;">      
             <form action="{$post_url}" method="post" class="form-builder form-horizontal">
             <fieldset>
-                  {volist name="fieldList" id="field" key="k"}
-                        {switch name="field.type"}
-                         {include file="../apps/admin/view/builder/from-fields.html"/}
-                         {include file="../apps/admin/view/builder/Fields/group.html"/}{// tab分组 }  
-                         {default/}
-                         {/*:hook('FormBuilderExtend', array('form' => $form))*/}
-                        {/switch}
+                    {volist name="fieldList" id="field" key="k"}
+                  
+                    {:action('admin/AdminForm/fieldType',['field'=>$field],'builder')}
                     {/volist}
                     <hr/>
                     <div class="form-group">

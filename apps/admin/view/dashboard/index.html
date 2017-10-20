@@ -223,7 +223,7 @@ delete(template);
     <% for (var i = 0; i < data.length; i ++) { %>
     <% var row = data[i]; %>
         <tr>
-          <td><a href="<%= row.href %>"><%= row.title %></a></td>
+          <td><a href="<%= row.href %>" target="_blank"><%= row.title %></a></td>
         </tr>
     <% } %>
     </tbody>

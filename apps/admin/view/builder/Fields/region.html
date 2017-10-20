@@ -1,4 +1,4 @@
-{case value="region"}
+
 	{php}
         //$json_city_detail=json_decode($field['value'],true);
         $province_list = db('region')->where('level',1)->select();
@@ -57,5 +57,3 @@
 
         </script>
     </div>
-
-{/case}

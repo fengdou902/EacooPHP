@@ -144,18 +144,6 @@ $config = [
         // 标签库标签结束标记
         'taglib_end'   => '}',
     ],
-    // +----------------------------------------------------------------------
-    // | 视图输出字符串内容替换
-    // +----------------------------------------------------------------------
-    'view_replace_str'       => [
-        '__ROOT__'      => BASE_PATH,
-        '__STATIC__'    => BASE_PATH.'/static',
-        '__PUBLIC__'    => BASE_PATH.'/static/assets',
-        '__STATIC_LIBS__' => BASE_PATH.'/static/libs',
-        '__ADMIN_CSS__' => BASE_PATH.'/static/admin/css',
-        '__ADMIN_JS__'  => BASE_PATH.'/static/admin/js',
-        '__ADMIN_IMG__' => BASE_PATH.'/static/admin/img',
-    ],
     // 默认跳转页面对应的模板文件
     'dispatch_success_tmpl'  => THINK_PATH . 'tpl' . DS . 'dispatch_jump.tpl',
     'dispatch_error_tmpl'    => THINK_PATH . 'tpl' . DS . 'dispatch_jump.tpl',
@@ -173,13 +161,7 @@ $config = [
     'show_error_msg'         => false,
     // 异常处理handle类 留空使用 \think\exception\Handle
     'exception_handle'       => '',
-    //404页面
-    'http_exception_template'    =>  [
-        // 定义404错误的重定向页面地址
-        404 =>  THEME_PATH.'404.html',
-        // 还可以定义其它的HTTP status
-        401 =>  THEME_PATH.'401.html',
-    ],
+
     // +----------------------------------------------------------------------
     // | 日志设置
     // +----------------------------------------------------------------------

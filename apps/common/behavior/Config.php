@@ -24,16 +24,6 @@ class Config {
     public function run(&$params) {
         defined('MODULE_NAME') or define('MODULE_NAME',$params['module'][0] ? $params['module'][0]:config('default_module'));
 
-        //定义环境类型
-        if (strpos($_SERVER["SERVER_SOFTWARE"],'nginx')!==false) {
-            define('SERVER_SOFTWARE_TYPE','nginx');
-        } elseif(strpos($_SERVER["SERVER_SOFTWARE"],'apache')!==false){
-            define('SERVER_SOFTWARE_TYPE','apache');
-        } else{
-            define('SERVER_SOFTWARE_TYPE','no');
-        }
-
-        define('EACOOPHP_V','1.0.7');
         // 安装模式下直接返回
         if(defined('MODULE_NAME') && MODULE_NAME === 'install') return;
         // 当前模块模版参数配置
@@ -45,10 +35,12 @@ class Config {
                 $ec_config['url_controller_layer'] = 'admin';
             }
 
-            $ec_config['view_replace_str']['__IMG__']    = '/static/'.MODULE_NAME.'/img';
-            $ec_config['view_replace_str']['__CSS__']    = '/static/'.MODULE_NAME.'/css';
-            $ec_config['view_replace_str']['__JS__']     = '/static/'.MODULE_NAME.'/js';
-            $ec_config['view_replace_str']['__LIBS__']   = '/static/'.MODULE_NAME.'/libs';
+            $static_path = PUBLIC_RELATIVE_PATH.'static/'.MODULE_NAME;
+            
+            $ec_config['view_replace_str']['__IMG__']    = $static_path.'/img';
+            $ec_config['view_replace_str']['__CSS__']    = $static_path.'/css';
+            $ec_config['view_replace_str']['__JS__']     = $static_path.'/js';
+            $ec_config['view_replace_str']['__LIBS__']   = $static_path.'/libs';
 
         } elseif (MODULE_MARK=='front' && is_file(APP_PATH . 'install.lock')){
             // 获取当前主题的名称
@@ -67,7 +59,7 @@ class Config {
             if (is_dir($theme_public_path)) {
                 $ec_config['theme_public']  = $theme_public_path;
 
-                $theme_static_public_path = '/themes/'.$current_theme.'/'.'public/';
+                $theme_static_public_path = PUBLIC_RELATIVE_PATH.'themes/'.$current_theme.'/'.'public/';
                 $ec_config['view_replace_str']['__THEME_PUBLIC__']= $theme_static_public_path;
                 $ec_config['view_replace_str']['__THEME_IMG__']   = $theme_static_public_path.'img';
                 $ec_config['view_replace_str']['__THEME_CSS__']   = $theme_static_public_path.'css';
@@ -86,7 +78,7 @@ class Config {
                 // 各模块自带静态资源路径
                 $module_public_path = $current_theme_module_path.'public/';
                 if (is_dir($module_public_path) ) {
-                    $module_public_url = '/themes/'.$current_theme.'/'.MODULE_NAME.'/'.'public';//资源路径url
+                    $module_public_url = PUBLIC_RELATIVE_PATH.'themes/'.$current_theme.'/'.MODULE_NAME.'/'.'public';//资源路径url
 
                     $ec_config['view_replace_str']['__IMG__']  = $module_public_url.'/img';
                     $ec_config['view_replace_str']['__CSS__']  = $module_public_url.'/css';

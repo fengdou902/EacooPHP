@@ -1,10 +1,9 @@
-{case value="self"}
-    <div class="form-group item_{$field.name} {$field.extra_class|default=''}">
-        <label for="{$field.name}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{/present}{$field.title}</label>
-        <div class="col-md-9">
-	        {$field.options}
-	        {notempty name="field.description"}<p class="help-block"> {$field.description}</p>{/notempty}
 
-        </div>
+<div class="form-group item_{$field.name} {$field.extra_class|default=''}">
+    <label for="{$field.name}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{/present}{$field.title}</label>
+    <div class="col-md-9">
+        {$field.options}
+        {notempty name="field.description"}<p class="help-block"> {$field.description}</p>{/notempty}
+
     </div>
-{/case}
+</div>

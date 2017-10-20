@@ -46,10 +46,10 @@ class Modules extends Admin {
 			Builder::run('List')
 					->setMetaTitle('模块列表')  // 设置页面标题
 					->setTabNav($tab_list,$from_type) 
-					->addTopButton('resume')   // 添加启用按钮
-					->addTopButton('forbid')   // 添加禁用按钮
+					//->addTopButton('resume')   // 添加启用按钮
+					//->addTopButton('forbid')   // 添加禁用按钮
 					//->addTopButton('sort')  // 添加排序按钮
-					->setSearch('请输入ID/标题', url('index'))
+					->setSearch('请输入名称或标题', url('index'))
 					->keyListItem('name', '名称')
 					->keyListItem('title', '标题')
 					->keyListItem('description', '描述')

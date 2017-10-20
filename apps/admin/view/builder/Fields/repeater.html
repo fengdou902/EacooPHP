@@ -1,4 +1,4 @@
-{case value="repeater"}
+
 {php}
       if (strpos($field['name'],'[')) {
         $field['id']=str_replace(']','',str_replace('[','',$field['name']));
@@ -20,4 +20,3 @@
 	        {:widget('common/Repeater/render',[$repeater_attributes,$repeater_param])}
         </div>
     </div>
-{/case}

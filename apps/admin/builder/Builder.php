@@ -34,18 +34,26 @@ class Builder extends Base {
 
     /**
      * 模版输出
-     * @param  string $templateFile 模板文件名
+     * @param  string $template 模板文件名
      * @param  array  $vars         模板输出变量
      * @param  array  $replace      模板替换
      * @param  array  $config       模板参数
      * @return [type]               [description]
      */
-    public function fetch($templateFile='',$vars = [], $replace = [], $config = []) {
-        //获取模版的名称
-        $template = APP_PATH.'/admin/view/builder/'.$templateFile.'.html';
-        $this->assign('_builder_style_', '../apps/admin/view/builder/style.html');  // 页面样式
+    public function fetch($template='',$vars = [], $replace = [], $config = []) {
+        if (PUBLIC_RELATIVE_PATH=='') {
+            $template_path_str = '../';
+        } else{
+            $template_path_str = './';
+        }
+        $this->assign('template_path_str',$template_path_str);
+        $this->assign('_builder_style_', $template_path_str.'apps/admin/view/builder/style.html');  // 页面样式
+        $this->assign('_builder_javascript_', $template_path_str.'apps/admin/view/builder/javascript.html');  // 页面样式
         //显示页面
-        echo parent::fetch($template,$vars,$replace,$config);
+        if ($template!='') {
+            echo parent::fetch($template,$vars,$replace,$config);
+        }
+        
     }
 
     protected function compileHtmlAttr($attr) {

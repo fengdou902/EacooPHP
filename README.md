@@ -1,10 +1,10 @@
 EacooPHP v1.0.7-Dev
 ===============
 ### 介绍
-EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求高效，简单，灵活。
+EacooPHP是基于ThinkPHP5.0.11开发的一套轻量级WEB产品开发框架，追求高效，简单，灵活。
 具有完善并灵活的模块化和插件机制，模块式开发，大大降低开发成本。
 
-### 前言
+>支持EacooPHP的用户请给我们一个star
 
 使用EacooPHP框架开发定制您的系统前，建议熟悉官方的tp5.0完全开发手册。
 
@@ -23,7 +23,7 @@ EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求
 - 附件空间：多媒体管理，优化体验  
 - 阿里云OSS同步：本地与oss同时存在，任意切换  
 
-
+丰富的前端组件：artTemplate(JS模版引擎),artDialog(弹窗),datetimepicker(日期),echarts(图标),colorpicker(颜色选择器),fastclick,iCheck(复选框美化),ieonly,imgcutter,jquery-repeater,lazyload(延迟加载),select2,superslide,ueditor,wangeditor,webuploader,x-editable
 ### 文档
 
 地址：[https://www.kancloud.cn/youpzt/eacoo](https://www.kancloud.cn/youpzt/eacoo)

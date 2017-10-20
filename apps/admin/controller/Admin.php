@@ -22,8 +22,8 @@ use think\Cookie;
 
 class Admin extends Base
 { 
-	public function _initialize() {
-		parent::_initialize();
+    public function _initialize() {
+        parent::_initialize();
         //检测是否是最新版本
         $eacoo_version = EacooAccredit::getVersion();
         if ($eacoo_version['version']>EACOOPHP_V) {
@@ -68,17 +68,25 @@ class Admin extends Base
 
             $this->assign('current_message_count',0);//当前消息数量
             $this->assign('sidebar_menus',$this->getSidebarMenu());//侧边栏菜单
+
+            if (PUBLIC_RELATIVE_PATH=='') {
+                $template_path_str = '../';
+            } else{
+                $template_path_str = './';
+            }
+
             unset($_admin_public_base);
             if (input('param.load_type')=='iframe') {
-                $_admin_public_base = '../apps/admin/view/public/iframe_base.html';
+                $_admin_public_base = $template_path_str.'apps/admin/view/public/iframe_base.html';
             } else{
-                $_admin_public_base = '../apps/admin/view/public/base.html';
+                $_admin_public_base = $template_path_str.'apps/admin/view/public/base.html';
             }
-            $this->assign('_admin_public_base_', '../apps/admin/view/public/base.html');  // 页面公共继承模版
-            $this->assign('_admin_public_iframe_base_', '../apps/admin/view/public/iframe_base.html');  // 页面公共继承模版    
+            $this->assign('_admin_public_left_',$template_path_str.'apps/admin/view/public/left.html');
+            $this->assign('_admin_public_base_', $template_path_str.'apps/admin/view/public/base.html');
+            $this->assign('_admin_public_iframe_base_', $template_path_str.'apps/admin/view/public/iframe_base.html');  // 页面公共继承模版    
         } 
 
-	}
+    }
 
     /**
      * 获取侧边栏菜单
@@ -106,7 +114,7 @@ class Admin extends Base
         return $admin_sidebar_menus;
     }
 
-	/**
+    /**
      * 设置一条或者多条数据的状态
      * @param $script 严格模式要求处理的纪录的uid等于当前登陆用户UID
      */

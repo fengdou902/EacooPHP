@@ -1,4 +1,4 @@
-{case value="wangeditor"}
+
   {php}
         if (strpos($field['name'],'[')) {
           $field['id']=str_replace(']','',str_replace('[','',$field['name']));
@@ -23,5 +23,3 @@
         {notempty name="field.description"}<p class="help-block">{$field.description}</p>{/notempty}
       </div>
   </div>
-
-{/case}

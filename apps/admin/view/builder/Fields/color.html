@@ -1,8 +1,7 @@
-{case value="color"}
+
 	{php}
         $colorPicker = 1;
     {/php}
     <div class="color-picker" style="width:100px;height: 30px;">
         <input type="text" name="{$field.name}" class="simple_color_callback form-control input-sm" onchange="setColorPicker(this);" value="{$field.value|default=''}" style="width: 100px;"/>
     </div>
-{/case}
