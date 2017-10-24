@@ -104,7 +104,7 @@ class Modules extends Admin {
 					if (!$module_info) {
 						$this->error('该模块依赖'.$key.'模块');
 					}
-					//版本号检查
+		
 					$module_version = explode('.', $module_info['version']);
 					$need_version   = explode('.', $val);
 
@@ -323,14 +323,13 @@ class Modules extends Admin {
 	 * @author 心云间、凝听 <981248356@qq.com>
 	 */
 	public function updateInfo($id) {
-		$name = ModuleModel::where('id',$id)->value('name');
-
+		$module_db_info = ModuleModel::where('id',$id)->field('name,config')->find();
+		$name = $module_db_info['name'];
 		// 获取当前模块信息
 		$info = ModuleModel::getInfoByFile($name);
 
 		// 读取数据库已有配置
-		$db_moduel_config = ModuleModel::where('id',$id)->value('config');
-		$db_moduel_config = json_decode($db_moduel_config, true);
+		$db_moduel_config = json_decode($module_db_info['config'], true);
 
 		// 处理模块配置
 		$options = ModuleModel::getOptionsByFile($name);
@@ -358,19 +357,22 @@ class Modules extends Admin {
 
 		$result = $this->moduleModel->allowField(true)->save($info,['id'=>$id]);
 		if ($result) {
-			// 删除后台菜单
-		    $this->removeAdminMenus($name,true);
-			//后台菜单入库
-			$admin_menus = ModuleModel::getAdminMenusByFile($name);
-			if (!empty($admin_menus) && is_array($admin_menus)) {
-				$this->addAdminMenus($admin_menus,$name);
-			}
+			if ($name!='user' && $name!='admin') {
+				// 删除后台该菜单
+			    $this->removeAdminMenus($name,true);
+				//后台菜单入库
+				$admin_menus = ModuleModel::getAdminMenusByFile($name);
+				if (!empty($admin_menus) && is_array($admin_menus)) {
+					$this->addAdminMenus($admin_menus,$name);
+				}
 
-			// 更新后自动在前台新增导航(待完善)
-			$navigation = ModuleModel::getNavigationByFile($name);
-			if (!empty($navigation) && is_array($navigation)) {
-				
-			} 
+				// 更新后自动在前台新增导航(待完善)
+				$navigation = ModuleModel::getNavigationByFile($name);
+				if (!empty($navigation) && is_array($navigation)) {
+					
+				} 
+			}
+			
 			$this->success('更新成功', url('index'));
 		} else {
 			$this->error($this->moduleModel->getError());

@@ -43,6 +43,7 @@ $config = [
         APP_PATH . 'functions/role.php',
         APP_PATH . 'functions/term.php', 
         APP_PATH . 'functions/user.php',
+        APP_PATH . 'custom_function.php',
         THINK_PATH . 'helper' . EXT
     ],
     // 默认输出类型

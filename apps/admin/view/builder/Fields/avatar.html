@@ -31,8 +31,13 @@
 
         </div>
 
-        </div>
-        <script>
+    </div>
+    {present name="webuploader"}{if condition="$webuploader"}
+        <link href="__STATIC__/libs/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+        <script type="text/javascript" charset="utf-8" src="__STATIC__/libs/webuploader/js/webuploader.min.js"></script>
+    {/if}{/present}
+    
+    <script>
         //本地上传(分开写为了好控制)
         $(function () {
             var uploader_{$field.name}= WebUploader.create({

@@ -171,7 +171,7 @@ class Action extends Admin {
 		//获取列表数据
 		$map['status']  = ['gt',-1];  // 禁用和正常状态
 		//list($data_list,$page) = $this->actionLogModel->getListByPage($map,'id desc','*',15);
-		$data_list = $this->actionLogModel->field(true)->paginate(15);
+		$data_list = $this->actionLogModel->field(true)->order('create_time desc')->paginate(15);
         Builder::run('List')
         		->setMetaTitle('行为日志')  // 设置页面标题
         		->addTopButton('self', ['title'=>'清空日志','href'=>url('clearLog'),'class'=>'btn btn-warning btn-sm ajax-post confirm','hide-data'=>'true']) //清空

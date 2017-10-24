@@ -375,7 +375,7 @@ class Plugins extends Admin {
                     if (!$module_info) {
                         $this->error('该模块依赖'.$key.'模块');
                     }
-                    //版本号检查
+
                     $module_version = explode('.', $module_info['version']);
                     $need_version   = explode('.', $val);
 
@@ -574,7 +574,6 @@ class Plugins extends Admin {
             $plugin = new $plugin_class();
         }
 
-        // 获取插件的$admin_list配置
         $admin_list = $plugin->admin_list;
         $admin = $admin_list[$tab];
         $pluginModel = model('Plugins://'.$name.'/'.$admin['model']);
@@ -764,7 +763,7 @@ class Plugins extends Admin {
             $params = [
                 'paged'=>$paged
             ];
-            $result     = curl_post($url,$params);
+            $result = curl_post($url,$params);
             $result = json_decode($result,true);
             $store_data = $result['data'];
             cache('eacoo_appstore_plugins_'.$paged,$store_data,3600);

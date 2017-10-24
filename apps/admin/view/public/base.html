@@ -223,7 +223,7 @@
     <div class="pull-right hidden-xs">
       <b>Version</b> {:EACOOPHP_V}
     </div>
-    <strong>Copyright &copy; 2016-2017 <a href="http://forum.eacoo123.com" target="_blank">EacooPHP</a>.</strong> 保留所有权利。
+    <strong>Copyright &copy; 2016-2017 <a href="http://www.eacoo123.com" target="_blank">EacooPHP</a>.</strong> 保留所有权利。
   </footer>
  <div class="control-sidebar-bg"></div>
 </div>
@@ -254,7 +254,7 @@
 $(function(){
   {present name="eacoo_version"}
   //检测新版本
-    layer.confirm('发现了新版本V{$eacoo_version.version}。点击查看<a href="http://forum.eacoo123.com/t/updating">更新详情</a><br><br>当前版本V1.0.4', {
+    layer.confirm('发现了新版本V{$eacoo_version.version}。点击查看<a href="http://forum.eacoo123.com/t/updating">更新详情</a><br><br>当前版本V{:EACOOPHP_V}', {
       icon:1,
       title:'新版本提醒',
       offset: '100px',
