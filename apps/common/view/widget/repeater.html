@@ -1,42 +1,42 @@
 <div class="repeatable repeatable_{$id}" >
     <table class="table table-bordered " >
-          <thead style="background-color: #f0f0f0;">
-            <tr>
-            {volist name="options.0" id="option"}
-                <th {eq name="option.type" value="image"}style="width: 100px;text-align: center;" {/eq}>{$option.title}</th>
-            {/volist}
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody data-repeater-list="{$name}">
-            {volist name="options" id="new_option"}
-                <tr data-repeater-item >
-                  {php}if(is_array($new_option)){{/php}
-                    {foreach name="new_option" item="row" key="key"} 
-                      <td>
-                      {switch name="row.type"}
-                          {case value="info"}{$row.value|default=''}{/case}
-                          {case value="select"}
-                              <select name="[{$key}]" class="form-control select-sm" {$row.extra_attr|default=""}>
-                                  {foreach name="row.options" item="option" key="option_key"}
-                                  <option value="{$option_key}" >{$option}</option>
-                                  {/foreach}
-                              </select>
-                          {/case}
-                          {case value="image"}<div class="repeater-img-field" style="min-height: 90px;"><input type="hidden" name="[{$key}]" id="repeater-{$id}-{$key}-" value="{$row.default|default=''}"><span class="repeater-field-img"><img src="{$row.default|get_image=###,'medium'|default='__PUBLIC__/img/noimage.gif'}" width="90" data-url="{:url('admin/Attachment/attachmentLayer',['input_id_name'=>$id,'path_type'=>'picture','select_type'=>'single'])}" onclick="openAttachmentLayer(this);" style="cursor: pointer;"></span></div>{/case}
-                          {default/}
-                              <input type="{$row.type}" class="form-control input-sm" name="[{$key}]" value="{$row.default|default=''}" placeholder="{$row.placeholder|default=''}">
-                      {/switch}
-                      </td>
-                      {/foreach}
-                    {php}}{/php}
-                    <td><label data-repeater-delete class="label label-danger btn-sm" style="cursor: pointer;"><i class="fa fa-trash"></i></label></td>
-              </tr>
-            {/volist}
-              
-          </tbody>
-        </table>
-        <button type="button" data-repeater-create class="btn btn-success btn-sm repeater-add-{$id} fr mr-10" ><i class="fa fa-plus"></i> 添加</button>
+      <thead style="background-color: #f0f0f0;">
+        <tr>
+        {volist name="options.0" id="option"}
+            <th {eq name="option.type" value="image"}style="width: 100px;text-align: center;" {/eq}>{$option.title}</th>
+        {/volist}
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody data-repeater-list="{$name}">
+        {volist name="options" id="new_option"}
+            <tr data-repeater-item >
+              {php}if(is_array($new_option)){{/php}
+                {foreach name="new_option" item="row" key="key"} 
+                  <td>
+                  {switch name="row.type"}
+                      {case value="info"}{$row.value|default=''}{/case}
+                      {case value="select"}
+                          <select name="[{$key}]" class="form-control select-sm" {$row.extra_attr|default=""}>
+                              {foreach name="row.options" item="option" key="option_key"}
+                              <option value="{$option_key}" >{$option}</option>
+                              {/foreach}
+                          </select>
+                      {/case}
+                      {case value="image"}<div class="repeater-img-field" style="min-height: 90px;"><input type="hidden" name="[{$key}]" id="repeater-{$id}-{$key}-" value="{$row.default|default=''}"><span class="repeater-field-img"><img src="{$row.default|get_image=###,'medium'|default='__PUBLIC__/img/noimage.gif'}" width="90" data-url="{:url('admin/Attachment/attachmentLayer',['input_id_name'=>$id,'path_type'=>'picture','select_type'=>'single'])}" onclick="openAttachmentLayer(this);" style="cursor: pointer;"></span></div>{/case}
+                      {default/}
+                          <input type="{$row.type}" class="form-control input-sm" name="[{$key}]" value="{$row.default|default=''}" placeholder="{$row.placeholder|default=''}">
+                  {/switch}
+                  </td>
+                  {/foreach}
+                {php}}{/php}
+                <td><label data-repeater-delete class="label label-danger btn-sm" style="cursor: pointer;"><i class="fa fa-trash"></i></label></td>
+          </tr>
+        {/volist}
+          
+      </tbody>
+    </table>
+    <button type="button" data-repeater-create class="btn btn-success btn-sm repeater-add-{$id} fr mr-10" ><i class="fa fa-plus"></i> 添加</button>
 </div>
 {egt name="param.is_load_attachment_modal" value="1"}
     {php}if($param['is_load_WebUploader_script']>0){ {/php}
@@ -103,22 +103,33 @@ function newSetAttachmentInputVal(inputName,ids,srcs) {
     <script type="text/javascript" charset="utf-8" src="__STATIC__/libs/jquery-repeater/jquery.repeater.min.js"></script>
 {php}}{/php}
 <script type="text/javascript">
+  if ($.support.pjax) {
+      $(document).on('ready pjax:end', function(event) {
+        //进行本地安装
+        loadRepeaterWidget();  
+      });
+    } else{
+       loadRepeaterWidget();
+    }
+    
+    function loadRepeaterWidget(argument) {
+        $(document).ready(function () {
+          'use strict';
+          $('.repeatable_{$id}').repeater({
+              show: function () {
+                  $(this).find(".repeater-field-img img").attr('src','__PUBLIC__/img/noimage.gif');
+                  $(this).slideDown();
+              },
+              hide: function (deleteElement) {
+                  if(confirm('您确定要删除吗?')) {
+                      $(this).slideUp(deleteElement);
+                  }
+              },
+              ready: function (setIndexes) {
 
-    $(document).ready(function () {
-        'use strict';
-        $('.repeatable_{$id}').repeater({
-            show: function () {
-                $(this).find(".repeater-field-img img").attr('src','__PUBLIC__/img/noimage.gif');
-                $(this).slideDown();
-            },
-            hide: function (deleteElement) {
-                if(confirm('您确定要删除吗?')) {
-                    $(this).slideUp(deleteElement);
-                }
-            },
-            ready: function (setIndexes) {
-
-            }
-        });
-    });
+              }
+          });
+      });
+    }
+    
 </script>

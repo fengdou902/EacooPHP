@@ -209,53 +209,53 @@
 <script>
 //本地上传(分开写为了好控制)
 $(function () {
-        var uploader_avatar= WebUploader.create({
-            // 选完文件后，是否自动上传。
-            auto: true,
-            duplicate: true,// 同一文件是否可以重复上传
-            // swf文件路径
-            swf: '__STATIC__/libs/webuploader/Uploader.swf',
-            // 文件接收服务端。
-            server: "{:url('admin/attachment/uploadAvatar',['uid'=>$user_info['uid']])}",
-            //验证文件总数量, 超出则不允许加入队列
-            fileNumLimit: 5,
-            // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
-            resize: false, 
-            // 验证单个文件大小是否超出限制, 超出则不允许加入队列 
-            fileSingleSizeLimit:2*1024*1024,  
-            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+    var uploader_avatar= WebUploader.create({
+        // 选完文件后，是否自动上传。
+        auto: true,
+        duplicate: true,// 同一文件是否可以重复上传
+        // swf文件路径
+        swf: '__STATIC__/libs/webuploader/Uploader.swf',
+        // 文件接收服务端。
+        server: "{:url('admin/attachment/uploadAvatar',['uid'=>$user_info['uid']])}",
+        //验证文件总数量, 超出则不允许加入队列
+        fileNumLimit: 5,
+        // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+        resize: false, 
+        // 验证单个文件大小是否超出限制, 超出则不允许加入队列 
+        fileSingleSizeLimit:2*1024*1024,  
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
 
-            //选择文件的按钮
-            pick: '#upload_avatar_avatar',
-            // 只允许选择图片文件
-            accept:{title:'Images',extensions:'gif,jpg,jpeg,bmp,png',mimeTypes:'image/*'}
-        });
-        uploader_avatar.on('fileQueued', function (file) {
-            uploader_avatar.upload();
-        });
-        /*上传成功**/
-        uploader_avatar.on('uploadSuccess', function (file, result) {console.debug(result);
-            if (result.code) {
-                var data = result.data;
-                $("[name='avatar']").val(data.path);
-                $("[name='avatar']").parent().find('.popup-avatar').html(
-                          '<div class="each"><i data-avatarid="avatar" class="removeAvatar fa fa-times-circle remove-attachment"></i><a href="'+data.url+'" title="点击查看大图片"><img src="'+data.url+'"></a><div class="text-center opacity del_btn" ></div></div>'
-                    );
+        //选择文件的按钮
+        pick: '#upload_avatar_avatar',
+        // 只允许选择图片文件
+        accept:{title:'Images',extensions:'gif,jpg,jpeg,bmp,png',mimeTypes:'image/*'}
+    });
+    uploader_avatar.on('fileQueued', function (file) {
+        uploader_avatar.upload();
+    });
+    /*上传成功**/
+    uploader_avatar.on('uploadSuccess', function (file, result) {console.debug(result);
+        if (result.code) {
+            var data = result.data;
+            $("[name='avatar']").val(data.path);
+            $("[name='avatar']").parent().find('.popup-avatar').html(
+                      '<div class="each"><i data-avatarid="avatar" class="removeAvatar fa fa-times-circle remove-attachment"></i><a href="'+data.url+'" title="点击查看大图片"><img src="'+data.url+'"></a><div class="text-center opacity del_btn" ></div></div>'
+                );
 
-                uploader_avatar.reset();
-            } else {
-                updateAlert(result.msg);
-                setTimeout(function () {
-                    $(this).removeClass('disabled').prop('disabled', false);
-                }, 1500);
-            }
-        });
-        //移除头像
-        $('body').on('click','.removeAvatar', function() {
-                 var avatarid=$(this).attr('data-avatarid');
-                $("#"+avatarid).val('');
-                $('.popup-avatar').html('');
-            })
+            uploader_avatar.reset();
+        } else {
+            updateAlert(result.msg);
+            setTimeout(function () {
+                $(this).removeClass('disabled').prop('disabled', false);
+            }, 1500);
+        }
+    });
+      //移除头像
+      $('body').on('click','.removeAvatar', function() {
+           var avatarid=$(this).attr('data-avatarid');
+          $("#"+avatarid).val('');
+          $('.popup-avatar').html('');
+      })
     })
 
 </script>

@@ -1,4 +1,13 @@
 <?php 
+// 请求
+// +----------------------------------------------------------------------
+// | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
+// +----------------------------------------------------------------------
+// | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
+// | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
+// +----------------------------------------------------------------------
+// | Author:  心云间、凝听 <981248356@qq.com>
+// +----------------------------------------------------------------------
 
 /**获取网站的根Url
  * @return string
@@ -230,35 +239,81 @@ function curl_remote_filesize($uri,$user='',$pw='')
     return $size;    
 }  
 
-//curlget 请求函数
-// function curl_get($url){
-//     $ch = curl_init();
-//     curl_setopt($ch, CURLOPT_URL, $url);
-//     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-//     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE); 
-//     curl_setopt($ch, CURLOPT_HEADER, FALSE);
-//     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-//     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-//     $res = curl_exec($ch);
-//     curl_close($ch);
-//     return $res;
-// }
 
-// function http_post($url, $data){
-//     $ch = curl_init();
-//     $header = "Accept-Charset: utf-8";
-//     curl_setopt($ch, CURLOPT_URL, $url);
-//     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-//     curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-//     curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; MSIE 5.01; Windows NT 5.0)');
-//     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-//     curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
-//     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-//     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-//     $tmpInfo = curl_exec($ch);
-//     $errorno=curl_errno($ch);
-//     return $tmpInfo;
-// }
+/**
+ * CURL发送Request请求,含POST和REQUEST
+ * @param string $url 请求的链接
+ * @param mixed $params 传递的参数
+ * @param string $method 请求的方法
+ * @param mixed $options CURL的参数
+ * @return array
+ */
+function curl_request($url, $params = [], $method = 'POST', $options = [])
+{
+    $method = strtoupper($method);
+    $protocol = substr($url, 0, 5);
+    $query_string = is_array($params) ? http_build_query($params) : $params;
+
+    $ch = curl_init();
+    $defaults = [];
+    if ('GET' == $method)
+    {
+        $geturl = $query_string ? $url . (stripos($url, "?") !== FALSE ? "&" : "?") . $query_string : $url;
+        $defaults[CURLOPT_URL] = $geturl;
+    }
+    else
+    {
+        $defaults[CURLOPT_URL] = $url;
+        if ($method == 'POST')
+        {
+            $defaults[CURLOPT_POST] = 1;
+        }
+        else
+        {
+            $defaults[CURLOPT_CUSTOMREQUEST] = $method;
+        }
+        $defaults[CURLOPT_POSTFIELDS] = $query_string;
+    }
+
+    $defaults[CURLOPT_HEADER] = FALSE;
+    $defaults[CURLOPT_USERAGENT] = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.98 Safari/537.36";
+    $defaults[CURLOPT_FOLLOWLOCATION] = TRUE;
+    $defaults[CURLOPT_RETURNTRANSFER] = TRUE;
+    $defaults[CURLOPT_CONNECTTIMEOUT] = 3;
+    $defaults[CURLOPT_TIMEOUT] = 3;
+
+    // disable 100-continue
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
+
+    if ('https' == $protocol)
+    {
+        $defaults[CURLOPT_SSL_VERIFYPEER] = FALSE;
+        $defaults[CURLOPT_SSL_VERIFYHOST] = FALSE;
+    }
+
+    curl_setopt_array($ch, (array) $options + $defaults);
+
+    $result = curl_exec($ch);
+    $err = curl_error($ch);
+
+    if (FALSE === $result || !empty($err))
+    {
+        $errno = curl_errno($ch);
+        $info = curl_getinfo($ch);
+        curl_close($ch);
+        return [
+            'status'   => false,
+            'errno' => $errno,
+            'content'   => $err,
+            'info'  => $info,
+        ];
+    }
+    curl_close($ch);
+    return [
+        'status' => true,
+        'content' => $result,
+    ];
+}
 
 /**
  * curl_post 请求函数
@@ -306,6 +361,7 @@ function curl_get($url){
     $temp = curl_exec($ch);
     return $temp;
 }
+
 // 以POST方式提交数据
 function post_data($url, $param, $is_file = false, $return_array = true) {
     if (! $is_file && is_array ( $param )) {
@@ -344,47 +400,6 @@ function post_data($url, $param, $is_file = false, $return_array = true) {
     
     return $res;
 }
-
-function http_request($url,$data = null){
-    
-    if(function_exists('curl_init')){
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-       
-        if (!empty($data)){
-            curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-        }
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        $output = curl_exec($curl);
-        curl_close($curl);
-        
-    
-        $result=preg_split("/[,\r\n]/",$output);
-
-        if($result[1]==0){
-              return "curl success";
-        }else{
-              return "curl error".$result[1];
-        }
-    }elseif(function_exists('file_get_contents')){
-        
-        $output=file_get_contents($url.$data);
-        $result=preg_split("/[,\r\n]/",$output);
-    
-        if($result[1]==0){
-              return "success";
-        }else{
-              return "error".$result[1];
-        }
-        
-        
-    }else{
-        return false;
-    } 
-    
-}
-
 
 /**
  * 判断是否是IE浏览器

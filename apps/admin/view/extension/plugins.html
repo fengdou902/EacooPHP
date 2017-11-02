@@ -1,0 +1,102 @@
+{extend name="$_admin_public_base_"/}
+{block name="style"}
+  <style type="text/css">
+  	.plugin-item{border: 1px solid #f0f0f0;padding: 10px 12px;border-radius: 3px;margin: 10px 0;height: 170px;}
+	/*.plugin-item:hover { -webkit-box-shadow: 0px 10px 20px rgba(226,226,226,.8); box-shadow: 0px 10px 20px rgba(226,226,226,.8); -webkit-transform: translate3d(0,-10px,0); -moz-transform: translate3d(0,-10px,0); transform: translate3d(0,-1px,0); z-index: 4;}*/
+	.plugin-item:hover h4{ color: #0db252; }
+	.plugin-item h4{font-size: 15px;color: #666;}
+	.plugin-item .item-desc{font-size: 13px;color: #777;height: 40px;}
+	.plugin-item label.label{display: block;font-size: 12px;color: #808080;height: 26px;line-height: 26px;padding: 0 10px;background: #f4f4f4;border-radius: 4px;float: left;margin-right: 12px;}
+	.plugin-item .item-logo{padding-left: 0;padding-right: 0;height: 80px;line-height: 80px;overflow: hidden;margin-top: 10px;}
+	.plugin-item .plugin-logo{max-width:100%;max-height: 85px;}
+	.plugin-item .plugin-avatar-tx{background-color: rgb(160, 205, 229);font-size: 26px;line-height: 64px;padding: 20px 25px;color: #fff;border-radius: 3px;}
+  </style>
+{/block}
+{block name="main-top"}
+  <div class="box box-solid">
+    <div class="box-header with-border">
+      <h3 class="box-title">应用中心</h3>
+
+      <div class="box-tools">
+        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+        </button>
+      </div>
+    </div>
+    <div class="box-body no-padding">
+      <ul class="nav nav-pills nav-stacked">
+        <li><a href="{:url('admin/modules/index')}"><i class="fa fa-circle-o text-red"></i> 模块</a></li>
+        <li><a href="{:url('admin/plugins/index')}"><i class="fa fa-circle-o text-yellow"></i> 插件</a></li>
+        <li><a href="{:url('admin/theme/index')}"><i class="fa fa-circle-o text-light-blue"></i> 主题</a></li>
+        <li><a href="http://www.eacoo123.com/appstore/plugins" target="_blank">可在线安装、卸载、禁用、启用插件，同时支持本地安装。EacooPHP已上线应用市场，你可以发布你的免费或付费扩展应用：http://www.eacoo123.com/appstore/plugins</a></li>
+      </ul>
+    </div>
+    <!-- /.box-body -->
+  </div>
+{/block}
+
+{block name="main"} 
+    <div class="builder-tabs builder-form-tabs">
+        <ul class="nav nav-tabs">
+            {volist name="tab_list" id="tab"}
+                <li class="{php}if($from_type == $key) echo 'active';{/php}"><a href="{$tab.href}" {$tab.extra_attr|default=''}>{$tab.title}</a></li>
+            {/volist}
+        </ul>
+        <div class="form-group"></div>
+    </div>
+
+   	<div class="builder-toolbar mt-10 oh">
+
+         <div class="col-xs-12 col-sm-12 button-list clearfix">
+            <button class="btn btn-info btn-sm " id="app-localupload"><i class="fa fa-cloud-upload"></i> 上传安装</button>
+            <a class="btn btn-success btn-sm ajax-get" href="{:url('admin/Plugins/refresh')}"><i class="fa fa-refresh"></i> 刷新缓存</a>
+            <a class="btn btn-default btn-sm ajax-get" href="{:url('admin/Plugins/refresh')}"><i class="fa fa-user"></i> 用户信息</a>
+        </div>
+      
+    </div>
+    
+    <div class="builder formbuilder-box panel-body">
+
+    <div class="row">    
+      {foreach name="data_list" item="row"}
+      	<div class="col-sm-4 col-xs-6">
+            <div class="plugin-item">
+              <div class="col-sm-3 col-xs-3 item-logo">{$row.logo}</div>
+              <div class="col-sm-9 col-xs-9 pr-0" ><h4>{$row.title}{eq name="from_type" value="oneline"}<span class="fr color-red f12">免费</span>{/eq}</h4>
+                <p class="item-desc">{$row.description}</p>
+                <div class="item-metas">
+                    <p class="text-muted f13">作者：<a href="http://www.eacoo123.org/appstore_plugin/{$row.name}" target="_blank">{$row.author}</a></p>
+                    <p class="text-muted f13">版本：{$row.version}</p>
+                </div>
+              </div>
+            <p class="oh w pt-10" >
+              {eq name="from_type" value="oneline"}<span class="text-muted f13"><i class="fa fa-star color-warning"></i> {$row.downloaded|default=''}</span>{else/}<span class="text-muted">{present name="row.create_time"}{$row.create_time|strtotime|friendly_date|default=''}{/present}</span>{/eq} <span class="fr">{$row.right_button|default=""}</span>
+            </p>
+            </div>
+            
+          </div>
+
+      {/foreach}
+   </div><!--row-->
+ </div>
+
+{/block}
+
+{block name="script"}
+<script type="text/javascript" src="__ADMIN_JS__/eacoo.extension.js" ></script>
+<link href="__STATIC__/libs/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="__STATIC__/libs/webuploader/js/webuploader.min.js"></script>
+<script>
+  $(function () {
+    if ($.support.pjax) {
+      $(document).on('ready pjax:end', function(event) {
+        //进行本地安装
+        appLocalInstall();  
+      });
+    } else{
+       appLocalInstall();
+    }
+
+  })
+   
+</script>
+{/block}

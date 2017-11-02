@@ -1,0 +1,159 @@
+{extend name="$_admin_public_base_"/}
+{block name="style"}
+  <style type="text/css">
+    .module-item{border: 1px solid #f0f0f0;padding: 10px 12px;border-radius: 3px;margin: 10px 0;height: 170px;}
+  /*.plugin-item:hover { -webkit-box-shadow: 0px 10px 20px rgba(226,226,226,.8); box-shadow: 0px 10px 20px rgba(226,226,226,.8); -webkit-transform: translate3d(0,-10px,0); -moz-transform: translate3d(0,-10px,0); transform: translate3d(0,-1px,0); z-index: 4;}*/
+  .module-item:hover h4{ color: #0db252; }
+  .module-item h4{font-size: 15px;color: #666;}
+  .module-item .item-desc{font-size: 13px;color: #777;height: 40px;}
+  .module-item label.label{display: block;font-size: 12px;color: #808080;height: 26px;line-height: 26px;padding: 0 10px;background: #f4f4f4;border-radius: 4px;float: left;margin-right: 12px;}
+  .module-item .item-logo{padding-left: 0;padding-right: 0;height: 80px;line-height: 80px;overflow: hidden;margin-top: 10px;}
+  .module-item .module-logo{max-width:100%;max-height: 85px;}
+  .module-item .module-avatar-tx{background-color: rgb(160, 205, 229);font-size: 26px;line-height: 64px;padding: 20px 25px;color: #fff;border-radius: 3px;}
+  </style>
+{/block}
+{block name="main-top"}
+  <div class="box box-solid">
+    <div class="box-header with-border">
+      <h3 class="box-title">应用中心</h3>
+
+      <div class="box-tools">
+        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+        </button>
+      </div>
+    </div>
+    <div class="box-body no-padding">
+      <ul class="nav nav-pills nav-stacked">
+        <li><a href="{:url('admin/modules/index')}"><i class="fa fa-circle-o text-red"></i> 模块</a></li>
+        <li><a href="{:url('admin/plugins/index')}"><i class="fa fa-circle-o text-yellow"></i> 插件</a></li>
+        <li><a href="{:url('admin/theme/index')}"><i class="fa fa-circle-o text-light-blue"></i> 主题</a></li>
+        <li><a href="http://www.eacoo123.com/appstore/modules" target="_blank">可在线安装、卸载、禁用、启用模块，同时支持本地安装。EacooPHP已上线应用市场，你可以发布你的免费或付费扩展应用：http://www.eacoo123.com/appstore/modules</a></li>
+      </ul>
+    </div>
+    <!-- /.box-body -->
+  </div>
+{/block}
+
+{block name="main"} 
+    <div class="builder-tabs builder-form-tabs">
+        <ul class="nav nav-tabs">
+            {volist name="tab_list" id="tab"}
+                <li class="{php}if($from_type == $key) echo 'active';{/php}"><a href="{$tab.href}" {$tab.extra_attr|default=''}>{$tab.title}</a></li>
+            {/volist}
+        </ul>
+        <div class="form-group"></div>
+    </div>
+
+    <div class="builder-toolbar mt-10 oh">
+       <div class="col-xs-12 col-sm-12 button-list clearfix">
+          <button class="btn btn-info btn-sm " id="module-localupload"><i class="fa fa-cloud-upload"></i> 本地安装</button>
+          <a class="btn btn-success btn-sm ajax-get" href="{:url('admin/Plugins/refresh')}"><i class="fa fa-refresh"></i> 刷新缓存</a>
+          <a class="btn btn-default btn-sm ajax-get" href="{:url('admin/Plugins/refresh')}"><i class="fa fa-user"></i> 用户信息</a>
+      </div>
+    </div>
+    
+    <div class="builder formbuilder-box panel-body">
+
+    <div class="row">    
+      {foreach name="data_list" item="row"}
+        <div class="col-sm-4 col-xs-6">
+            <div class="module-item">
+              <div class="col-sm-3 col-xs-3 item-logo">{$row.logo}</div>
+              <div class="col-sm-9 col-xs-9 pr-0" ><h4>{$row.title}{eq name="from_type" value="oneline"}<span class="fr color-red f12">免费</span>{/eq}</h4>
+                <p class="item-desc">{$row.description}</p>
+                <div class="item-metas">
+                    <p class="text-muted f13">作者：<a href="http://www.eacoo123.org/appstore_module/{$row.name}" target="_blank">{$row.author}</a></p>
+                    <p class="text-muted f13">版本：{$row.version}</p>
+                </div>
+              </div>
+            <p class="oh w pt-10" >
+              {eq name="from_type" value="oneline"}<span class="text-muted f13"><i class="fa fa-star color-warning"></i> {$row.downloaded|default=''}</span>{else/}<span class="text-muted">{present name="row.create_time"}{$row.create_time|strtotime|friendly_date|default=''}{/present}</span>{/eq} <span class="fr">{$row.right_button|default=""}</span>
+            </p>
+            </div>
+            
+          </div>
+
+      {/foreach}
+   </div><!--row-->
+ </div>
+
+{/block}
+
+{block name="script"}
+<script type="text/javascript" src="__ADMIN_JS__/eacoo.extension.js" ></script>
+<link href="__STATIC__/libs/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="__STATIC__/libs/webuploader/js/webuploader.min.js"></script>
+<script>
+    //本地上传(分开写为了好控制)
+    $(function () {
+        var uploader_localinstall= WebUploader.create({
+            // 选完文件后，是否自动上传。
+            auto: true,
+            duplicate: true,// 同一文件是否可以重复上传
+            // swf文件路径
+            swf: '__PUBLIC__/libs/webuploader/Uploader.swf',
+            // 文件接收服务端。
+            server: "{:url('admin/Extension/localInstall',['type'=>'module'])}",
+            //验证文件总数量, 超出则不允许加入队列
+            fileNumLimit: 1,
+            // 如果此选项为false, 则图片在上传前不进行压缩
+            compress: false, 
+            // 验证单个文件大小是否超出限制, 超出则不允许加入队列 
+            fileSingleSizeLimit:10*1024*1024,  
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+
+            //选择文件的按钮
+            pick: '#module-localupload',
+            // 只允许选择图片文件
+            accept:{title:'module',extensions:'zip',mimeTypes:'application/zip'}
+        });
+        uploader_localinstall.on('fileQueued', function (file) {
+            uploader_localinstall.upload();
+        });
+        /*上传成功**/
+        uploader_localinstall.on('uploadSuccess', function (file, result) {
+            //console.log(result);
+            if (result.code==1) {
+                updateAlert(result.msg,'success');
+                setTimeout(function () {
+                    if ($.support.pjax) {
+                        //重新当前页面容器的内容
+                        $.pjax.reload('#pjax-container');
+                    } else{
+                        location.reload();
+                    }
+                }, 1000);
+                
+                uploader_localinstall.reset();
+            } else {
+                updateAlert(result.msg);
+            }
+        });
+        //安装
+        $('body').on('click','.module-online-install', function() {
+            var name = $(this).data('name');
+               $.ajax({
+                  type: 'POST',
+                  url: '{:BASE_PATH}{:url("admin/Extension/onlineInstall")}',
+                  data: {
+                    name:name,
+                    type:'module',
+                  },
+                  beforeSend:function(){
+                    layer.load(2,{shade: [0.1,'#fff']});
+                  },
+
+                  success:function(result){
+                    layer.closeAll();
+                    if(result.code==1){
+                      window.location.href = result.url; 
+                    }else{
+                      layer.msg(result.msg, {icon:5});
+                    }
+
+                  }
+              });
+          })
+    })
+</script>
+{/block}

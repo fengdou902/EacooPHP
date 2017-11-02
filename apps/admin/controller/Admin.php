@@ -1,11 +1,12 @@
 <?php
 // 后台公共控制器       
 // +----------------------------------------------------------------------
-// | PHP version 5.4+                
+// | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014-2016 http://www.eacoo123.com, All rights reserved.
+// | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
+// | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
 // +----------------------------------------------------------------------
-// | Author: 心云间、凝听 <981248356@qq.com>
+// | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
 use app\common\controller\Base;
@@ -13,7 +14,7 @@ use app\common\controller\Base;
 use app\common\model\User;
 use app\admin\model\AuthRule;
 
-use com\EacooAccredit;
+use eacoo\EacooAccredit;
 
 use think\Cache;
 use think\Loader;
@@ -76,7 +77,7 @@ class Admin extends Base
             }
 
             unset($_admin_public_base);
-            if (input('param.load_type')=='iframe') {
+            if ($this->request->param('load_type')=='iframe') {
                 $_admin_public_base = $template_path_str.'apps/admin/view/public/iframe_base.html';
             } else{
                 $_admin_public_base = $template_path_str.'apps/admin/view/public/base.html';

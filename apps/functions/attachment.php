@@ -1,21 +1,100 @@
 <?php 
+// 附件
+// +----------------------------------------------------------------------
+// | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
+// +----------------------------------------------------------------------
+// | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
+// | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
+// +----------------------------------------------------------------------
+// | Author:  心云间、凝听 <981248356@qq.com>
+// +----------------------------------------------------------------------
+
 use app\common\model\Attachment;
 
-/**
- * 创建多级目录
- * @param  [type] $dir 路径
- * @return [type] [description]
- */
-function mkdirs($dir) {
-    if (! is_dir ( $dir )) {
-        if (! mkdirs ( dirname ( $dir ) )) {
-            return false;
+if (!function_exists('mkdirs'))
+{
+    /**
+     * 创建多级目录
+     * @param  [type] $dir 路径
+     * @return [type] [description]
+     */
+    function mkdirs($dir) {
+        if (! is_dir ( $dir )) {
+            if (! mkdirs ( dirname ( $dir ) )) {
+                return false;
+            }
+            if (! mkdir ( $dir, 0755 )) {
+                return false;
+            }
         }
-        if (! mkdir ( $dir, 0755 )) {
+        return true;
+    }
+}
+
+if (!function_exists('rmdirs'))
+{
+    /**
+     * 删除文件夹
+     * @param string $dirname 目录
+     * @param bool $withself 是否删除自身
+     * @return boolean
+     */
+    function rmdirs($dirname, $withself = true)
+    {
+        if (!is_dir($dirname))
             return false;
+        $files = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($dirname, RecursiveDirectoryIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($files as $fileinfo)
+        {
+            $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+            $todo($fileinfo->getRealPath());
+        }
+        if ($withself)
+        {
+            @rmdir($dirname);
+        }
+        return true;
+    }
+
+}
+
+if (!function_exists('copydirs'))
+{
+
+    /**
+     * 复制文件夹
+     * @param string $source 源文件夹
+     * @param string $dest 目标文件夹
+     */
+    function copydirs($source, $dest)
+    {
+        if (!is_dir($dest))
+        {
+            mkdir($dest, 0755);
+        }
+        foreach (
+        $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($source, RecursiveDirectoryIterator::SKIP_DOTS), RecursiveIteratorIterator::SELF_FIRST) as $item
+        )
+        {
+            if ($item->isDir())
+            {
+                $sontDir = $dest . DS . $iterator->getSubPathName();
+                if (!is_dir($sontDir))
+                {
+                    mkdir($sontDir);
+                }
+            }
+            else
+            {
+                copy($item, $dest . DS . $iterator->getSubPathName());
+            }
         }
     }
-    return true;
+
 }
 
 /**

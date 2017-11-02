@@ -7,7 +7,7 @@
 // | Author: 心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 
-use com\EacooAccredit;
+use eacoo\EacooAccredit;
 
 // 检测环境是否支持可写
 define('IS_WRITE', true);

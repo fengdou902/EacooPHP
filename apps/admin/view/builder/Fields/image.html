@@ -1,14 +1,13 @@
-
-    {php}
-          $webuploader=1;
-          if (strpos($field['name'],'[')) {
-            $field['id']=str_replace(']','',str_replace('[','',$field['name']));
-          } else {
-            $field['id']=$field['name'];
-          }
-          $path_type=isset($field['options']['path_type'])? $field['options']['path_type']:'picture';
-          $is_sql=isset($field['options']['is_sql'])? $field['options']['is_sql']:'close';
-    {/php}
+{php}
+      $webuploader=1;
+      if (strpos($field['name'],'[')) {
+        $field['id']=str_replace(']','',str_replace('[','',$field['name']));
+      } else {
+        $field['id']=$field['name'];
+      }
+      $path_type=isset($field['options']['path_type'])? $field['options']['path_type']:'picture';
+      $is_sql=isset($field['options']['is_sql'])? $field['options']['is_sql']:'close';
+{/php}
 <div class="form-group controls item_{$field.id} {$field.extra_class|default=''}">
     <label for="{$field.id}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{/present}{$field.title}</label>
     <div class="col-md-6" style="padding-bottom: 5px;">
@@ -82,5 +81,5 @@
                 // }, 1500);
             }
         });
-  })
-    </script>
+    })
+</script>

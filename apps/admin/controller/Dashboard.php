@@ -1,15 +1,17 @@
 <?php
+// 仪表盘
 // +----------------------------------------------------------------------
-// | PHP version 5.4+                
+// | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014-2016 http://www.eacoo123.com, All rights reserved.
+// | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
+// | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
 // +----------------------------------------------------------------------
-// | Author: 心云间、凝听 <981248356@qq.com>
+// | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
 
 use think\Db;
-use com\EacooAccredit;
+use eacoo\EacooAccredit;
 
 class Dashboard extends Admin
 {
@@ -22,7 +24,7 @@ class Dashboard extends Admin
      */
     public function index() {
         $this->assign('meta_title','仪表盘');
-        $this->assign('hide_panel',true);
+        $this->assign('page_config',['disable_panel'=>true]);
         
         //系统信息
         $mysql   = Db::query("select VERSION() as version");
@@ -64,6 +66,7 @@ class Dashboard extends Admin
                 ]
             ];
         $this->assign('user_result',json_encode($result));
+        $this->assign('eacoo_news_list',$this->getEacooNews());
         return $this->fetch();
     }
 

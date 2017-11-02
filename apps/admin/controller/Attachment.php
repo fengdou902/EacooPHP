@@ -1,11 +1,12 @@
 <?php
 // 附件管理控制器
 // +----------------------------------------------------------------------
-// | PHP version 5.4+                
+// | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014-2016 http://www.eacoo123.com, All rights reserved.
+// | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
+// | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
 // +----------------------------------------------------------------------
-// | Author: 心云间、凝听 <981248356@qq.com>
+// | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
 use app\admin\builder\Builder;
@@ -27,8 +28,9 @@ class Attachment extends Admin {
 
     //附件首页
     public function index($term_id=0){
+
         $this->assign('meta_title','附件管理');
-        $this->assign('custom_head',['self'=>'来源：<div class="btn-group mr-20">
+        $this->assign('page_config',['self'=>'来源：<div class="btn-group mr-20">
                   <button type="button" onclick="javascript:location.href=\''.url('admin/Attachment/index').'\'" class="btn btn-default btn-flat">默认</button>
                   <button type="button" class="btn btn-default btn-flat dropdown-toggle" data-toggle="dropdown">
                     <span class="caret"></span>

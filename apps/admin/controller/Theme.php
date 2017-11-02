@@ -1,8 +1,9 @@
 <?php
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017 http://www.eacoo123.com All rights reserved.
+// | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
-// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+// | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
+// | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
 // +----------------------------------------------------------------------
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
@@ -36,7 +37,7 @@ class Theme extends Admin {
         $attr['href']  = url('admin/Theme/cancel');
 
         $this->assign('theme_items',$data_list);
-        return $this->fetch('extend/themes');
+        return $this->fetch('extension/themes');
     }
 
     /**
@@ -66,12 +67,18 @@ class Theme extends Admin {
      */
     public function uninstall($id) {
         // 当前主题禁止卸载
-        $result = ThemeModel::destroy($id);
-        if ($result) {
-            $this->success('卸载成功！');
-        } else {
-            $this->error('卸载失败',$this->themeModel->getError());
+        $res_count = ThemeModel::where(['id'=>$id,'current'=>1])->count();
+        if (!$res_count) {
+            $result = ThemeModel::destroy($id);
+            if ($result) {
+                $this->success('卸载成功！');
+            } else {
+                $this->error('卸载失败',$this->themeModel->getError());
+            }
+        } else{
+            $this->error('卸载失败，请保留至少一种主题');
         }
+        
     }
 
     /**

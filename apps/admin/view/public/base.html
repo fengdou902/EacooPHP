@@ -37,7 +37,7 @@
 <div class="wrapper">
     <header class="main-header">
       <!-- Logo -->
-      <a href="{:url('admin/dashboard/index')}" class="logo">
+      <a href="{:url('admin/dashboard/index')}" class="logo" data-pjax=false>
        <img class="logo-img" src="__ROOT__/eacoophp_logo_v1.png">  <span class="logo-lg"><b>Eacoo</b>PHP</span>
       </a>
     <!-- Header Navbar: style can be found in header.less -->
@@ -195,16 +195,16 @@
    </section>
    <!--内容-->
    <section class="content">
-      {block name="navtab"}{/block}
+      {block name="main-top"}{/block}
 
-       {php}if(isset($hide_panel) && $hide_panel===true){ {/php}
+       {php}if(isset($page_config['disable_panel']) && $page_config['disable_panel']===true){ {/php}
             {block name="main"}{/block}
        {php} }else{ {/php}
         <div class="box box-info">
             <div class="box-header with-border">
-                  <h3 class="box-title">{$meta_title}</h3> {present name="custom_head.help"}<a href="{$custom_head.help}" class="color-6" title="帮助" target="_blank"><i class="fa fa-question-circle f15"></i></a>{/present}
-                  <div class="box-tools pull-right">{present name="custom_head.self"}{$custom_head.self}{/present}
-                  {present name="custom_head.back"}<button type="button" class="btn btn-box-tool f16" onclick="javascript:history.go(-1);"><i class="fa fa-reply"></i></button>{/present}
+                  <h3 class="box-title">{$meta_title}</h3> {present name="page_config.help"}<a href="{$page_config.help}" class="color-6" title="帮助" target="_blank"><i class="fa fa-question-circle f15"></i></a>{/present}
+                  <div class="box-tools pull-right">{present name="page_config.self"}{$page_config.self}{/present}
+                  {present name="page_config.back"}<button type="button" class="btn btn-box-tool f16" onclick="javascript:history.go(-1);"><i class="fa fa-reply"></i></button>{/present}
                   <button type="button" class="btn btn-box-tool f16" onclick="javascript:location.reload();"><i class="fa fa-refresh"></i></button>
                 </div>
             </div>
@@ -213,9 +213,9 @@
             </div>
         </div>
        {php}}{/php}
-      </section>
-      
-      {block name="script"}{/block}
+</section>
+
+{block name="script"}{/block}
 {if condition="!$Request.isPjax"}
   </div>
   <!-- /.content-wrapper -->
@@ -246,7 +246,7 @@
 <script type="text/javascript" src="__STATIC_LIBS__/layer/layer.js"></script>
 
 <script type="text/javascript" src="__STATIC_LIBS__/iCheck/icheck.min.js"></script>
-<script type="text/javascript" src="__PUBLIC__/js/jquery.pjax.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.pjax.js?v=1.0.0" ></script>
 <script type="text/javascript" src="__PUBLIC__/js/jquery.toaster.js"></script>
 <script type="text/javascript" src="__ADMIN_JS__/eacoo.js" ></script>
 

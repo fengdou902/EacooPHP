@@ -31,7 +31,26 @@
     .item-description{font-size: 13px;}
   </style>
 {/block}
+{block name="main-top"}
+  <div class="box box-solid">
+    <div class="box-header with-border">
+      <h3 class="box-title">应用中心</h3>
 
+      <div class="box-tools">
+        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+        </button>
+      </div>
+    </div>
+    <div class="box-body no-padding">
+      <ul class="nav nav-pills nav-stacked">
+        <li><a href="{:url('admin/modules/index')}"><i class="fa fa-circle-o text-red"></i> 模块</a></li>
+        <li><a href="{:url('admin/plugins/index')}"><i class="fa fa-circle-o text-yellow"></i> 插件</a></li>
+        <li><a href="{:url('admin/theme/index')}"><i class="fa fa-circle-o text-light-blue"></i> 主题</a></li>
+      </ul>
+    </div>
+    <!-- /.box-body -->
+  </div>
+{/block}
 {block name="main"} 
     <div class="builder-tabs builder-form-tabs">
         

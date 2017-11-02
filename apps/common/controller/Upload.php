@@ -1,11 +1,12 @@
 <?php
 // 上传控制器       
 // +----------------------------------------------------------------------
-// | PHP version 5.4+                
+// | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014-2016 http://www.eacoo123.com, All rights reserved.
+// | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
+// | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
 // +----------------------------------------------------------------------
-// | Author: 心云间、凝听 <981248356@qq.com>
+// | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 
 namespace app\common\controller;
@@ -17,8 +18,9 @@ class Upload {
 
 	protected $request;
 	protected $path_type;
+
 	/**
-     * 架构函数
+     * 构造函数
      * @param Request $request Request对象
      * @access public
      */
@@ -373,7 +375,7 @@ class Upload {
 	 * @access public
 	 */
 	public function ueditor() {
-		$data = new \com\Ueditor(session('auth_user.uid'));
+		$data = new \eacoo\Ueditor(session('auth_user.uid'));
 		echo $data->output();
 	}
 

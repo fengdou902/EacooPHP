@@ -1,11 +1,12 @@
 <?php
 // 用户管理控制器
 // +----------------------------------------------------------------------
-// | PHP version 5.4+                
+// | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014-2016 http://www.eacoo123.com, All rights reserved.
+// | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
+// | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
 // +----------------------------------------------------------------------
-// | Author: 心云间、凝听 <981248356@qq.com>
+// | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
 use app\admin\builder\Builder;
@@ -266,7 +267,7 @@ EOF;
      */
     public function profile($uid = 0) {
         $this->assign('meta_title','个人资料');
-        $this->assign('hide_panel',true);//隐藏base模板面板
+        $this->assign('page_config',['disable_panel'=>true]);
         if (IS_POST) {
             // 密码为空表示不修改密码
             // if ($_POST['password'] === '') {

@@ -1,9 +1,10 @@
 <?php
 // 文章控制器      
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017 http://www.eacoo123.com All rights reserved.
+// | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
-// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+// | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
+// | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
 // +----------------------------------------------------------------------
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
@@ -181,7 +182,7 @@ class Posts extends Admin {
             }
 
         } else{
-            $this->assign('hide_panel',true);//隐藏base模板面板
+            $this->assign('page_config',['disable_panel'=>true]);
             $this->assign('meta_title',$title.'文章');
 
             $info = [
@@ -249,8 +250,8 @@ class Posts extends Admin {
      * 设置一条或者多条数据的状态
      */
     public function setStatus($model = 'Posts',$script = false) {
-        $ids    = input('request.ids/a');
-        $status = input('request.status');
+        $ids    = input('param.ids/a');
+        $status = input('param.status');
         if (empty($ids)) {
             $this->error('请选择要操作的数据');
         }
@@ -258,7 +259,7 @@ class Posts extends Admin {
         switch ($status) {
             case 'delete' :  // 删除条目
                 $map['status'] = -1;
-                $exist = $this->postModel->get($map);
+                $exist = $this->postModel->where($map)->get();
                 if ($exist) {
                     $result = $this->postModel->delete($ids);
                 } else {

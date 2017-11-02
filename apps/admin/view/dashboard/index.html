@@ -145,7 +145,15 @@
               </div>
               <!-- /.box-header -->
               <div class="box-body pt-0" id="eacoo_news">
-               
+                <table class="table table-condensed f14">
+                  <tbody>
+                  {volist name="eacoo_news_list.data" id="row"}
+                      <tr>
+                        <td><a href="{$row.href}" target="_blank">{$row.title}</a></td>
+                      </tr>
+                  {/volist}
+                  </tbody>
+                </table>
               </div>
               <!-- /.box-body -->
             </div>
@@ -155,6 +163,9 @@
   </div>
 {/block}
 {block name="script"}
+<script type="text/javascript">
+  delete(echarts);
+</script>
 <script type="text/javascript" src="__STATIC_LIBS__/echarts/echarts.common.min.js" ></script>
 <script type="text/javascript">
 delete(myChart);
@@ -213,47 +224,13 @@ option = {
       ]
   };
   myChart.setOption(option);
-
-delete(template);
-</script>
-<script type="text/javascript" src="__STATIC_LIBS__/artTemplate/template.js"></script>
-<script id="eacoo_news_list" type="text/html">
-  <table class="table table-condensed f14">
-    <tbody>
-    <% for (var i = 0; i < data.length; i ++) { %>
-    <% var row = data[i]; %>
-        <tr>
-          <td><a href="<%= row.href %>" target="_blank"><%= row.title %></a></td>
-        </tr>
-    <% } %>
-    </tbody>
-  </table>
 </script>
 
 <script type="text/javascript">
   $(function(){ 
-    $.ajax({  
-        type : "get",  
-        url : "{:BASE_PATH}{:url('admin/dashboard/getEacooNews')}",  
-        data:{access_token:'dc364ec66f5d7c4d0a1948eecf35db73'},
-        dataType : "json",
-        success : function(result){
-            //更新官方动态
-          if (result.code==1) {
-              var html = template('eacoo_news_list', result);
-              $('#eacoo_news').html(html);
-          } else{
-              $('#eacoo_news').html('暂无内容');
-          }
-        },  
-        error:function(){  
-            console.debug('eacoo_news fail！');
-        }  
-    });   
-
     //阿里云提示
     {php}if(config('aliyun_oss.enable')!=1){{/php}
-      layer.alert('欢迎使用小京东+商城系统，请优先配置/开启 阿里OSS对象存储服务 ，让您的数据更安全可靠，数据掌握在自己手中。<br/>如因未配置/开启<a href="https://www.aliyun.com/product/oss">阿里云OSS</a>，造成的数据丢失，由您自行负责！！快去配置吧~<br/>如何申请以及配置阿里OSS，请参考 阿里OSS配置教程 。', {icon: 6}); 
+      layer.alert('欢迎使用EacooPHP系统，请优先配置/开启 阿里OSS对象存储服务 ，让您的数据更安全可靠，数据掌握在自己手中。<br/>如因未配置/开启<a href="https://www.aliyun.com/product/oss">阿里云OSS</a>，造成的数据丢失，由您自行负责！！快去配置吧~<br/>如何申请以及配置阿里OSS，请参考 阿里OSS配置教程 。', {icon: 6}); 
     {php}}{/php}
   })
 </script>
