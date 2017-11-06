@@ -100,7 +100,7 @@ class Index extends Base
           foreach($dirs as $dir) {
               $this->rmdirr($dir);
           }
-          cache('admin_sidebar_menus',null);//清空后台菜单缓存
+          cache('admin_sidebar_menus_'.is_login(),null);//清空后台菜单缓存
           cache('DB_CONFIG_DATA',null);
           $this->success('清除缓存成功！');
      } 

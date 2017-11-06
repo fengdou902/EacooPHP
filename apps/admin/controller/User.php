@@ -65,7 +65,7 @@ class User extends Admin {
                 ->keyListItem('email', '邮箱')
                 ->keyListItem('mobile', '手机号')
                 ->keyListItem('reg_time', '注册时间')
-                ->keyListItem('allow_admin', '是否管理员','status')
+                ->keyListItem('allow_admin', '允许进入后台','status')
                 ->keyListItem('status', '状态', 'array',[0=>'禁用',1=>'正常',2=>'待验证'])
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListDataKey('uid')
@@ -125,6 +125,7 @@ class User extends Admin {
                     ->addFormItem('email', 'email', '邮箱', '','','required')
                     ->addFormItem('mobile', 'left_icon_number', '手机号', '',['icon'=>'<i class="fa fa-phone"></i>'],'','placeholder="填写手机号"')
                     ->addFormItem('sex', 'radio', '性别', '',[0=>'保密',1=>'男',2=>'女'])
+                    ->addFormItem('allow_admin', 'select', '是否允许访问后台', '',[0=>'不允许',1=>'允许'])
                     ->addFormItem('description', 'textarea', '个人说明', '请填写个人说明');
             if ($uid>0) {
                 $builder->addFormItem('avatar', 'avatar', '头像', '用户头像默认随机分配',['uid'=>$info['uid']],'required');

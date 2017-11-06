@@ -12,6 +12,8 @@ namespace app\admin\controller;
 
 use eacoo\Cloud;
 use eacoo\Sql;
+use eacoo\EacooAccredit;
+
 use think\Exception;
 use app\admin\model\AuthRule;
 use app\admin\model\Hooks;
@@ -27,6 +29,7 @@ class Extension extends Admin {
 	protected $info;
 	protected $hooksModel;
 	protected $appExtensionModel;
+    protected $uid;
 
 	function _initialize()
 	{
@@ -38,6 +41,7 @@ class Extension extends Admin {
 		];
 		$this->cloudService = new Cloud($option);
 		$this->hooksModel  = new Hooks();
+        $this->uid = is_login();
 	}
 
     /**
@@ -142,52 +146,55 @@ class Extension extends Admin {
         try {
             $name = $this->request->param('name');
             $extend = ['uid'=>1,'token'=>'fasfar3q9we9jfwejfq39ur9j'];
-
+            //验证身份
+            $res = EacooAccredit::eacooIdentification();
+            if ($res['code']!=1) {
+                throw new \Exception($res['msg'], $res['code']);
+            }
             $tmp_app_file = $this->cloudService->download($name,$extend);
             if (is_file($tmp_app_file))
             {
                 $tmpName   = $name;
                 $tmpAppDir = $this->appsPath . $tmpName . DS;
-                try {
 
-                    $this->cloudService->unzip($tmpName);
-                    @unlink($tmp_app_file);
-                    $info_file = $tmpAppDir . 'install/info.json';
-                    if (!is_file($info_file))
-                    {
-                        throw new Exception('应用信息文件不存在');
-                    }
-                    $check_res = $this->checkInfoFile($info_file);
-                    
-                    if ($check_res['code']==0) {
-                        throw new Exception($check_res['msg']);
-                    }
-                    $name = $check_res['data']['name'];
-                    $newAppDir = $this->appsPath . $name . DS;
-                    if (!is_dir($newAppDir))
-                    {
-                        //重命名应用文件夹
-                        rename($tmpAppDir, $newAppDir);
-                    }
-                    $this->appName = $name;
-
-                    $return = $this->install();
-                    $return['url']=url('admin/Plugins/index',['from_type'=>'local']);
-                    return json($return);
-                } catch (\Exception $e) {
-                    @unlink($tmp_app_file);
-                    @rmdirs($tmpAppDir);
-                    return json([
-                        'code'=>0,
-                        'msg'=>$e->getMessage(),
-                        'data'=>''
-                    ]);
+                $this->cloudService->unzip($tmpName);
+                @unlink($tmp_app_file);
+                $info_file = $tmpAppDir . 'install/info.json';
+                if (!is_file($info_file))
+                {
+                    throw new \Exception('应用信息文件不存在',0);
                 }
+                $check_res = $this->checkInfoFile($info_file);
+                
+                if ($check_res['code']==0) {
+                    throw new \Exception($check_res['msg'],0);
+                }
+                $name = $check_res['data']['name'];
+                $newAppDir = $this->appsPath . $name . DS;
+                if (!is_dir($newAppDir))
+                {
+                    //重命名应用文件夹
+                    rename($tmpAppDir, $newAppDir);
+                }
+                $this->appName = $name;
+
+                $return = $this->install();
+                $call_url = '';
+                if ($this->type=='plugin') {
+                    $call_url = url('admin/Plugins/index',['from_type'=>'local']);
+                } elseif ($this->type=='module') {
+                    $call_url = url('admin/Modules/index',['from_type'=>'local']);
+                }
+                
+                $return['url']=$call_url;
+                return json($return);
                 
             }
         } catch (\Exception $e) {
+            @unlink($tmp_app_file);
+            @rmdirs($tmpAppDir);
             return json([
-                    'code'=>0,
+                    'code'=>$e->getCode(),
                     'msg'=>$e->getMessage(),
                     'data'=>''
                 ]);
@@ -256,13 +263,13 @@ class Extension extends Admin {
                     } else{
                         cache('hooks', null);
                     } 
-                    //后台菜单权限入库
-                    $admin_menus = $this->getAdminMenusByFile($name);
-                    if (!empty($admin_menus) && is_array($admin_menus)) {
-                        $this->addAdminMenus($admin_menus,$name);
-                    }
-                }  
-
+                    
+                } 
+                //后台菜单权限入库
+                $admin_menus = $this->getAdminMenusByFile($name);
+                if (!empty($admin_menus) && is_array($admin_menus)) {
+                    $this->addAdminMenus($admin_menus,$name);
+                }
                 //静态资源处理
                 $static_path = $this->appExtensionPath.'/static';
                 if (is_dir($static_path)) {
@@ -298,6 +305,63 @@ class Extension extends Admin {
 	}
 
     /**
+     * 会员信息
+     * @return [type] [description]
+     * @date   2017-11-02
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function userinfo()
+    {
+        $eacoo_identification = cache('eacoo_identification');
+        if (IS_POST) {
+            try {
+                $from = $this->request->param('from');
+                if ($from=='iframe') {
+                    $return = EacooAccredit::eacooIdentification();
+                    if ($return['code']!=1) {
+                        throw new \Exception($return['msg'], $return['code']);
+                    }
+
+                } elseif ($from=='login') {
+                    $identification = $this->request->param('account');
+                    $password = $this->request->param('password');
+                    $result = curl_request(config('eacoo_api_url').'/api/token',['identification'=>$identification,'password'=>$password]);
+                    $return = json_decode($result['content'],true);
+                    if ($return['code']==1) {
+                        $eacoo_identification = $return['data'];
+                        cache('eacoo_identification',$eacoo_identification,$eacoo_identification['expired']);
+                    } else{
+                        throw new \Exception($return['msg'], 2);
+                    }
+                    
+                } elseif ($from=='logout') {
+                    $uid = $eacoo_identification['uid'];
+                    $access_token = $eacoo_identification['access_token'];
+                    $result = curl_request(config('eacoo_api_url').'/api/token/logout',['uid'=>$uid,'token'=>$access_token]);
+                    $return = json_decode($result['content'],true);
+                    if ($return['code']==1) {
+                        cache('eacoo_identification',null);
+                    }
+                }
+                return json($return);
+            } catch (\Exception $e) {
+                cache('eacoo_identification',null);
+                return json([
+                    'code'=>$e->getCode(),
+                    'msg'=>$e->getMessage(),
+                    'data'=>[],
+                ]);
+            }
+             
+        } else{
+            $this->assign('eacoo_identification',$eacoo_identification);//dump($eacoo_identification);
+            $this->assign('eacoo_userinfo',$eacoo_identification['userinfo']);
+            return $this->fetch('extension/userinfo');
+        }
+        
+    }
+
+    /**
      * 添加后台菜单
      * @param  array $data 菜单数据
      * @param  integer $pid 父级ID
@@ -322,7 +386,7 @@ class Extension extends Admin {
                     $this->addAdminMenus($menu['sub_menu'], $flag_name, $authRuleModel->id);
                 }
             }
-            cache('admin_sidebar_menus',null);//清空后台菜单缓存
+            cache('admin_sidebar_menus_'.$this->uid,null);//清空后台菜单缓存
             return true;
         }
         return false;
@@ -349,9 +413,45 @@ class Extension extends Admin {
                 $res = AuthRule::where($map)->update(['status'=>0]);
             }
             if (false === $res) {
-                $this->error('菜单删除失败，请重新卸载');
+                //$this->error('菜单删除失败，请重新卸载');
+                return false;
             } else{
-                cache('admin_sidebar_menus',null);//清空后台菜单缓存
+                cache('admin_sidebar_menus_'.$this->uid,null);//清空后台菜单缓存
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 启用和禁用后台菜单
+     * @param  string $flag_name [description]
+     * @param  boolean $delete [description]
+     * @return [type] [description]
+     * @date   2017-11-02
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function switchAdminMenus($flag_name='' ,$status='')
+    {
+        if($flag_name=='') $flag_name = $this->appName;
+        if ($flag_name!='') {
+            if ($status!='resume' && $status!='forbid') return false;
+            $map = [
+                'depend_type'=>$this->depend_type,
+                'depend_flag'=>$flag_name
+            ];
+            $state = 0;
+            if ($status=='resume') {
+                $state = 1;
+            } elseif ($status=='forbid') {
+                $state = 0;
+            }
+            $menus = AuthRule::where($map)->update(['status'=>$state]);
+            
+            if (false === $menus) {
+                return false;
+            } else{
+                cache('admin_sidebar_menus_'.$this->uid,null);//清空后台菜单缓存
                 return true;
             }
         }
@@ -719,7 +819,12 @@ class Extension extends Admin {
             $type_path = '';
         }
         foreach ($file_ext as $key => $ext) {
-            $tmp_logo = 'runtime/images/logos/'.$type_path.$name.'.'.$ext;
+            $tmp_logo_dir = 'runtime/images/logos/'.$type_path;
+            if (!is_dir($tmp_logo_dir))
+            {
+                @mkdir($tmp_logo_dir, 0755, true);
+            }
+            $tmp_logo = $tmp_logo_dir.$name.'.'.$ext;
             $tmp_logo_file = PUBLIC_PATH.$tmp_logo;
             if (is_file($tmp_logo_file)) {
                 return '/'.$tmp_logo;
@@ -745,7 +850,7 @@ class Extension extends Admin {
                         $original_logo_file = APP_PATH.$name.'/static/logo.'.$ext;
                     }
                     if (is_file($original_logo_file)) {
-                        if (is_writable(PUBLIC_PATH.$tmp_logo)) {
+                        if (is_writable(PUBLIC_PATH.$tmp_logo_dir)) {
                             if (copy($original_logo_file,PUBLIC_PATH.$tmp_logo)){
                                 return '/'.$tmp_logo;
                             }

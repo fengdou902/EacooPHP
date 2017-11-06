@@ -29,15 +29,6 @@ class Entrance {
        	
         define('EACOOPHP_V','1.0.8');
 
-        $ec_config['view_replace_str'] =[
-            '__ROOT__'        => BASE_PATH.PUBLIC_RELATIVE_PATH,
-            '__STATIC__'      => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static',
-            '__PUBLIC__'      => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/assets',
-            '__STATIC_LIBS__' => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/libs',
-            '__ADMIN_CSS__'   => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/css',
-            '__ADMIN_JS__'    => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/js',
-            '__ADMIN_IMG__'   => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/img',
-        ];
         $ec_config = [
             'view_replace_str'=>[
                                 '__ROOT__'        => BASE_PATH.PUBLIC_RELATIVE_PATH,
@@ -56,6 +47,7 @@ class Entrance {
                 401 =>  THEME_PATH.'401.html',
             ],                
         ];
+        $ec_config['eacoo_api_url']='http://www.eacoo123.org';
         thinkConfig::set($ec_config);// 添加配置
 	}
 

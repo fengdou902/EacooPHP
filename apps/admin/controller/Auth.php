@@ -215,7 +215,7 @@ class Auth extends Admin {
             $id   =isset($data['id']) && $data['id']>0 ? $data['id']:false;
 
             if ($this->authRuleModel->editData($data,$id)) {
-                cache('admin_sidebar_menus',null);//清空后台菜单缓存
+                cache('admin_sidebar_menus_'.$this->currentUser,null);//清空后台菜单缓存
                 $this->success($title.'菜单成功', url('index',array('pid'=>input('param.pid'))));
             } else {
                 $this->error($this->authRuleModel->getError());
@@ -258,7 +258,7 @@ class Auth extends Admin {
         $builder    = Builder::run('Sort');
         $map['pid'] = input('param.pid',0,'intval');//是否存在父ID
         if (IS_POST) {
-            cache('admin_sidebar_menus',null);//清空后台菜单缓存
+            cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);//清空后台菜单缓存
             $builder->doSort('auth_rule', $ids);
         } else {
             //$map['status'] = array('egt', 0);
@@ -284,7 +284,7 @@ class Auth extends Admin {
         $model='AuthRule';
         if (IS_POST) {
 
-            cache('admin_sidebar_menus',null);//清空后台菜单缓存
+            cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);//清空后台菜单缓存
 
             $ids    = input('post.ids/a');
             $status = input('param.status');
@@ -347,7 +347,7 @@ class Auth extends Admin {
             $ids    = input('post.ids');
             $to_pid = input('post.to_pid');
             if ($to_pid || $to_pid==0) {
-                cache('admin_sidebar_menus',null);
+                cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);
                 $map['id'] = ['in',$ids];
                 $data = array('pid' => $to_pid);
                 $this->editRow('auth_rule', $data, $map, ['success'=>'移动成功','error'=>'移动失败',url('index')]);
@@ -546,7 +546,7 @@ EOF;
                 //$this->error('不能修改超级管理员'.$title);
            // }else{
                 if ($this->authGroupModel->editData($data,$id)) {
-                    cache('admin_sidebar_menus',null);
+                    cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);
                     $this->success($title.'成功', url('role'));
                 }else{
                     $this->error($this->authGroupModel->getError());
@@ -727,7 +727,7 @@ EOF;
                 }
             }
         } else{
-            cache('admin_sidebar_menus',null);//清空后台菜单缓存
+            cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);//清空后台菜单缓存
         }
         
         parent::setStatus($model);

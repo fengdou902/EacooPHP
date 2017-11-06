@@ -318,10 +318,11 @@ function curl_request($url, $params = [], $method = 'POST', $options = [])
 /**
  * curl_post 请求函数
  * @param  [type]  $url          url链接
- * @param  string  $param        请求参数
+ * @param  string  $params        请求参数
  * @return [type]                [description]
  */
-function curl_post($url, $param = []){
+function curl_post($url, $params ){
+    $query_string = is_array($params) ? http_build_query($params) : $params;
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -330,7 +331,7 @@ function curl_post($url, $param = []){
     curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; MSIE 5.01; Windows NT 5.0)');
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
     curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $param);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $query_string);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($ch);
     $errorno  = curl_errno($ch);

@@ -308,19 +308,25 @@ class Modules extends Admin {
 	 * 设置一条或者多条数据的状态
 	 */
 	public function setStatus($model = CONTROLLER_NAME,$script=false){
-		$ids = input('param.ids/a');
+		$ids = $this->request->param('ids');
+		$status = $this->request->param('status');
 		if (is_array($ids)) {
 			foreach ($ids as $id) {
-				$is_system = model($model)->where('id',$id)->value('is_system');
-				if ($is_system) {
+				$info = model($model)->where('id',$id)->field('name,is_system')->find();
+				if ($info['is_system']) {
 					$this->error('系统模块不允许操作');
 				}
 			}
 		} else {
-			$is_system = model($model)->where('id',$id)->value('is_system');
-			if ($is_system) {
+			$info = model($model)->where('id',$ids)->field('name,is_system')->find();
+			if ($info['is_system']) {
 				$this->error('系统模块不允许操作');
 			}
+
+			$extensionObj = new Extension;
+            $extensionObj->initInfo('module',$info['name']);
+            $extensionObj->switchAdminMenus($info['name'],$status);
+			
 		}
 		parent::setStatus($model);
 	}
@@ -335,7 +341,7 @@ class Modules extends Admin {
     {
         $store_data = cache('eacoo_appstore_modules_'.$paged);
         if (empty($store_data) || !$store_data) {
-            $url        = 'http://www.eacoo123.org/server_appstore_modules';
+            $url        = config('eacoo_api_url').'/server_appstore_modules';
             $params = [
                 'paged'=>$paged
             ];
@@ -350,21 +356,21 @@ class Modules extends Admin {
             foreach ($store_data as $key => &$val) {
 
                 $val['publish_time'] = friendly_date($val['publish_time']);
-                $val['right_button'] = '<a class="label label-primary app-online-install" data-name="'.$val['name'].'" data-type="module" href="javascript:void(0);">现在安装</a> ';
+                $val['right_button'] = '<a class="btn btn-primary btn-sm app-online-install" data-name="'.$val['name'].'" data-type="module" href="javascript:void(0);">现在安装</a> ';
                 if (!empty($local_modules)) {
                     foreach ($local_modules as $key => $row) {
                         if ($row['name']==$val['name']) {
                             if ($row['version']<$val['version']) {
-                                $val['right_button'] = '<a class="label label-success" href="javascript:void(0);" onclick="layer.alert(\'暂不支持在线安装\n请加QQ群：436491685\', {icon:6});">升级</a> ';
+                                $val['right_button'] = '<a class="btn btn-success btn-sm" href="javascript:void(0);" onclick="layer.alert(\'暂不支持在线安装\n请加QQ群：436491685\', {icon:6});">升级</a> ';
                             } else{
-                                $val['right_button'] = '<a class="label label-default">已安装</a> ';
+                                $val['right_button'] = '<a class="btn btn-default btn-sm" href="'.url('index',['from_type'=>'local']).'">已安装</a> ';
                             }
                             
                         }
                     }
                 }
 
-                $val['right_button'] .= '<a class="label label-info " href="http://www.eacoo123.com" target="_blank">更多详情</a> ';
+                //$val['right_button'] .= '<a class="btn btn-info btn-sm" href="http://www.eacoo123.com" target="_blank">更多详情</a> ';
             }
         }
         return $store_data;

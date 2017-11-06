@@ -236,7 +236,7 @@ EOF;
                     $value = implode(',', $value);
                 }
                 if ($name=='develop_mode') {
-                    cache('admin_sidebar_menus',null);//清空后台菜单缓存
+                    cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);//清空后台菜单缓存
                 }
                 $this->configModel->where($map)->update(['value'=>$value]);
             }

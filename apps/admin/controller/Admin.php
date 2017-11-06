@@ -95,7 +95,8 @@ class Admin extends Base
      */
     private function getSidebarMenu()
     {
-        $admin_sidebar_menus = Cache::get('admin_sidebar_menus');
+        $uid = is_login();
+        $admin_sidebar_menus = Cache::get('admin_sidebar_menus_'.$uid);
         if (!$admin_sidebar_menus) {
             
             if(!is_administrator()){//如果是非超级管理员则按存储显示
@@ -110,7 +111,7 @@ class Admin extends Base
             }
             $menu = db('auth_rule')->where($map_rules)->field(true)->order('sort asc')->select();
             $admin_sidebar_menus = list_to_tree($menu);
-            Cache::set('admin_sidebar_menus',$admin_sidebar_menus);
+            Cache::set('admin_sidebar_menus_'.$uid,$admin_sidebar_menus);
         }
         return $admin_sidebar_menus;
     }
@@ -120,8 +121,8 @@ class Admin extends Base
      * @param $script 严格模式要求处理的纪录的uid等于当前登陆用户UID
      */
     public function setStatus($model = CONTROLLER_NAME, $script = false) {
-        $ids    = $this->param['ids'];
-        $status = $this->param['status'];
+        $ids = $this->request->param('ids');
+        $status = $this->request->param('status');
         if (empty($ids)) {
             $this->error('请选择要操作的数据');
         }

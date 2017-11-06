@@ -38,7 +38,7 @@ class Plugins extends Admin {
      * @date   2017-09-21
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function index($from_type = 'local') {
+    public function index($from_type = 'oneline') {
 
         $this->assign('page_config',['self'=>'<a href="'.url('admin/plugins/hooks').'" class="btn btn-primary btn-sm mr-10">钩子管理</a>']);
         $tab_list = [
@@ -46,7 +46,7 @@ class Plugins extends Admin {
             'oneline'=>['title'=>'插件市场','href'=>url('index',['from_type'=>'oneline'])],
         ];
         $this->assign('tab_list',$tab_list);
-        $this->assign('from_type',$this->request->param('from_type','local'));
+        $this->assign('from_type',$this->request->param('from_type','oneline'));
         // 获取所有插件信息
         //$paged = input('get.p',1);
         if ($from_type == 'local') {
@@ -267,6 +267,33 @@ class Plugins extends Admin {
     }
 
     /**
+     * 设置一条或者多条数据的状态
+     */
+    public function setStatus($model = CONTROLLER_NAME,$script=false){
+        $ids = $this->request->param('ids');
+        $status = $this->request->param('status');
+
+        if (!empty($ids)) {
+            $extensionObj = new Extension;
+            if (is_array($ids)) {
+                foreach ($ids as $id) {
+                    $info = model($model)->where('id',$id)->field('name')->find();
+                    $extensionObj->initInfo('plugin',$info['name']);
+                    $extensionObj->switchAdminMenus($info['name'],$status);
+                }
+            } else {
+                $info = model($model)->where('id',$ids)->field('name')->find();
+
+                $extensionObj->initInfo('plugin',$info['name']);
+                $extensionObj->switchAdminMenus($info['name'],$status);
+                
+            }
+        }
+        
+        parent::setStatus($model);
+    }
+
+    /**
      * 钩子列表
      */
     public function hooks(){
@@ -364,7 +391,7 @@ class Plugins extends Admin {
     {
         $store_data = cache('eacoo_appstore_plugins_'.$paged);
         if (empty($store_data) || !$store_data) {
-            $url        = 'http://www.eacoo123.org/server_appstore_plugins';
+            $url        = config('eacoo_api_url').'/server_appstore_plugins';
             $params = [
                 'paged'=>$paged
             ];
@@ -384,9 +411,9 @@ class Plugins extends Admin {
                     foreach ($local_plugins as $k => $row) {
                         if ($row['name']==$val['name']) {
                             if ($row['version']<$val['version']) {
-                                $val['right_button'] = '<a class="btn btn-success btn-sm" href="javascript:void(0);" onclick="layer.alert(\'暂不支持在线安装\n请加QQ群：436491685\', {icon:6});">升级</a> ';
+                                $val['right_button'] = '<a class="btn btn-success btn-sm app-online-install" href="javascript:void(0);" >升级</a> ';
                             } else{
-                                $val['right_button'] = '<a class="btn btn-default btn-sm" href="#">已安装</a> ';
+                                $val['right_button'] = '<a class="btn btn-default btn-sm" href="'.url('index',['from_type'=>'local']).'">已安装</a> ';
                             }
                             
                         }
