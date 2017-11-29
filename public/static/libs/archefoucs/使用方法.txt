@@ -1,0 +1,9 @@
+腾讯上古世纪游戏官网焦点图，兼容 IE 7/8/9 及其它主流浏览器 ，因 IE 6 不支持CSS透明属性（opacity）故在IE 6下无图片淡入淡出效果，懒人图库推荐下载！
+
+使用方法：
+
+1、依次引入archefoucs.css、jQuery脚本库及archefoucs.js文件；
+2、复制代码到页面中即可。
+
+
+*更多代码请访问：懒人图库 www.lanrentuku.com/js/

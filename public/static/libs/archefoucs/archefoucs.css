@@ -1,0 +1,28 @@
+﻿body { margin: 0; padding: 0; }
+body { font: normal 12px 微软雅黑; }
+a { text-decoration: none; }
+img { border: 0; }
+em { font-style: normal; font-weight: normal; }
+a { text-decoration: none; color: #6c6c6c; }
+    a:hover { color: #ff4200; }
+body { min-width: 1000px; padding-top: 42px; background-color: #f0f0f0; color: #6c6c6c; }
+.header { width: 100%; max-width: 1920px; margin: 0 auto; position: relative; }
+.ggLoading, .ggLoading2 { background-image: url(../images/nav.png); }
+.header { height: 500px; }
+.gg { width: 100%; height: 500px; position: relative; z-index: 1; overflow: hidden; margin: 0 auto; background: #d3d3d3 url(../images/loading.jpg) repeat-x; }
+.ggLoading { position: absolute; left: 40%; top: 200px; width: 325px; text-align: center; height: 56px; background-position: 0 -274px; background-repeat: no-repeat; line-height: 56px; color: #9c9c9c; }
+.ggLoading2 { width: 330px; height: 56px; background-position: 213px -330px; background-repeat: no-repeat; }
+.ggLoading em { font-weight: bold; }
+.ggs { width: 200%; height: 500px; left: -50%; top: 0; position: absolute; }
+.ggBox { width: 1920px; height: 500px; margin: 0 auto; }
+    .ggBox a { display: block; width: 1920px; height: 500px; position: absolute; z-index: 1; opacity: 0.1; }
+    .ggBox img { display: block; width: 1920px; height: 500px; }
+.ggb { position: absolute; width: 100%; left: 0; bottom: 0; height: 40px; z-index: 4; background-color: #32342e; background-repeat: repeat-x; background-position: 50% -40px; }
+.ggBtns { width: 960px; height: 40px; margin: 0 auto; border-left: 1px solid #090908; border-right: 1px solid #6a6a60; }
+    .ggBtns a { float: left; display: block; width: 240px; height: 40px; text-align: center; padding-top: 10px; color: #848380; font-size: 14px; line-height: 40px; background-position: 0 10px; position: relative; top: -10px; outline: none; background-repeat: no-repeat; cursor: pointer; }
+        .ggBtns a em { display: block; width: 210px; height: 40px; margin: 0 auto; overflow: hidden; }
+        .ggBtns a:hover { color: #e7e7e7; }
+        .ggBtns a:focus { outline: none; }
+        .ggBtns a.ggOn { color: #e7e7e7; background-position: 0 0; }
+    .ggb, .ggBtns a { background-image: url(../images/main.jpg); }
+a.ggOn { background-image: url(../images/gg.png); }

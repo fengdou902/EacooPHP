@@ -1,0 +1,38 @@
+.icon-menu {
+    display: block;
+    position: absolute;
+    width: auto;
+    /*padding: 10px;
+    border: 1px solid #ccc;*/
+    border-radius: 3px;
+    background: #fff;
+    overflow: hidden;
+    clear: both;
+    z-index: 1000
+}
+
+.icon-menu .btn-group {
+    margin-bottom: 15px
+}
+
+.icon-menu .icon-container {
+    height: 100%;
+    overflow-y: scroll;
+    clear: both
+}
+
+.icon-menu .icon {
+    float: left;
+    margin: 2px;
+    padding: 3px 4px;
+    border-radius: 3px;
+    cursor: pointer
+}
+
+.icon-menu .icon:hover {
+    background: #ccc
+}
+
+.icon-menu .icon-filter-box {
+    width: 330px
+}
