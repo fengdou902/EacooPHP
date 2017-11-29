@@ -309,8 +309,13 @@ class AdminForm extends Builder
         } else{
             $template_path_str = './';
         }
+
+        $fields_name = ['text','number','info','section','date','datetime','hidden','password','left_icon_text','right_icon_text','left_icon_number','right_icon_number','textarea','ueditor','wangeditor','radio','checkbox','select','select2','select_multiple','tags','multilayer_select','email','region','group','icon','avatar','picture','pictures','image','file','files','repeater','self','self_html','tab'];
         $field_type = $field['type'];
-        $field_template = $template_path_str.'apps/admin/view/builder/Fields/'.$field_type.'.html';
-        parent::fetch($field_template);
+        if (in_array($field_type, $fields_name)) {//为了兼容库中，要做校验
+            $field_template = $template_path_str.'apps/admin/view/builder/Fields/'.$field_type.'.html';
+            parent::fetch($field_template);
+        }
+        
     }
 }
