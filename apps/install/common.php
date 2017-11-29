@@ -59,16 +59,16 @@ function check_env(){
  * @return array 检测数据
  */
 function check_dirfile(){
-	$items = array(
-		array('dir',  '可写', 'bg-green', 'public/uploads/file/'),
-		array('dir',  '可写', 'bg-green', 'public/uploads/avatar/'),
-		array('dir',  '可写', 'bg-green', 'public/uploads/download/'),
-		array('dir',  '可写', 'bg-green', 'public/uploads/picture/'),
-		array('dir',  '可写', 'bg-green', 'public/uploads/editor/'),
-		array('dir',  '可写', 'bg-green', 'public/static/plugins/'),
-		array('dir',  '可写', 'bg-green', 'data/backup/'),
+	$items = [
+		['dir',  '可写', 'bg-green', 'public/uploads/file/'],
+		['dir',  '可写', 'bg-green', 'public/uploads/avatar/'],
+		['dir',  '可写', 'bg-green', 'public/uploads/download/'],
+		['dir',  '可写', 'bg-green', 'public/uploads/picture/'],
+		['dir',  '可写', 'bg-green', 'public/static/plugins/'],
+		['dir',  '可写', 'bg-green', 'apps'],
+		['dir',  '可写', 'bg-green', 'data/backup/'],
 
-	);
+	];
 
 	foreach ($items as &$val) {
 		$item =	ROOT_PATH.$val[3];
