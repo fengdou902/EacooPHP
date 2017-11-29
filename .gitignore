@@ -6,6 +6,7 @@ htaccess
 vendor
 thinkphp
 runtime
+data
 public/static/libs/
 /apps/install.lock
 /apps/database.php
