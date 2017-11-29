@@ -1,0 +1,6 @@
+/*重设侧边栏*/
+.skin-blue .main-sidebar{background-color:#495469;}
+.skin-blue .sidebar-menu>li:hover>a, .skin-blue .sidebar-menu>li.active>a,.skin-blue .sidebar-menu>li.header{background-color: #3f485a;}
+.skin-blue .sidebar-menu>li.treeview:hover>a, .skin-blue .sidebar-menu>li.treeview.active>a{border-left-color: none!important;}
+.skin-blue .sidebar-menu>li>.treeview-menu{background-color: #434d60;}
+.sidebar-menu li>a{color: #c4d0e4 !important;}

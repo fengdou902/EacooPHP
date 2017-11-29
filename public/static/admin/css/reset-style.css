@@ -1,0 +1,16 @@
+.skin-red-light .main-header .navbar,
+.skin-red-light .main-header .logo{background-color:#16aad8;}
+.skin-red-light .main-header .logo:hover{background-color:#16a1d8;}
+.skin-red-light .main-header .navbar .sidebar-toggle:hover {background-color: #16a1d8;}
+.box.box-danger{border-top-color: #16aad8;}
+/*.btn-danger:hover, .btn-danger:active, .btn-danger.hover {background-color: #16a1d8;border-color: #16a1d8;}
+.btn-danger{background-color: #16aad8;border-color: #16aad8;}
+.btn-danger:focus {background-color: #16aad0 !important;border-color: #16aad8 !important;}
+.bg-red, .callout.callout-danger, .alert-danger, .alert-error, .label-danger, .modal-danger .modal-body {background-color: #16aad8 !important;}
+.callout.callout-danger {border-color: #16a1a0;}*/
+.badge {background-color: #16aad8 !important;}
+.skin-red-light .main-header li.user-header{background-color: #16aad8;}
+
+.skin-red-light .sidebar-menu>li{border-top: 1px solid #FCFCFC;}
+.skin-red-light .sidebar-menu > li > a{color: #666!important;}
+.skin-red-light .sidebar-menu>li:hover>a, .skin-red-light .sidebar-menu>li.active>a{background: none!important;color: #000!important;}
