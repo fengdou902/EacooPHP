@@ -12,7 +12,19 @@ use app\admin\model\Plugins;
  */
 function check_install_module($name='')
 {
-    return Modules::checkInstallModule($name);
+    return Modules::checkInstall($name);
+}
+
+/**
+ * 检测是否安装某个插件
+ * @param  string $name [description]
+ * @return [type] [description]
+ * @date   2017-11-14
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function check_install_plugin($name='')
+{
+    return Plugins::checkInstall($name);
 }
 
 /**
@@ -21,8 +33,11 @@ function check_install_module($name='')
  * @param mixed $params 传入参数
  * @return void
  */
-function hook($hook, $params = [])
+function hook($hook, $params = [],$is_return =false)
 {
+    if ($is_return==true) {
+        return \think\Hook::listen($hook, $params);exit;
+    }
     \think\Hook::listen($hook, $params);
 }
 
@@ -56,51 +71,63 @@ function get_plugin_config($name)
     
 }
 
+if (!function_exists('plugin_url')) {
+    /**
+     * 获取插件地址
+     * @param  [type] $url   [description]
+     * @param  [type] $param [description]
+     * @return [type]        [description]
+     */
+    function plugin_url($url, $param=[])
+    {
+        $params = [];
+        // 拆分URL
+        $url  = explode('/', $url);
+        if (isset($url[0])) {
+            $params['_plugin'] = $url[0];
+        }
+        if (isset($url[1])) {
+            $params['_controller'] = $url[1];
+        }
+        if (isset($url[2])) {
+            $params['_action'] = $url[2];
+        }
+
+        // 合并参数
+        $params = array_merge($params, $param);
+
+        return url("home/plugin/execute", $params);
+        
+    }
+}
+
 /**
- * 插件显示内容里生成访问插件的url
- * @param string $url url
- * @param array $param 参数
+ *  url地址转换
+ * @param  [type] $url [description]
+ * @param  array $param [description]
+ * @param  string $type 模块:1,插件：2,主题：theme
+ * @return [type] [description]
+ * @date   2017-11-14
+ * @author 心云间、凝听 <981248356@qq.com>
  */
-// function plugin_url($url, $param = []) {
-//     $url        = parse_url($url);
-//     $case       = config('url_case_insensitive');
-//     $plugins    = $case ? parse_name($url['scheme']) : $url['scheme'];
-//     $controller = $case ? parse_name($url['host']) : $url['host'];
-//     $action     = trim($case ? strtolower($url['path']) : $url['path'], '/');
-
-//     /* 解析URL带的参数 */
-//     if (isset($url['query'])) {
-//         parse_str($url['query'], $query);
-//         $param = array_merge($query, $param);
-//     }
-
-//     /* 基础参数 */
-//     $params = [
-//         'ad' => $plugins,
-//         'co' => $controller,
-//         'ac' => $action,
-//     ];
-//     $params = array_merge($params, $param); //添加额外参数
-//     return \think\Url::build('home/plugin/execute', $params);
-// }
-
-/**
- * 获取插件地址
- * @param  [type] $url   [description]
- * @param  [type] $param [description]
- * @return [type]        [description]
- */
-function plugin_url($url, $param)
+function eacoo_url($url, $param=[],$type=1)
 {
-    // 拆分URL
-    $url        = explode('/', $url);
-    $plugin     = $url[0];
-    $controller = $url[1];
-    $action     = $url[2];
-
-    // 调用u函数
-    $param['_plugin']     = $plugin;
-    $param['_controller'] = $controller;
-    $param['_action']     = $action;
-    return url("home/plugin/execute", $param);
+    if ($type==1) {//模块
+        return url($url,$param);
+    } elseif ($type==2) {//插件
+        $url_params = [];
+        $query      = parse_url($url);
+        $url        = $query['path'];
+        if (!empty($query['query'])) {
+            parse_str($query['query'],$url_params);
+            $url_params = array_merge($url_params, $param);
+        }
+        if (strtolower($url)!='admin/plugins/config') {
+        
+            return plugin_url($url,$url_params);
+        } else{
+            return url($url,$url_params);
+        }
+        
+    }
 }

@@ -92,17 +92,19 @@ class Index extends Base
      * @return [type] [description]
      */
     public function delcache() { 
-           header("Content-type: text/html; charset=utf-8");
-          //清文件缓存
-          $dirs = [ROOT_PATH.'runtime/'];
-          @mkdir('runtime',0777,true);
-          //清理缓存
-          foreach($dirs as $dir) {
-              $this->rmdirr($dir);
-          }
-          cache('admin_sidebar_menus_'.is_login(),null);//清空后台菜单缓存
-          cache('DB_CONFIG_DATA',null);
-          $this->success('清除缓存成功！');
+        $eacoo_identification = cache('eacoo_identification');
+         header("Content-type: text/html; charset=utf-8");
+        //清文件缓存
+        $dirs = [ROOT_PATH.'runtime/'];
+        @mkdir('runtime',0777,true);
+        //清理缓存
+        foreach($dirs as $dir) {
+            $this->rmdirr($dir);
+        }
+        cache('admin_sidebar_menus_'.is_login(),null);//清空后台菜单缓存
+        cache('DB_CONFIG_DATA',null);
+        cache('eacoo_identification',$eacoo_identification);
+        $this->success('清除缓存成功！');
      } 
 
      //图片验证码

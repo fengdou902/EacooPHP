@@ -215,7 +215,7 @@ class Auth extends Admin {
             $id   =isset($data['id']) && $data['id']>0 ? $data['id']:false;
 
             if ($this->authRuleModel->editData($data,$id)) {
-                cache('admin_sidebar_menus_'.$this->currentUser,null);//清空后台菜单缓存
+                cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);//清空后台菜单缓存
                 $this->success($title.'菜单成功', url('index',array('pid'=>input('param.pid'))));
             } else {
                 $this->error($this->authRuleModel->getError());

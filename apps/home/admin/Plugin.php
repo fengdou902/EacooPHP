@@ -38,7 +38,7 @@ class Plugin extends Admin
             if (!is_array($params)) {
                 $params = (array)$params;
             }
-            $class = "plugins\\{$plugin}\\controller\\{$controller}";
+            $class = "plugins\\{$plugin}\\admin\\{$controller}";
             $obj = new $class;
             return call_user_func_array([$obj, $action], $params);
         }
@@ -56,10 +56,25 @@ class Plugin extends Admin
      */
     public function fetch($template='', $vars = [], $replace = [], $config = [] ,$render=false) {
 
-        //$name  = input('param._plugin');
+        $plugin_name = input('param.plugin_name');
+
+        if ($plugin_name != '') {
+            $plugin = $plugin_name;
+            $action = 'index';
+        } else {
+            $plugin = input('param._plugin');
+            $action = input('param._action');
+        }
+        $template = $template == '' ? $action : $template;
+        if (MODULE_MARK === 'admin') {
+            $template = 'admin/'.$template;
+        }
 
         if ($template != '') {
-            $template = config('template.view_path').$template . '.' .config('template.view_suffix');
+            $template = config('template.view_path').$template . '.' .config('template.view_suffix');dump($template);
+            if (!is_file($template)) {
+                throw new \Exception('模板不存在：'.$template, 5001);
+            }
             echo $this->view->fetch($template, $vars, $replace, $config, $render);
         }
     }

@@ -60,14 +60,22 @@ class Modules extends Admin {
 	 * 安装模块之前
 	 */
 	public function installBefore($name) {
-		Builder::run('Form')
-				->setMetaTitle('准备安装模块')  // 设置页面标题
-				->setPostUrl(url('install'))     // 设置表单提交地址
-				->addFormItem('name', 'hidden', 'name', 'name')
-				->addFormItem('clear', 'radio', '是否清除历史数据', '是否清除历史数据', [1 => '是', 0=> '否'])
-				->setFormData(['name' => $name])
-				->addButton('submit')->addButton('back')    // 设置表单按钮
-				->fetch();
+		$this->assign('meta_title','准备安装模块');
+        $info=['name'=>$name,'clear'=>1];
+        $fieldList = [
+                ['name'=>'name','type'=>'hidden','title'=>'名称'],
+                ['name'=>'clear','type'=>'radio','title'=>'清除数据：','description'=>'是否清除数据，默认否','options'=>[1=> '是', 0=> '否']],
+            ];
+        foreach ($fieldList as $key => &$val) {
+            if ($val['name']!='self_html') {
+                $val['value']=isset($info[$val['name']])? $info[$val['name']]:'';
+            }
+            
+        }
+        $this->assign('fieldList',$fieldList);
+        $post_url = url('install');
+        $this->assign('post_url',$post_url);
+        return $this->fetch('extension/install_before');
 
 	}
 
@@ -82,7 +90,7 @@ class Modules extends Admin {
 	public function install($name, $clear = 1) {
 		$extensionObj = new Extension;
         $extensionObj->initInfo('module',$name);
-        $result = $extensionObj->install($name);
+        $result = $extensionObj->install($name,$clear);
         if ($result['code']==1) {
         	$this->success('安装成功', url('index'));
         } else{
@@ -130,7 +138,7 @@ class Modules extends Admin {
 		if ($clear) {
 			$result = ModuleModel::destroy($id);
 		} else{
-			$result = ModuleModel::where('id',$id)->update(['status'=>0]);
+			$result = ModuleModel::where('id',$id)->update(['status'=>-1]);
 		}
 		
 		if ($result) {
@@ -248,6 +256,35 @@ class Modules extends Admin {
 	}
     
     /**
+     * 刷新缓存
+     * @return [type] [description]
+     * @date   2017-10-30
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function refresh()
+    {
+        Extension::refresh('module');
+        $this->success('操作成功','');
+    }
+
+    /**
+     * 删除
+     * @param  string $name [description]
+     * @return [type] [description]
+     * @date   2017-11-07
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function del($name='')
+    {
+        if ($name) {
+            @rmdirs(APP_PATH.$name);
+            Extension::refresh('module');
+            $this->success('删除模块成功');
+        }
+        $this->error('删除模块失败');
+    }
+
+    /**
      * 更新后台菜单
      * @param  array $data [description]
      * @param  string $flag_name [description]
@@ -341,7 +378,7 @@ class Modules extends Admin {
     {
         $store_data = cache('eacoo_appstore_modules_'.$paged);
         if (empty($store_data) || !$store_data) {
-            $url        = config('eacoo_api_url').'/server_appstore_modules';
+            $url        = config('eacoo_api_url').'/api/appstore/modules';
             $params = [
                 'paged'=>$paged
             ];
@@ -356,12 +393,14 @@ class Modules extends Admin {
             foreach ($store_data as $key => &$val) {
 
                 $val['publish_time'] = friendly_date($val['publish_time']);
-                $val['right_button'] = '<a class="btn btn-primary btn-sm app-online-install" data-name="'.$val['name'].'" data-type="module" href="javascript:void(0);">现在安装</a> ';
+                $val['right_button'] = '<a class="btn btn-primary btn-sm app-online-install" data-name="'.$val['name'].'" data-type="module" href="javascript:void(0);" data-install-method="install">现在安装</a> ';
                 if (!empty($local_modules)) {
                     foreach ($local_modules as $key => $row) {
                         if ($row['name']==$val['name']) {
                             if ($row['version']<$val['version']) {
-                                $val['right_button'] = '<a class="btn btn-success btn-sm" href="javascript:void(0);" onclick="layer.alert(\'暂不支持在线安装\n请加QQ群：436491685\', {icon:6});">升级</a> ';
+                                $val['right_button'] = '<a class="btn btn-success btn-sm app-online-install"  data-name="'.$val['name'].'" data-type="module" href="javascript:void(0);" data-install-method="upgrade">升级</a> ';
+                            } elseif(isset($row['status']) && $row['status']==3){
+                                $val['right_button'] = '<a class="btn btn-default btn-sm" href="'.url('index',['from_type'=>'local']).'">已下载</a> ';
                             } else{
                                 $val['right_button'] = '<a class="btn btn-default btn-sm" href="'.url('index',['from_type'=>'local']).'">已安装</a> ';
                             }

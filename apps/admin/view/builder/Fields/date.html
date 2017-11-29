@@ -16,14 +16,16 @@
 			</div>
         {notempty name="field.description"}<div class="col-md-5 help-block"><i class="fa fa-info-circle color-info1"></i> {$field.description}</div>{/notempty}
   </div>
-     <script type="text/javascript">
-        $(function(){
-            $('#{$field.name}').datetimepicker({
-                format      : 'yyyy-mm-dd',
-                autoclose   : true,
-                todayBtn    : 'linked',
-                language    : 'zh-CN',
-                fontAwesome : true
-            });
-        });
-    </script>
+   <script type="text/javascript">
+      $(function(){
+          $('#{$field.name}').datetimepicker({
+              format      : 'yyyy-mm-dd',
+              autoclose   : true,
+              todayBtn    : 'linked',
+              language    : 'zh-CN',
+              fontAwesome : true
+          });
+      });
+  </script>
+    <link href="__STATIC__/libs/datetimepicker/datetimepicker.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="__STATIC__/libs/datetimepicker/datetimepicker.min.js"></script>

@@ -339,7 +339,7 @@ class AdminList extends Builder
      * 那么只需要$builder->addRightpButton('edit', array('title' => '换个马甲'))
      * 如果想改变地址甚至新增一个属性用上面类似的定义方法
      * 因为添加右侧按钮的时候你并没有办法知道数据ID，于是我们采用__data_id__作为约定的标记
-     * __data_id__会在display方法里自动替换成数据的真实ID
+     * __data_id__会在fetch方法里自动替换成数据的真实ID
      * @param string $type 按钮类型，edit/forbid/recycle/restore/delete/self六种取值
      * @param array  $attr 按钮属性，一个定了标题/链接/CSS类名等的属性描述数组
      * @return $this
@@ -661,7 +661,7 @@ class AdminList extends Builder
                         }
                         $data[$column['name']] = '<img style="width:40px;height:40px;" src="'.path_to_url($data[$column['name']]).'">';
                         break;
-                    case 'cover':
+                    case 'image':
                         $data[$column['name']] = '<img class="cover" width="120" src="'.$data[$column['name']].'">';
                         break;
                     case 'picture':

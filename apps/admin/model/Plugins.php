@@ -69,7 +69,7 @@ class Plugins extends Model {
                     \think\Log::record('插件'.$value.'的信息缺失！');
                     continue;
                 }
-
+                
                 $plugins[$value] = $info;
                 if ($plugins[$value]) {
                     $plugins[$value]['status'] = -1;  // 未安装
@@ -78,23 +78,38 @@ class Plugins extends Model {
         }
         
         foreach ($plugins as &$val) {
+            if (!isset($val['name'])) {
+                continue;
+            }
+            $extensionObj->initInfo('plugin',$val['name']);
+            //判断是否有设置
+            $name_options = $extensionObj->getOptionsByFile($val['name']);
+            $val['is_option'] = 1;
+            if (empty($name_options)) {
+                $val['is_option'] = 0;
+            }
             switch ($val['status']) {
                 case -1:  // 未安装
                     $val['status'] = '<i class="fa fa-trash" style="color:red"></i>';
-                    $val['right_button']  = '<a class="btn btn-primary btn-sm ajax-get" href="'.url('install?name='.$val['name']).'">安装</a>';
-                    $val['right_button']  .= '<a class="btn btn-danger btn-sm ajax-get confirm ml-5" href="'.url('install?name='.$val['name']).'">删除</a>';
+                    $val['right_button']  = '<a class="btn btn-primary btn-sm app-install-before" href="javascript:void(0)" data-type="plugins" data-name="'.$val['name'].'" >安装</a>';
+                    $val['right_button']  .= '<a class="btn btn-danger btn-sm ajax-get confirm ml-5" confirm-info="您确定要删除该插件吗？" href="'.url('del',['name'=>$val['name']]).'">删除</a>';
                     break;
                 case 0:  // 禁用
                     $val['status'] = '<i class="fa fa-ban" style="color:red"></i>';
                     $val['right_button'] = '<a class="btn btn-success btn-sm ajax-get" href="'.url('setStatus',array('status'=>'resume', 'ids' => $val['id'])).'">启用</a> ';
-                    $val['right_button'] .= '<a class="btn btn-default btn-sm" href="'.url('uninstallBefore?id='.$val['id']).'" title="准备卸载">卸载</a> ';
+                    $val['right_button'] .= '<a class="btn btn-default btn-sm app-local-uninstall" href="javascript:void(0)" data-type="plugins" data-id="'.$val['id'].'" title="准备卸载">卸载</a> ';
                     if (!empty($val['admin_manage_into'])) {
                         $val['right_button'] .= '<a class="btn btn-success btn-sm" href="'.url('adminManage',array('name'=>$val['name'])).'" >后台管理</a>';
                     }
                     break;
                 case 1:  // 正常
                     $val['status'] = '<i class="fa fa-check" style="color:green"></i>';
-                    $val['right_button']  = '<a class="btn btn-info btn-sm" href="'.url('config',['id'=>$val['id']]).'" data-pjax=false>设置</a> ';
+                    if ($val['is_option']==1) {
+                        $val['right_button']  = '<a class="btn btn-info btn-sm" href="'.url('config',['name'=>$val['name']]).'" data-pjax=false>设置</a> ';
+                    } else{
+                        $val['right_button'] = '';
+                    }
+                    
                     $val['right_button'] .= '<a class="btn bg-orange btn-warning btn-sm ajax-get" href="'.url('setStatus',['status'=>'forbid', 'ids' => $val['id']]).'">禁用</a> ';
                     $val['right_button'] .= '<a class="btn btn-default btn-sm app-local-uninstall" href="javascript:void(0)" data-type="plugins" data-id="'.$val['id'].'" title="准备卸载">卸载</a> ';
                     if (!empty($val['admin_manage_into'])) {
@@ -104,6 +119,25 @@ class Plugins extends Model {
             }
         }
         return $plugins;
+    }
+
+    /**
+     * 检测是否安装了某个模块
+     * @param  string $name [description]
+     * @return [type] [description]
+     * @date   2017-09-17
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public static function checkInstall($name='')
+    {
+        if ($name!='') {
+            $res = self::where(['name' => $name,'status'=>1])->count();
+            if ($res>0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

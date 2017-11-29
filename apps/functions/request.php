@@ -59,13 +59,7 @@ function path_to_url($path ='')
 
     if (strpos($path, 'http://')!==false || strpos($path, 'https://')!==false) return $path;//包含http和https的返回原值
 
-    if (config('aliyun_oss.enable')==1) {
-        //oss
-        $url = cdn_img_url($path);
-    } else{
-        $root_url = request()->domain();
-        $url = $root_url.$path;
-    }
+    $url = get_cdn_domain().$path;
     return $url;
 }
 

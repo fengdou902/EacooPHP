@@ -65,6 +65,9 @@ class Modules extends Base {
             }
         }
         foreach ($module_list as &$val) {
+            if (!isset($val['name'])) {
+                continue;
+            }
             if (!isset($val['right_button'])) $val['right_button']='';
             switch($val['status']){
                 case -3:  // 模块信息异常
@@ -77,7 +80,8 @@ class Modules extends Base {
                     break;
                 case -1:  // 未安装
                     $val['status'] = '<i class="fa fa-download text-warning"></i>';
-                    $val['right_button']  = '<a class="btn btn-success btn-sm" href="'.url('installBefore', ['name' => $val['name']]).'">安装</a>';
+                    $val['right_button']  = '<a class="btn btn-success btn-sm app-install-before" href="javascript:void(0)" data-type="modules" data-name="'.$val['name'].'" >安装</a>';
+                    $val['right_button']  .= '<a class="btn btn-danger btn-sm ajax-get confirm ml-5" href="'.url('del',['name'=>$val['name']]).'">删除</a>';
                     break;
                 case 0:  // 禁用
                     $val['status'] = '<i class="fa fa-ban text-danger"></i>';
@@ -137,7 +141,7 @@ class Modules extends Base {
      * @date   2017-09-17
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public static function checkInstallModule($name='')
+    public static function checkInstall($name='')
     {
         if ($name!='') {
             $res = self::where(['name' => $name,'status'=>1])->count();

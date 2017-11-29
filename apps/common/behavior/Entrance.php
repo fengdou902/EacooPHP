@@ -27,7 +27,7 @@ class Entrance {
             define('SERVER_SOFTWARE_TYPE','no');
         }
        	
-        define('EACOOPHP_V','1.0.8');
+        define('EACOOPHP_V','1.1.0');
 
         $ec_config = [
             'view_replace_str'=>[
@@ -47,7 +47,7 @@ class Entrance {
                 401 =>  THEME_PATH.'401.html',
             ],                
         ];
-        $ec_config['eacoo_api_url']='http://www.eacoo123.org';
+        $ec_config['eacoo_api_url']='http://www.eacoo123.com';
         thinkConfig::set($ec_config);// 添加配置
 	}
 

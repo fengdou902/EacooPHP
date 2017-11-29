@@ -25,8 +25,8 @@ class Extension extends Admin {
 	protected $type;//类型：plugin,module
 	protected $appsPath;//应用目录
 	protected $appName;
-	protected $appExtensionPath;//应用具体扩展目录
-	protected $info;
+	public $appExtensionPath;//应用具体扩展目录
+	public $info;
 	protected $hooksModel;
 	protected $appExtensionModel;
     protected $uid;
@@ -34,7 +34,7 @@ class Extension extends Admin {
 	function _initialize()
 	{
 		parent::_initialize();
-		$this->type = $this->request->param('type');
+		$this->type = $this->request->param('apptype');
 		$this->initInfo($this->type);
 		$option = [
 			'type'=>$this->type,
@@ -136,6 +136,20 @@ class Extension extends Admin {
 	}
 
     /**
+     * 在线安装之前
+     * @param  string $name [description]
+     * @return [type] [description]
+     * @date   2017-11-07
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function onlineInstallBefore($name='')
+    {
+        $install_method = $this->request->param('install_method');
+        $this->assign('install_method',$install_method);
+        return $this->fetch('extension/online_install_before');
+    }
+
+    /**
      * 在线安装
      * @return [type] [description]
      * @date   2017-10-27
@@ -144,16 +158,30 @@ class Extension extends Admin {
     public function onlineInstall()
     {
         try {
-            $name = $this->request->param('name');
-            $extend = ['uid'=>1,'token'=>'fasfar3q9we9jfwejfq39ur9j'];
+            $eacoo_identification = cache('eacoo_identification');
+            if (empty($eacoo_identification)) {
+                throw new \Exception('请先进行身份验证', 2);
+            }
+            
+            $uid            = $eacoo_identification['uid'];
+            $access_token   = $eacoo_identification['access_token'];
+            
+            $name           = $this->request->param('name');
+            $install_method = $this->request->param('install_method');
+            $only_download  = $this->request->param('only_download',0);
             //验证身份
             $res = EacooAccredit::eacooIdentification();
             if ($res['code']!=1) {
                 throw new \Exception($res['msg'], $res['code']);
             }
-            $tmp_app_file = $this->cloudService->download($name,$extend);
+
+            $tmp_app_file = $this->cloudService->download($name,['uid'=>$uid,'token'=>$access_token]);
             if (is_file($tmp_app_file))
             {
+                if ($install_method=='upgrade') {//如果是升级，先备份
+                    $this->upgradeAction($name);
+                }
+
                 $tmpName   = $name;
                 $tmpAppDir = $this->appsPath . $tmpName . DS;
 
@@ -171,14 +199,18 @@ class Extension extends Admin {
                 }
                 $name = $check_res['data']['name'];
                 $newAppDir = $this->appsPath . $name . DS;
+                
                 if (!is_dir($newAppDir))
                 {
-                    //重命名应用文件夹
+                    @mkdirs($newAppDir);
                     rename($tmpAppDir, $newAppDir);
                 }
                 $this->appName = $name;
-
-                $return = $this->install();
+                if($only_download!=1){
+                  $return = $this->install();  
+                } else{
+                    $return = ['code'=>1,'msg'=>'安装成功','data'=>[]];
+                } 
                 $call_url = '';
                 if ($this->type=='plugin') {
                     $call_url = url('admin/Plugins/index',['from_type'=>'local']);
@@ -187,6 +219,7 @@ class Extension extends Admin {
                 }
                 
                 $return['url']=$call_url;
+                $this->refresh($this->type);
                 return json($return);
                 
             }
@@ -211,51 +244,48 @@ class Extension extends Admin {
 	 */
 	public function install($name='',$clear = 1)
 	{
+        $install_method = $this->request->param('install_method','install');
 		if($name==''){
             $name = $this->appName;
         } else{
             $this->appName = $name;
         }
 		try {
-			//预安装检测
 	        $this->checkInstall();
-
 	        $info = $this->info;
 
-	        $hooks = $this->getDependentHooks();//获取依赖钩子
-	        // 检查该插件所需的钩子
+	        $hooks = $this->getDependentHooks();
 	        if (!empty($hooks)) {
 	            foreach ($hooks as $val) {
 	                $this->hooksModel->existHook($val, ['description' => $info['description']]);
 	            }
 	        }
-            // 安装数据库
             $uninstall_sql_status = true;
-            // 清除旧数据
-            if ($clear) {
+            if ($clear && $install_method!='upgrade') {
                 $sql_file = $this->appExtensionPath.'/install/uninstall.sql';
                 if(is_file($sql_file)) $uninstall_sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
+                if (!$uninstall_sql_status) {
+                    throw new Exception('安装失败，清除旧的数据未成功');
+                }
+                $sql_file = $this->appExtensionPath.'/install/install.sql';
+                if (is_file($sql_file)) {
+                    $sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
+                    if (!$sql_status) {
+                        throw new Exception('执行应用SQL安装语句失败');
+                    }
+                }
             }
 
-            // 安装新数据表
-            if (!$uninstall_sql_status) {
-             $this->error('安装失败');
-            }
-            
-	        // 安装数据库
-	        $sql_file = $this->appExtensionPath.'/install/install.sql';
-	        if (is_file($sql_file)) {
-	            $sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
-	            if (!$sql_status) {
-	            	throw new Exception('执行应用SQL安装语句失败');
-	            }
-	        }
-
-	        $config = $this->getDefaultConfig($name);//获取文件中的默认配置值
+	        $config = $this->getDefaultConfig($name);
 	        $info['config'] = !empty($config) ? json_encode($config) : '';
-	        if ($this->appExtensionModel->allowField(true)->isUpdate(false)->data($info)->save()) {
+            if ($this->appExtensionModel->where('name',$info['name'])->find()) {
+                $res = $this->appExtensionModel->where('name',$info['name'])->update(['version'=>$info['version'],'status'=>1]);
+                $res = true;
+            } else{
+                $res = $this->appExtensionModel->allowField(true)->isUpdate(false)->data($info)->save();
+            }
+	        if ($res) {
                 if ($this->type=='plugin') {
-                    //更新钩子
                     $hooks_update = $this->hooksModel->updateHooks($name);
                     if (!$hooks_update) {
                         $this->appExtensionModel->where('name',$name)->delete();
@@ -265,12 +295,10 @@ class Extension extends Admin {
                     } 
                     
                 } 
-                //后台菜单权限入库
                 $admin_menus = $this->getAdminMenusByFile($name);
                 if (!empty($admin_menus) && is_array($admin_menus)) {
                     $this->addAdminMenus($admin_menus,$name);
                 }
-                //静态资源处理
                 $static_path = $this->appExtensionPath.'/static';
                 if (is_dir($static_path)) {
                     if ($this->type=='plugin') {
@@ -278,13 +306,13 @@ class Extension extends Admin {
                     } elseif ($this->type=='module') {
                         $type_path = '';
                     }
-                    if(is_writable(PUBLIC_PATH.'static'.$type_path) && is_writable($static_path)){
+                    if(is_writable(PUBLIC_PATH.'static/'.$type_path) && is_writable($static_path)){
                         if (!rename($static_path,PUBLIC_PATH.'static'.$type_path.'/'.$name)) {
                             trace('应用静态资源移动失败','error');
                         } 
                     } else{
                         $this->appExtensionModel->where('name',$name)->update(['status'=>0]);
-                        throw new Exception('安装失败，原因：应用静态资源目录不可写');
+                        throw new Exception('安装失败，原因：应用静态资源目录不可写。static_path:'.$static_path.',public_static_path:'.PUBLIC_PATH.'static/'.$type_path);
                     }
                 }
 
@@ -303,6 +331,43 @@ class Extension extends Admin {
 		}
         
 	}
+
+    public function upgradeAction($name='')
+    {
+        $install_method = $this->request->param('install_method','install');
+        if($name==''){
+            $name = $this->appName;
+        } else{
+            $this->appName = $name;
+        }
+
+        if ($install_method=='upgrade') {//如果是升级，先备份
+            if ($this->type=='plugin') {
+                $type_path = 'plugins/';
+            } elseif ($this->type=='module') {
+                $type_path = '';
+            }
+            $_static_path = PUBLIC_PATH.'static/'.$type_path.$name;
+            $static_path = $this->appsPath.$name.'/static';
+            if (is_dir($_static_path)) {
+                if(is_writable(PUBLIC_PATH.'static/'.$type_path) && is_writable($this->appsPath.$name)){
+                    if (!rename($_static_path,$static_path)) {
+                        trace('静态资源移动失败：'.'public/static/'.$name.'->'.$static_path,'error');
+                    } 
+                }
+            }
+            
+            $newAppDir = $this->appsPath . $name . DS;
+            //备份路径
+            $backup_path = ROOT_PATH.'data/backups/'.$this->type.'s/'. $name.'-'.date('YmdHis') . DS;
+            mkdirs($backup_path);
+            if(rename($newAppDir, $backup_path)){
+                @unlink($newAppDir);
+            }
+            
+        }
+        return true;
+    }
 
     /**
      * 会员信息
@@ -376,11 +441,16 @@ class Extension extends Admin {
             foreach ($data as $key => $menu) {
                 $pid = isset($menu['pid']) ? (int)$menu['pid'] : $pid;
 
-                $menu['depend_type'] = $this->depend_type;//2代表plugin
+                $menu['depend_type'] = $this->depend_type;
                 $menu['depend_flag'] = $flag_name;
                 $menu['pid']    = $pid;
                 $menu['sort']   = isset($menu['sort']) ? $menu['sort'] : 99;
-                $authRuleModel->allowField(true)->isUpdate(false)->data($menu)->save();
+                if ($authRuleModel->where(['name'=>$menu['name'],'depend_type'=>$this->depend_type,'depend_flag'=>$flag_name])->find()) {
+                    $authRuleModel->where(['name'=>$menu['name'],'depend_type'=>$this->depend_type,'depend_flag'=>$flag_name])->update(['status'=>1]);
+                } else{
+                    $authRuleModel->allowField(true)->isUpdate(false)->data($menu)->save();
+                }
+                
                 //添加子菜单
                 if (!empty($menu['sub_menu'])) {
                     $this->addAdminMenus($menu['sub_menu'], $flag_name, $authRuleModel->id);
@@ -413,10 +483,9 @@ class Extension extends Admin {
                 $res = AuthRule::where($map)->update(['status'=>0]);
             }
             if (false === $res) {
-                //$this->error('菜单删除失败，请重新卸载');
                 return false;
             } else{
-                cache('admin_sidebar_menus_'.$this->uid,null);//清空后台菜单缓存
+                cache('admin_sidebar_menus_'.$this->uid,null);
                 return true;
             }
         }
@@ -451,7 +520,7 @@ class Extension extends Admin {
             if (false === $menus) {
                 return false;
             } else{
-                cache('admin_sidebar_menus_'.$this->uid,null);//清空后台菜单缓存
+                cache('admin_sidebar_menus_'.$this->uid,null);
                 return true;
             }
         }
@@ -468,50 +537,38 @@ class Extension extends Admin {
     private function checkInstall($name='')
     {
     	if($name=='') $name = $this->appName;
-    	try {
-    		$this->appExtensionPath = $this->appsPath . $name . DS;
-			$info_file = $this->appExtensionPath . 'install/info.json';
-    		if (!is_file($info_file))
-            {
-                throw new Exception('应用信息文件不存在');
-            }
-            $info = $this->getInfoByFile();
-	        // 检测信息的正确性
-	        if (!$info){ 
-	            throw new Exception('应用信息缺失');
-	        }
+		$this->appExtensionPath = $this->appsPath . $name . DS;
+		$info_file = $this->appExtensionPath . 'install/info.json';
+		if (!is_file($info_file))
+        {
+            throw new Exception('应用信息文件不存在');
+        }
+        $info = $this->getInfoByFile();
+        if (!$info){ 
+            throw new Exception('应用信息缺失');
+        }
 
-            if ($this->type=='plugin') {
-                $app_class = get_plugin_class($name);
-                if (!class_exists($app_class)) {
-                    throw new Exception('应用实例化文件损坏');
-                } else{
-                    $app_class = new $app_class;
-                    // 插件预安装
-                    if(!$app_class->install()) {
-                        throw new Exception('应用预安装失败!原因：'. $app_class->getError());
-                    }
+        if ($this->type=='plugin') {
+            $app_class = get_plugin_class($name);
+            if (!class_exists($app_class)) {
+                throw new Exception('应用实例化文件损坏');
+            } else{
+                $app_class = new $app_class;
+                if(!$app_class->install()) {
+                    throw new Exception('应用预安装失败!原因：'. $app_class->getError());
                 }
             }
+        }
 
-	        // 依赖性检查
-	        if (!empty($info['dependences'])) {
-	            $result = $this->checkDependence($info['dependences']);
-	            if (!$result) {
-	                return false;
-	            }
-	        }
+        if (!empty($info['dependences'])) {
+            $result = $this->checkDependence($info['dependences']);
+            if (!$result) {
+                return false;
+            }
+        }
 
-            $flag = $this->checkInfoFile($info_file);//检测安装信息
+        $flag = $this->checkInfoFile($info_file);
 
-    	} catch (\Exception $e) {
-    		return json([
-                	'code'=>0,
-                	'msg'=>$e->getMessage(),
-                	'data'=>''
-                ]);
-    	}
-    	
     }
 
 	/**
@@ -524,27 +581,19 @@ class Extension extends Admin {
     public function checkInfoFile($info_file='')
     {
     	if($info_file=='') $info_file = $this->appExtensionPath . 'install/info.json';
-    	try {
-    		
-    		if (!is_file($info_file))
-	        {
-	            throw new Exception('应用信息文件不存在');
-	        }
-	        $info_check_keys = ['name', 'title', 'description', 'author', 'version'];
-	        foreach ($info_check_keys as $value) {
-	            if (!array_key_exists($value, $this->getInfoByFile($info_file))) {
-	                throw new Exception('应用信息缺失');
-	            }
 
-	        }
-	        return ['code'=>1,'msg'=>'ok','data'=>$this->getInfoByFile($info_file)];
-    	} catch (\Exception $e) {
-    		return [
-    			'code'=>0,
-    			'msg'=>$e->getMessage(),
-    			'data'=>''
-    		];
-    	}
+		if (!is_file($info_file))
+        {
+            throw new Exception('应用信息文件不存在');
+        }
+        $info_check_keys = ['name', 'title', 'description', 'author', 'version'];
+        foreach ($info_check_keys as $value) {
+            if (!array_key_exists($value, $this->getInfoByFile($info_file))) {
+                throw new Exception('应用信息缺失');
+            }
+
+        }
+        return ['code'=>1,'msg'=>'ok','data'=>$this->getInfoByFile($info_file)];
     	
     }
 
@@ -561,16 +610,16 @@ class Extension extends Admin {
         if ($name=='' || !$name) {
             return false;
         }
-        $plugin_class = get_plugin_class($name);//获取插件名
-        if (!class_exists($plugin_class)) {
-            $this->error = "未实现{$name}插件的入口文件";
-            return false;
+        if ($this->type=='plugin') {
+            $plugin_class = get_plugin_class($name);//获取插件名
+            if (!class_exists($plugin_class)) {
+                $this->error = "未实现{$name}插件的入口文件";
+                return false;
+            }
+            $plugin_obj = new $plugin_class;
+            $dependent_hooks = $plugin_obj->hooks;
+            return $dependent_hooks;
         }
-        $plugin_obj = new $plugin_class;
-        // $info = self::getInfoByFile($name);
-        // $dependent_hooks = !empty($info['dependences']['hooks']) ? $info['dependences']['hooks']:'';
-        $dependent_hooks = $plugin_obj->hooks;
-        return $dependent_hooks;
     }
 
     /**
@@ -582,8 +631,27 @@ class Extension extends Admin {
      */
     public function checkDependence($dependences) {
         if (is_array($dependences)) {
-            $modules = $dependences['modules'];//依赖的模块
-            $plugins = $dependences['plugins'];//依赖的插件
+            $core_version = !empty($dependences['core']) ? $dependences['core']:'';//依赖的核心版本
+            $modules = !empty($dependences['modules']) ? $dependences['modules']:'';//依赖的模块
+            $plugins = !empty($dependences['plugins']) ? $dependences['plugins']:'';//依赖的插件
+
+            if ($core_version!='') {
+                $eacoo_version = explode('.', EACOOPHP_V);
+                $need_version   = explode('.', $core_version);
+                $meet_core_version = false;
+                if (($eacoo_version[0] - $need_version[0]) >= 0) {
+                    if (($eacoo_version[1] - $need_version[1]) >= 0) {
+                        if (($eacoo_version[2] - $need_version[2]) >= 0) {
+                            $meet_core_version = true;
+                        }
+                    }
+                }
+                if ($meet_core_version==false) {
+                    return 'EacooPHP版本不得低于v'.$core_version;
+                }
+                
+            }
+
             //模块
             if (!empty($modules) && is_array($modules)) {
                 foreach ($modules as $key => $val) {
@@ -595,7 +663,7 @@ class Extension extends Admin {
                     ];
                     $module_info = db('modules')->where($map)->field('version,title')->find();
                     if (!$module_info) {
-                        $this->error('该模块依赖'.$key.'模块');
+                        return '该模块依赖'.$key.'模块';
                     }
 
                     $module_version = explode('.', $module_info['version']);
@@ -608,31 +676,31 @@ class Extension extends Admin {
                             }
                         }
                     }
-                    $this->error($module_info['title'].'模块版本不得低于v'.$val);
+                    return $module_info['title'].'模块版本不得低于v'.$val;
                 }
             }
             //插件
             if (!empty($plugins) && is_array($plugins)) {
-                foreach ($modules as $key => $val) {
+                foreach ($plugins as $key => $val) {
                     $map = [
                         'name'=>$key,
                     ];
                     $plugins_info = PluginsModel::where($map)->field('version,title')->find();
                     if (!$plugins_info) {
-                        $this->error('该模块依赖'.$key.'插件');
+                        return '该模块依赖'.$key.'插件';
                     }
                     //版本号检查
-                    $module_version = explode('.', $plugins_info['version']);
+                    $plugin_version = explode('.', $plugins_info['version']);
                     $need_version   = explode('.', $val);
 
-                    if (($module_version[0] - $need_version[0]) >= 0) {
-                        if (($module_version[1] - $need_version[1]) >= 0) {
-                            if (($module_version[2] - $need_version[2]) >= 0) {
+                    if (($plugin_version[0] - $need_version[0]) >= 0) {
+                        if (($plugin_version[1] - $need_version[1]) >= 0) {
+                            if (($plugin_version[2] - $need_version[2]) >= 0) {
                                 continue;
                             }
                         }
                     }
-                    $this->error($plugins_info['title'].'插件版本不得低于v'.$val);
+                    return $plugins_info['title'].'插件版本不得低于v'.$val;
                 }
 
             }
@@ -751,9 +819,14 @@ class Extension extends Admin {
                 foreach ($options as $key => $value) {
                     if ($value['type'] == 'group') {
                         foreach ($value['options'] as $gkey => $gvalue) {
-                            foreach ($gvalue['options'] as $ikey => $ivalue) {
-                                $config[$ikey] = $ivalue['value'];
+                            if ($gvalue['type']=='group') {
+                                foreach ($gvalue['options'] as $ikey => $ivalue) {
+                                    $config[$key][$gkey][$ikey] = $ivalue['value'];
+                                }
+                            } else{
+                                $config[$key][$gkey] = $gvalue['value'];
                             }
+                            
                         }
                     } else {
                         $config[$key] = $options[$key]['value'];
@@ -783,6 +856,9 @@ class Extension extends Admin {
             } else{
                 if (!empty($dirs)) {
                     foreach ($dirs as $name) {
+                        if (in_array($name, ['admin','install','common','functions'])) {
+                            continue;
+                        }
                         $this->appExtensionPath = $this->appsPath . $name . DS;
                         $info_file = $this->appExtensionPath . 'install/info.json';
                         $info = $this->getInfoByFile($info_file);
@@ -791,6 +867,7 @@ class Extension extends Admin {
                             \think\Log::record('应用'.$name.'的信息缺失！');
                             continue;
                         }
+                        if (!$this->appExtensionModel->where('name',$name)->find()) $info['status']=3;
 
                         $list[$name] = $info;
                     }
@@ -802,6 +879,13 @@ class Extension extends Admin {
         return $list;
     }
 
+    public static function refresh($type='')
+    {
+
+        cache('eacoo_appstore_'.$type.'s_1',null);
+        cache('local_'.$type.'s_list',null);
+        return true;
+    }
     /**
      * 获取logo
      * @param  string $name [description]

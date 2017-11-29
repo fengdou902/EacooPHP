@@ -309,13 +309,8 @@ class AdminForm extends Builder
         } else{
             $template_path_str = './';
         }
-
-        $fields_name = ['text','number','info','section','date','datetime','hidden','password','left_icon_text','right_icon_text','left_icon_number','right_icon_number','textarea','ueditor','wangeditor','radio','checkbox','select','select2','select_multiple','tags','multilayer_select','email','region','city','icon','avatar','picture','pictures','image','file','files','repeater','self','self_html'];
-        $builder_fields = [];
-        foreach ($fields_name as $key => $type) {
-            $builder_fields[$type]= $template_path_str.'apps/admin/view/builder/Fields/'.$type.'.html';
-        }
-        $field_template = isset($builder_fields[$field['type']]) ? $builder_fields[$field['type']] : '';
+        $field_type = $field['type'];
+        $field_template = $template_path_str.'apps/admin/view/builder/Fields/'.$field_type.'.html';
         parent::fetch($field_template);
     }
 }

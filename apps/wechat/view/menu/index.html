@@ -1,0 +1,202 @@
+{extend name="../apps/admin/view/public/base.html"/}
+  {block name="style"}
+    <!--此页面增加的style-->
+    <style type="text/css">
+      .add_parent_menu,.remove_parent_menu,.add_children_menu,.remove_children_menu{}
+      .input-group .input-group-addon{background: #f0f0f0;cursor: pointer;}
+    </style>
+  {/block}
+
+  {block name="main"}
+      <div class="row mb-10">
+        <div class="col-md-9">
+            <button class="btn btn-default btn-sm top_add_parent_menu" ><i class="fa fa-plus"></i> 父菜单</button>
+            <button class="btn btn-info btn-sm ajax-get confirm" url="{:url('Weixin/Menu/syc_get_menu')}"> 获取菜单</button>
+            <button class="btn bg-aqua btn-sm ajax-get confirm" url="{:url('Weixin/Menu/publish_menu')}"> 发布菜单</button>
+            <button class="btn btn-danger btn-sm fr confirm ajax-get" url="{:url('Weixin/Menu/delete_menu')}"><i class="fa fa-trash"></i> 删除所有菜单</button>
+        </div>
+      </div>
+    <hr>
+    <div class="builder formbuilder-box panel-body">
+    <div class="row">  
+        <div class="col-md-10 col-md-offset-1">      
+              <div id="tab2" class="tab-pane">
+                <form action="{:url('weixin/Menu/create_menu')}" method="post" class="form-builder form-horizontal responsive" >
+                    <fieldset id="weixin_menu_content">
+                    {volist name="menu" id="button"}
+                      {assign name="pkey" value="$key" /}
+                      <div class="weixin_parent_menu">
+                        <div class="form-group">
+                          <div class="col-xs-3">
+                            <div class="input-group">
+                              <span class="input-group-addon remove_parent_menu"><i class="fa fa-minus"></i></span>
+                              <input type="text" class="form-control" name="button[{$pkey}][name]" value="{$button.name}" placeholder="菜单名">
+                            </div>
+                          </div>
+                          <div class="col-xs-2">
+                            <select class="form-control" name="button[{$pkey}][type]">
+                              <option value="" >动作类型</option>
+                              <option value="view" {present name="button.type"}{eq name="button.type" value="view"}selected{/eq}{/present}>链接跳转</option>
+                              <option value="click" {present name="button.type"}{eq name="button.type" value="click"}selected{/eq}{/present}>触发关键字</option>
+                            </select>
+                          </div>
+                          <div class="col-xs-5">
+                              <div class="input-group">
+                                <input type="text" class="form-control" name="button[{$pkey}][value]" value="{present name="button.type"}{switch name="button.type"}
+                                    {case value="view"}{$button.url}{/case}
+                                    {default /}{$button.key}
+                                {/switch}{/present}" placeholder="填写触发内容">
+                                <span class="input-group-addon add_parent_menu"><i class="fa fa-plus"></i></span>
+                              </div>
+                          </div>
+                      </div>
+                        {volist name="button.sub_button" id="sub_button"}
+                            {assign name="subkey" value="$key" /}
+                            <div class="form-group weixin_child_menu">
+                              <div class="col-xs-3 col-md-offset-1">
+                                <div class="input-group">
+                                  <span class="input-group-addon remove_children_menu"><i class="fa fa-minus"></i></span>
+                                  <input type="text" class="form-control" name="button[{$pkey}][sub_button][{$subkey}][name]" value="{$sub_button.name}" placeholder="子菜单名">
+                                </div>
+                              </div>
+                              <div class="col-xs-2">
+                                <select class="form-control" name="button[{$pkey}][sub_button][{$subkey}][type]">
+                                  <option value="">动作类型</option>
+                                  <option value="view" {eq name="sub_button.type" value="view"}selected{/eq}>链接跳转</option>
+                                  <option value="click" {eq name="sub_button.type" value="click"}selected{/eq}>触发关键字</option>
+                                </select>
+                              </div>
+                              <div class="col-xs-5">
+                                <div class="input-group">
+                                  <input type="text" class="form-control" name="button[{$pkey}][sub_button][{$subkey}][value]" value="{switch name="sub_button.type"}
+                                        {case value="view"}{$sub_button.url}{/case}
+                                        {default /}{$sub_button.key}
+                                    {/switch}" placeholder="填写触发内容">
+                                  <span class="input-group-addon add_children_menu"><i class="fa fa-plus"></i></span>
+                                </div>
+                              </div>
+                          </div>
+                        {/volist}
+                      </div>
+                    {/volist}
+
+                    </fieldset>
+                      <div class="form-group mt-20">
+                            <div class="col-md-12 col-md-offset-2">
+                              <div class="col-md-3"><button class="btn btn-block btn-primary submit ajax-post" type="submit" target-form="form-builder">创建菜单</button></div>
+                              <div class="col-md-3"><button class="btn btn-block btn-default return" onclick="javascript:history.back(-1);return false;">返回</button></div>
+                          </div>
+                      </div>
+                </form>
+            </div>
+                    
+            </div>    
+   </div><!--row-->
+ </div>
+
+  {/block}
+
+  {block name="script"}
+    <script type="text/javascript">
+      $(function(){
+          //添加父菜单
+          $('body').on('click','.add_parent_menu,.top_add_parent_menu', function() {
+            var $this=$(this);
+            var parent_menu_num=$('.add_parent_menu').length;
+            if (parent_menu_num<3) {
+              var pkey=parent_menu_num;
+                $("#weixin_menu_content").append('<div class="weixin_parent_menu"><div class="form-group"><div class="col-xs-3"><div class="input-group"><span class="input-group-addon remove_parent_menu"><i class="fa fa-minus"></i></span><input type="text" class="form-control" name="button['+pkey+'][name]" value="" placeholder="菜单名"></div></div><div class="col-xs-2"><select class="form-control" name="button['+pkey+'][type]"><option value="">动作类型</option><option value="view">链接跳转</option><option value="click">触发关键字</option></select></div><div class="col-xs-5"><div class="input-group"><input type="text" class="form-control" name="button['+pkey+'][value]" value="" placeholder="填写触发内容"><span class="input-group-addon add_parent_menu"><i class="fa fa-plus"></i></span></div></div></div><div class="form-group weixin_child_menu"><div class="col-xs-3 col-md-offset-1"><div class="input-group"><span class="input-group-addon remove_children_menu"><i class="fa fa-minus"></i></span><input type="text" class="form-control" name="button['+pkey+'][sub_button][0][name]" value="" placeholder="子菜单名"></div></div><div class="col-xs-2"><select class="form-control" name="button['+pkey+'][sub_button][0][type]"><option value="">动作类型</option><option value="view" selected="">链接跳转</option><option value="click">触发关键字</option></select></div><div class="col-xs-5"><div class="input-group"><input type="text" class="form-control" name="button['+pkey+'][sub_button][0][value]" value="" placeholder="填写触发内容"><span class="input-group-addon add_children_menu"><i class="fa fa-plus"></i></span></div></div></div></div>');
+            }else{
+                alert('您最多设置3个父菜单');
+            }
+            
+          })
+          //移除父菜单
+          $('body').on('click','.remove_parent_menu', function() {
+            var $this=$(this);
+            $this.parent().parent().parent().parent().remove();
+          })
+          //添加子菜单
+          $('body').on('click','.add_children_menu', function() {
+            var $this=$(this);
+            var parent_menu_node=$this.parent().parent().parent().parent();
+            var child_menu_num=parent_menu_node.children('.weixin_child_menu').length;
+            
+            if (child_menu_num<5) {
+              var pkey=$('.weixin_parent_menu').index(parent_menu_node);
+              var subkey=child_menu_num;
+              parent_menu_node.append('<div class="form-group weixin_child_menu"><div class="col-xs-3 col-md-offset-1"><div class="input-group"><span class="input-group-addon remove_children_menu"><i class="fa fa-minus"></i></span><input type="text" class="form-control" name="button['+pkey+'][sub_button]['+subkey+'][name]" value="" placeholder="子菜单名"></div></div><div class="col-xs-2"><select class="form-control" name="button['+pkey+'][sub_button]['+subkey+'][type]"><option value="">动作类型</option><option value="view" selected="">链接跳转</option><option value="click">触发关键字</option></select></div><div class="col-xs-5"><div class="input-group"><input type="text" class="form-control" name="button['+pkey+'][sub_button]['+subkey+'][value]" value="" placeholder="填写触发内容"><span class="input-group-addon add_children_menu"><i class="fa fa-plus"></i></span></div></div></div>');
+            }else{
+                alert('您最多设置5个子菜单');
+            }
+            
+          })
+          //移除子菜单
+          $('body').on('click','.remove_children_menu', function() {
+            var $this=$(this);
+            $this.parent().parent().parent().remove();
+          })
+
+
+          /*var menu_content='{
+    "button": [
+        {
+            "name": "点击跳转",
+            "sub_button": [
+                {
+                    "type": "click",
+                    "name": "点击推事件",
+                    "key": "FANGBEI"
+                },
+                {
+                    "type": "view",
+                    "name": "跳转URL",
+                    "url": "http://mp.weixin.qq.com/s?__biz=MzA5NzM2MTI4OA==&mid=205215861&idx=1&sn=890e36a114827cb510542315dd706c9d#rd"
+                },
+                {
+                    "type": "view",
+                    "name": "微信登录",
+                    "url": "http://aunt.sinaapp.com/demo/oauth2/index.php"
+                }
+            ]
+        },
+        {
+            "name": "扫码发图",
+            "sub_button": [
+                {
+                    "type": "scancode_waitmsg",
+                    "name": "扫码带提示",
+                    "key": "rselfmenu_0_0"
+                },
+                {
+                    "type": "scancode_push",
+                    "name": "扫码推事件",
+                    "key": "rselfmenu_0_1"
+                },
+                {
+                    "type": "pic_sysphoto",
+                    "name": "系统拍照发图",
+                    "key": "rselfmenu_1_0"
+                },
+                {
+                    "type": "pic_photo_or_album",
+                    "name": "拍照或相册发图",
+                    "key": "rselfmenu_1_1"
+                },
+                {
+                    "type": "pic_weixin",
+                    "name": "微信相册发图",
+                    "key": "rselfmenu_1_2"
+                }
+            ]
+        },
+        {
+            "name": "发送位置",
+            "type": "location_select",
+            "key": "rselfmenu_2_0"
+        }
+    ]
+}';*/
+        });
+    </script>
+  {/block}

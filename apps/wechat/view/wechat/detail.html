@@ -1,0 +1,22 @@
+{extend name="../apps/admin/view/public/base.html"/}
+{block name="style"}
+<style type="text/css">
+	.list-group-item{border:none;}
+</style>
+{/block}
+
+{block name="main"}
+   <ul class="list-group">
+      <li class="list-group-item"><strong>公众号名称：</strong>{$weixin.name}</li>
+      <li class="list-group-item"><strong>URL(服务器地址)：</strong>{$weixin.url}</li>
+      <li class="list-group-item"><strong>Token(令牌)：</strong>{$weixin.valid_token}</li>
+      <li class="list-group-item"><strong>EncodingAESKey(消息加解密密钥)：</strong>{$weixin.encodingaeskey}</li>
+    </ul>
+    <div class="col-md-2">
+        <button class="btn bg-aqua btn-block return" onclick="javascript:history.back(-1);return false;"><i class="fa fa-mail-reply"></i> 返回</button>
+    </div>
+{/block}
+
+{block name="script"}
+
+{/block}

@@ -11,6 +11,7 @@
 namespace app\common\controller;
 use app\admin\model\Hooks;
 use app\admin\model\Plugins;
+use app\admin\controller\Extension;
 
 class Plugin extends Base {
 	
@@ -48,16 +49,27 @@ class Plugin extends Base {
      * @return [type]               [description]
      */
 	public function fetch($template='', $vars = [], $replace = [], $config = [] ,$render=false) {
-		if ($template != '') {
-            if (!is_file($template)) {
-                $template = $this->pluginPath. 'view/'. $template . '.' .config('template.view_suffix');
-                if (!is_file($template)) {
-                    throw new \Exception('模板不存在：'.$template, 5001);
-                }
-            }
+		$plugin_name = input('param.plugin_name');
 
-            echo $this->view->fetch($template, $vars, $replace, $config, $render);
+        if ($plugin_name != '') {
+            $plugin = $plugin_name;
+            $action = 'index';
+        } else {
+            $plugin = input('param._plugin');
+            $action = input('param._action');
         }
+        $template = $template == '' ? $action : $template;
+        if (MODULE_MARK === 'admin') {
+        	$template = 'admin/'.$template;
+        }
+        if (!is_file($template)) {
+            $template = $this->pluginPath. 'view/'. $template . '.' .config('template.view_suffix');
+            if (!is_file($template)) {
+                throw new \Exception('模板不存在：'.$template, 5001);
+            }
+        }
+
+        echo $this->view->fetch($template, $vars, $replace, $config, $render);
 	}
 
 	/**
@@ -70,7 +82,11 @@ class Plugin extends Base {
 		$name = input('param._plugin', '', 'trim');
 
 		if ($name) {
-			return Plugins::getInfoByFile($name);
+			
+			$extensionObj = new Extension;
+			$extensionObj->initInfo('plugin',$name);
+			$this->pluginPath = $extensionObj->appExtensionPath;
+			return $extensionObj->getInfoByFile();
 		} else {
 			$info_file = $this->pluginPath.'install/info.json';
 			if (is_file($info_file)) {
@@ -122,7 +138,8 @@ class Plugin extends Base {
 		if ($config) {
 			$config = json_decode($config, true);
 		} else {
-			$config = Plugins::getDefaultConfig($name);
+			$extensionObj = new Extension;
+			$config = $extensionObj->getDefaultConfig($name);
 		}
 		$_config[$name] = $config;
 		return $config;

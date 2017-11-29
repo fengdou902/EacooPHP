@@ -38,8 +38,8 @@ class Attachment extends Base {
         //     $map['ext'] = ['in',$this->file_extensions];
         // }
         $map['path_type'] = ['in',$path_type];
-        $attachment_show_type = config('attachment_show_type');//附件选择器显示类型(0:所有，1:作者)
-        if (intval($attachment_show_type)==1) {
+        $widget_show_type = config('attachment_options.widget_show_type');//附件选择器显示类型(0:所有，1:作者)
+        if (intval($widget_show_type)==1) {
           $map['uid']=is_login();
         }
         $map['status']=1;

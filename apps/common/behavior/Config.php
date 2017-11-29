@@ -110,9 +110,9 @@ class Config {
         }
 
         thinkConfig::set($ec_config);// 添加配置
-
         // 读取数据库中的配置
        $system_config = Cache::get('DB_CONFIG_DATA',false);//数据库里的配置
+       
         if (!$system_config && is_file(APP_PATH . 'install.lock')) {
             // 获取所有系统配置
             $system_config = ConfigModel::lists();

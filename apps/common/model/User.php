@@ -21,7 +21,7 @@ class User extends Base
     protected $updateTime = '';
     // 自动完成
     protected $auto       = ['last_login_ip'];
-    protected $insert     = ['register_ip','status' => 2,'password'];
+    protected $insert     = ['register_ip','password'];
     //protected $update     = ['password'];
 
     public function setRegisterIpAttr($value)

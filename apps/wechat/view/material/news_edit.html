@@ -1,0 +1,170 @@
+{extend name="../apps/admin/view/public/base.html"/}
+{block name="style"}
+    <link type="text/css" rel="stylesheet" href="__CSS__/admin.css"/>
+{/block}
+
+{block name="main"}
+<div class="builder-tabs news-tabs mb-20">
+    <ul class="nav nav-tabs hide">
+      {volist name="tab_list" id="tab"}
+          <li class='{eq name="key" value="news"}active{/eq}'><a href="{$tab.href}">{$tab.title}</a></li>
+      {/volist}         
+    </ul>
+</div>
+<div class="row news-wrap">
+    
+    <div class="col-md-3">
+        <div class="panel panel-default">
+        <div class="panel-heading">图文列表</div>
+         <div class="panel-body">
+             <div class="news-newslist">
+               {present name="sub_news"}{volist name="sub_news" id="row"}
+                  {eq name="key" value="0"}
+                    <div class="item-news first">
+                         <a href="{$row.url}" target="_blank"><img class="item-thumb" src="{$row.attachment_id|getThumbImageById=###,'original'}" alt=""></a>
+                         <p class="meta-title">{$row.title}</p>
+                         <div class="item-news-dodeal-cover"><a class="dodeal dodeal-edit" href="{:url('news_edit',array('id'=>$row['id']))}">编辑</a><span class="dodeal dodeal-delete ajax-get no-refresh confirm" url="{:url('Weixin/Material/setStatus',array('status'=>'delete','ids'=>$row['id'],'model'=>'Material'))}">删除</span></div>
+                     </div>
+                  {else/}
+                    <div class="item-news row-nopadding">
+                      <div class="col-md-8 item-title"><a href="{$row.url}" target="_blank">{$row.title}</a></div>
+                      <a class="col-md-4" href="{$row.url}" target="_blank">
+                        <img class="item-thumb" src="{$row.attachment_id|getThumbImageById=###,'thumb'}" alt="">
+                      </a>
+                      <div class="item-news-dodeal-cover"><a class="dodeal dodeal-edit" href="{:url('news_edit',array('id'=>$row['id']))}">编辑</a><span class="dodeal dodeal-delete ajax-get no-refresh confirm" url="{:url('Weixin/Material/setStatus',array('status'=>'delete','ids'=>$row['id'],'model'=>'Material'))}">删除</span></div>
+                    </div>
+                  {/eq}
+               {/volist}
+               {/present}
+             </div>
+             <div class="item-news-add">
+                <div class="item-news-border">
+                    <span class="news-add-btn">添加</span>
+                </div>
+                
+             </div>
+         </div>
+        </div><!--box-->
+        <div class="panel panel-success">
+        <div class="panel-heading">图文组推送</div>
+         <div class="panel-body">
+          <form action="{:config('index_url')}/index.php?s=/weixin/Superpush/push.html" method="post" class="form-superpush">
+          <div class="input-group">
+              <input type="text" name="group_id" value="{$news.group_id|default=''}" class="form-control" placeholder="输入图组ID">
+
+              <div class="input-group-btn">
+                <button type="submit" class="btn btn-primary btn-flat ajax-post confirm" target-form="form-superpush">推送</button>
+              </div>
+              <!-- /btn-group -->
+            </div>
+          </form>
+
+         </div>
+         </div>
+        
+    </div>
+    <form id="news_form" method="post" action="{:url('news_edit',array('id'=>$id))}" class="form-post form">
+        <div class="col-md-9 ">
+        <div class="panel panel-default">
+            <div class="panel-heading news_meta_title">
+                  {$meta_title}
+            </div>
+             <div class="panel-body">
+                  {notempty name="news"}
+                      <input type="hidden" id="news_id" name="id" value="{$news.id|default='0'}" />
+                  {/notempty}
+                    <input type="hidden" id="group_id" name="group_id" value="{$news.group_id|default=''}" />
+                    <div class="form-group">
+                      <!--<label class="col-sm-1 control-label" for="title">标题</label>-->
+                      <div class="col-sm-12">
+                        <input class="form-control" id="news_title" name="title" value="{$news.title|default=''}" type="text" placeholder="请输入标题">
+                      </div>
+                      
+                    </div>
+                 
+                    <!--编辑器-->
+                    <div class="form-group col-sm-12">
+                    {php}
+                    $wangeditor_attributes = [
+                        'id'      => 'news_content',
+                        'name'    => 'news_content',
+                        'default' => isset($news['news_content'])? $news['news_content']:'',
+                        'width'   => '100%',
+                        'height'  => '360px',
+                        'config'  => 'all'
+                    ];
+                    {/php}
+                    {:widget('common/Editor/wangeditor',[$wangeditor_attributes,['importWangEditor'=>1,'open_attachmentModal'=>'multiple']])}
+                    </div>
+                    <!--编辑器-->
+                    <div class="form-group col-sm-12 mt-20">
+                      <label class="control-label" for="description">摘要</label><span class="text-muted">（选填，如果不填写会默认抓取正文前54个字）</span>
+                        <textarea class="form-control mt-10" id="news_description" name="description" rows='5'>{$news.description|default=''}</textarea>
+                    </div>
+                    <div class="form-group col-sm-12 mt-20">
+                      <label class="control-label col-md-1 pr-0" for="title">封面:</label>
+                        <div class="oh">{:widget('common/Upload/image',[['id'=>'attachment_id','class'=>'uploadsingleimg','name'=>'attachment_id','value'=>$news['attachment_id']]])}
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-12 mt-20">
+                      <label class="control-label" for="url">链接</label><span class="text-muted">（选填，自定义图文链接）</span>
+                        <input class="form-control mt-10" id="news_url" name="url" value="{$news.url|default=''}">
+                    </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-md-12 tc mt-30 mb-20">
+    <hr>
+        {notempty name="post_obj"}
+            <button class="btn btn-primary ajax-post" id="login" align="center" type="submit" name="status" value="1" target-form="form-post">更新</button>
+        {else/}
+            <button class="btn btn-primary ajax-post" id="login" align="center" type="submit" name="status" value="1" target-form="form-post">发布</button>
+           
+            <button class="btn btn-default ajax-post" id="save" name="status" value="0" align="center" type="submit" target-form="form-post">保存草稿</button>
+        {/notempty}
+            <button onclick="javascript:history.back(-1);return false;" class="btn btn-default return">返回</button>
+
+    </div>
+</form>
+</div>
+{/block}
+
+{block name="script"}
+  <script type="text/javascript">
+    $(function () {
+      //操作图文列表
+      $(".item-news").mouseenter(function () {
+          var $this=$(this);
+          $this.addClass('hover');
+      })
+      $(".item-news").mouseleave(function () {
+          var $this=$(this);
+          $this.removeClass('hover');
+      })
+      $(".item-news-dodeal-cover span.dodeal-delete").click(function () {
+          var $this=$(this);
+          //alert('删除成功');
+          $this.parent().parent().remove();
+      })
+      //添加图文按钮
+      $('.item-news-add .news-add-btn').on('click', function(){
+        var news_num=$('.news-newslist .item-news').length;
+          if (news_num>7) {
+              alert('对不起，一个图文组您最多添加8条。');
+              return false;
+          }else{
+              $("#news_id").val('0');
+              $("#news_content,#news_title,#news_description,#attachment_id,#news_url").val('');
+              $(".upload-img-box .each").html('');
+              $(".news_meta_title").text('新增图文');
+              $("#news_form").attr("action","{:url('news_edit')}");
+              editor_news_content.$txt.html('<p><br></p>');
+          }
+
+      })
+    })
+  </script>
+{/block}

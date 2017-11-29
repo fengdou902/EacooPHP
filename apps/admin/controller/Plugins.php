@@ -15,7 +15,7 @@ use app\admin\model\Hooks;
 use app\admin\model\AuthRule;
 
 use app\admin\builder\Builder;
-use com\Sql;
+use eacoo\Sql;
 use eacoo\Cloud;
 
 class Plugins extends Admin {
@@ -109,37 +109,55 @@ class Plugins extends Admin {
                 if (!empty($db_config)) {
                     $db_config = json_decode($db_config, true);//dump($db_config['sliders']);
                     foreach ($options as $key => $value) {
-                        if ($value['type'] != 'group') {
-                            if (isset($db_config[$key])) {
-                                $options[$key]['value'] = $db_config[$key];
-                            }
-                        } else {
-                            foreach ($value['options'] as $gourp => $option) {
-                                foreach ($option['options'] as $gkey => $value) {
-                                    $options[$key]['options'][$gourp]['options'][$gkey]['value'] = $db_config[$gkey];
+                        switch ($value['type']) {
+                            case 'group':
+                                foreach ($value['options'] as $okey => $option) {
+                                    $options[$key]['options'][$okey]['value'] = $db_config[$key][$okey]; 
                                 }
-                            }
+                                break;
+                            case 'tab':
+                                foreach ($value['options'] as $okey => $option) {
+                                    foreach ($option['options'] as $gkey => $value) {
+                                        $options[$key]['options'][$okey][$gkey]['options']['value'] = $db_config[$gkey];
+                                    }
+                                    
+                                }
+                                break;
+                            default:
+                                if (isset($db_config[$key])) {
+                                    $options[$key]['value'] = $db_config[$key];
+                                }
+                                break;
                         }
+
                     }
                 }
                 // 构造表单名
                 foreach ($options as $key => $val) {
-                    if ($val['type'] == 'group') {
-                        foreach ($val['options'] as $key2 => $val2) {
-                            foreach ($val2['options'] as $key3 => $val3) {
-                                $options[$key]['options'][$key2]['options'][$key3]['name'] = 'config['.$key3.']';
-
-                                $options[$key]['options'][$key2]['options'][$key3]['confirm'] = $options[$key]['options'][$key2]['options'][$key3]['extra_class'] = $options[$key]['options'][$key2]['options'][$key3]['extra_attr']='';
+                    switch ($val['type']) {
+                        case 'group':
+                            foreach ($val['options'] as $key2 => $val2) {
+                                $options[$key]['options'][$key2]['name'] = 'config['.$key.']['.$key2.']';
                             }
-                        }
-                    } else {
-                        $options[$key]['name'] = 'config['.$key.']';
+                            break;
+                        case 'tab':
+                            foreach ($val['options'] as $key2 => $val2) {
+                                foreach ($val2['options'] as $key3 => $val3) {
+                                    $options[$key]['options'][$key2]['options'][$key3]['name'] = 'config['.$key3.']';
 
-                        $options[$key]['confirm']     = isset($val['confirm']) ? $val['confirm']:'';
-                        $options[$key]['options']     = isset($val['options']) ? $val['options']:[];
-                        $options[$key]['extra_class'] = isset($val['extra_class']) ? $val['extra_class']:'';
-                        $options[$key]['extra_attr']  = isset($val['extra_attr']) ? $val['extra_attr']:'';
+                                    $options[$key]['options'][$key2]['options'][$key3]['confirm'] = $options[$key]['options'][$key2]['options'][$key3]['extra_class'] = $options[$key]['options'][$key2]['options'][$key3]['extra_attr']='';
+                                }
+                                
+                            }
+                            break;
+                        default:
+                            $options[$key]['name'] = 'config['.$key.']';
 
+                            $options[$key]['confirm']     = isset($val['confirm']) ? $val['confirm']:'';
+                            $options[$key]['options']     = isset($val['options']) ? $val['options']:[];
+                            $options[$key]['extra_class'] = isset($val['extra_class']) ? $val['extra_class']:'';
+                            $options[$key]['extra_attr']  = isset($val['extra_attr']) ? $val['extra_attr']:'';
+                            break;
                     }  
                 }
             }
@@ -163,16 +181,49 @@ class Plugins extends Admin {
     }
 
     /**
+     * 安装之前
+     */
+    public function installBefore($name='') {
+        $this->assign('meta_title','准备安装插件');
+
+        if ($this->pluginModel->where('name',$name)->find()) {
+            $clear = 0;
+        } else{
+            $clear = 1;
+        }
+        $info=['name'=>$name,'clear'=>$clear];
+        $fieldList = [
+                ['name'=>'name','type'=>'hidden','title'=>'名称'],
+                ['name'=>'clear','type'=>'radio','title'=>'清除数据：','description'=>'是否清除数据，默认否','options'=>[1=> '是', 0=> '否']],
+            ];
+        foreach ($fieldList as $key => &$val) {
+            if ($val['name']!='self_html') {
+                $val['value']=isset($info[$val['name']])? $info[$val['name']]:'';
+            }
+            
+        }
+        $this->assign('fieldList',$fieldList);
+        $this->assign('post_url',url('install'));
+        return $this->fetch('extension/install_before');
+    }
+
+    /**
      * 安装插件
      * @param  string $name 插件名
+     * @param  boolean $clear 是否清除历史数据
      * @return [type] [description]
      * @date   2017-09-18
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function install($name='') {
+    public function install($name='',$clear = 1) {
         $extensionObj = new Extension;
         $extensionObj->initInfo('plugin');
-        return $extensionObj->install($name);
+        $result = $extensionObj->install($name,$clear);
+        if ($result['code']==1) {
+            $this->success('安装成功', url('index'));
+        } else{
+            $this->error($result['msg'], '');
+        }
         
     }
 
@@ -217,27 +268,29 @@ class Plugins extends Admin {
         if ($clear) {
             $result = PluginsModel::where('id',$id)->delete();
         } else{
-            $result = PluginsModel::where('id',$id)->update(['status'=>0]);
+            $result = PluginsModel::where('id',$id)->update(['status'=>-1]);
         }
         if ($result) {
             $extensionObj = new Extension;
-            $extensionObj->initInfo('plugin');
+            $extensionObj->initInfo('plugin',$name);
             // 删除后台菜单
             $extensionObj->removeAdminMenus($name,$clear);
-            // 卸载数据库
-            $sql_file = PLUGIN_PATH.$name.'/install/uninstall.sql';
-            if (is_file($sql_file)) {
-                $info       = $extensionObj->getInfoByFile();
-                $sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
-                if (!$sql_status) {
-                    $this->error('执行插件SQL卸载语句失败');
+            if ($clear) {
+                // 卸载数据库
+                $sql_file = PLUGIN_PATH.$name.'/install/uninstall.sql';
+                if (is_file($sql_file)) {
+                    $info       = $extensionObj->getInfoByFile();
+                    $sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
+                    if (!$sql_status) {
+                        $this->error('执行插件SQL卸载语句失败');
+                    }
                 }
             }
 
-            $static_path = PLUGIN_PATH.$name.'/static';
-            $_static_path = PLUGIN_PATH.'static/plugins/'.$name;
+            $_static_path = PUBLIC_PATH.'static/plugins/'.$name;
             if (is_dir($_static_path)) {
-                if(is_writable(PLUGIN_PATH.'static/plugins') && is_writable(realpath(PLUGIN_PATH.$name))){
+                if(is_writable(PUBLIC_PATH.'static/plugins') && is_writable(PLUGIN_PATH.$name)){
+                    $static_path = PLUGIN_PATH.$name.'/static';
                     if (!rename($_static_path,$static_path)) {
                         trace('插件静态资源移动失败：'.'public/static/plugins/'.$name.'->'.$static_path,'error');
                     } 
@@ -262,8 +315,28 @@ class Plugins extends Admin {
      */
     public function refresh()
     {
-        cache('eacoo_appstore_plugins_1');
+        Extension::refresh('plugin');
         $this->success('操作成功','');
+    }
+
+    /**
+     * 删除
+     * @param  string $name [description]
+     * @return [type] [description]
+     * @date   2017-11-07
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function del($name='')
+    {
+        if ($name) {
+            if (!is_writable(PLUGIN_PATH.$name)) {
+                $this->error('目录权限不足，请手动删除目录');
+            }
+            @rmdirs(PLUGIN_PATH.$name);
+            Extension::refresh('plugin');
+            $this->success('删除插件成功');
+        }
+        $this->error('删除插件失败');
     }
 
     /**
@@ -391,7 +464,7 @@ class Plugins extends Admin {
     {
         $store_data = cache('eacoo_appstore_plugins_'.$paged);
         if (empty($store_data) || !$store_data) {
-            $url        = config('eacoo_api_url').'/server_appstore_plugins';
+            $url        = config('eacoo_api_url').'/api/appstore/plugins';
             $params = [
                 'paged'=>$paged
             ];
@@ -406,12 +479,14 @@ class Plugins extends Admin {
             foreach ($store_data as $key => &$val) {
                 
                 $val['publish_time'] = friendly_date($val['publish_time']);
-                $val['right_button'] = '<button class="btn btn-primary btn-sm app-online-install" data-name="'.$val['name'].'" data-type="plugin" href="javascript:void(0);" >现在安装</button> ';
+                $val['right_button'] = '<button class="btn btn-primary btn-sm app-online-install" data-name="'.$val['name'].'" data-type="plugin" href="javascript:void(0);" data-install-method="install">现在安装</button> ';
                 if (!empty($local_plugins)) {
                     foreach ($local_plugins as $k => $row) {
                         if ($row['name']==$val['name']) {
                             if ($row['version']<$val['version']) {
-                                $val['right_button'] = '<a class="btn btn-success btn-sm app-online-install" href="javascript:void(0);" >升级</a> ';
+                                $val['right_button'] = '<a class="btn btn-success btn-sm app-online-install" data-name="'.$val['name'].'" data-type="plugin" href="javascript:void(0);" data-install-method="upgrade">升级</a> ';
+                            } elseif(isset($row['status']) && $row['status']==3){
+                                $val['right_button'] = '<a class="btn btn-default btn-sm" href="'.url('index',['from_type'=>'local']).'">已下载</a> ';
                             } else{
                                 $val['right_button'] = '<a class="btn btn-default btn-sm" href="'.url('index',['from_type'=>'local']).'">已安装</a> ';
                             }

@@ -25,16 +25,13 @@ class User extends Admin {
     //用户列表
     public function index(){
         // 搜索
-        $keyword = input('keyword');
+        $keyword = input('param.keyword');
         if ($keyword) {
             $this->userModel->where('uid|username|nickname','like','%'.$keyword.'%');
         }
         // 获取所有用户
         $map['status'] = ['egt', '0']; // 禁用和正常状态
         list($data_list,$page) = $this->userModel->getListByPage($map,'reg_time desc','*',20);
-        // foreach($data_list as $k=>$user){
-        //     $data_list[$k]['role_name']= isset(get_role_info($user['uid'],'title')[0]['title']) ? get_role_info($user['uid'],'title')[0]['title']: '无';//获取角色名
-        // }
         
         $send_message_attr['title']   = '<i class="fa fa-comment-o"></i> 发送消息';
         $send_message_attr['class']   = 'btn btn-info btn-raised btn-sm';
@@ -52,8 +49,6 @@ class User extends Admin {
         Builder::run('List')
                 ->setMetaTitle('用户管理') // 设置页面标题
                 ->addTopButton('addnew')  // 添加新增按钮
-                //->addTopButton('resume')  // 添加启用按钮
-                //->addTopButton('forbid')  // 添加禁用按钮
                 ->addTopButton('delete')  // 添加删除按钮
                 ->addTopButton('self', $send_message_attr) //发送消息按钮按钮
                 ->addTopButton('self', $move_role_attr)//添加移动角色按钮
@@ -83,15 +78,15 @@ class User extends Admin {
     public function edit($uid = 0) {
         $title = $uid ? "编辑" : "新增";
         if (IS_POST) {
+            $data = input('post.');
             // 密码为空表示不修改密码
-            if ($_POST['password'] === '') {
-                unset($_POST['password']);
+            if ($data['password'] === '') {
+                unset($data['password']);
             }
 
-            $data = input('post.');
             $this->validate($data,'User.edit');
 
-            $uid  = isset($data['uid']) ? intval($data['uid']) : false;
+            $uid  = isset($data['uid']) && $data['uid']>0 ? intval($data['uid']) : false;
             // 提交数据
             $result = $this->userModel->editData($data,$uid,'uid');
 
@@ -105,7 +100,7 @@ class User extends Admin {
             }
             
         } else {
-            $info=[];
+            $info=['status'=>1];
             // 获取账号信息
             if ($uid!=0) {
                 $info = $this->userModel->get($uid);
@@ -130,7 +125,8 @@ class User extends Admin {
             if ($uid>0) {
                 $builder->addFormItem('avatar', 'avatar', '头像', '用户头像默认随机分配',['uid'=>$info['uid']],'required');
             }
-            $builder->setFormData($info)//->setAjaxSubmit(false)
+            $builder->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'正常',2=>'待验证'])
+                    ->setFormData($info)//->setAjaxSubmit(false)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
         }

@@ -23,7 +23,9 @@
             "static": "__STATIC__", //静态资源地址
             "public": "__PUBLIC__", //项目公共目录地址
             "uploads_url" :'/uploads/',
-            "cdn_url":"{:config('aliyun_oss.domain')}",
+            "upload_driver":"{:config('attachment_options.driver')}",
+            "cdn_domain":"{:get_cdn_domain()}",
+            "eacoo_api_url":"{:config('eacoo_api_url')}",
         }
     </script>
 

@@ -27,12 +27,12 @@
                       <ul class="treeview-menu">
                         {volist name="vo._child" id="v"}
                              {empty name="v._child"}
-                              <li ><a href="{:url($v['name'])}" ><i class="fa fa-circle-o"></i> {$v.title}</a> </li>
+                              <li ><a href="{:eacoo_url($v['name'],[],$v['depend_type'])}" ><i class="fa fa-circle-o"></i> {$v.title}</a> </li>
                               {else/}
-                               <li ><a href="{:url($v['name'])}" ><i class="fa fa-circle-o"></i> {$v.title} <i class="fa fa-angle-left pull-right"></i></a>
+                               <li ><a href="{:eacoo_url($v['name'],[],$v['depend_type'])}" ><i class="fa fa-circle-o"></i> {$v.title} <i class="fa fa-angle-left pull-right"></i></a>
                                  <ul class="treeview-menu">
                                   {volist name="v._child" id="_v"}
-                                    <li><a href="{:url($_v['name'])}" ><i class="fa fa-circle-o"></i> {$_v.title}</a></li>
+                                    <li><a href="{:eacoo_url($_v['name'],[],$v['depend_type'])}" ><i class="fa fa-circle-o"></i> {$_v.title}</a></li>
                                   {/volist}                 
                                </ul>
                                 </li>

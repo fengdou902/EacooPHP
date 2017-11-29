@@ -1,0 +1,24 @@
+
+<div class="form-group"></div>
+<div class="builder-tabs ml-20">
+    <ul class="nav nav-tabs">
+        {volist name="field.options" id="li" key="group_k"}
+            <li data-tab="tab{$group_k}" {eq name="group_k" value="1"}class="active"{/eq}><a href="#tab{$group_k}" data-toggle="tab">{$li.title}</a></li>
+        {/volist}
+    </ul>
+</div>
+<div class="builder-container ml-20">
+    <div class="tab-content box-body">
+        {volist name="field.options" id="tab" key="group_k"}
+            <div id="tab{$group_k}" class='tab-pane {eq name="group_k" value="1"}active{/eq} tab{$group_k}'>
+                <div class="group">
+                    {volist name="tab.options" id="field" key="tab_k"}
+                        {:action('admin/AdminForm/fieldType',['field'=>$field],'builder')}
+                        {/*:hook('FormBuilderExtend', array('form' => $tab_form, 'type' => tab_))*/}
+                    {/volist}
+                </div>
+            </div>
+        {/volist}
+    </div>
+</div>
+<div class="form-group"><hr></div>

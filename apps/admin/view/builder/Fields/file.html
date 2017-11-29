@@ -8,16 +8,19 @@
           $path_type = isset($field['options']['path_type'])? $field['options']['path_type'] : 'attachment';
           $is_sql    = isset($field['options']['is_sql'])? $field['options']['is_sql'] : 'close';
     {/php}
-    <div class="form-group controls item_{$field.id} {$field.extra_class|default=''}">
-        <label for="{$field.id}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{/present}{$field.title}</label>
-        <div class="col-md-6 input-group" style="padding-left: 15px;">
-            <input class="attach form-control" type="text" id="{$field.id}" name="{$field.name}" value="{$field.value|default=''}"/>
-            <div class="input-group-btn">
-                <span id="upload_file_{$field.id}" class="btn btn-info btn-sm"><i class="fa fa-cloud-upload"></i> 选择文件</span>
+    <div class="form-group item_{$field.id} {$field.extra_class|default=''}">
+        <label for="{$field.id}" class="col-md-2 control-label mr-15">{present name="field.confirm"}{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{/present}{$field.title}</label>
+
+            <div class="input-group col-md-5">
+                <input class="attach form-control" type="text" id="{$field.id}" name="{$field.name}" value="{$field.value|default=''}"/>
+                <span class="input-group-btn">
+                    <button type="button" id="upload_file_{$field.id}" class="btn btn-info btn-sm"><i class="fa fa-upload"></i> 选择文件</button>
+                </span>
+
             </div>
-            {notempty name="field.description"}<div class="help-block col-md-6 pl-10 fn">{$field.description}</div>{/notempty}
+            {notempty name="field.description"}<div class="help-block col-md-4 col-md-offset-2" style="padding-left: 20px;">{$field.description}</div>{/notempty}
             
-        </div>
+
     </div>
     {present name="webuploader"}{if condition="$webuploader"}
         <link href="__STATIC__/libs/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
@@ -39,13 +42,13 @@
             // 如果此选项为false, 则图片在上传前不进行压缩
             compress: false, 
             // 验证单个文件大小是否超出限制, 超出则不允许加入队列 
-            fileSingleSizeLimit:{php}echo intval(config('file_upload.maxSize')) ? : 50*1024*1024;{/php},  
+            fileSingleSizeLimit:{php}echo intval(config('attachment_options.file_max_size')) ? : 50*1024*1024;{/php},  
             // 内部根据当前运行是创建，可能是input元素，也可能是flash.
 
             //选择文件的按钮
             pick: '#upload_file_{$field.id}',
             // 只允许选择图片文件
-            accept:{title:'File',extensions:'{:config("file_upload.exts")}',mimeTypes:'{:config("file_upload.mimes")}'}
+            accept:{title:'File',extensions:'{:config("attachment_options.file_exts")}',mimeTypes:''}
         });
         uploader_{$field.id}.on('fileQueued', function (file) {
             uploader_{$field.id}.upload();

@@ -63,7 +63,6 @@ if (!function_exists('rmdirs'))
 
 if (!function_exists('copydirs'))
 {
-
     /**
      * 复制文件夹
      * @param string $source 源文件夹
@@ -130,7 +129,7 @@ function format_bytes($size, $delimiter = '') {
  * echo format_file_size($thefile);
  */
 function format_file_size($size) { 
-    $sizes = array(" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB"); 
+    $sizes = [" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB"]; 
     if ($size == 0) {  
         return('n/a');  
     } else { 
@@ -220,49 +219,60 @@ function downloadExcel($strTable,$filename)
     echo '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />'.$strTable.'</html>';
 }
 
-/*******************************Aliyun OSS start ********************************/
-
 /**
- * 实例化阿里云OSS
- * @return object 实例化得到的对象
- * @return 此步作为共用对象，可提供给多个模块统一调用
- */
-function oss_client($config = []) {
-    if(empty($config)) $config = config('aliyun_oss');
-    //实例化OSS
-    $oss = new \OSS\OssClient($config['access_key_id'],$config['access_key_secret'],$config['endpoint']);
-    return $oss;
-}
-
-/**
- * 上传指定的本地文件内容
- * @param  string $object 对象
+ * 文件上传驱动
  * @return [type] [description]
- * @date   2017-08-07
- * @author 赵俊峰 <981248356@qq.com>
+ * @date   2017-11-15
+ * @author 心云间、凝听 <981248356@qq.com>
  */
-function oss_upload($object = '') {
-    $path = ltrim($object,'/');
-    $object = config('aliyun_oss.root_path').$object;
-    //try 要执行的代码,如果代码执行过程中某一条语句发生异常,则程序直接跳转到CATCH块中,由$e收集错误信息和显示
-    try{
-        $bucket = config('aliyun_oss.bucket');
-        $filePath = PUBLIC_PATH.$path;
-        if (file_exists($filePath)) {
-            $ossClient = oss_client();//dump($object);dump($filePath);halt($ossClient);
-            //uploadFile的上传方法
-            
-            $ossClient->uploadFile($bucket, $object, $filePath);
+function upload_drivers()
+{
+    $dirver_list = ['local'=>'本地'];
+    $dirvers = db('hooks')->where('name','UploadFile')->value('plugins');
+    if ($dirvers!='') {
+        $dirvers  = explode(',', $dirvers);
+        if (!empty($dirvers)) {
+            foreach ($dirvers as $key => $dirver) {
+                $dirver_list[$dirver] = db('plugins')->where('name',$dirver)->value('title');
+            }
         }
-        
-    } catch(OssException $e) {
-        //如果出错这里返回报错信息
-        return $e->getMessage();
     }
-    //否则，完成上传操作
-    return true;
+    
+    return $dirver_list;
 }
-/*******************************Aliyun OSS end ********************************/
+
+/**
+ * 获取cdn域名
+ * @return [type] [description]
+ * @date   2017-11-16
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function get_cdn_domain()
+{
+    $cdn_domain = cache('cdn_domain');
+    if (!$cdn_domain) {
+        $driver = !empty(config('attachment_options.driver')) ? config('attachment_options.driver') :'local';
+        if ($driver!='local') {
+            $check_res = check_install_plugin($driver);
+            if ($check_res) {
+                $class = get_plugin_class($driver);
+                if (class_exists($class)) {
+                    $plugin = new $class();
+                    if(method_exists($plugin,'getDomain')){
+                        $cdn_domain = $plugin->getDomain();
+                        cache('cdn_domain',$cdn_domain,3600);
+                        return $cdn_domain;
+                    }
+                    
+                } 
+            }
+        }
+        $cdn_domain = request()->domain();
+        cache('cdn_domain',$cdn_domain,3600);
+    }
+    return $cdn_domain;
+    
+}
 
 /*******************************images图片相关 start ********************************/
 
@@ -306,9 +316,7 @@ function cdn_img_url($path = '', $style='')
 
     if (strpos($path, 'http://') || strpos($path, 'https://')) return $path;
 
-    $cdn_domain  = config('aliyun_oss.domain');
-    //$cdn_style = config('aliyun_oss.style');
-    $cdn_path    = $cdn_domain.'/'.config('aliyun_oss.root_path').$path;
+    $cdn_path    = get_cdn_domain().$path;
     if ($style!='') {
         $url = $cdn_path.'!'.$style;
     } else{
@@ -329,20 +337,19 @@ function get_thumb_image($path = '', $style='small')
     if($path=='' || !$path) return false;
     if (strpos($path, 'http://') || strpos($path, 'https://')) return $path;
     
-    if (config('aliyun_oss.enable')==1) {
-        //oss
+    $option   = config('attachment_options');//获取附件配置值
+
+    if ($option['driver']!='local' && $option['driver']!='') {
         $url = cdn_img_url($path,$style);
     } else{
-        $option   = config('attachment_options');//获取附件配置值
-        $option   = json_decode($option,true);
+        
         if (isset($option['cut']) && $option['cut']) {
              if (!empty($option[$style.'_size'])) {//缩略图
                 $path = thumb_image($path,$option[$style.'_size']['width'],$option[$style.'_size']['height']);
             }
         }
-
-        $root_url = request()->domain();
-        $url = $root_url.$path;
+       
+        $url = get_cdn_domain().$path;
     }
 
     return $url;

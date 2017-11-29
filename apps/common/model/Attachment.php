@@ -36,7 +36,12 @@ class Attachment extends Base {
             if ($data['path_type']=='brand') {
                 $style = '';
             }
-            $thumb_src = get_thumb_image($data['path'],$style);
+            if (in_array($data['ext'],['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'wps', 'txt', 'zip', 'rar', 'gz', 'bz2', '7z','wav','mp3','mp4','wmv'])) {
+                $thumb_src = getImgSrcByExt($data['ext'],$data['path'],true);
+            } else{
+                $thumb_src = get_thumb_image($data['path'],$style);
+            }
+            
         }
 
         return $thumb_src;
@@ -100,21 +105,13 @@ class Attachment extends Base {
         } else {
 
             $result['real_path']= PUBLIC_PATH.$result['path'];
-
-            if (config('aliyun_oss.enable')==1) {
-                $cdn_domain = config('aliyun_oss.domain');
-                $result['src'] = $result['url'] = $cdn_domain.'/'.config('aliyun_oss.root_path').$result['path'];
-            } else {
-                //$result['src'] ='http://'.$_SERVER['HTTP_HOST'].getImgSrcByExt($result['ext'],$result['path'],true);
-                $result['src'] = getImgSrcByExt($result['ext'],$result['path'],true);
-                if (in_array($result['ext'],['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'wps', 'txt', 'zip', 'rar', 'gz', 'bz2', '7z','wav','mp3','mp4','wmv'])) {
-                    //$result['url'] ='http://'.$_SERVER['HTTP_HOST'].root_full_path($result['path']);
-                    $result['url'] = request()->domain().root_full_path($result['path']);
-                } else{
-                    $result['url'] = request()->domain().$result['src'];
-                }
-                
+            $result['src'] = getImgSrcByExt($result['ext'],$result['path'],true);
+            if (in_array($result['ext'],['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'wps', 'txt', 'zip', 'rar', 'gz', 'bz2', '7z','wav','mp3','mp4','wmv'])) {
+                $result['url'] = get_cdn_domain().root_full_path($result['path']);
+            } else{
+                $result['url'] = get_cdn_domain().$result['path'];
             }
+            
         }
         $result['size']       = format_file_size($result['size']);
         $result['uploadtime'] = $result['create_time'];

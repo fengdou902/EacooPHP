@@ -229,8 +229,10 @@ option = {
 <script type="text/javascript">
   $(function(){ 
     //阿里云提示
-    {php}if(config('aliyun_oss.enable')!=1){{/php}
-      layer.alert('欢迎使用EacooPHP系统，请优先配置/开启 阿里OSS对象存储服务 ，让您的数据更安全可靠，数据掌握在自己手中。<br/>如因未配置/开启<a href="https://www.aliyun.com/product/oss">阿里云OSS</a>，造成的数据丢失，由您自行负责！！快去配置吧~<br/>如何申请以及配置阿里OSS，请参考 阿里OSS配置教程 。', {icon: 6}); 
+    {php}if(config('attachment_options.driver')=='local' || !config('attachment_options.driver')){{/php}
+      layer.alert('欢迎使用EacooPHP系统，请优先配置/开启 上传驱动（Tip:前往插件市场安装对象存储服务插件） ，让您的数据更安全可靠，数据掌握在自己手中。<br/>如因未配置/开启 对象云存储服务，造成的数据丢失，由您自行负责！！快去配置吧~<br/>', {icon: 6},function(e) {
+        redirect('{:url('admin/config/attachmentoption')}');
+      }); 
     {php}}{/php}
   })
 </script>

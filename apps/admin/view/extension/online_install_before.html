@@ -1,0 +1,15 @@
+{extend name="$_admin_public_iframe_base_"/}
+{block name="style"}
+<style type="text/css">
+  .content{min-height: auto;}
+</style>
+{/block}
+{block name="main"}
+ <div class="col-md-11" style="padding: 10px 0;border-radius:3px;">      
+    在线安装是在云端下载离线安装包到本地。若已安装过，建议备份旧的数据。
+    {eq name="install_method" value="upgrade"}
+    	<br><br>
+    	<p class="f12 text-info">注：立即升级仅仅更新文件（涉及到数据库的更新，须按照升级指导说明进行操作）</p>
+    {/eq}
+  </div> 
+{/block}

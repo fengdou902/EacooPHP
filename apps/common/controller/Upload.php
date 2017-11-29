@@ -39,14 +39,21 @@ class Upload {
 	public function upload() {
 		
 		$upload_type = $this->request->param('uploadtype', 'picture', 'trim');//上传类型包括picture,file,avatar
-		$config      = config($upload_type.'_upload');
+		$config      = config('attachment_options');
+		$config['subName']=['date','Y-m-d'];
+		if ($upload_type=='picture') {
+			$config['maxSize']  = $config['image_max_size'];
+			$config['exts']     = $config['image_exts'];
+			$config['saveName'] = $config['image_save_name'];
+		} else{
+			$config['maxSize']  = $config['file_max_size'];
+			$config['exts']     = $config['file_exts'];
+			$config['saveName'] = $config['file_save_name'];
+		}
 
         $this->path_type = $this->request->param('path_type', 'picture', 'trim');//路径类型
-
-        // 上传文件钩子，用于七牛云、又拍云等第三方文件上传的扩展
-        //hook('UploadFile', $upload_type);
         
-        $rootPath = $this->path_type!='picture' && $this->path_type ? './uploads/'.$this->path_type : $config['rootPath'];
+        $rootPath = $this->path_type!='picture' && $this->path_type ? './uploads/'.$this->path_type : './uploads/picture';
 		$upload_path = $rootPath.'/'.call_user_func_array($config['subName'][0],[$config['subName'][1],time()]);
 		// 获取表单上传文件 例如上传了001.jpg
 		$file = $this->request->file('file');
@@ -56,9 +63,8 @@ class Upload {
 			if ($upload_type == 'picture') {
 				$image              = \think\Image::open($file);
 				
-				$attachment_options = json_decode(config('attachment_options'),true);//获取附件配置值
-				$processing_type    = $this->request->param('processing_type',$attachment_options['watermark_type'],'intval');//图像处理类型
-				$watermark_scene = intval($attachment_options['watermark_scene']);//水印场景
+				$processing_type    = $this->request->param('processing_type',$config['watermark_type'],'intval');//图像处理类型
+				$watermark_scene = intval($config['watermark_scene']);//水印场景
 				if ($watermark_scene==2||($watermark_scene==3 && $this->path_type=='picture')||($watermark_scene==4 && $this->path_type=='product')) {
 					
 					// 图片处理
@@ -79,10 +85,10 @@ class Upload {
 	                //     $image->rotate();
 	                //     break;
 	                case 6: // 图片水印
-	                    $image->water($attachment_options['water_img'],$attachment_options['water_position'], $attachment_options['water_opacity']);
+	                    $image->water($config['water_img'],$config['water_position'], $config['water_opacity']);
 	                    break;
 	                case 7: // 文字水印
-	                    $image->text('EacooMall', VENDOR_PATH . 'topthink/think-captcha/assets/ttfs/1.ttf', 20, '#ffffff');
+	                    $image->text('EacooPHP', VENDOR_PATH . 'topthink/think-captcha/assets/ttfs/1.ttf', 20, '#ffffff');
 	                    break;
 	            }
 
@@ -157,9 +163,6 @@ class Upload {
             //不存在则上传并返回信息
 			$config          = config($upload_type.'_upload');
 			$this->path_type = $path_type;//路径类型
-
-	        // 上传文件钩子，用于七牛云、又拍云等第三方文件上传的扩展
-	        //hook('UploadFile', $upload_type);
 	        
 	        $rootPath = $this->path_type!='picture' && $this->path_type ? './uploads/'.$this->path_type : $config['rootPath'];
 			$savePath = $rootPath.'/'.call_user_func_array($config['subName'][0],[$config['subName'][1],time()]);
@@ -262,21 +265,18 @@ class Upload {
 	public function uploadAvatar($uid = 0, $upload_config = ['method'=>1])
 	{
 		if (!$uid) return false;
-		$config = config('avatar_upload');
+		$config = config('attachment_options');
 		$config = array_merge($config,$upload_config);
-		// 上传文件钩子，用于七牛云、又拍云等第三方文件上传的扩展
-        //hook('UploadFile', $uploadtype);
-		$upload_path = $config['rootPath'].'/'.$uid;
+		
+		$upload_path = './uploads/avatar/'.$uid;
+		$driver   = $config['driver'];
 		if ($config['method']==1) {//表单提交
 			// 获取表单上传文件
 			$file = $this->request->file('file');
-			$info = $file->validate(['size'=>$config['maxSize'],'ext'=>$config['exts']])->rule($config['saveName'])->move($upload_path, true, false);
+			$info = $file->validate(['size'=>$config['image_max_size'],'ext'=>$config['image_exts']])->rule($config['saveName'])->move($upload_path, true, false);
 			if (!empty($info)) {
 				$upload_info = $this->parseFile($info);
-				//阿里云OSS
-				if (config('aliyun_oss.enable')==1) {
-					oss_upload($upload_info['path']);
-				}
+				
 				$return = [
 					'code' =>1,
 					'msg'  =>'上传成功',
@@ -310,7 +310,6 @@ class Upload {
 
 			$savePath = $upload_path;
 
-			$driver   = $config['driver'];
 			$saveName = uniqid();
 			$path     = $savePath .'/'. $saveName . '.' . $aExt;
             if($driver == 'local'){
@@ -320,10 +319,12 @@ class Upload {
 				}
 				$data = base64_decode($base64_body);
 				$res  = file_put_contents($path, $data);
-				//阿里云OSS
-				if (config('aliyun_oss.enable')==1) {
-					oss_upload($path);
-				}
+
+				$upload_info = [
+					'path'=>$path,
+				];
+				
+
             } else {
                 $res = false;
                 //使用云存储
@@ -366,6 +367,11 @@ class Upload {
             }
 		}
 
+		if ($return['code']==1) {
+			// 上传文件钩子，用于阿里云oss、七牛云、又拍云等第三方文件上传的扩展
+			$upload_info['uploadtype'] = $driver;
+        	hook('UploadFile', $upload_info);
+		}
 		return $return;
 	}
 	
@@ -383,7 +389,7 @@ class Upload {
 		$callback        = $this->request->get('callback');
 		$CKEditorFuncNum = $this->request->get('CKEditorFuncNum');
 		$file            = $this->request->file('upload');
-		$info            = $file->move(config('editor_upload.rootPath'), true, false);
+		$info            = $file->move('./uploads/editor', true, false);
 		if ($info) {
 			$fileInfo = $this->parseFile($info);
 			$data = [
@@ -437,10 +443,10 @@ class Upload {
 			$data['msg']     ='文件已存在';
 			return $data;
 		} else {
-			//阿里云OSS
-			if (config('aliyun_oss.enable')==1) {
-				oss_upload($file['path']);
-			}
+			$upload_info = $file;
+        	// 上传文件钩子，用于阿里云oss、七牛云、又拍云等第三方文件上传的扩展
+			$upload_info['uploadtype'] = $config['driver'];
+        	hook('UploadFile', $upload_info);
 			$this->attachment_model->allowField(true)->isUpdate(false)->data($file)->save();
 			$id  = $this->attachment_model->id;
 			if ($id>0) {

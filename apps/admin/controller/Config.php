@@ -89,7 +89,7 @@ class Config extends Admin {
     public function edit($id=0){
         $title = $id>0 ? "编辑" : "新增";
         if ($id>0) {
-            $Config_data = $this->configModel->where('id',$id)->find();
+            $Config_data = $this->configModel->where('id',$id)->field(true)->find();
         } elseif ($id==0) {
             $Config_data['group'] = input('param.group_id');
         }
@@ -193,7 +193,7 @@ EOF;
             $tab_list[$key]['title'] = $val;
             $tab_list[$key]['href']  = url('group', ['group' => $key]);
         }
-
+        $tab_list['attachment_option']=['title'=>'上传','href'=>url('attachmentOption')];
         // 构造表单名、解析options
         foreach ($data_list as &$data) {
             $data['name']        = 'config['.$data['name'].']';
@@ -243,6 +243,100 @@ EOF;
         }
         cache('DB_CONFIG_DATA',null);
         $this->success('保存成功！');
+    }
+
+    /**
+     * 附件选项
+     * @return [type] [description]
+     * @date   2017-11-15
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function attachmentOption($tab_list = [])
+    {   
+        if (empty($tab_list)) {
+            // 设置Tab导航数据列表
+            $config_group_list = config('config_group_list');  // 获取配置分组
+            unset($config_group_list[6]);//去除不显示的分组
+            //unset($config_group_list[7]);//用户
+            //unset($config_group_list[5]);
+            unset($config_group_list[8]);
+            foreach ($config_group_list as $key => $val) {
+                $tab_list[$key]['title'] = $val;
+                $tab_list[$key]['href']  = url('group', ['group' => $key]);
+            }
+            $tab_list['attachment_option']=['title'=>'上传','href'=>url('attachmentOption')];
+        }
+        if (IS_POST) {
+            // 提交数据
+            $attachment_data = input('post.');
+            $data['value'] = json_encode($attachment_data);
+            if ($data) {
+                $result =$this->configModel->allowField(true)->save($data,['name'=>'attachment_options']);
+                if ($result) {
+                    cache('cdn_domain',null);
+                    cache('DB_CONFIG_DATA',null);//清理缓存
+                    $this->success('保存成功');
+                } else {
+                    $this->error('保存失败');
+                }
+            } else {
+                $this->error('数据为空');
+            }
+        } else {
+            
+            $info = config('attachment_options');//获取配置值
+            
+            if (!isset($info['water_opacity']) || empty($info['water_opacity'])) {
+                $info['water_opacity']=100;
+            }
+            if (!isset($info['watermark_type']) || empty($info['watermark_type'])) {
+                $info['watermark_type'] = 1;
+            }
+            if (!isset($info['water_img']) || empty($info['water_img'])) {
+                $info['water_img'] = './logo.png';
+            }
+            //自定义表单项
+            Builder::run('Form')
+                    ->setMetaTitle('多媒体设置')  // 设置页面标题
+                    ->setTabNav($tab_list,'attachment_option')  // 设置页面Tab导航
+                    ->addFormItem('driver', 'select', '上传驱动', '选择上传驱动插件用于七牛云、又拍云等第三方文件上传的扩展',upload_drivers())
+                    ->addFormItem('file_max_size', 'number', '上传的文件大小限制', '文件上传大小单位：kb (0-不做限制)')
+                    ->addFormItem('file_exts', 'text', '允许上传的文件后缀', '多个后缀用逗号隔开，不填写则不限制类型')
+                    ->addFormItem('file_save_name', 'text', '上传文件命名规则', 'date,md5,sha1,自定义规则')
+                    ->addFormItem('image_max_size', 'number', '图片上传大小限制', '0为不限制大小，单位：kb')
+                    ->addFormItem('image_exts', 'text', '允许上传的图片后缀', '多个后缀用逗号隔开，不填写则不限制类型')
+                    ->addFormItem('image_save_name', 'text', '上传图片命名规则', 'date,md5,sha1,自定义规则')
+                    ->addFormItem('page_number', 'number', '每页显示数量', '附件管理每页显示的数量')
+                    ->addFormItem('widget_show_type', 'radio', '附件选择器显示方式', '在附件选择器中显示的附件内容',[0=>'所有',1=>'当前用户'])
+                    ->addFormItem('section', 'section', '缩略图', '下列设置图像尺寸为上传生成缩略图尺寸,以像素px为单位。')
+                    ->addFormItem('cut', 'radio', '生成缩略图', '上传图像同时生成缩略图，并保留原图（建议开启）',[1=>'是',0=>'否'])
+                    ->addFormItem('small_size', 'self', '小尺寸', '',$this->settingInputHtml($info['small_size'],'small_size'))
+                    ->addFormItem('medium_size', 'self', '中等尺寸', '',$this->settingInputHtml($info['medium_size'],'medium_size'))
+                    ->addFormItem('large_size', 'self', '大尺寸', '',$this->settingInputHtml($info['large_size'],'large_size'))
+                    ->addFormItem('section', 'section', '添加水印', '给上传的图片添加水印。')
+                    ->addFormItem('watermark_scene', 'select', '场景', '',['none'=>'',1=>'不添加水印',2=>'上传同时添加水印',3=>'只限普通图片添加水印',4=>'只限商品图片添加水印'])
+                    ->addFormItem('watermark_type', 'radio', '水印类型', '暂不支持文字水印',[1=>'图片水印',2=>'文字水印'])
+                    ->addFormItem('water_position', 'select', '水印位置', '',['none'=>'',1=>'左上角',2=>'上居中',3=>'右上角',4=>'左居中',5=>'居中',6=>'右居中',7=>'左下角',8=>'下居中',9=>'右下角'])
+                    ->addFormItem('water_img', 'image', '水印图片', '请选择水印图片')
+                    ->addFormItem('water_opacity', 'number', '水印透明度', '默认100')
+                    ->setFormData($info)
+                    //->setAjaxSubmit(false)
+                    ->addButton('submit')    // 设置表单按钮
+                    ->fetch();
+        }
+    }
+
+    /**
+     * 设置缩略图尺寸的输入框
+     * @param  array  $data [description]
+     * @return [type]       [description]
+     */
+    private function settingInputHtml($data = [], $type='', $extra_attr='')
+    {
+        if (!$data||!$type) return false;
+        return '
+        <div class="col-xs-3"><div class="input-group input-group-sm"><span class="input-group-addon">宽度</span><input type="number" class="form-control" name="'.$type.'[width]" value="'.$data['width'].'" '.$extra_attr.'></div> </div><div class="col-xs-3"><div class="input-group input-group-sm"><span class="input-group-addon">高度</span><input type="number" class="form-control" name="'.$type.'[height]" value="'.$data['height'].'" '.$extra_attr.'></div></div>
+        ';
     }
 
     /**

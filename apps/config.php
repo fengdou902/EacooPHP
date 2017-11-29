@@ -33,7 +33,6 @@ $config = [
     'root_namespace'         => [],
     // 扩展函数文件
     'extra_file_list'        => [
-        APP_PATH . 'functions/api.php',
         APP_PATH . 'functions/array.php',
         APP_PATH . 'functions/string.php',
         APP_PATH . 'functions/wechat.php', 
@@ -232,86 +231,6 @@ $config = [
         'httponly'  => '',
         // 是否使用 setcookie
         'setcookie' => true,
-    ],
-    // +----------------------------------------------------------------------
-    // | 附件上传
-    // +----------------------------------------------------------------------
-    'file_upload' => [
-        // 允许上传的文件MiMe类型
-        'mimes'    => '',
-        // 上传的文件大小限制 (0-不做限制)
-        'maxSize'  => 2*1024*1024,
-        // 允许上传的文件后缀
-        'exts'     => 'xml,xlsx,doc,docx,zip,key',
-        // 子目录创建方式，[0]-函数名，[1]-参数，多个参数使用数组
-        'subName'  => ['date', 'Y-m-d'],
-        //保存根路径
-        'rootPath' => './uploads/attachment',
-        // 保存路径
-        'savePath' => '',
-        // 上传文件命名规则，date,md5,sha1,自定义规则
-        'saveName' => 'uniqid',
-        // 文件上传驱动e,
-        'driver'   => 'local',
-    ],
-    'editor_upload'     => array(
-        // 允许上传的文件MiMe类型
-        'mimes'    => [],
-        // 上传的文件大小限制 (0-不做限制)
-        'maxSize'  => 2*1024*1024,
-        // 允许上传的文件后缀
-        'exts'     => '',
-        // 子目录创建方式，[0]-函数名，[1]-参数，多个参数使用数组
-        'subName'  => ['date', 'Y-m-d'],
-        //保存根路径
-        'rootPath' => './uploads/editor',
-        // 保存路径
-        'savePath' => '',
-        // 上传文件命名规则，date,md5,sha1,自定义规则
-        'saveName' => 'uniqid',
-        // 文件上传驱动e,
-        'driver'   => 'local',
-    ),
-
-    'picture_upload'    => array(
-        // 允许上传的文件MiMe类型
-        'mimes'    => 'image/*',
-        // 上传的文件大小限制
-        'maxSize'  => 2*1024*1024,
-        // 允许上传的文件后缀
-        'exts'     => 'gif,jpg,jpeg,bmp,png',
-        // 子目录创建方式，[0]-函数名，[1]-参数，多个参数使用数组
-        'subName'  => ['date', 'Y-m-d'],
-        //保存根路径
-        'rootPath' => './uploads/picture',
-        // 保存路径
-        'savePath' => '',
-        // 上传文件命名规则，date,md5,sha1,自定义规则
-        'saveName' => 'uniqid',
-        // 文件上传驱动e,
-        'driver'   => 'local',
-    ),
-    'avatar_upload'    => array(
-        // 允许上传的文件MiMe类型
-        'mimes'    => [],
-        // 上传的文件大小限制
-        'maxSize'  => 2*1024*1024,
-        // 允许上传的文件后缀
-        'exts'     => 'gif,jpg,jpeg,bmp,png',
-        // 子目录创建方式，[0]-函数名，[1]-参数，多个参数使用数组
-        'subName'  => ['date', 'Y-m-d'],
-        //保存根路径
-        'rootPath' => './uploads/avatar',
-        // 保存路径
-        'savePath' => '',
-        // 上传文件命名规则，date,md5,sha1,自定义规则
-        'saveName' => 'uniqid',
-        // 文件上传驱动e,
-        'driver'   => 'local',
-    ),
-    //权限
-    'auth'  =>[
-        //'auth_admin_uids'=>[1],
     ],
     //分页配置
     'paginate'      => [

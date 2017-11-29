@@ -96,12 +96,12 @@ class Admin extends Base
     private function getSidebarMenu()
     {
         $uid = is_login();
-        $admin_sidebar_menus = Cache::get('admin_sidebar_menus_'.$uid);
+        $admin_sidebar_menus = Cache::get('admin_sidebar_menus_'.$uid,null);
         if (!$admin_sidebar_menus) {
             
             if(!is_administrator()){//如果是非超级管理员则按存储显示
                 $rules= db('auth_group')->where(['id'=>['in',$this->currentUser['auth_group']]])->value('rules');    
-                $map_rules['id']=$menu_map['id']=['in',$rules];
+                $map_rules['id']=['in',$rules];
             }
             $map_rules['status']=1;
             $map_rules['is_menu']=1;
@@ -121,7 +121,7 @@ class Admin extends Base
      * @param $script 严格模式要求处理的纪录的uid等于当前登陆用户UID
      */
     public function setStatus($model = CONTROLLER_NAME, $script = false) {
-        $ids = $this->request->param('ids');
+        $ids = $this->request->param('ids/a');
         $status = $this->request->param('status');
         if (empty($ids)) {
             $this->error('请选择要操作的数据');

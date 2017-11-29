@@ -55,13 +55,13 @@
             // 如果此选项为false, 则图片在上传前不进行压缩
             compress: false, 
             // 验证单个文件大小是否超出限制, 超出则不允许加入队列 
-            fileSingleSizeLimit:{php}echo intval(config('picture_upload.maxSize')) ? : 2;{/php}*1024*1024,  
+            fileSingleSizeLimit:{php}echo intval(config('attachment_options.image_max_size')) ? : 2;{/php}*1024*1024,  
             // 内部根据当前运行是创建，可能是input元素，也可能是flash.
 
             //选择文件的按钮
             pick: '#upload_img_{$field.id}',
             // 只允许选择图片文件
-            accept:{title:'Images',extensions:'{:config("picture_upload.exts")}',mimeTypes:'{:config("picture_upload.mimes")}'}
+            accept:{title:'Images',extensions:'{:config("attachment_options.image_exts")}',mimeTypes:'image/*'}
         });
         uploader_{$field.id}.on('fileQueued', function (file) {
             uploader_{$field.id}.upload();

@@ -33,7 +33,7 @@
                         <td class="action">
                             <a class="db-import" href="{:url('import?time='.$data['time'])}">恢复</a>&nbsp;
                             <a class="db-import" href="{:realpath(config('data_backup_path'))}/{$data.time|date='Ymd-His',###}-1.sql.gz">打包下载</a>&nbsp;
-                            <a class="ajax-get confirm" href="{:url('del?time='.$data['time'])}">删除</a>
+                            <a class="ajax-get confirm" href="{:url('delBackup?time='.$data['time'])}">删除</a>
                         </td>
                     </tr>
                 {/volist}
