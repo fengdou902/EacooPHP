@@ -24,6 +24,14 @@ class Config {
      */
     public function run(&$params) {
         defined('MODULE_NAME') or define('MODULE_NAME',$params['module'][0] ? $params['module'][0]:config('default_module'));
+        
+        //验证是否安装
+        if ((!is_file(APP_PATH . 'install.lock') || !is_file(APP_PATH . 'database.php')) && MODULE_NAME!='install') {
+            if (!IS_CLI) {
+                header("location: http://".$_SERVER['HTTP_HOST'].'/install/index/index');exit;
+            }
+            
+        }
 
         // 安装模式下直接返回
         if(defined('MODULE_NAME') && MODULE_NAME === 'install') return;
@@ -162,7 +170,7 @@ class Config {
             if (!empty($module_functions_list)) {
                 $global_extra_functions_config['extra_file_list'] = thinkConfig::get('extra_file_list');
                 $global_extra_functions_config['extra_file_list'] = array_merge($global_extra_functions_config['extra_file_list'],$module_functions_list);
-                thinkConfig::set($global_extra_functions_config);// 添加配置
+                thinkConfig::set($global_extra_functions_config);// 添加模块函数
             }
         }
 

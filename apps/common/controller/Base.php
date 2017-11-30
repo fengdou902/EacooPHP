@@ -23,28 +23,7 @@ class Base extends Controller {
 	public function _initialize() {
 		//获取request信息
 		$this->requestInfo();
-		//验证安装文件
-		if (!is_file(APP_PATH . 'install.lock') || !is_file(APP_PATH . 'database.php')) {
-			$this->redirect('install/index/index');
-		}
 	}
-
-	// public function execute($mc = null, $op = '', $ac = null) {
-	// 	$op = $op ? $op : $this->request->module();
-	// 	if (\think\Config::get('url_case_insensitive')) {
-	// 		$mc = ucfirst(parse_name($mc, 1));
-	// 		$op = parse_name($op, 1);
-	// 	}
-
-	// 	if (!empty($mc) && !empty($op) && !empty($ac)) {
-	// 		$ops    = ucwords($op);
-	// 		$class  = "\\plugins\\{$mc}\\controller\\{$ops}";
-	// 		$plugins = new $class;
-	// 		$plugins->$ac();
-	// 	} else {
-	// 		$this->error('没有指定插件名称，控制器或操作！');
-	// 	}
-	// }
 
 	/**
 	 * request信息
