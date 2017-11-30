@@ -262,12 +262,12 @@ class Extension extends Admin {
 	        }
             $uninstall_sql_status = true;
             if ($clear && $install_method!='upgrade') {
-                $sql_file = $this->appExtensionPath.'/install/uninstall.sql';
+                $sql_file = $this->appExtensionPath.'install/uninstall.sql';
                 if(is_file($sql_file)) $uninstall_sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
                 if (!$uninstall_sql_status) {
                     throw new Exception('安装失败，清除旧的数据未成功');
                 }
-                $sql_file = $this->appExtensionPath.'/install/install.sql';
+                $sql_file = $this->appExtensionPath.'install/install.sql';
                 if (is_file($sql_file)) {
                     $sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
                     if (!$sql_status) {
@@ -299,20 +299,20 @@ class Extension extends Admin {
                 if (!empty($admin_menus) && is_array($admin_menus)) {
                     $this->addAdminMenus($admin_menus,$name);
                 }
-                $static_path = $this->appExtensionPath.'/static';
+                $static_path = $this->appExtensionPath.'static';
                 if (is_dir($static_path)) {
                     if ($this->type=='plugin') {
                         $type_path = '/plugins';
                     } elseif ($this->type=='module') {
                         $type_path = '';
                     }
-                    if(is_writable(PUBLIC_PATH.'static/'.$type_path) && is_writable($static_path)){
+                    if(is_writable(PUBLIC_PATH.'static'.$type_path) && is_writable($static_path)){
                         if (!rename($static_path,PUBLIC_PATH.'static'.$type_path.'/'.$name)) {
                             trace('应用静态资源移动失败','error');
                         } 
                     } else{
                         $this->appExtensionModel->where('name',$name)->update(['status'=>0]);
-                        throw new Exception('安装失败，原因：应用静态资源目录不可写。static_path:'.$static_path.',public_static_path:'.PUBLIC_PATH.'static/'.$type_path);
+                        throw new Exception('安装失败，原因：应用静态资源目录不可写。static_path:'.$static_path.',public_static_path:'.PUBLIC_PATH.'static'.$type_path);
                     }
                 }
 

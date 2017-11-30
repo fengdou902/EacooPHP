@@ -2,11 +2,13 @@
 .idea
 composer.lock
 *.zip
+phpunit.xml
 htaccess
 vendor
 thinkphp
 runtime
 data
+tests/
 /apps/install.lock
 /apps/database.php
 /public/runtime
