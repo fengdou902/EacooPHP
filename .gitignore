@@ -13,4 +13,4 @@ tests/
 /apps/database.php
 /public/runtime
 /public/uploads/
-/public/static/plugins
+/public/static/plugins/

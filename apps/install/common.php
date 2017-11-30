@@ -62,7 +62,6 @@ function check_dirfile(){
 	$items = [
 		['dir',  '可写', 'bg-green', 'public/uploads/file/'],
 		['dir',  '可写', 'bg-green', 'public/uploads/avatar/'],
-		['dir',  '可写', 'bg-green', 'public/uploads/download/'],
 		['dir',  '可写', 'bg-green', 'public/uploads/picture/'],
 		['dir',  '可写', 'bg-green', 'public/static/plugins/'],
 		['dir',  '可写', 'bg-green', 'apps/'],
