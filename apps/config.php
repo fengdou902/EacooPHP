@@ -35,7 +35,6 @@ $config = [
     'extra_file_list'        => [
         APP_PATH . 'functions/array.php',
         APP_PATH . 'functions/string.php',
-        APP_PATH . 'functions/wechat.php', 
         APP_PATH . 'functions/time.php',
         APP_PATH . 'functions/request.php',
         APP_PATH . 'functions/attachment.php', 

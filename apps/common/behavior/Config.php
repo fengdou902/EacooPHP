@@ -94,12 +94,11 @@ class Config {
             if ($action_url=='home/plugin/execute') {
                 $plugin_name = input('param._plugin');
                 $theme_plugin_path = $current_theme_path.'plugins/'.$plugin_name.'/'; //当前主题插件文件夹路径
-                if (is_dir($theme_plugin_path)) {
-                    $ec_config['template'] = thinkConfig::get('template');
+                $ec_config['template'] = thinkConfig::get('template');
+                if (is_dir($theme_plugin_path)) {   
                     $ec_config['template']['view_path'] = $theme_plugin_path;
                     
                 } else{
-                    $ec_config['template'] = thinkConfig::get('template');
                     $ec_config['template']['view_path'] = ROOT_PATH.'plugins/'.$plugin_name.'/view/';
                 }
                 
@@ -122,7 +121,7 @@ class Config {
             //$system_config['COOKIE_PREFIX']  = ENV_PRE.MODULE_MARK.'_';  // Cookie前缀
 
             // 获取所有安装的模块配置
-            $module_list = db('modules')->where(['status' =>1])->select();
+            $module_list = db('modules')->where(['status' =>1])->field('name,config')->select();
             foreach ($module_list as $val) {
                 $module_config[strtolower($val['name'].'_config')] = json_decode($val['config'], true);
                 $module_config[strtolower($val['name'].'_config')]['module_name'] = $val['name'];
@@ -148,6 +147,23 @@ class Config {
             }
             */
             Cache::set('DB_CONFIG_DATA', $system_config, 3600);  // 缓存配置
+        }
+
+        //加载模块函数
+        $module_names = db('modules')->where(['status' =>1])->column('name');
+        if (!empty($module_names)) {
+            $module_functions_list = [];
+            foreach ($module_names as $key => $module_name) {
+                $module_funcitons_file = APP_PATH.$module_name.'/functions.php';
+                if (is_file($module_funcitons_file)) {
+                    $module_functions_list[] = $module_funcitons_file;
+                }
+            }
+            if (!empty($module_functions_list)) {
+                $global_extra_functions_config['extra_file_list'] = thinkConfig::get('extra_file_list');
+                $global_extra_functions_config['extra_file_list'] = array_merge($global_extra_functions_config['extra_file_list'],$module_functions_list);
+                thinkConfig::set($global_extra_functions_config);// 添加配置
+            }
         }
 
         // 移动端不显示trace

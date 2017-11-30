@@ -23,7 +23,7 @@ class Config extends Base
      * @return [type] [description]
      * @return {[type]}  [description]
      * @date   2017-08-04
-     * @author 赵俊峰 <981248356@qq.com>
+     * @author 心云间、凝听 <981248356@qq.com>
      */
     public static function lists() {
         $map['status'] = ['eq', 1];
