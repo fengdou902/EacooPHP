@@ -7,10 +7,10 @@ htaccess
 vendor
 thinkphp
 runtime
-data
+/data/
 tests/
 /apps/install.lock
 /apps/database.php
 /public/runtime
-/public/uploads
+/public/uploads/
 /public/static/plugins
