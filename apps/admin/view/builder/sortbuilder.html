@@ -96,16 +96,16 @@
                         {
                             'ids' :  arr.join(',')
                         },
-                        function(data){
-                            if (data.status) {
-                                updateAlert(data.info +',页面即将自动跳转~','success');
+                        function(result){
+                            if (result.code) {
+                                updateAlert(result.msg +',页面即将自动跳转~','success');
                             }else{
-                                updateAlert(data.info,'error');
+                                updateAlert(result.msg,'error');
                             }
                             setTimeout(function(){
-                                if (data.status) {
-                                    if (data.url) {
-                                        location.href = data.url;
+                                if (result.code) {
+                                    if (result.url) {
+                                        location.href = result.url;
                                     } else if ($(this).hasClass('no-refresh')) {
                                         $('#top-alert').find('button').click();
                                         $(this).removeClass('disabled').prop('disabled', false);
@@ -114,12 +114,12 @@
                                     }
                                     //$('.sort_cancel').click();
                                 }else{
-                                        if (data.url) {
-                                            location.href = data.url;
-                                        } else {
-                                            $('#top-alert').find('button').click();
-                                            $(this).removeClass('disabled').prop('disabled', false);
-                                        }
+                                    if (result.url) {
+                                        location.href = result.url;
+                                    } else {
+                                        $('#top-alert').find('button').click();
+                                        $(this).removeClass('disabled').prop('disabled', false);
+                                    }
                                 }
                             },1500);
                         },

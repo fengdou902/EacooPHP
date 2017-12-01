@@ -101,7 +101,7 @@ class AdminSort extends Builder {
         return $this;
     }
 
-    public function fetch($templateFile='',$vars =[], $replace ='', $config = '') {
+    public function fetch($template_name='sortbuilder',$vars =[], $replace ='', $config = '') {
         //设置post_url默认值
         $this->_post_url=$this->_post_url? $this->_post_url : url(MODULE_NAME.'/'.CONTROLLER_NAME.'/'.ACTION_NAME);
         //编译按钮的属性
@@ -115,7 +115,8 @@ class AdminSort extends Builder {
         $this->assign('list', $this->_list);
         $this->assign('buttonList', $this->_buttonList);
         $this->assign('post_url', $this->_post_url);
-        parent::fetch('sortbuilder');
+        $templateFile = APP_PATH.'/admin/view/builder/'.$template_name.'.html';
+        parent::fetch($templateFile);
     }
 
     public function doSort($table, $ids) {

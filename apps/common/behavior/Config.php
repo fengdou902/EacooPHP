@@ -157,23 +157,6 @@ class Config {
             Cache::set('DB_CONFIG_DATA', $system_config, 3600);  // 缓存配置
         }
 
-        //加载模块函数
-        $module_names = db('modules')->where(['status' =>1])->column('name');
-        if (!empty($module_names)) {
-            $module_functions_list = [];
-            foreach ($module_names as $key => $module_name) {
-                $module_funcitons_file = APP_PATH.$module_name.'/functions.php';
-                if (is_file($module_funcitons_file)) {
-                    $module_functions_list[] = $module_funcitons_file;
-                }
-            }
-            if (!empty($module_functions_list)) {
-                $global_extra_functions_config['extra_file_list'] = thinkConfig::get('extra_file_list');
-                $global_extra_functions_config['extra_file_list'] = array_merge($global_extra_functions_config['extra_file_list'],$module_functions_list);
-                thinkConfig::set($global_extra_functions_config);// 添加模块函数
-            }
-        }
-
         // 移动端不显示trace
         if (is_mobile()) {
             $system_config['app_trace']=false;

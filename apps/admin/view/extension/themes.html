@@ -106,7 +106,7 @@
       {foreach name="theme_items" item="item"}
         <div class="col-md-4 theme-item"> 
           <div class="block-content">     
-              <div class="theme-cover"><img src="{$item.cover}" width="100%"></div>
+              <div class="theme-cover"><img src="{$item.cover|default=''}" width="100%"></div>
               <h3>{$item.title}</h3>
               <div class="item-metas"><span class="meta-author"><i class="fa fa-user"></i> {$item.author}</span><span class="meta-author text-success pull-right">{$item.status}</span></div>
               <div class="item-description">{$item.description}</div>
