@@ -312,7 +312,13 @@ class Extension extends Admin {
                         } 
                     } else{
                         $this->appExtensionModel->where('name',$name)->update(['status'=>0]);
-                        throw new Exception('安装失败，原因：应用静态资源目录不可写。static_path:'.$static_path.',public_static_path:'.PUBLIC_PATH.'static'.$type_path);
+                        if (!is_writable(PUBLIC_PATH.'static'.$type_path)) {
+                            $error_msg.=','.PUBLIC_PATH.'static'.$type_path;
+                        }
+                        if (!is_writable($static_path)) {
+                            $error_msg.=','.$static_path;
+                        }
+                        throw new Exception('安装失败，原因：应用静态资源目录不可写。info:'.$error_msg);
                     }
                 }
 

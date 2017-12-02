@@ -141,19 +141,18 @@ class Config {
             }
 
             // 加载Formbuilder扩展类型
-           /* $system_config['FORM_ITEM_TYPE'] = config('FORM_ITEM_TYPE form_item_type');
-            //$formbuilder_extend = explode(',', db('Hook')->getFieldByName('FormBuilderExtend', 'plugins'));
-            if ($formbuilder_extend) {
+           $system_config['form_item_type'] = config('form_item_type');
+            $formbuilder_extend = explode(',', db('Hooks')->where('name','FormBuilderExtend')->value('plugins'));
+            if (!empty($formbuilder_extend)) {
                 $plugin_object = db('plugins');
                 foreach ($formbuilder_extend as $val) {
-                    $temp = json_decode($plugin_object->getFieldByName($val, 'config'), true);
-                    if ($temp['status']) {
-                        $form_type[$temp['form_item_type_name']] = array($temp['form_item_type_title'], $temp['form_item_type_field']);
-                        $system_config['FORM_ITEM_TYPE'] = array_merge($system_config['FORM_ITEM_TYPE'], $form_type);
+                    $plugin_config = json_decode($plugin_object->where('name',$val)->value('config'), true);
+                    if ($plugin_config['form_item_status']) {
+                        $form_type[$plugin_config['form_item_type_name']] = [$plugin_config['form_item_type_title'], $plugin_config['form_item_type_field']];
+                        $system_config['form_item_type'] = array_merge($system_config['form_item_type'], $form_type);
                     }
                 }
             }
-            */
             Cache::set('DB_CONFIG_DATA', $system_config, 3600);  // 缓存配置
         }
 
