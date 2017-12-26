@@ -99,17 +99,6 @@ class AdminList extends Builder
                 $my_attribute['class'] = 'btn btn-primary btn-sm';
                 $my_attribute['href']  = url(MODULE_NAME.'/'.CONTROLLER_NAME.'/edit');
 
-                /**
-                * 如果定义了属性数组则与默认的进行合并
-                * 用户定义的同名数组元素会覆盖默认的值
-                * 比如$builder->addTopButton('add', array('title' => '换个马甲'))
-                * '换个马甲'这个碧池就会使用山东龙潭寺的十二路谭腿第十一式“风摆荷叶腿”
-                * 把'新增'踢走自己霸占title这个位置，其它的属性同样道理
-                */
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
-
                 break;
             case 'resume':  // 添加启用按钮(禁用的反操作)
                 //预定义按钮属性以简化使用
@@ -124,11 +113,6 @@ class AdminList extends Builder
                         'model' => $my_attribute['model']
                     )
                 );
-
-                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
 
                 break;
             case 'forbid':  // 添加禁用按钮(启用的反操作)
@@ -145,11 +129,6 @@ class AdminList extends Builder
                     )
                 );
 
-                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
-                if (!empty($attribute) && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
-
                 break;
             case 'recycle':  // 添加回收按钮(还原的反操作)
                 // 预定义按钮属性以简化使用
@@ -164,11 +143,6 @@ class AdminList extends Builder
                         'model' => $my_attribute['model']
                     )
                 );
-
-                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
 
                 break;
             case 'restore':  // 添加还原按钮(回收的反操作)
@@ -185,11 +159,6 @@ class AdminList extends Builder
                     )
                 );
 
-                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
-
                 break;
             case 'delete': // 添加删除按钮(我没有反操作，删除了就没有了，就真的找不回来了)
                 // 预定义按钮属性以简化使用
@@ -205,11 +174,6 @@ class AdminList extends Builder
                     )
                 );
 
-                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的新增按钮
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
-
                 break;
             case 'sort':  // 添加排序按钮
                 // 预定义按钮属性以简化使用
@@ -218,32 +182,26 @@ class AdminList extends Builder
                 $my_attribute['class'] = 'btn btn-info btn-sm';
                 $my_attribute['href']  = url(MODULE_NAME.'/'.CONTROLLER_NAME.'/sort');
 
-                /**
-                * 如果定义了属性数组则与默认的进行合并
-                * 用户定义的同名数组元素会覆盖默认的值
-                * 比如$builder->addTopButton('add', array('title' => '换个马甲'))
-                * '换个马甲'这个碧池就会使用山东龙潭寺的十二路谭腿第十一式“风摆荷叶腿”
-                * 把'新增'踢走自己霸占title这个位置，其它的属性同样道理
-                */
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
-
                 break;
             case 'self': //添加自定义按钮(第一原则使用上面预设的按钮，如果有特殊需求不能满足则使用此自定义按钮方法)
                 // 预定义按钮属性以简化使用
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['class'] = 'btn btn-danger btn-sm';
-
-                // 如果定义了属性数组则与默认的进行合并
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                } else {
+                if (empty($my_attribute['title'])) {
                     $my_attribute['title'] = '该自定义按钮未配置属性';
                 }
-
                 break;
         }
+        /**
+        * 如果定义了属性数组则与默认的进行合并
+        * 用户定义的同名数组元素会覆盖默认的值
+        * 比如$builder->addTopButton('add', array('title' => '换个马甲'))
+        * '换个马甲'这个碧池就会使用山东龙潭寺的十二路谭腿第十一式“风摆荷叶腿”
+        * 把'新增'踢走自己霸占title这个位置，其它的属性同样道理
+        */
+        if ($attribute && is_array($attribute)) {
+            $my_attribute = array_merge($my_attribute, $attribute);
+        } 
         // 这个按钮定义好了把它丢进按钮池里
         if ($position=='head') {
             $this->_head_button_list[] = $my_attribute;
@@ -253,6 +211,7 @@ class AdminList extends Builder
         
         return $this;
     }
+
     /**
      * 添加筛选功能
      * @param string $title 标题
@@ -271,6 +230,7 @@ class AdminList extends Builder
 
         return $this;
     }
+
     /**
      * 设置搜索参数
      * @param $title
@@ -355,20 +315,6 @@ class AdminList extends Builder
                     array($this->_table_data_list_key => '__data_id__')
                 );
 
-                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的顶部按钮
-                /**
-                * 如果定义了属性数组则与默认的进行合并
-                * 用户定义的同名数组元素会覆盖默认的值
-                * 比如$builder->addRightButton('edit', array('title' => '换个马甲'))
-                * '换个马甲'这个碧池就会使用山东龙潭寺的十二路谭腿第十一式“风摆荷叶腿”
-                * 把'新增'踢走自己霸占title这个位置，其它的属性同样道理
-                */
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
-
-                // 这个按钮定义好了把它丢进按钮池里
-                $this->_right_button_list[] = $my_attribute;
                 break;
             case 'forbid':  // 改变记录状态按钮，会更具数据当前的状态自动选择应该显示启用/禁用
                 //预定义按钮属
@@ -395,8 +341,6 @@ class AdminList extends Builder
                     )
                 );
 
-                // 这个按钮定义好了把它丢进按钮池里
-                $this->_right_button_list[] = $my_attribute;
                 break;
             case 'hide':  // 改变记录状态按钮，会更具数据当前的状态自动选择应该显示隐藏/显示
                 // 预定义按钮属
@@ -423,8 +367,6 @@ class AdminList extends Builder
                     )
                 );
 
-                // 这个按钮定义好了把它丢进按钮池里
-                $this->_right_button_list[] = $my_attribute;
                 break;
             case 'recycle':
                 // 预定义按钮属性以简化使用
@@ -440,13 +382,6 @@ class AdminList extends Builder
                     )
                 );
 
-                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的顶部按钮
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
-
-                // 这个按钮定义好了把它丢进按钮池里
-                $this->_right_button_list[] = $my_attribute;
                 break;
             case 'restore':
                 // 预定义按钮属性以简化使用
@@ -462,13 +397,6 @@ class AdminList extends Builder
                     )
                 );
 
-                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的顶部按钮
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
-
-                // 这个按钮定义好了把它丢进按钮池里
-                $this->_right_button_list[] = $my_attribute;
                 break;
             case 'delete':
                 // 预定义按钮属性以简化使用
@@ -484,29 +412,39 @@ class AdminList extends Builder
                     )
                 );
 
-                // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的顶部按钮
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                }
-
-                // 这个按钮定义好了把它丢进按钮池里
-                $this->_right_button_list[] = $my_attribute;
                 break;
             case 'self':
                 // 预定义按钮属性以简化使用
                 $my_attribute['class'] = '';
-
-                // 如果定义了属性数组则与默认的进行合并
-                if ($attribute && is_array($attribute)) {
-                    $my_attribute = array_merge($my_attribute, $attribute);
-                } else {
+                if (empty($my_attribute['title'])) {
                     $my_attribute['title'] = '该自定义按钮未配置属性';
                 }
-
-                // 这个按钮定义好了把它丢进按钮池里
-                $this->_right_button_list[] = $my_attribute;
+                
                 break;
         }
+
+        // 如果定义了属性数组则与默认的进行合并，详细使用方法参考上面的顶部按钮
+        /**
+        * 如果定义了属性数组则与默认的进行合并
+        * 用户定义的同名数组元素会覆盖默认的值
+        * 比如$builder->addRightButton('edit', array('title' => '换个马甲'))
+        * '换个马甲'这个碧池就会使用山东龙潭寺的十二路谭腿第十一式“风摆荷叶腿”
+        * 把'新增'踢走自己霸占title这个位置，其它的属性同样道理
+        */
+        if ($attribute && is_array($attribute)) {
+            $my_attribute = array_merge($my_attribute, $attribute);
+        }
+        //支持layer
+        if (isset($attribute['layer'])) {
+            if (is_array($attribute['layer'])) {
+                $layer_width = !empty($attribute['layer']['width']) ? $attribute['layer']['width']:'60%';
+                $layer_height = !empty($attribute['layer']['height']) ? $attribute['layer']['height']:'60%';
+            }
+            $my_attribute['href']='javascript:layer.open({type: 2,title: \''.$my_attribute['title'].'\',shadeClose: true,shade: 0.8,area: [\''.$layer_width.'\',\''.$layer_height.'\'],content:\''.$my_attribute['href'].'?page_type=iframe\'});';
+            unset($my_attribute['layer']);
+        }
+        // 这个按钮定义好了把它丢进按钮池里
+        $this->_right_button_list[] = $my_attribute;
         return $this;
     }
 
@@ -662,14 +600,26 @@ class AdminList extends Builder
                         $data[$column['name']] = '<img style="width:40px;height:40px;" src="'.path_to_url($data[$column['name']]).'">';
                         break;
                     case 'image':
-                        $data[$column['name']] = '<img class="cover" width="120" src="'.$data[$column['name']].'">';
+                        $pic_w = '120';
+                        if (!empty($column['param']['width'])) {
+                            $pic_w = $column['param']['width'];
+                        }
+                        $data[$column['name']] = '<img class="cover" width="'.$pic_w.'" src="'.$data[$column['name']].'">';
                         break;
                     case 'picture':
-                        $data[$column['name']] = '<img class="picture" width="120" src="'.get_image($data[$column['name']]).'">';
+                        $pic_w = '120';
+                        if (!empty($column['param']['width'])) {
+                            $pic_w = $column['param']['width'];
+                        }
+                        $data[$column['name']] = '<img class="picture" width="'.$pic_w.'" src="'.get_image($data[$column['name']]).'">';
                         break;
                     case 'pictures':
+                        $pic_w = '120';
+                        if (!empty($column['param']['width'])) {
+                            $pic_w = $column['param']['width'];
+                        }
                         $temp = explode(',', $data[$column['name']]);
-                        $data[$column['name']] = '<img class="pictures" width="120" src="'.get_image($temp[0]).'">';
+                        $data[$column['name']] = '<img class="pictures" width="'.$pic_w.'" src="'.get_image($temp[0]).'">';
                         break;
                     case 'link':
                         $url_attribute='';

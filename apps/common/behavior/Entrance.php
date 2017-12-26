@@ -29,22 +29,22 @@ class Entrance {
        	
         define('EACOOPHP_V','1.1.0');
 
-        //加载模块函数
-        $module_names = db('modules')->where(['status' =>1])->column('name');
-        if (!empty($module_names)) {
-            $module_functions_list = [];
-            foreach ($module_names as $key => $module_name) {
-                $module_funcitons_file = APP_PATH.$module_name.'/functions.php';
-                if (is_file($module_funcitons_file)) {
-                    $module_functions_list[] = $module_funcitons_file;
-                }
-            }
-            if (!empty($module_functions_list)) {
-                $global_extra_functions_config['extra_file_list'] = thinkConfig::get('extra_file_list');
-                $global_extra_functions_config['extra_file_list'] = array_merge($global_extra_functions_config['extra_file_list'],$module_functions_list);
-                thinkConfig::set($global_extra_functions_config);// 添加模块函数
-            }
-        }
+        //加载模块全局函数
+        // $module_names = db('modules')->where(['status' =>1])->column('name');
+        // if (!empty($module_names)) {
+        //     $module_functions_list = [];
+        //     foreach ($module_names as $key => $module_name) {
+        //         $module_funcitons_file = APP_PATH.$module_name.'/functions.php';
+        //         if (is_file($module_funcitons_file)) {
+        //             $module_functions_list[] = $module_funcitons_file;
+        //         }
+        //     }
+        //     if (!empty($module_functions_list)) {
+        //         $global_extra_functions_config['extra_file_list'] = thinkConfig::get('extra_file_list');
+        //         $global_extra_functions_config['extra_file_list'] = array_merge($global_extra_functions_config['extra_file_list'],$module_functions_list);
+        //         thinkConfig::set($global_extra_functions_config);// 添加模块函数
+        //     }
+        // }
         
         $ec_config = [
             'view_replace_str'=>[

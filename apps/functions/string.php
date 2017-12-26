@@ -179,7 +179,7 @@ function cut_str($str, $len = 100, $start = 0, $suffix = 1) {
     $end = $len + $start;
     $str ='';
     for ($i = $start; $i < $end; $i++) {
-        $str.=$array[$i];
+        if(isset($array[$i])) $str.=$array[$i];
     }
     return count($array) > $len ? ($suffix == 1 ? $str . "&hellip;" : $str) : $str;
 }

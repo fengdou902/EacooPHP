@@ -72,8 +72,12 @@ class Home extends Base {
     protected function breadCrumbs($page_config = [])
     {
         $crumbs = '';
-        $module_info = db('modules')->where(['name'=>MODULE_NAME])->field('title')->find();
-        $crumbs.='<li><a href="'.$this->url.'">'.$module_info['title'].'</a></li>';
+        if (!empty($page_config['crumb_parent_title'])) {
+            $crumbs.='<li><a href="'.$this->url.'">'.$page_config['crumb_parent_title'].'</a></li>';
+        } else{
+            $module_info = db('modules')->where(['name'=>MODULE_NAME])->field('title')->find();
+            $crumbs.='<li><a href="'.$this->url.'">'.$module_info['title'].'</a></li>';
+        }
         $crumbs.='<li class="active">'.$page_config['title'].'</li>';
 
         return '<li><a href="'.url('home/index/index').'"><i class="fa fa-dashboard"></i> 首页</a></li>'.$crumbs;

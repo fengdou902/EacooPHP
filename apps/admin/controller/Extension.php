@@ -265,13 +265,13 @@ class Extension extends Admin {
                 $sql_file = $this->appExtensionPath.'install/uninstall.sql';
                 if(is_file($sql_file)) $uninstall_sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
                 if (!$uninstall_sql_status) {
-                    throw new Exception('安装失败，清除旧的数据未成功');
+                    throw new \Exception('安装失败，清除旧的数据未成功');
                 }
                 $sql_file = $this->appExtensionPath.'install/install.sql';
                 if (is_file($sql_file)) {
                     $sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
                     if (!$sql_status) {
-                        throw new Exception('执行应用SQL安装语句失败');
+                        throw new \Exception('执行应用SQL安装语句失败');
                     }
                 }
             }
@@ -289,7 +289,7 @@ class Extension extends Admin {
                     $hooks_update = $this->hooksModel->updateHooks($name);
                     if (!$hooks_update) {
                         $this->appExtensionModel->where('name',$name)->delete();
-                        throw new Exception('更新钩子失败,请卸载后尝试重新安装');
+                        throw new \Exception('更新钩子失败,请卸载后尝试重新安装');
                     } else{
                         cache('hooks', null);
                     } 
@@ -318,7 +318,7 @@ class Extension extends Admin {
                         if (!is_writable($static_path)) {
                             $error_msg.=','.$static_path;
                         }
-                        throw new Exception('安装失败，原因：应用静态资源目录不可写。info:'.$error_msg);
+                        throw new \Exception('安装失败，原因：应用静态资源目录不可写。info:'.$error_msg);
                     }
                 }
 
@@ -326,7 +326,7 @@ class Extension extends Admin {
 	            
 	        } else {
 
-	            throw new Exception('写入插件数据失败');
+	            throw new \Exception('写入插件数据失败');
 	        }
 		} catch (\Exception $e) {
 			return [
@@ -547,21 +547,21 @@ class Extension extends Admin {
 		$info_file = $this->appExtensionPath . 'install/info.json';
 		if (!is_file($info_file))
         {
-            throw new Exception('应用信息文件不存在');
+            throw new \Exception('应用信息文件不存在');
         }
         $info = $this->getInfoByFile();
         if (!$info){ 
-            throw new Exception('应用信息缺失');
+            throw new \Exception('应用信息缺失');
         }
 
         if ($this->type=='plugin') {
             $app_class = get_plugin_class($name);
             if (!class_exists($app_class)) {
-                throw new Exception('应用实例化文件损坏');
+                throw new \Exception('应用实例化文件损坏');
             } else{
                 $app_class = new $app_class;
                 if(!$app_class->install()) {
-                    throw new Exception('应用预安装失败!原因：'. $app_class->getError());
+                    throw new \Exception('应用预安装失败!原因：'. $app_class->getError());
                 }
             }
         }
@@ -590,12 +590,12 @@ class Extension extends Admin {
 
 		if (!is_file($info_file))
         {
-            throw new Exception('应用信息文件不存在');
+            throw new \Exception('应用信息文件不存在');
         }
         $info_check_keys = ['name', 'title', 'description', 'author', 'version'];
         foreach ($info_check_keys as $value) {
             if (!array_key_exists($value, $this->getInfoByFile($info_file))) {
-                throw new Exception('应用信息缺失');
+                throw new \Exception('应用信息缺失');
             }
 
         }
@@ -635,7 +635,7 @@ class Extension extends Admin {
      * @date   2017-09-15
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function checkDependence($dependences) {
+    private function checkDependence($dependences) {
         if (is_array($dependences)) {
             $core_version = !empty($dependences['core']) ? $dependences['core']:'';//依赖的核心版本
             $modules = !empty($dependences['modules']) ? $dependences['modules']:'';//依赖的模块
@@ -653,7 +653,7 @@ class Extension extends Admin {
                     }
                 }
                 if ($meet_core_version==false) {
-                    return 'EacooPHP版本不得低于v'.$core_version;
+                    throw new \Exception('EacooPHP版本不得低于v'.$core_version);
                 }
                 
             }
@@ -669,7 +669,7 @@ class Extension extends Admin {
                     ];
                     $module_info = db('modules')->where($map)->field('version,title')->find();
                     if (!$module_info) {
-                        return '该模块依赖'.$key.'模块';
+                        throw new \Exception('该应用依赖'.$key.'模块');
                     }
 
                     $module_version = explode('.', $module_info['version']);
@@ -682,7 +682,7 @@ class Extension extends Admin {
                             }
                         }
                     }
-                    return $module_info['title'].'模块版本不得低于v'.$val;
+                    throw new \Exception($module_info['title'].'模块版本不得低于v'.$val);
                 }
             }
             //插件
@@ -693,7 +693,7 @@ class Extension extends Admin {
                     ];
                     $plugins_info = PluginsModel::where($map)->field('version,title')->find();
                     if (!$plugins_info) {
-                        return '该模块依赖'.$key.'插件';
+                        throw new \Exception('该模块依赖'.$key.'插件');
                     }
                     //版本号检查
                     $plugin_version = explode('.', $plugins_info['version']);
@@ -706,7 +706,7 @@ class Extension extends Admin {
                             }
                         }
                     }
-                    return $plugins_info['title'].'插件版本不得低于v'.$val;
+                    throw new \Exception($plugins_info['title'].'插件版本不得低于v'.$val);
                 }
 
             }

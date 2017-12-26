@@ -59,7 +59,7 @@ class Attachment extends Admin {
         if ($path_type) {
             $map['path_type'] = $path_type;
         } else {
-            $map['path_type'] = ['in','picture,file'];
+            $map['path_type'] = ['in','picture,file,wechat'];
         }
         //筛选start
         if ($term_id>0) {

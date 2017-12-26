@@ -88,17 +88,6 @@
             </script>
         {/if}
     {/present}   
-
-    {present name="iconpicker"}
-        {if condition="$iconpicker"}
-            <script type="text/javascript">
-            function setIconFilter(filter) {
-              $('#{$icon_id}').val(filter);
-              layer.closeAll('iframe');
-            }
-          </script>
-          {/if}
-    {/present}
     
     {present name="load_select2"}
         {if condition="$load_select2"}

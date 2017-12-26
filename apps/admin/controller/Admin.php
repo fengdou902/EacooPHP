@@ -76,14 +76,14 @@ class Admin extends Base
                 $template_path_str = './';
             }
 
-            unset($_admin_public_base);
+            $_admin_public_base = '';
             if ($this->request->param('load_type')=='iframe') {
                 $_admin_public_base = $template_path_str.'apps/admin/view/public/iframe_base.html';
             } else{
                 $_admin_public_base = $template_path_str.'apps/admin/view/public/base.html';
             }
             $this->assign('_admin_public_left_',$template_path_str.'apps/admin/view/public/left.html');
-            $this->assign('_admin_public_base_', $template_path_str.'apps/admin/view/public/base.html');
+            $this->assign('_admin_public_base_', $_admin_public_base);
             $this->assign('_admin_public_iframe_base_', $template_path_str.'apps/admin/view/public/iframe_base.html');  // 页面公共继承模版    
         } 
 

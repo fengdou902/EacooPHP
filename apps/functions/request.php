@@ -428,3 +428,16 @@ function is_mobile()
     }
     return $is_mobile;
 }
+
+/**
+ * 是否微信访问
+ * @return bool
+ * @author 心云间、凝听<981248356@qq.com>
+ */
+function is_weixin() {
+    if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false ) {
+        return true;
+    } else {
+        return false;
+    }
+}

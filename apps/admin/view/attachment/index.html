@@ -133,7 +133,7 @@
                           <li><strong>URL：</strong><span id="file-url">无</span></li>
                         </ul>
                         <a id="delAttachmentUrl" href="{:url('delAttachment')}" class="btn btn-danger btn-xs btn-flat confirm ajax-get">删除</a>
-                        <span id="url-copy" class="btn btn-success btn-xs btn-flat copyurl">
+                        <span id="url-copy" class="btn btn-success btn-xs btn-flat copyurl" data-clipboard-target="#file-url">
                         复制URL</span>
                     </div>
 
@@ -199,7 +199,7 @@
 {/block}
 
 {block name="script"}
-<script type="text/javascript" src="__PUBLIC__/js/jquery.zclip.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/clipboard.min.js"></script>
 <script type="text/javascript" src="__STATIC_LIBS__/daterangepicker/moment.min.js"></script>
 <script type="text/javascript" src="__STATIC_LIBS__/daterangepicker/daterangepicker.js"></script>
 
@@ -295,18 +295,10 @@
             set_modal_attachmentInfo(attachmentId);//显示附件信息
           })
         /*复制URL*/
-        if ( window.clipboardData ) {  
-            $('.copyurl').click(function() {  
-                window.clipboardData.setData("Text", $("#file-url").text());  
-                alert('复制成功！');  
-            });  
-        } else {  
-            $(".copyurl").zclip({  
-                path:'/ZeroClipboard/ZeroClipboard.swf',  
-                copy:function(){return $("#file-url").text();},  
-                afterCopy:function(){alert('复制成功！');}  
-            });  
-        } 
+        var clipboard = new Clipboard('.copyurl');
+        clipboard.on('success', function(e) {
+            alert('复制成功');
+        });
 
           //筛选应用触发表单提交
         $('#choiceForm').click(function(){

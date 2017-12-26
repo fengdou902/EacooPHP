@@ -8,8 +8,8 @@ namespace app\admin\builder;
  */
 class AdminForm extends Builder
 {
-    private $_meta_title;            // 页面标题
-    private $_sub_title;            // 页面子标题
+    private $_meta_title;    // 页面标题
+    private $_sub_title;    // 页面子标题
     private $_tip;         // 页面子标题
     private $_tab_nav     = [];     // 页面Tab导航
     private $_group_tab_nav=[]; //页面Tab分组
@@ -259,9 +259,18 @@ class AdminForm extends Builder
         //编译表单值
         if ($this->_form_data) {
             foreach ($this->_form_items as &$item) {
-                if (isset($this->_form_data[$item['name']])) {
-                    $item['value'] = $this->_form_data[$item['name']];
+                if ($item['type']!='group') {
+                    if (isset($this->_form_data[$item['name']])) {
+                        $item['value'] = $this->_form_data[$item['name']];
+                    }
+                } else{
+                    foreach ($item['options'] as $gkey => $gvalue) {
+                        // if (isset($this->_form_data[$item['name']])) {
+                        //     $item['value'] = $this->_form_data[$item['name']];
+                        // }
+                    }
                 }
+                
             }
         }
         
@@ -277,7 +286,7 @@ class AdminForm extends Builder
         }
 
         $this->assign('meta_title',  $this->_meta_title);  //页面标题
-        $this->assign('sub_title',   $this->_sub_title);          // 页面子标题
+        $this->assign('sub_title',   $this->_sub_title);    // 页面子标题
         $this->assign('tip',         $this->_tip);          // 页面提示说明
         $this->assign('tab_nav',    $this->_tab_nav);     //页面Tab导航
         $this->assign('group_tab_nav',$this->_group_tab_nav);//页面Tab分组

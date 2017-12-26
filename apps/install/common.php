@@ -284,8 +284,8 @@ function update_tables($db, $prefix = ''){
  */
 function show_msg($msg, $class = 'primary'){
 	echo "<script type=\"text/javascript\">showmsg(\"{$msg}\", \"{$class}\")</script>";
-	flush();
 	ob_flush();
+	flush();
 }
 
 /**

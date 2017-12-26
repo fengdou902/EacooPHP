@@ -47,18 +47,24 @@ class Auth extends Admin {
      * @return [type] [description]
      */
     public function index(){
-        $manage_type = input('get.manage_type','menu');//管理类型
-        // 获取所有节点信息
-        $map['pid'] = input('param.pid',0);//是否存在父ID
-        //$map['is_menu']=1;//只显示菜单
-        if ($map['pid']>0) {
-            $current_submenu_name = $this->authRuleModel->where(['id'=>(int)$map['pid']])->value('title');
-            $meta_title='<a onclick="javascript:history.back(-1);return false;">'.$current_submenu_name.'</a>》子菜单管理';
-        } else{
-            $meta_title='规则管理';
-        }
         
-        list($data_list,$totalCount) = $this->authRuleModel->getListByPage($map,'sort asc','*',20);
+        // 搜索
+        $keyword = input('param.keyword');
+        if ($keyword) {
+            $this->authRuleModel->where('id|name|title','like','%'.$keyword.'%');
+        }
+        $pid = input('param.pid',0);
+        // 获取所有节点信息
+        //$map['pid'] = input('param.pid',0);//是否存在父ID
+        //$map['is_menu']=1;//只显示菜单
+        $map = [];
+        $meta_title='规则管理';
+
+        $depend_flag = input('param.depend_flag','all');//管理类型
+        if ($depend_flag!='all') {
+            $this->authRuleModel->where('depend_flag',$depend_flag);
+        }
+        $data_list = $this->authRuleModel->where($map)->order('depend_flag,pid asc,sort asc')->field(true)->paginate(20);
         foreach ($data_list as $key=>$list) {
             $data_list[$key]['p_menu']= $this->authRuleModel->where(['id'=>(int)$list['pid']])->value('title');
         }
@@ -85,19 +91,24 @@ class Auth extends Admin {
         $moveparent_attr['onclick'] = 'move_menuparent()';
 
         $extra_html=$this->moveMenuHtml();//添加移动按钮html
-
+        $tab_list = ['all'=>['title'=>'全部','href'=>url('index')]];
+        foreach ($this->moduleList as $key => $row) {
+            $tab_list[$key] = ['title'=>$row,'href'=>url('index',['depend_flag'=>$key])];
+        }
+        
         Builder::run('List')
             ->setMetaTitle($meta_title)
-            ->addTopBtn('addnew',array('href'=>url('ruleEdit',array('pid'=>$map['pid']))))  // 添加新增按钮
+            ->addTopBtn('addnew',array('href'=>url('ruleEdit',['pid'=>$pid])))  // 添加新增按钮
             ->addTopBtn('resume',array('model'=>'auth_rule'))  // 添加启用按钮
             ->addTopBtn('forbid',array('model'=>'auth_rule'))  // 添加禁用按钮
             ->addTopBtn('delete',array('model'=>'auth_rule'))  // 添加删除按钮
+            ->setTabNav($tab_list, $depend_flag)  // 设置页面Tab导航
             //->addTopButton('self', $movemodule_attr) //移动模块
             ->addTopButton('self', $moveparent_attr) //移动菜单位置
-            ->addTopBtn('sort',array('model'=>'auth_rule','href'=>url('rule_sort',array('pid'=>$map['pid']))))  // 添加排序按钮
+            ->addTopBtn('sort',['model'=>'auth_rule','href'=>url('rule_sort',['pid'=>$pid])])  // 添加排序按钮
             //->setSearch('', url('rule'))
             ->keyListItem('id','ID')
-            ->keyListItem('title','名称','link',['link'=>url('Auth/index',array('pid'=>'__data_id__'))])
+            ->keyListItem('title','名称')
             ->keyListItem('p_menu','上级菜单')
             ->keyListItem('name', 'URL')
             ->keyListItem('depend_flag', '来源标识')
@@ -107,7 +118,7 @@ class Auth extends Admin {
             ->keyListItem('right_button', '操作', 'btn')
             ->setListDataKey('id')
             ->setListData($data_list)    // 数据列表
-            ->setListPage($totalCount) // 数据列表分页
+            ->setListPage($data_list->render()) // 数据列表分页
             ->setExtraHtml($extra_html)
             ->addRightButton('edit',array('href'=>url('ruleEdit',array('id'=>'__data_id__'))))      // 添加编辑按钮
             ->addRightButton('forbid',array('model'=>'auth_rule'))// 添加删除按钮
@@ -134,7 +145,7 @@ class Auth extends Admin {
             $meta_title='菜单管理';
         }
         
-        list($data_list,$totalCount) = $this->authRuleModel->getListByPage($map,'sort asc','*',20);
+        list($data_list,$page) = $this->authRuleModel->getListByPage($map,'sort asc','*',20);
         foreach ($data_list as $key=>$list) {
             $data_list[$key]['p_menu']= $this->authRuleModel->where(['id'=>(int)$list['pid']])->value('title');
         }
@@ -183,7 +194,7 @@ class Auth extends Admin {
             ->keyListItem('right_button', '操作', 'btn')
             ->setListDataKey('id')
             ->setListData($data_list)    // 数据列表
-            ->setListPage($totalCount) // 数据列表分页
+            ->setListPage($page) // 数据列表分页
             ->setExtraHtml($extra_html)
             ->addRightButton('edit',array('href'=>url('ruleEdit',array('id'=>'__data_id__'))))      // 添加编辑按钮
             ->addRightButton('forbid',array('model'=>'auth_rule'))// 添加删除按钮
@@ -489,7 +500,7 @@ EOF;
                 ->addRightButton('edit',array('title'=>'成员授权','href'=>url('accessUser',array('group_id'=>'__data_id__'))))    
                 ->fetch();
     }
-	
+    
     //角色编辑
     public function roleEdit($group_id=0){
         $title = $group_id ? '编辑':'新增';

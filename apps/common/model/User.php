@@ -246,7 +246,7 @@ class User extends Base
      * @date   2017-10-06
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    private static function setUserAuthSession($user)
+    public static function setUserAuthSession($user)
     {
          // 记录登录SESSION和COOKIES
         $auth_login = [

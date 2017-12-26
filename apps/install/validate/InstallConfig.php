@@ -65,6 +65,6 @@ class InstallConfig extends Validate
     protected $scene=[
         'admin_info' => ['admin_username','admin_password','admin_repassword','admin_email'],
         'web_config' => ['web_site_title','index_url','web_site_description','web_site_keyword'],
-        'db_config' => ['type','hostname','database','username','password','hostport','prefix'],
+        'db_config' => ['type','hostname','database','username','hostport','prefix'],
     ];
 }
