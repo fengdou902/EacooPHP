@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 2017-11-17 10:55:28
+-- Generation Time: 2017-12-26 11:16:21
 -- 服务器版本： 5.7.15
 -- PHP Version: 7.0.14
 
@@ -269,8 +269,8 @@ INSERT INTO `eacoo_auth_group_access` (`uid`, `group_id`, `status`) VALUES
 
 CREATE TABLE `eacoo_auth_rule` (
   `id` smallint(6) NOT NULL,
-  `name` char(80) NOT NULL DEFAULT '0' COMMENT '导航链接',
-  `title` char(20) NOT NULL DEFAULT '0' COMMENT '导航名字',
+  `name` char(80) NOT NULL DEFAULT '' COMMENT '导航链接',
+  `title` char(20) NOT NULL DEFAULT '' COMMENT '导航名字',
   `depend_type` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '来源类型。1module，2plugin，3theme',
   `depend_flag` varchar(50) NOT NULL DEFAULT '' COMMENT '来源标记',
   `type` tinyint(1) DEFAULT '1' COMMENT '是否支持规则表达式',
@@ -370,7 +370,7 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `function
 (14, 'admin_page_rows', '分页数量', '20', '', '', 2, 0, 'number', '分页时每页的记录数', 1434019462, 1506099586, 4, 1),
 (15, 'admin_theme', '后台主题', 'default', 'default:默认主题\r\nblue:蓝色理想\r\ngreen:绿色生活', '', 2, 0, 'select', '后台界面主题', 1436678171, 1506099586, 5, 1),
 (16, 'develop_mode', '开发模式', '1', '1:开启\r\n0:关闭', '', 3, 0, 'select', '开发模式下会显示菜单管理、配置管理、数据字典等开发者工具', 1432393583, 1507724972, 1, 1),
-(17, 'app_trace', '是否显示页面Trace', '0', '1:开启\r\n0:关闭', '', 3, 0, 'select', '是否显示页面Trace信息', 1387165685, 1507724972, 2, 1),
+(17, 'app_trace', '是否显示页面Trace', '1', '1:开启\r\n0:关闭', '', 3, 0, 'select', '是否显示页面Trace信息', 1387165685, 1507724972, 2, 1),
 (18, 'auth_key', '系统加密KEY', 'vzxI=vf[=xV)?a^XihbLKx?pYPw$;Mi^R*<mV;yJh$wy(~~E?<.JA&ANdIZ#QhPq', '', '', 3, 0, 'textarea', '轻易不要修改此项，否则容易造成用户无法登录；如要修改，务必备份原key', 1438647773, 1507724972, 3, 1),
 (19, 'only_auth_rule', '权限仅验证规则表', '1', '1:开启\n0:关闭', '', 4, 0, 'radio', '开启此项，则后台验证授权只验证规则表存在的规则', 1473437355, 1473437355, 0, 1),
 (20, 'static_domain', '静态文件独立域名', '', '', '', 3, 0, 'text', '静态文件独立域名一般用于在用户无感知的情况下平和的将网站图片自动存储到腾讯万象优图、又拍云等第三方服务。', 1438564784, 1438564784, 3, 1),
@@ -391,7 +391,7 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `function
 (37, 'mail_captcha_template', '验证码邮件模板', '{"active":"0","subject":"\\u90ae\\u7bb1\\u9a8c\\u8bc1\\u7801\\u901a\\u77e5"}', '', '', 8, 0, 'json', 'JSON格式保存除了模板内容的属性', 1467519582, 1467818456, 0, 1),
 (38, 'mail_reg_active_template_content', '注册激活邮件模板内容', '<p><span style="font-family: 微软雅黑; font-size: 14px;"></span><span style="font-family: 微软雅黑; font-size: 14px;">您在{$title}的激活链接为</span><a href="{$url}" target="_blank" style="font-family: 微软雅黑; font-size: 14px; white-space: normal;">激活</a><span style="font-family: 微软雅黑; font-size: 14px;">，或者请复制链接：{$url}到浏览器打开。</span></p>', '', '', 8, 0, 'textarea', '注册激活模板邮件内容部分，模板内容单独存放', 1467818340, 1467818340, 0, 1),
 (39, 'mail_captcha_template_content', '验证码邮件模板内容', '<p><span style="font-family: 微软雅黑; font-size: 14px;">您的验证码为{$verify}验证码，账号为{$account}。</span></p>', '', '', 8, 0, 'textarea', '验证码邮件模板内容部分', 1467818435, 1467818435, 0, 1),
-(40, 'attachment_options', '附件配置选项', '{"driver":"local","file_max_size":"2097152","file_exts":"doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,bz2,7z","file_save_name":"uniqid","image_max_size":"2097152","image_exts":"gif,jpg,jpeg,bmp,png","image_save_name":"uniqid","page_number":"30","widget_show_type":"0","cut":"1","small_size":{"width":"150","height":"150"},"medium_size":{"width":"320","height":"280"},"large_size":{"width":"560","height":"430"},"watermark_scene":"2","watermark_type":"1","water_position":"9","water_img":"\\/logo.png","water_opacity":"80"}', '', '', 9, 0, 'json', '以JSON格式保存', 1467858734, 1510809632, 0, 1),
+(40, 'attachment_options', '附件配置选项', '{"driver":"local","file_max_size":"2097152","file_exts":"doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,bz2,7z","file_save_name":"uniqid","image_max_size":"2097152","image_exts":"gif,jpg,jpeg,bmp,png","image_save_name":"uniqid","page_number":"30","widget_show_type":"0","cut":"1","small_size":{"width":"150","height":"150"},"medium_size":{"width":"320","height":"280"},"large_size":{"width":"560","height":"430"},"watermark_scene":"2","watermark_type":"1","water_position":"9","water_img":"\\/logo.png","water_opacity":"80"}', '', '', 9, 0, 'json', '以JSON格式保存', 1467858734, 1510997298, 0, 1),
 (42, 'user_deny_username', '保留用户名和昵称', '管理员,测试,admin,垃圾', '', '', 7, 0, 'textarea', '禁止注册用户名和昵称，包含这些即无法注册,用&quot; , &quot;号隔开，用户只能是英文，下划线_，数字等', 1468493201, 1468493201, 0, 1),
 (43, 'verify_open', '验证码配置', 'reg,login,reset', 'reg:注册显示\r\nlogin:登陆显示\r\nreset:密码重置', '', 2, 0, 'checkbox', '验证码开启配置', 1468494419, 1506099586, 0, 1),
 (44, 'verify_type', '验证码类型', '2', '1:中文\r\n2:英文\r\n3:数字\r\n4:英文+数字', '', 2, 0, 'select', '验证码类型', 1468494591, 1506099586, 0, 1),
@@ -678,7 +678,7 @@ CREATE TABLE `eacoo_users` (
   `freeze_money` decimal(10,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT '冻结金额，和金币相同换算',
   `pay_pwd` char(32) DEFAULT '' COMMENT '支付密码',
   `reg_from` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '注册来源。1PC端，2WAP端，3微信端，4APP端，5后台添加',
-  `reg_method` varchar(30) NOT NULL DEFAULT '' COMMENT '注册方式',
+  `reg_method` varchar(30) NOT NULL DEFAULT '' COMMENT '注册方式。wechat,sina,等',
   `level` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '等级',
   `p_uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '推荐人会员ID',
   `allow_admin` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '允许后台。0不允许，1允许',
@@ -749,7 +749,8 @@ ALTER TABLE `eacoo_auth_group_access`
 -- Indexes for table `eacoo_auth_rule`
 --
 ALTER TABLE `eacoo_auth_rule`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uniq_name` (`name`),
 
 --
 -- Indexes for table `eacoo_config`
@@ -838,12 +839,12 @@ ALTER TABLE `eacoo_action`
 -- 使用表AUTO_INCREMENT `eacoo_action_log`
 --
 ALTER TABLE `eacoo_action_log`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=5;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=1;
 --
 -- 使用表AUTO_INCREMENT `eacoo_attachment`
 --
 ALTER TABLE `eacoo_attachment`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=100;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=97;
 --
 -- 使用表AUTO_INCREMENT `eacoo_auth_group`
 --
@@ -898,7 +899,7 @@ ALTER TABLE `eacoo_terms`
 -- 使用表AUTO_INCREMENT `eacoo_term_relationships`
 --
 ALTER TABLE `eacoo_term_relationships`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- 使用表AUTO_INCREMENT `eacoo_themes`
 --
