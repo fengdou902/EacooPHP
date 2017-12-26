@@ -72,6 +72,9 @@ function check_dirfile(){
 	foreach ($items as &$val) {
 		$item =	ROOT_PATH.$val[3];
 		if('dir' == $val[0]){
+			if (!is_dir($item)) {
+				@mkdirs($item);
+			}
 			if(!is_writable($item)) {
 				if(is_dir($item)) {
 					$val[1] = '可读';

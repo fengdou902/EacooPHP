@@ -61,8 +61,22 @@
 	</table>
 	<div class="margin-top">
 		<div class="text-center">
-		    <a class="btn btn-primary" href="{:url('install/index/config')}">下一步</a>
+		    <a class="btn btn-primary ajax-post" href="javascript:void(0);">下一步</a>
 		    <a class="btn btn-default" href="{:url('install/index/index')}">上一步</a>
 		</div>
 	</div>
+	<script type="text/javascript">
+		$(function(){
+			$(".ajax-post").click(function(){
+				$.post("{:url('install/index/check')}",function(result){
+					if(result.code==1){
+						window.location.href=result.url
+					}else{
+						 layer.msg(result.msg, {shift: 6});
+					}
+				})
+			})
+		});
+	</script>
+
 {/block}

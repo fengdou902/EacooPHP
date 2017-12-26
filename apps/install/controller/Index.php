@@ -48,29 +48,37 @@ class Index extends Controller {
 	 * @author 心云间、凝听 <981248356@qq.com>
 	 */
 	public function check() {
-		session('error', false);
+		if (IS_POST) {
+			if(session('error')){
+                $this->error('环境检测没有通过，请调整环境后重试！');
+            }else{
+                $this->success('恭喜您环境检测通过', url('config'));
+            }
+		} else{
+			session('error', false);
+			//环境检测
+			$env = check_env();
 
-		//环境检测
-		$env = check_env();
+			//目录文件读写检测
+			if (IS_WRITE) {
+				$dirfile = check_dirfile();
+				$this->assign('dirfile', $dirfile);
+			}
 
-		//目录文件读写检测
-		if (IS_WRITE) {
-			$dirfile = check_dirfile();
-			$this->assign('dirfile', $dirfile);
+			//函数检测
+			$func = check_func();
+
+			session('step', 1);
+
+			$this->assign('env', $env);
+			$this->assign('func', $func);
+
+			$this->status['index'] = 'success';
+			$this->status['check'] = 'primary';
+			$this->assign('status', $this->status);
+			return $this->fetch();
 		}
-
-		//函数检测
-		$func = check_func();
-
-		session('step', 1);
-
-		$this->assign('env', $env);
-		$this->assign('func', $func);
-
-		$this->status['index'] = 'success';
-		$this->status['check'] = 'primary';
-		$this->assign('status', $this->status);
-		return $this->fetch();
+		
 	}
 
 	/**
