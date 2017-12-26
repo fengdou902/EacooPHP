@@ -48,7 +48,7 @@ class Index extends Controller {
 	 * @author 心云间、凝听 <981248356@qq.com>
 	 */
 	public function check() {
-		if (IS_POST) {
+		if ($this->request->isPost()) {
 			if(session('error')){
                 $this->error('环境检测没有通过，请调整环境后重试！');
             }else{
