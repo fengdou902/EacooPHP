@@ -33,7 +33,7 @@ class Modules extends Admin {
 	 * @date   2017-09-21
 	 * @author 心云间、凝听 <981248356@qq.com>
 	 */
-	public function index($from_type = 'local') {
+	public function index($from_type = 'oneline') {
 		$tab_list = [
             'local'=>['title'=>'本地','href'=>url('index',['from_type'=>'local'])],
             'oneline'=>['title'=>'模块市场','href'=>url('index',['from_type'=>'oneline'])],
