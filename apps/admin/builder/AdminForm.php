@@ -119,13 +119,14 @@ class AdminForm extends Builder
 
     /**
      * 加入一个表单项
+     * @param $name 字段名
      * @param $type 表单类型(取值参考系统配置form_item_type)
      * @param $title 表单标题
      * @param $description 表单项描述说明
-     * @param $name 表单名
      * @param $options 表单options
-     * @param $extra_class 表单项是否隐藏
+     * @param $confirm 验证规则
      * @param $extra_attr 表单项额外属性
+     * @param $extra_class 表单项是否隐藏
      * @return $this
      */
     public function addFormItem($name, $type, $title, $description = '',$options = [],$confirm='',$extra_attr = '',$extra_class = '') {
