@@ -750,7 +750,7 @@ ALTER TABLE `eacoo_auth_group_access`
 --
 ALTER TABLE `eacoo_auth_rule`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uniq_name` (`name`),
+  ADD UNIQUE KEY `uniq_name` (`name`);
 
 --
 -- Indexes for table `eacoo_config`
