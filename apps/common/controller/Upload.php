@@ -267,7 +267,7 @@ class Upload {
 		if (!$uid) return false;
 		$config = config('attachment_options');
 		$config = array_merge($config,$upload_config);
-		
+		$config['saveName'] = $config['image_save_name'];
 		$upload_path = './uploads/avatar/'.$uid;
 		$driver   = $config['driver'];
 		if ($config['method']==1) {//表单提交
