@@ -131,3 +131,29 @@ function eacoo_url($url, $param=[],$type=1)
         
     }
 }
+
+/**
+ * 设置日志记录
+ * @param  string $content 日志内容
+ * @param  string $scene_name 场景类型名
+ * @param  string $type 内容类型：如：info,error,debug
+ * @date   2017-11-06
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function setAppLog($content='', $scene_name='default', $type='info')
+{
+    if (is_array($content)) {
+        $content = var_export($content,true);
+    }
+    $now = date('Y-m-d H:i:s');
+    $remote  = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
+    $method  = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'CLI';
+    $uri     = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+    $base_message = "---------------------------------------------------------------\r\n[{$now}] {$remote} {$method} {$uri}\r\n";
+    $file = RUNTIME_PATH."applog".DS.$scene_name.DS.$type.'_'.date('Ymd',time()).".log";
+    $path = dirname($file);
+    !is_dir($path) && mkdir($path, 0755, true);
+    $content = $content." \r\n";
+    file_put_contents($file,$base_message.$content,FILE_APPEND);
+    return true;
+}
