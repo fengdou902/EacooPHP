@@ -57,6 +57,118 @@ class Modules extends Admin {
 	}
 
 	/**
+     * 模块设置
+     * @return [type] [description]
+     * @date   2017-08-30
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function config() {
+        if (IS_POST) {
+			$data   = $this->request->param();
+			$id     = $data['id'];
+			$config = $data['config'];
+            $res   = $this->moduleModel->save(['config'=>json_encode($config)],['id'=>$id]);
+            if ($res !== false) {
+                $this->success('保存成功');
+            } else {
+                $this->error('保存失败');
+            }
+        } else {
+            $id = input('param.id');
+            if (!$id) {
+                $map = ['name'=>input('param.name')];
+            } else{
+                $map = ['id'=>input('param.id')];
+            }
+            $app  = ModuleModel::get($map);
+            $app = $app ? $app->toArray() : $app;
+            if (!$app) {
+                $this->error('模块未安装');
+            }
+
+            $db_config = $app['config'];
+            $extensionObj = new Extension;
+            $extensionObj->initInfo('module',$app['name']);
+
+            $options   = $extensionObj->getOptionsByFile();
+
+            $this->meta_title = '设置-'.$app['title'];
+            if (!empty($options) && is_array($options)) {
+                if (!empty($db_config)) {
+                    $db_config = json_decode($db_config, true);//dump($db_config['sliders']);
+                    foreach ($options as $key => $value) {
+                        switch ($value['type']) {
+                            case 'group':
+                                foreach ($value['options'] as $okey => $option) {
+                                    $options[$key]['options'][$okey]['value'] = $db_config[$key][$okey]; 
+                                }
+                                break;
+                            case 'tab':
+                                foreach ($value['options'] as $okey => $option) {
+                                    foreach ($option['options'] as $gkey => $value) {
+                                        $options[$key]['options'][$okey][$gkey]['options']['value'] = $db_config[$gkey];
+                                    }
+                                    
+                                }
+                                break;
+                            default:
+                                if (isset($db_config[$key])) {
+                                    $options[$key]['value'] = $db_config[$key];
+                                }
+                                break;
+                        }
+
+                    }
+                }
+                // 构造表单名
+                foreach ($options as $key => $val) {
+                    switch ($val['type']) {
+                        case 'group':
+                            foreach ($val['options'] as $key2 => $val2) {
+                                $options[$key]['options'][$key2]['name'] = 'config['.$key.']['.$key2.']';
+                            }
+                            break;
+                        case 'tab':
+                            foreach ($val['options'] as $key2 => $val2) {
+                                foreach ($val2['options'] as $key3 => $val3) {
+                                    $options[$key]['options'][$key2]['options'][$key3]['name'] = 'config['.$key3.']';
+
+                                    $options[$key]['options'][$key2]['options'][$key3]['confirm'] = $options[$key]['options'][$key2]['options'][$key3]['extra_class'] = $options[$key]['options'][$key2]['options'][$key3]['extra_attr']='';
+                                }
+                                
+                            }
+                            break;
+                        default:
+                            $options[$key]['name'] = 'config['.$key.']';
+
+                            $options[$key]['confirm']     = isset($val['confirm']) ? $val['confirm']:'';
+                            $options[$key]['options']     = isset($val['options']) ? $val['options']:[];
+                            $options[$key]['extra_class'] = isset($val['extra_class']) ? $val['extra_class']:'';
+                            $options[$key]['extra_attr']  = isset($val['extra_attr']) ? $val['extra_attr']:'';
+                            break;
+                    }  
+                }
+            }
+    
+            if (!empty($app['custom_config'])) {
+                $this->assign('data', $app);
+                $this->assign('form_items', $options);
+                $this->assign('custom_config', $this->fetch($app['plugin_path'].$app['custom_config']));
+                return $this->fetch($app['plugin_path'].$app['custom_config']);
+            } else {
+                Builder::run('Form')
+                        ->setMetaTitle($this->meta_title)  //设置页面标题
+                        ->setPostUrl(url('config')) //设置表单提交地址
+                        ->addFormItem('id', 'hidden', 'ID', 'ID')
+                        ->setExtraItems($options) //直接设置表单数据
+                        ->setFormData($app)
+                        ->addButton('submit')->addButton('back')    // 设置表单按钮
+                        ->fetch();
+            }
+        }
+    }
+
+	/**
 	 * 安装模块之前
 	 */
 	public function installBefore($name) {

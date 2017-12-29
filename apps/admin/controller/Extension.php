@@ -22,13 +22,13 @@ use app\admin\model\Modules as ModuleModel;
 
 class Extension extends Admin {
 
-	protected $type;//类型：plugin,module
-	protected $appsPath;//应用目录
-	protected $appName;
-	public $appExtensionPath;//应用具体扩展目录
-	public $info;
-	protected $hooksModel;
-	protected $appExtensionModel;
+    protected $type;//类型：plugin,module
+    protected $appsPath;//应用目录
+    protected $appName;
+    public $appExtensionPath;//应用具体扩展目录
+    public $info;
+    protected $hooksModel;
+    protected $appExtensionModel;
     protected $uid;
 
 	function _initialize()

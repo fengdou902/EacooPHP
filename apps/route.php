@@ -12,5 +12,6 @@ use think\Route;
 
 //导航
 Route::rule('WxInterface/:wxid', 'wechat/WxInterface/index');
+Route::rule('wechat/Oauth/:wxid', 'wechat/home/wechatOauth');
 //插件执行入口
 Route::rule('plugin_execute', 'home/plugin/execute');

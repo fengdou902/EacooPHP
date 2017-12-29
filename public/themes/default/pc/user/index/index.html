@@ -1,0 +1,45 @@
+{extend name="$_theme_public_layout"/}
+{block name="style"}
+
+{/block}
+
+{block name="main"}
+
+<div class="content-wrapper">
+    <div class="container">
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                {notempty name="user_list"}
+                {volist name="user_list" id="data"}
+                <div class="col-xs-6 col-sm-3 col-md-3">
+                    <div class="card">
+                        <a class="img-circle" href="{:URL('user/index/home',['uid'=>$data['uid']])}">
+                            <img src="{$data.avatar}" alt="{$data.nickname}" class="avatar" style="height: 200px;">
+                        </a>
+                        <div class="card-heading">
+                            <a href="{:URL('/user/index/home/uid',['id'=>$data['uid']])}">
+                                <strong>{$data.nickname}</strong>
+                            </a>
+                        </div>
+                        <div class="card-actions">
+                            <span class="text-muted">加入时间：{$data.reg_time}</span>
+                        </div>
+                    </div>
+
+                </div>
+                {/volist}
+                {else/}
+                <p class="tc">暂无内容</p>
+                {/notempty}
+            </div>
+        </section>
+    </div>
+</div>
+<!-- /.content-wrapper -->
+
+{/block}
+
+{block name="script"}
+
+{/block}

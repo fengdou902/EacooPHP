@@ -96,8 +96,11 @@ class Plugins extends Admin {
 
             $plugin_class = get_plugin_class($plugin['name']);
             if (!class_exists($plugin_class)) {
-                trace("插件{$plugin['name']}无法实例化,",'Plugin','ERR');
+                $this->error("插件{$plugin['name']}无法实例化,");
             }
+            $plugin_obj = new $plugin_class;
+            $addon['plugin_path']    = $plugin_obj->pluginPath;
+            $plugin['custom_config'] = $plugin_obj->custom_config;
             $db_config = $plugin['config'];
             $extensionObj = new Extension;
             $extensionObj->initInfo('plugin',$plugin['name']);

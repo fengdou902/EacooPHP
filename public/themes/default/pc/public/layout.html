@@ -51,7 +51,8 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="">主页 <span class="sr-only">(current)</span></a></li>
+            <li class="active"><a href="/">主页 <span class="sr-only">(current)</span></a></li>
+            <li><a href="{:url('user/index/index')}">会员<span class="sr-only">会员</span></a></li>
             <li><a href="https://gitee.com/ZhaoJunfeng/EacooPHP/attach_files" target="_blank">下载</a></li>
             <li><a href="http://forum.eacoo123.com" target="_blank">社区</a></li>
             <li><a href="https://www.kancloud.cn/youpzt/eacoo" target="_blank">文档</a></li>
@@ -171,28 +172,27 @@
             </li>
 
             {empty name="current_user"}
-              <li><a href="__ROOT__/admin.php?s=/admin/index/login">登录后台</a></li>
+              <li><a href="{:url('user/index/login')}">登录</a></li>
             {else/}
               <li class="dropdown user user-menu">
               <!-- Menu Toggle Button -->
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <!-- The user image in the navbar-->
-                <img src="http://img.eacoomall.com/images/uploads/avatar/1/594e7fcad7d91.jpg" class="user-image" alt="User Image">
+                <img src="{$current_user.avatar}" class="user-image" alt="{$current_user.nickname}">
                 <!-- hidden-xs hides the username on small devices so only the image appears. -->
                 <span class="hidden-xs">{$current_user.nickname}</span>
               </a>
               <ul class="dropdown-menu">
                 <!-- The user image in the menu -->
                 <li class="user-header">
-                  <img src="{$current_user.avatar|root_full_path}" class="img-circle" alt="User Image">
-
+                  <img src="{$current_user.avatar}" class="img-circle" alt="User Image">
                   <p>
-                    {$current_user.nickname} - {/*$current_user.role_name*/}
+                    {$current_user.nickname}
                     <small>注册时间：{$current_user.reg_time}</small>
                   </p>
                 </li>
                 <!-- Menu Body -->
-                <li class="user-body">
+                <!--<li class="user-body">
                   <div class="row">
                     <div class="col-xs-4 text-center">
                       <a href="#">Followers</a>
@@ -204,15 +204,15 @@
                       <a href="#">Friends</a>
                     </div>
                   </div>
-                  <!-- /.row -->
-                </li>
+                  &lt;!&ndash; /.row &ndash;&gt;
+                </li>-->
                 <!-- Menu Footer-->
                 <li class="user-footer">
                   <div class="pull-left">
-                    <a href="__ROOT__/admin.php?s=/admin/user/profile&uid=1" class="btn btn-default btn-flat">个人资料</a>
+                    <a href="{:url('user/index/personal')}" class="btn btn-default btn-flat">个人资料</a>
                   </div>
                   <div class="pull-right">
-                    <a href="__ROOT__/admin.php?s=/admin/index/logout" class="btn btn-default btn-flat">退出</a>
+                    <a href="{:url('user/index/logout')}" class="btn btn-default btn-flat">退出</a>
                   </div>
                 </li>
               </ul>

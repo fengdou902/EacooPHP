@@ -3,3 +3,271 @@
  /*box*/
 .box{box-shadow:none;}
 .box-header .box-title{font-size: 15px;}
+
+/*上传图片组件*/
+.upload-img-box .each img { max-height: 145px;}
+.remove-attachment{color: red;position: absolute;top: 0;right: 2px;background: #fff;border-radius: 20px;cursor: pointer;}
+.remove-attachment:hover{color: #DD0000;box-shadow: inset 0 1px 1px red, 0 0 8px red;}
+
+.webuploader-pick{border: none!important;padding: 0!important;}
+.popup-gallery img{max-width: 100%;}
+
+.upload-img-box{display:block;width: 200px;height: 156px;margin-top: 10px;margin-left:10px;max-width: none;}
+.upload-img-box a{line-height: 143px;}
+
+.media-modal-pic{height:223px; line-height: 223px;}
+.media-modal-pic img{max-height: 100%;max-width: 100%;}
+.media-modal-ul li{line-height: 24px;word-wrap: break-word; word-break: normal;}
+.media-modal-ul span{font-weight:normal;}
+.attachment_list li{cursor: pointer;padding-left: 8px;padding-right: 8px;}
+
+/*Login*/
+.login {
+    height: 200px;
+    margin-top: 100px;
+    background: #eee;
+}
+.login .loginform {
+    position: relative;
+    top: 100px;
+    border: 1px solid #ddd;
+    background: #fff;
+    max-width: 400px;
+    padding: 0;
+}
+.login #owl-login {
+    width: 211px;
+    height: 108px;
+    background-image: url(../img/owl-login.png);
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    margin-left: -111px;
+}
+.login #owl-login .hand {
+    width: 34px;
+    height: 34px;
+    -webkit-border-radius: 40px;
+    border-radius: 40px;
+    background-color: #472d20;
+    -webkit-transform: scaleY(0.6);
+    -moz-transform: scaleY(0.6);
+    -o-transform: scaleY(0.6);
+    -ms-transform: scaleY(0.6);
+    transform: scaleY(0.6);
+    -webkit-transition: 0.3s ease-out;
+    -moz-transition: 0.3s ease-out;
+    -o-transition: 0.3s ease-out;
+    -ms-transition: 0.3s ease-out;
+    transition: 0.3s ease-out;
+    position: absolute;
+    left: 14px;
+    bottom: -8px;
+}
+.login #owl-login .hand.hand-r {
+    left: 170px;
+}
+.login #owl-login .arms {
+    top: 58px;
+    position: absolute;
+    width: 100%;
+    height: 41px;
+    overflow: hidden;
+}
+.login #owl-login .arms .arm {
+    width: 40px;
+    height: 65px;
+    position: absolute;
+    left: 20px;
+    top: 40px;
+    background-image: url(../img/owl-login-arm.png);
+    -webkit-transition: 0.3s ease-out;
+    -moz-transition: 0.3s ease-out;
+    -o-transition: 0.3s ease-out;
+    -ms-transition: 0.3s ease-out;
+    transition: 0.3s ease-out;
+    -webkit-transform: rotate(-20deg);
+    -moz-transform: rotate(-20deg);
+    -o-transform: rotate(-20deg);
+    -ms-transform: rotate(-20deg);
+    transform: rotate(-20deg);
+}
+.login #owl-login .arms .arm.arm-r {
+    -webkit-transform: rotate(20deg) scaleX(-1);
+    -moz-transform: rotate(20deg) scaleX(-1);
+    -o-transform: rotate(20deg) scaleX(-1);
+    -ms-transform: rotate(20deg) scaleX(-1);
+    transform: rotate(20deg) scaleX(-1);
+    left: 158px;
+}
+.login .loginform .pad {
+    overflow: hidden;
+    padding: 30px;
+}
+.login .loginform input {
+    padding: 9px 6px 9px 40px;
+    height: auto;
+    border-radius: 4px;
+}
+.login .loginform .controls {
+    position: relative;
+    margin-bottom: 10px;
+}
+.login .loginform label {
+    position: absolute;
+    top: 13px;
+    left: 13px;
+    font-size: 16px;
+    color: rgba(0,0,0,0.3);
+}
+.login .loginform .form-actions {
+    border-top: 1px solid #e4e4e4;
+    background-color: #f7f7f7;
+    padding: 15px 30px;
+    text-align: right;
+}
+.login #owl-login.password .hand {
+    -webkit-transform: translateX(42px) translateY(-15px) scale(0.7);
+    -moz-transform: translateX(42px) translateY(-15px) scale(0.7);
+    -o-transform: translateX(42px) translateY(-15px) scale(0.7);
+    -ms-transform: translateX(42px) translateY(-15px) scale(0.7);
+    transform: translateX(42px) translateY(-15px) scale(0.7);
+}
+.login #owl-login.password .hand.hand-r {
+    -webkit-transform: translateX(-42px) translateY(-15px) scale(0.7);
+    -moz-transform: translateX(-42px) translateY(-15px) scale(0.7);
+    -o-transform: translateX(-42px) translateY(-15px) scale(0.7);
+    -ms-transform: translateX(-42px) translateY(-15px) scale(0.7);
+    transform: translateX(-42px) translateY(-15px) scale(0.7);
+}
+.login #owl-login.password .arms .arm {
+    -webkit-transform: translateY(-40px) translateX(40px);
+    -moz-transform: translateY(-40px) translateX(40px);
+    -o-transform: translateY(-40px) translateX(40px);
+    -ms-transform: translateY(-40px) translateX(40px);
+    transform: translateY(-40px) translateX(40px);
+}
+.login #owl-login.password .arms .arm.arm-r {
+    -webkit-transform: translateY(-40px) translateX(-40px) scaleX(-1);
+    -moz-transform: translateY(-40px) translateX(-40px) scaleX(-1);
+    -o-transform: translateY(-40px) translateX(-40px) scaleX(-1);
+    -ms-transform: translateY(-40px) translateX(-40px) scaleX(-1);
+    transform: translateY(-40px) translateX(-40px) scaleX(-1);
+}
+
+
+
+
+
+
+/*User home*/
+.card {
+    width: 100%;
+}
+.img-circle img {
+    border-radius: 50%;
+}
+.p-box {
+    margin-bottom: 15px;
+    background-color: #fff;
+}
+.p-cutis {
+    height: 300px;
+    overflow: hidden;
+}
+.p-cutis img {
+    width: 100%;
+}
+.p-onesinfo {
+    padding: 0 0 15px;
+    text-align: center;
+}
+.p-avatar, .p-avatar img {
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+    border: 2px solid #FFF;
+}
+.p-avatar img {
+    width: 135px;
+    height: 135px;
+}
+.p-avatar {
+    z-index: 10;
+    width: 150px;
+    height: 150px;
+    margin: -110px auto 0;
+    padding: 5px;
+}
+.p-username {
+    margin: 10px 0 0;
+}
+.p-exchange {
+    margin: 10px 0 0;
+}
+.pipe {
+    margin: 0 20px;
+}
+.p-navs {
+    height: 50px;
+    line-height: 50px;
+    border-width: 1px 0 0;
+    background-color: #DDD;
+    border-color: #eee;
+}
+.p-navs ul {
+    padding: 0 25px;
+    list-style: none;
+    line-height: 50px;
+    overflow: hidden;
+}
+.p-navs li {
+    float: left;
+    margin: 0 -1px -1px 0;
+    border-width: 0 1px;
+    list-style: none;
+    padding: 0 25px;
+    background-color: #f35b4f;
+    color: #fff;
+    border-color: #eee;
+}
+
+
+/*personal*/
+.panel {
+    border-radius: 2px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+}
+.panel.panel-default {
+    border-top: 3px solid #3c8dbc;
+}
+.panel-default .panel-heading {
+    background-color: #f7fafa;
+    color: #333;
+}
+.panel-heading {
+    border-radius: 2px 2px 0 0;
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+}
+.text-center {
+    text-align: center;
+}
+.panel-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 16px;
+    color: inherit;
+}
+.img-circle {
+    border-radius: 50%;
+}
+.panel-body {
+    padding: 15px;
+}
+.avatar-box table.info td {
+    width: 50%;
+    padding: 2px;
+}

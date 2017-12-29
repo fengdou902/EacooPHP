@@ -259,18 +259,17 @@ EOF;
      * 个人资料
      * @param  integer $uid [description]
      * @return [type] [description]
-     * @date   2017-08-20
-     * @author 赵俊峰 <981248356@qq.com>
+     * @date   2017-12-28
+     * @author 心云间、凝听 <981248356@qq.com>
      */
     public function profile($uid = 0) {
-        $this->assign('meta_title','个人资料');
-        $this->assign('page_config',['disable_panel'=>true]);
+        
         if (IS_POST) {
             // 密码为空表示不修改密码
             // if ($_POST['password'] === '') {
             //     unset($_POST['password']);
             // }
-            $data = input('post.');
+            $data = $this->request->param();
             
             // 提交数据
             $result = $this->userModel->editData($data,$uid,'uid');
@@ -285,6 +284,8 @@ EOF;
                 $this->error($this->userModel->getError());
             }
         } else {
+            $this->assign('meta_title','个人资料');
+            $this->assign('page_config',['disable_panel'=>true]);
             // 获取账号信息
             if ($uid>0) {
                 $user_info = get_user_info($uid);

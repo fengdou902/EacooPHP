@@ -264,7 +264,7 @@ class User extends Base
         $auth_login_sign = data_auth_sign($auth_login);
         session('user_login_auth', $auth_login);
         session('activation_auth_sign', $auth_login_sign);
-
+        cache('User_info_'.$user['uid'],null);
         return [
             'auth_login'      =>$auth_login,
             'auth_login_sign' =>$auth_login_sign

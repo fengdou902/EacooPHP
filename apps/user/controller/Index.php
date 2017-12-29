@@ -1,10 +1,136 @@
 <?php
-namespace app\User\controller;
+namespace app\user\controller;
+use app\home\controller\Home;
 
-class Index
+use app\common\model\User as UserModel;
+class Index extends Home
 {
-    public function index()
+    function _initialize()
     {
-        return '<style type="text/css">*{ padding: 0; margin: 0; } div{ padding: 4px 48px;} a{color:#2E5CD5;cursor: pointer;text-decoration: none} a:hover{text-decoration:underline; } body{ background: #fff; font-family: "Century Gothic","Microsoft yahei"; color: #333;font-size:18px;} h1{ font-size: 100px; font-weight: normal; margin-bottom: 12px; } p{ line-height: 1.6em; font-size: 42px }</style><div style="padding: 24px 48px;"> <h1>:)</h1><p> ThinkPHP V5<br/><span style="font-size:30px">十年磨一剑 - 为API开发设计的高性能框架</span></p><span style="font-size:22px;">[ V5.0 版本由 <a href="http://www.qiniu.com" target="qiniu">七牛云</a> 独家赞助发布 ]</span></div><script type="text/javascript" src="http://tajs.qq.com/stats?sId=9347272" charset="UTF-8"></script><script type="text/javascript" src="http://ad.topthink.com/Public/static/client.js"></script><thinkad id="ad_bd568ce7058a1091"></thinkad>';
+        parent::_initialize();
+        $this->userModel = new UserModel;
+    }
+
+    /*
+     *  Description: 会员列表
+     *  By: yyyvy  <QQ:76836785>
+     *  Time: 2017-12-28 05:09:42
+     * */
+    public function index(){
+
+        $map['status'] = ['egt', '0']; // 禁用和正常状态
+        list($user_list) = $this->userModel->getListByPage($map,'reg_time desc','*',20);
+        $this->assign('user_list',$user_list);
+        return $this->fetch();
+
+    }
+
+    /*
+     *  Description: 会员主页
+     *  By: yyyvy  <QQ:76836785>
+     *  Time: 2017-12-28 06:55:11
+     * */
+    public function home($uid){
+        $info = userModel::info($uid);
+        $this->assign('info',$info);
+        return $this->fetch();
+    }
+
+    /*
+     *  Description: 会员登录
+     *  By: yyyvy  <QQ:76836785>
+     *  Time: 2017-12-28 10:19:55
+     * */
+    public function login(){
+        if (IS_POST) {
+            $data = input('post.');
+            $result = $this->validate($data, [
+              ['username', 'require|min:1', '登录名不能为空|登录名格式不正确'],
+              ['password', 'require|length:6,32', '请填写密码|密码格式不正确']
+            ]);
+            if (true !== $result) {
+                // 验证失败 输出错误信息
+
+                $this->error($result);
+
+                exit;
+            }
+            if(isset($data['rememberme'])){
+                $rememberme = $data['rememberme']==1 ? true : false;
+            }else{
+                $rememberme = false;
+            }
+
+            $result = UserModel::login($data['username'],$data['password'], $rememberme);
+            //print_r($result);die;
+
+            if ($result['code']==1) {
+
+                $uid = !empty($result['data']['uid']) ? $result['data']['uid']:0;
+                $this->success('登录成功！',url('/'));
+            } elseif ($result['code']==0) {
+                $this->error($result['msg']);
+            } else {
+                $this->logout();
+            }
+        }else{
+            return $this->fetch();
+        }
+    }
+
+    /*
+     *  Description: 退出登录
+     *  By: yyyvy  <QQ:76836785>
+     *  Time: 2017-12-28 10:19:55
+     * */
+    public function logout(){
+        session(null);
+        cookie(null,config('cookie.prefix'));
+        $this->redirect('/');
+    }
+
+    /*
+     *  Description: 退出登录
+     *  By: yyyvy  <QQ:76836785>
+     *  Time: 2017-12-28 10:19:55
+     * */
+    public function personal(){
+        $uid  = is_login();
+        //print_r($uid);
+        return $this->fetch();
+    }
+
+    /*
+     *  Description: 修改个人信息
+     *  By: yyyvy  <QQ:76836785>
+     *  Time: 2017-12-28 14:28:21
+     * */
+    public function profile($uid = 0) {
+        if (IS_POST) {
+            $data = input('post.');
+            // 提交数据
+
+            $result = $this->userModel->editData($data,$uid,'uid');
+
+            if ($result) {
+                if ($uid) {//如果是编辑状态下
+                    $this->userModel->updateLoginSession($uid);
+                }
+                $this->success('提交成功', url('profile',['uid'=>$uid]));
+            } else {
+                $this->error($this->userModel->getError());
+            }
+        } else {
+            // 获取账号信息
+
+            if ($uid>0) {
+                $user_info = get_user_info($uid);
+                unset($user_info['password']);
+                unset($user_info['auth_group']['max']);
+            }
+            $this->assign('user_info',$user_info);
+            return $this->fetch();
+
+        }
     }
 }

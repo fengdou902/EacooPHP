@@ -1,0 +1,37 @@
+          <div class="col-sm-12 col-md-8 col-lg-8">
+          <div class="box box-info">
+            <div class="box-header">
+              <h3 class="box-title">最近文章</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" onclick="javascript:location.reload();"><i class="fa fa-refresh"></i>
+                </button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body no-padding">
+              <table class="table">
+                <tbody>
+                <volist name="post_list" id="post">
+                  <tr><td><a href="{:U('Cms/Posts/edit',array('id'=>$post['id']))}" style="color:#555">
+                        <i class="<switch name="key">
+                                    <case value="1">color-ff6666</case>
+                                    <case value="2">color-f7931e</case>
+                                    <case value="3">color-29abe2</case>
+                                    <case value="4">color-22b573</case>
+                                    <case value="5">color-f7931e</case>
+                                    <case value="6">color-f7931e</case>
+                                    <default />color-29abe2
+                                </switch> f18 fa fa-circle"></i>                    
+                        <span>{$post.title}</span>
+                        </a>
+                        </td>
+                        <td><span class="fr mr20 color-8">[{$post.create_time|date="m-d",###}]</span></td>
+                   </tr>
+                </volist>
+              </tbody>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+
+          </div>
