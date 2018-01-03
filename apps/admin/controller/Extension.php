@@ -311,6 +311,7 @@ class Extension extends Admin {
                             trace('应用静态资源移动失败','error');
                         } 
                     } else{
+                        $error_msg = '';
                         $this->appExtensionModel->where('name',$name)->update(['status'=>0]);
                         if (!is_writable(PUBLIC_PATH.'static'.$type_path)) {
                             $error_msg.=','.PUBLIC_PATH.'static'.$type_path;
@@ -645,9 +646,14 @@ class Extension extends Admin {
                 $eacoo_version = explode('.', EACOOPHP_V);
                 $need_version   = explode('.', $core_version);
                 $meet_core_version = false;
-                if (($eacoo_version[0] - $need_version[0]) >= 0) {
-                    if (($eacoo_version[1] - $need_version[1]) >= 0) {
-                        if (($eacoo_version[2] - $need_version[2]) >= 0) {
+                $compare_version0 = $eacoo_version[0] - $need_version[0];
+                $compare_version1 = $eacoo_version[1] - $need_version[1];
+                $compare_version2 = $eacoo_version[2] - $need_version[2];
+                if ($compare_version0 >= 0) {
+                    if ($compare_version1 >= 0) {
+                        if ($compare_version2 >= 0) {
+                            $meet_core_version = true;
+                        } elseif ($compare_version1>0) {
                             $meet_core_version = true;
                         }
                     }
