@@ -214,7 +214,7 @@ $(function () {
         });
     });
   //应用在线安装
-    $(document).on('click','.app-online-install', function() {
+    $(document).on('click','.app-online-install,.view-app-detail', function() {
         layer.closeAll();
         var name           = $(this).data('name');
         var app_type       = $(this).data('type');
@@ -231,8 +231,9 @@ $(function () {
           title: '准备在线安装',
           shadeClose: true,
           shade: 0.8,
-          area: ['300px', '230px'],
-          content: url('admin/Extension/onlineInstallBefore',['load_type=iframe','install_method='+install_method]),
+          area: ['580px', '530px'],
+          //content: url('admin/Extension/onlineInstallBefore',['load_type=iframe','install_method='+install_method]),
+          content:EacooPHP.eacoo_api_url+'/appstore/appinfo?install_method='+install_method+'&type='+app_type+'&name='+name,
           resize: false,
           btn: [btn_text_1,btn_text_2],
           yes: function(index, layero){

@@ -106,8 +106,8 @@
         {foreach name="data_list" item="row"}
         	<div class="col-sm-4 col-xs-6 extension-item">
               <div class="plugin-item">
-                <div class="col-sm-3 col-xs-3 item-logo">{$row.logo}</div>
-                <div class="col-sm-9 col-xs-9 pr-0" ><h4>{$row.title}{eq name="from_type" value="oneline"}<span class="fr color-red f12">{gt name="row.price" value="0"}¥{$row.price|default=''}{else/}免费{/gt}</span>{/eq}</h4>
+                <div class="col-sm-3 col-xs-3 item-logo view-app-detail" data-name="{$row.name}" data-type="plugin" style="cursor: pointer;">{$row.logo}</div>
+                <div class="col-sm-9 col-xs-9 pr-0" ><h4><span class="view-app-detail" data-name="{$row.name}" data-type="plugin" style="cursor: pointer;">{$row.title}</span>{eq name="from_type" value="oneline"}<span class="fr color-red f12">{gt name="row.price" value="0"}¥{$row.price|default=''}{else/}免费{/gt}</span>{/eq}</h4>
                   <p class="item-desc">{$row.description}</p>
                   <div class="item-metas">
                       <p class="text-muted f13">作者：<a href="http://www.eacoo123.com/appstore_plugin/{$row.name}" target="_blank">{$row.author}</a></p>
