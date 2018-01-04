@@ -40,7 +40,6 @@ class Hooks extends Base {
             $data = [
                 'name'        => $name,
                 'description' => $data['description'],
-                'plugins' => $name,
                 'type'        => 1
             ];
             $this->allowField(true)->isUpdate(false)->data($data)->save();
