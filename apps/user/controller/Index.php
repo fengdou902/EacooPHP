@@ -3,8 +3,7 @@ namespace app\user\controller;
 use app\home\controller\Home;
 
 use app\common\model\User as UserModel;
-class Index extends Home
-{
+class Index extends Home{
     function _initialize()
     {
         parent::_initialize();
@@ -90,14 +89,15 @@ class Index extends Home
     }
 
     /*
-     *  Description: 退出登录
+     *  Description: 个人信息
      *  By: yyyvy  <QQ:76836785>
      *  Time: 2017-12-28 10:19:55
      * */
     public function personal(){
-        $uid  = is_login();
-        //print_r($uid);
+      if(is_login()) {
         return $this->fetch();
+      }
+      $this->error('未登录');
     }
 
     /*
@@ -105,32 +105,29 @@ class Index extends Home
      *  By: yyyvy  <QQ:76836785>
      *  Time: 2017-12-28 14:28:21
      * */
-    public function profile($uid = 0) {
+    public function profile() {
+      if(is_login()){
         if (IS_POST) {
-            $data = input('post.');
-            // 提交数据
+          $data = input('post.');
+          // 提交数据
 
-            $result = $this->userModel->editData($data,$uid,'uid');
+          $result = $this->userModel->editData($data,is_login(),'uid');
 
-            if ($result) {
-                if ($uid) {//如果是编辑状态下
-                    $this->userModel->updateLoginSession($uid);
-                }
-                $this->success('提交成功', url('profile',['uid'=>$uid]));
-            } else {
-                $this->error($this->userModel->getError());
-            }
-        } else {
-            // 获取账号信息
-
-            if ($uid>0) {
-                $user_info = get_user_info($uid);
-                unset($user_info['password']);
-                unset($user_info['auth_group']['max']);
-            }
-            $this->assign('user_info',$user_info);
-            return $this->fetch();
-
+          if ($result) {
+            $this->userModel->updateLoginSession(is_login());
+            $this->success('提交成功', url('profile'));
+          } else {
+            $this->error($this->userModel->getError());
+          }
+        }else {
+          // 获取账号信息
+          $user_info = get_user_info(is_login());
+          unset($user_info['password']);
+          unset($user_info['auth_group']['max']);
+          $this->assign('user_info',$user_info);
+          return $this->fetch();
         }
+      }
+      $this->error('未登录');
     }
 }
