@@ -261,52 +261,64 @@ class Plugins extends Admin {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function uninstall($id, $clear = false) {
-        $plugin_info = $this->pluginModel->where('id',$id)->field('name')->find();
-        $name        = $plugin_info['name'];
-        $hooks_update = $this->hooksModel->removeHooks($name);
-        if ($hooks_update === false) {
-            $this->error('卸载插件所挂载的钩子数据失败');
-        }
-        cache('hooks', null);
-        if ($clear) {
-            $result = PluginsModel::where('id',$id)->delete();
-        } else{
-            $result = PluginsModel::where('id',$id)->update(['status'=>-1]);
-        }
-        if ($result) {
-            $extensionObj = new Extension;
-            $extensionObj->initInfo('plugin',$name);
-            // 删除后台菜单
-            $extensionObj->removeAdminMenus($name,$clear);
-            if ($clear) {
-                // 卸载数据库
-                $sql_file = PLUGIN_PATH.$name.'/install/uninstall.sql';
-                if (is_file($sql_file)) {
-                    $info       = $extensionObj->getInfoByFile();
-                    $sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
-                    if (!$sql_status) {
-                        $this->error('执行插件SQL卸载语句失败');
+        try {
+            if ($id>0) {
+
+                $plugin_info = $this->pluginModel->where('id',$id)->field('name')->find();
+                $name        = $plugin_info['name'];
+                $_static_path = PUBLIC_PATH.'static/plugins/'.$name;
+                if (is_dir($_static_path)) {
+                    if(!is_writable(PUBLIC_PATH.'static/plugins') || !is_writable(PLUGIN_PATH.$name)){
+                        $error_msg = '';
+                        if (!is_writable(PUBLIC_PATH.'static/plugins')) {
+                            $error_msg.=','.PUBLIC_PATH.'static/plugins';
+                        }
+                        if (!is_writable(PLUGIN_PATH.$name)) {
+                            $error_msg.=','.PLUGIN_PATH.$name;
+                        }
+                        throw new \Exception($error_msg.'目录写入权限不足',0);
                     }
                 }
-            }
-
-            $_static_path = PUBLIC_PATH.'static/plugins/'.$name;
-            if (is_dir($_static_path)) {
-                if(is_writable(PUBLIC_PATH.'static/plugins') && is_writable(PLUGIN_PATH.$name)){
-                    $static_path = PLUGIN_PATH.$name.'/static';
-                    if (!rename($_static_path,$static_path)) {
-                        trace('插件静态资源移动失败：'.'public/static/plugins/'.$name.'->'.$static_path,'error');
-                    } 
+                $hooks_update = $this->hooksModel->removeHooks($name);
+                if ($hooks_update === false) {
+                    throw new \Exception("卸载插件所挂载的钩子数据失败", 0);
+                }
+                cache('hooks', null);
+                if ($clear) {
+                    $result = PluginsModel::where('id',$id)->delete();
                 } else{
-                    PluginsModel::where('name',$name)->update(['status'=>0]);
-                    $this->error('卸载失败，原因：插件静态资源目录不可写');
+                    $result = PluginsModel::where('id',$id)->update(['status'=>-1]);
+                }
+                if ($result) {
+                    $extensionObj = new Extension;
+                    $extensionObj->initInfo('plugin',$name);
+                    // 删除后台菜单
+                    $extensionObj->removeAdminMenus($name,$clear);
+                    if ($clear) {
+                        // 卸载数据库
+                        $sql_file = PLUGIN_PATH.$name.'/install/uninstall.sql';
+                        if (is_file($sql_file)) {
+                            $info       = $extensionObj->getInfoByFile();
+                            $sql_status = Sql::executeSqlByFile($sql_file, $info['database_prefix']);
+                            if (!$sql_status) {
+                                throw new \Exception("执行插件SQL卸载语句失败", 0);
+                            }
+                        }
+                    }
+
+                    if (is_dir($_static_path)) {
+                        $static_path = PLUGIN_PATH.$name.'/static';
+                        if (!rename($_static_path,$static_path)) {
+                            trace('插件静态资源移动失败：'.'public/static/plugins/'.$name.'->'.$static_path,'error');
+                        }
+                    }
+                    
                 }
             }
-
-            $this->success('卸载成功',url('index'));
-        } else{
-            $this->error('卸载插件失败');
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
         }
+        $this->success('卸载成功',url('index'));
 
     }
 
