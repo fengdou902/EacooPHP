@@ -14,7 +14,6 @@ use app\common\model\Base;
 
 class Links extends Base {
     
-    protected $insert = ['status'=>1];
     /**
      * 链接类型
      */

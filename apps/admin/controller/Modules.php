@@ -40,7 +40,7 @@ class Modules extends Admin {
         ];
 
         $this->assign('tab_list',$tab_list);
-        $this->assign('from_type',$this->request->param('from_type','local'));
+        $this->assign('from_type',$this->request->param('from_type','oneline'));
 
         if ($from_type == 'local') {
         	$data_list = $this->moduleModel->getAll();

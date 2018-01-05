@@ -91,6 +91,9 @@ function purchaseApp(result) {
  * @author 心云间、凝听 <981248356@qq.com>
  */
 function onlineInstall(name,app_type,install_method,only_download) {
+    if (install_method!='install' && install_method!='upgrade') {
+        return false;
+    }
     $.ajax({
         type: 'POST',
         url: url("admin/Extension/onlineInstall"),
@@ -220,11 +223,11 @@ $(function () {
         var app_type       = $(this).data('type');
         var install_method = $(this).data('install-method');
         if (install_method=='upgrade') {
-            var btn_text_1 = '立即升级';
-            var btn_text_2 = '仅下载覆盖';
+            var layer_btns = ['立即升级','仅下载覆盖'];
+        } else if(install_method=='install') {
+            var layer_btns = ['直接安装','仅下载'];
         } else{
-            var btn_text_1 = '直接安装';
-            var btn_text_2 = '仅下载';
+            var layer_btns = [];
         };
         layer.open({
           type: 2,
@@ -235,7 +238,7 @@ $(function () {
           //content: url('admin/Extension/onlineInstallBefore',['load_type=iframe','install_method='+install_method]),
           content:EacooPHP.eacoo_api_url+'/appstore/appinfo?install_method='+install_method+'&type='+app_type+'&name='+name,
           resize: false,
-          btn: [btn_text_1,btn_text_2],
+          btn: layer_btns,
           yes: function(index, layero){
               onlineInstall(name,app_type,install_method,0);
           },

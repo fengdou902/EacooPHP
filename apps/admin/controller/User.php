@@ -229,7 +229,7 @@ EOF;
                                 <div class="form-group">
                                     <input type="hidden" name="uids">
                                     <input type="hidden" name="batch">
-                                    <button class="btn btn-primary btn-block submit ajax-post" type="submit" target-form="form-move">确 定</button>
+                                    <button class="btn btn-primary btn-block submit ajax-post" type="submit" target-form="form-move" data-dismiss="modal">确 定</button>
                                 </div>
                             </form>
                         </div>

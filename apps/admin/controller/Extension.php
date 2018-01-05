@@ -306,21 +306,9 @@ class Extension extends Admin {
                     } elseif ($this->type=='module') {
                         $type_path = '';
                     }
-                    if(is_writable(PUBLIC_PATH.'static'.$type_path) && is_writable($static_path)){
-                        if (!rename($static_path,PUBLIC_PATH.'static'.$type_path.'/'.$name)) {
-                            trace('应用静态资源移动失败','error');
-                        } 
-                    } else{
-                        $error_msg = '';
-                        $this->appExtensionModel->where('name',$name)->update(['status'=>0]);
-                        if (!is_writable(PUBLIC_PATH.'static'.$type_path)) {
-                            $error_msg.=','.PUBLIC_PATH.'static'.$type_path;
-                        }
-                        if (!is_writable($static_path)) {
-                            $error_msg.=','.$static_path;
-                        }
-                        throw new \Exception('安装失败，原因：应用静态资源目录不可写。info:'.$error_msg);
-                    }
+                    if (!rename($static_path,PUBLIC_PATH.'static'.$type_path.'/'.$name)) {
+                        trace('应用静态资源移动失败'.PUBLIC_PATH.'static'.$type_path.'/'.$name,'error');
+                    } 
                 }
 
                 return ['code'=>1,'msg'=>'安装成功','data'=>''];
@@ -397,6 +385,15 @@ class Extension extends Admin {
                 } elseif ($from=='login') {
                     $identification = $this->request->param('account');
                     $password = $this->request->param('password');
+                    $vali_msg = $this->validate(['account'=>$identification,'password'=>$password],
+                      [
+                          ['account','require|email','账号不能为空|请用邮箱账号登录'],
+                          ['password','require','密码不能为空'],
+                      ]);
+                      if(true !== $vali_msg){
+                          // 验证失败 输出错误信息
+                          throw new \Exception($vali_msg,0);
+                      }
                     $result = curl_request(config('eacoo_api_url').'/api/token',['identification'=>$identification,'password'=>$password]);
                     $return = json_decode($result['content'],true);
                     if ($return['code']==1) {
@@ -575,7 +572,24 @@ class Extension extends Admin {
         }
 
         $flag = $this->checkInfoFile($info_file);
-
+        $static_path = $this->appExtensionPath.'static';
+        if (is_dir($static_path)) {
+            if ($this->type=='plugin') {
+                $type_path = '/plugins';
+            } elseif ($this->type=='module') {
+                $type_path = '';
+            }
+            if(!is_writable(PUBLIC_PATH.'static'.$type_path) || !is_writable($static_path)){
+                $error_msg = '';
+                if (!is_writable(PUBLIC_PATH.'static'.$type_path)) {
+                    $error_msg.=','.PUBLIC_PATH.'static'.$type_path;
+                }
+                if (!is_writable($static_path)) {
+                    $error_msg.=','.$static_path;
+                }
+                throw new \Exception($error_msg.'目录操作权限不足');
+            }
+        }
     }
 
 	/**

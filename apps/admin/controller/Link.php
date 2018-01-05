@@ -30,7 +30,7 @@ class Link extends Admin{
 
     public function index() {
         // 搜索
-        $keyword =input('keyword');
+        $keyword =$this->request->param('keyword');
         if ($keyword) {
             $this->linkModel->where('id|title','like','%'.$keyword.'%');
         }
@@ -58,7 +58,7 @@ class Link extends Admin{
                 ->setListPage($page)  // 数据列表分页
                 ->addRightButton('edit')           // 添加编辑按钮
                 ->addRightButton('forbid')  // 添加禁用/启用按钮
-                ->addRightButton('delete')  // 添加删除按钮
+                ->addRightButton('delete',['model'=>'Links'])  // 添加删除按钮
                 ->fetch();
     }
 
@@ -68,9 +68,9 @@ class Link extends Admin{
     public function edit($id=0) {
         $title = $id>0 ? "编辑":"新增";
         if (IS_POST) {
-            $data = input('post.');
+            $data = input('param.');
             //验证数据
-            $this->validateData($data,'Link');
+            $this->validateData($data,'admin/Link');
 
             $id   =isset($data['id']) && $data['id']>0 ? $data['id']:false;
             if ($this->linkModel->editData($data,$id)) {
@@ -80,9 +80,9 @@ class Link extends Admin{
             }
 
         } else {
-            $link_data=[];
+            $info = ['type'=>1,'target'=>'_blank','rating'=>0,'sort'=>99];
             if ($id>0) {
-                $link_data=$this->linkModel->find($id);
+                $info = Links::get($id);
             }
 
             Builder::run('Form')
@@ -95,7 +95,7 @@ class Link extends Admin{
                     ->addFormItem('type', 'radio', '类型', '',$this->linkType)
                     ->addFormItem('rating', 'number', '级别', '用于评级别')
                     ->addFormItem('sort', 'number', '排序', '用于显示的顺序')
-                    ->setFormData($link_data)
+                    ->setFormData($info)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
         }
