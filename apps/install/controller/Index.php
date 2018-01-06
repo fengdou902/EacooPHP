@@ -195,7 +195,6 @@ class Index extends Controller {
 		$this->status['sql']      = 'success';
 		$this->status['complete'] = 'primary';
 		$this->assign('status', $this->status);
-		$this->assign('status', $this->status);
 		return $this->fetch();
 	}
 }

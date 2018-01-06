@@ -99,9 +99,9 @@ class Admin extends Base
         $admin_sidebar_menus = Cache::get('admin_sidebar_menus_'.$uid,null);
         if (!$admin_sidebar_menus) {
             
-            if(!is_administrator()){//如果是非超级管理员则按存储显示
-                $rules= db('auth_group')->where(['id'=>['in',$this->currentUser['auth_group']]])->value('rules');    
-                $map_rules['id']=['in',$rules];
+            if(!is_administrator() && !empty($this->currentUser['auth_group'])){//如果是非超级管理员则按存储显示
+                $rules= db('auth_group')->where(['id'=>['in',array_keys($this->currentUser['auth_group'])]])->value('rules');    
+                $map_rules['id']=['in',$rules];;
             }
             $map_rules['status']=1;
             $map_rules['is_menu']=1;

@@ -104,18 +104,18 @@ class Extension extends Admin {
 				$info_file = $tmpAppDir . 'install/info.json';
                 if (!is_file($info_file))
                 {
-                    throw new Exception('应用信息文件不存在');
+                    throw new \Exception('应用信息文件不存在');
                 }
                 $check_res = $this->checkInfoFile($info_file);
                 
                 if ($check_res['code']==0) {
-                	throw new Exception($check_res['msg']);
+                	throw new \Exception($check_res['msg']);
                 }
                 $name = $check_res['data']['name'];
                 $newAppDir = $this->appsPath . $name . DS;
                 if (is_dir($newAppDir))
                 {
-                    throw new Exception('该应用已存在'.$newAppDir);
+                    throw new \Exception('该应用已存在'.$newAppDir);
                 }
                 $this->appName = $name;
                 //重命名应用文件夹
@@ -306,20 +306,9 @@ class Extension extends Admin {
                     } elseif ($this->type=='module') {
                         $type_path = '';
                     }
-                    if(is_writable(PUBLIC_PATH.'static'.$type_path) && is_writable($static_path)){
-                        if (!rename($static_path,PUBLIC_PATH.'static'.$type_path.'/'.$name)) {
-                            trace('应用静态资源移动失败','error');
-                        } 
-                    } else{
-                        $this->appExtensionModel->where('name',$name)->update(['status'=>0]);
-                        if (!is_writable(PUBLIC_PATH.'static'.$type_path)) {
-                            $error_msg.=','.PUBLIC_PATH.'static'.$type_path;
-                        }
-                        if (!is_writable($static_path)) {
-                            $error_msg.=','.$static_path;
-                        }
-                        throw new \Exception('安装失败，原因：应用静态资源目录不可写。info:'.$error_msg);
-                    }
+                    if (!rename($static_path,PUBLIC_PATH.'static'.$type_path.'/'.$name)) {
+                        trace('应用静态资源移动失败'.PUBLIC_PATH.'static'.$type_path.'/'.$name,'error');
+                    } 
                 }
 
                 return ['code'=>1,'msg'=>'安装成功','data'=>''];
@@ -396,6 +385,15 @@ class Extension extends Admin {
                 } elseif ($from=='login') {
                     $identification = $this->request->param('account');
                     $password = $this->request->param('password');
+                    $vali_msg = $this->validate(['account'=>$identification,'password'=>$password],
+                      [
+                          ['account','require|email','账号不能为空|请用邮箱账号登录'],
+                          ['password','require','密码不能为空'],
+                      ]);
+                      if(true !== $vali_msg){
+                          // 验证失败 输出错误信息
+                          throw new \Exception($vali_msg,0);
+                      }
                     $result = curl_request(config('eacoo_api_url').'/api/token',['identification'=>$identification,'password'=>$password]);
                     $return = json_decode($result['content'],true);
                     if ($return['code']==1) {
@@ -545,15 +543,8 @@ class Extension extends Admin {
     	if($name=='') $name = $this->appName;
 		$this->appExtensionPath = $this->appsPath . $name . DS;
 		$info_file = $this->appExtensionPath . 'install/info.json';
-		if (!is_file($info_file))
-        {
-            throw new \Exception('应用信息文件不存在');
-        }
-        $info = $this->getInfoByFile();
-        if (!$info){ 
-            throw new \Exception('应用信息缺失');
-        }
-
+        $result = $this->checkInfoFile($info_file);
+        $info = $result['data'];
         if ($this->type=='plugin') {
             $app_class = get_plugin_class($name);
             if (!class_exists($app_class)) {
@@ -573,8 +564,24 @@ class Extension extends Admin {
             }
         }
 
-        $flag = $this->checkInfoFile($info_file);
-
+        $static_path = $this->appExtensionPath.'static';
+        if (is_dir($static_path)) {
+            if ($this->type=='plugin') {
+                $type_path = '/plugins';
+            } elseif ($this->type=='module') {
+                $type_path = '';
+            }
+            if(!is_writable(PUBLIC_PATH.'static'.$type_path) || !is_writable($static_path)){
+                $error_msg = '';
+                if (!is_writable(PUBLIC_PATH.'static'.$type_path)) {
+                    $error_msg.=','.PUBLIC_PATH.'static'.$type_path;
+                }
+                if (!is_writable($static_path)) {
+                    $error_msg.=','.$static_path;
+                }
+                throw new \Exception($error_msg.'目录操作权限不足');
+            }
+        }
     }
 
 	/**
@@ -590,16 +597,17 @@ class Extension extends Admin {
 
 		if (!is_file($info_file))
         {
-            throw new \Exception('应用信息文件不存在');
+            throw new \Exception('应用信息文件不存在或文件权限不足');
         }
         $info_check_keys = ['name', 'title', 'description', 'author', 'version'];
+        $app_info = $this->getInfoByFile($info_file);
         foreach ($info_check_keys as $value) {
-            if (!array_key_exists($value, $this->getInfoByFile($info_file))) {
+            if (!array_key_exists($value, $app_info)) {
                 throw new \Exception('应用信息缺失');
             }
 
         }
-        return ['code'=>1,'msg'=>'ok','data'=>$this->getInfoByFile($info_file)];
+        return ['code'=>1,'msg'=>'ok','data'=>$app_info];
     	
     }
 
@@ -645,9 +653,14 @@ class Extension extends Admin {
                 $eacoo_version = explode('.', EACOOPHP_V);
                 $need_version   = explode('.', $core_version);
                 $meet_core_version = false;
-                if (($eacoo_version[0] - $need_version[0]) >= 0) {
-                    if (($eacoo_version[1] - $need_version[1]) >= 0) {
-                        if (($eacoo_version[2] - $need_version[2]) >= 0) {
+                $compare_version0 = $eacoo_version[0] - $need_version[0];
+                $compare_version1 = $eacoo_version[1] - $need_version[1];
+                $compare_version2 = $eacoo_version[2] - $need_version[2];
+                if ($compare_version0 >= 0) {
+                    if ($compare_version1 >= 0) {
+                        if ($compare_version2 >= 0) {
+                            $meet_core_version = true;
+                        } elseif ($compare_version1>0) {
                             $meet_core_version = true;
                         }
                     }

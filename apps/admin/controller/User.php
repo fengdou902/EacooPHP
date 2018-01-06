@@ -100,7 +100,7 @@ class User extends Admin {
             }
             
         } else {
-            $info=['status'=>1];
+            $info=['sex'=>0,'allow_admin'=>1,'sex'=>0,'status'=>1];
             // 获取账号信息
             if ($uid!=0) {
                 $info = $this->userModel->get($uid);
@@ -229,7 +229,7 @@ EOF;
                                 <div class="form-group">
                                     <input type="hidden" name="uids">
                                     <input type="hidden" name="batch">
-                                    <button class="btn btn-primary btn-block submit ajax-post" type="submit" target-form="form-move">确 定</button>
+                                    <button class="btn btn-primary btn-block submit ajax-post" type="submit" target-form="form-move" data-dismiss="modal">确 定</button>
                                 </div>
                             </form>
                         </div>

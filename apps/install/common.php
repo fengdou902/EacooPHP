@@ -164,34 +164,43 @@ function write_config($config){
  * @param  resource $db 数据库连接资源
  */
 function create_tables($db, $prefix = ''){
-	//读取SQL文件
-	$sql = file_get_contents(APP_PATH . 'install/data/install.sql');
-	$sql = str_replace("\r", "\n", $sql);
-	$sql = explode(";\n", $sql);
-
-	//替换表前缀
-	$orginal = 'eacoo_';
-	$sql = str_replace(" `{$orginal}", " `{$prefix}", $sql);
-
-	//开始安装
-	show_msg('开始安装数据库...');
-	foreach ($sql as $value) {
-		$value = trim($value);
-		if(empty($value)) continue;
-		if(substr($value, 0, 12) == 'CREATE TABLE') {
-			$name = preg_replace("/^CREATE TABLE `(\w+)` .*/s", "\\1", $value);
-			$msg  = "创建数据表{$name}";
-			if(false !== $db->execute($value)){
-				show_msg($msg . '...成功');
-			} else {
-				show_msg($msg . '...失败！', 'error');
-				session('error', true);
-			}
-		} else {
-			$db->execute($value);
+	try {
+		//读取SQL文件
+		$sql_file = APP_PATH . 'install/data/install.sql';
+		if (!is_file($sql_file)) {
+			throw new \Exception("install.sql文件损坏或目录文件权限不足", 0);
 		}
+		$sql = file_get_contents($sql_file);
+		$sql = str_replace("\r", "\n", $sql);
+		$sql = explode(";\n", $sql);
 
+		//替换表前缀
+		$orginal = 'eacoo_';
+		$sql = str_replace(" `{$orginal}", " `{$prefix}", $sql);
+
+		//开始安装
+		show_msg('开始安装数据库...');
+		foreach ($sql as $value) {
+			$value = trim($value);
+			if(empty($value)) continue;
+			if(substr($value, 0, 12) == 'CREATE TABLE') {
+				$name = preg_replace("/^CREATE TABLE `(\w+)` .*/s", "\\1", $value);
+				$msg  = "创建数据表{$name}";
+				if(false !== $db->execute($value)){
+					show_msg($msg . '...成功');
+				} else {
+					show_msg($msg . '...失败！', 'error');
+					session('error', true);
+				}
+			} else {
+				$db->execute($value);
+			}
+
+		}
+	} catch (\Exception $e) {
+		show_msg($e);
 	}
+	
 }
 
 //创建创始人管理员
@@ -199,7 +208,7 @@ function register_administrator($db, $prefix, $admin){
 	show_msg('开始注册创始人帐号...');
 
 	$password = encrypt($admin['password']);
-
+	
 	$sql = "INSERT INTO `[PREFIX]users` (`uid`,`username`,`password`,`nickname`,`email`, `avatar`,`sex`,`birthday`,`score`,`allow_admin`,`reg_time`,`last_login_ip`,`last_login_time`,`status`) VALUES ".
 		   "('1', '[NAME]', '[PASS]', '创始人', '[EMAIL]','http://img.eacoomall.com/images/static/assets/img/default-avatar.svg', '0', '0', '0', '1', '[TIME]', '[IP]','[TIME]', '1');";
 	$sql = str_replace(
@@ -285,7 +294,7 @@ function update_tables($db, $prefix = ''){
  * 及时显示提示信息
  * @param  string $msg 提示信息
  */
-function show_msg($msg, $class = 'primary'){
+function show_msg($msg, $class = 'success'){
 	echo "<script type=\"text/javascript\">showmsg(\"{$msg}\", \"{$class}\")</script>";
 	ob_flush();
 	flush();

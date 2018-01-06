@@ -135,7 +135,7 @@
       // swf文件路径
       swf: '__STATIC__/libs/webuploader/Uploader.swf',
       // 文件接收服务端。
-      server: "{:url('admin/attachment/uploadAvatar',['uid'=>$user_info['uid']])}",
+      server: "{:url('user/upload/uploadAvatar',['uid'=>$user_info['uid']])}",
       //验证文件总数量, 超出则不允许加入队列
       fileNumLimit: 5,
       // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！

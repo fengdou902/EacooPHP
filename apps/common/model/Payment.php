@@ -34,11 +34,6 @@ class Payment extends Base {
     {
     	$payment_list = self::all(function($query){
     			$map = [];
-    			if (is_weixin()) {
-    				$map['pay_code']=['neq','alipay'];
-    			} else{
-    				$map['pay_code']=['neq','wxpay'];
-    			}
                 $query->where($map)->order('sort asc');
             });
     	return $payment_list;

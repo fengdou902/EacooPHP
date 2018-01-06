@@ -1,14 +1,14 @@
 {extend name="public/base"/}
 {block name="main"}
 <h1 class="text-center">安装数据库</h1>
-<div id="show-list" class="install-database list-group" style="height:450px; overflow-y:auto; ">
+<div id="show-list" class="install-database mt-20 text-center fb" style="height:450px; overflow-y:auto;">
 </div>
 <script type="text/javascript">
 	var list   = document.getElementById('show-list');
 	function showmsg(msg, classname){
 		var li = document.createElement('p'); 
 		li.innerHTML = msg;
-		classname && li.setAttribute('class', 'list-group-item text-' + classname);
+		classname && li.setAttribute('class', 'text-' + classname);
 		list.appendChild(li);
 		document.scrollTop += 30;
 	}

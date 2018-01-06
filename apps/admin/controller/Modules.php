@@ -40,7 +40,7 @@ class Modules extends Admin {
         ];
 
         $this->assign('tab_list',$tab_list);
-        $this->assign('from_type',$this->request->param('from_type','local'));
+        $this->assign('from_type',$this->request->param('from_type','oneline'));
 
         if ($from_type == 'local') {
         	$data_list = $this->moduleModel->getAll();
@@ -359,12 +359,12 @@ class Modules extends Admin {
 				}
 
 			} else {
-				throw new Exception($this->moduleModel->getError());
+				throw new \Exception($this->moduleModel->getError());
 			}
 		} catch (\Exception $e) {
 			$this->error($e->getMessage());
 		}	
-		$this->success('更新成功', url('index'));
+		$this->success('更新成功', url('index',['from_type'=>'local']));
 	}
     
     /**
