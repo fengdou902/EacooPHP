@@ -100,7 +100,7 @@ class User extends Admin {
             }
             
         } else {
-            $info=['status'=>1];
+            $info=['sex'=>0,'allow_admin'=>1,'sex'=>0,'status'=>1];
             // 获取账号信息
             if ($uid!=0) {
                 $info = $this->userModel->get($uid);

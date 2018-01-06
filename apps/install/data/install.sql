@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 2017-12-26 11:16:21
+-- Generation Time: 2018-01-06 10:19:48
 -- 服务器版本： 5.7.15
 -- PHP Version: 7.0.14
 
@@ -86,8 +86,6 @@ CREATE TABLE `eacoo_action_log` (
   `user_agent` varchar(230) NOT NULL DEFAULT '' COMMENT 'User-Agent',
   `create_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '操作时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='行为日志表' ROW_FORMAT=DYNAMIC;
-
--- --------------------------------------------------------
 
 --
 -- 表的结构 `eacoo_attachment`
@@ -259,7 +257,9 @@ INSERT INTO `eacoo_auth_group_access` (`uid`, `group_id`, `status`) VALUES
 (2, 1, 1),
 (7, 2, 1),
 (7, 3, 1),
-(7, 4, 1);
+(7, 4, 1),
+(15, 2, 1),
+(14, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -306,7 +306,7 @@ INSERT INTO `eacoo_auth_rule` (`id`, `name`, `title`, `depend_type`, `depend_fla
 (14, 'admin/link/edit', '链接编辑', 1, 'admin', 1, 13, '', 1, NULL, 1, 0, 0, 1505816276, 0),
 (15, 'user/auth', '权限管理', 1, 'user', 1, 0, 'fa-sun-o', 4, NULL, 1, 0, 0, 1505816276, 1),
 (16, 'admin/auth/index', '规则管理', 1, 'admin', 1, 15, '', 2, NULL, 1, 0, 0, 1505816276, 1),
-(17, 'admin/mailer', '邮箱配置', 1, 'admin', 1, 10, '', 6, NULL, 1, 0, 0, 1505816276, 0),
+(17, 'admin/config/edit', '配置编辑或添加', 1, 'admin', 1, 2, '', 6, NULL, 0, 0, 0, 1505816276, 1),
 (19, 'admin/config/website', '网站设置', 1, 'admin', 1, 2, '', 4, NULL, 1, 0, 0, 1505816276, 1),
 (20, 'admin/database/index', '数据库管理', 1, 'admin', 1, 10, 'fa-database', 13, NULL, 1, 0, 0, 1505816276, 1),
 (22, 'admin/theme/index', '主题', 1, 'admin', 1, 5, '', 3, NULL, 1, 0, 0, 1505816276, 1),
@@ -451,12 +451,12 @@ CREATE TABLE `eacoo_links` (
   `image` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '图标',
   `url` varchar(150) NOT NULL DEFAULT '' COMMENT '链接',
   `target` varchar(25) NOT NULL DEFAULT '_blank' COMMENT '打开方式',
-  `type` int(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '类型',
+  `type` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '类型',
   `rating` int(11) UNSIGNED NOT NULL COMMENT '评级',
   `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '修改时间',
   `sort` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
-  `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '状态，1显示，0不显示'
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态，1显示，0不显示'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='友情链接表';
 
 --
@@ -801,7 +801,7 @@ ALTER TABLE `eacoo_rewrite`
 --
 ALTER TABLE `eacoo_terms`
   ADD PRIMARY KEY (`term_id`),
-  ADD KEY `taxonomy` (`taxonomy`);
+  ADD KEY `idx_taxonomy` (`taxonomy`);
 
 --
 -- Indexes for table `eacoo_term_relationships`
@@ -839,7 +839,7 @@ ALTER TABLE `eacoo_action`
 -- 使用表AUTO_INCREMENT `eacoo_action_log`
 --
 ALTER TABLE `eacoo_action_log`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=1;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=2;
 --
 -- 使用表AUTO_INCREMENT `eacoo_attachment`
 --
