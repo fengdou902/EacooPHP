@@ -14,5 +14,3 @@ tests/
 /public/runtime
 /public/uploads/
 /public/static/plugins/
-/apps/cms
-/apps/bugtrack

@@ -21,6 +21,7 @@
                         </div>
                         <div class="p-username">
                             <a href=""><strong>{$info.nickname}</strong></a>
+                            {:hook('attention',['type'=>'attadd','uid'=>$info['uid']])}
                         </div>
                         <div class="p-exchange">
                             <span class="pipe"></span>
