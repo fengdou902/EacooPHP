@@ -76,24 +76,24 @@ class Modules extends Base {
                     break;
                 case -2:  // 损坏
                     $val['status'] = '<span class="text-danger">损坏</span>';
-                    $val['right_button']  = '<a class="btn btn-danger btn-sm ajax-get" href="'.url('setStatus', ['status' => 'delete', 'ids' => $val['id']]).'">删除记录</a>';
+                    $val['right_button']  = '<a class="btn btn-danger btn-sm ajax-get" href="'.url('setStatus', ['status' => 'delete', 'ids' => $val['id']]).'" data-pjax="false">删除记录</a>';
                     break;
                 case -1:  // 未安装
                     $val['status'] = '<i class="fa fa-download text-warning"></i>';
                     $val['right_button']  = '<a class="btn btn-success btn-sm app-install-before" href="javascript:void(0)" data-type="modules" data-name="'.$val['name'].'" >安装</a>';
-                    $val['right_button']  .= '<a class="btn btn-danger btn-sm ajax-get confirm ml-5" href="'.url('del',['name'=>$val['name']]).'">删除</a>';
+                    $val['right_button']  .= '<a class="btn btn-danger btn-sm ajax-get confirm ml-5" href="'.url('del',['name'=>$val['name']]).'" data-pjax="false">删除</a>';
                     break;
                 case 0:  // 禁用
                     $val['status'] = '<i class="fa fa-ban text-danger"></i>';
-                    $val['right_button'] .= '<a class="btn btn-info btn-sm ajax-get" href="'.url('updateInfo', ['id' => $val['id']]).'">刷新</a> ';
-                    $val['right_button'] .= '<a class="btn btn-success btn-sm ajax-get" href="'.url('setStatus', ['status' => 'resume', 'ids' => $val['id']]).'">启用</a> ';
+                    $val['right_button'] .= '<a class="btn btn-info btn-sm ajax-get" href="'.url('updateInfo', ['id' => $val['id']]).'" data-pjax="false">刷新</a> ';
+                    $val['right_button'] .= '<a class="btn btn-success btn-sm ajax-get" href="'.url('setStatus', ['status' => 'resume', 'ids' => $val['id']]).'" data-pjax="false">启用</a> ';
                     $val['right_button'] .= '<a class="btn btn-default btn-sm app-local-uninstall" href="javascript:void(0)" data-type="modules" data-id="'.$val['id'].'" >卸载</a> ';
                     break;
                 case 1:  // 正常
                     $val['status'] = '<i class="fa fa-check text-success"></i>';
-                    $val['right_button'] .= '<a class="btn btn-info btn-sm ajax-get" href="'.url('updateInfo?id='.$val['id']).'">刷新</a> ';
+                    $val['right_button'] .= '<a class="btn btn-info btn-sm ajax-get" href="'.url('updateInfo?id='.$val['id']).'" data-pjax="false">刷新</a> ';
                     if (!$val['is_system']) {
-                        $val['right_button'] .= '<a class="btn btn-warning btn-sm ajax-get" href="'.url('setStatus', ['status' => 'forbid', 'ids' => $val['id']]).'">禁用</a> ';
+                        $val['right_button'] .= '<a class="btn btn-warning btn-sm ajax-get" href="'.url('setStatus', ['status' => 'forbid', 'ids' => $val['id']]).'" data-pjax="false">禁用</a> ';
                         $val['right_button'] .= '<a class="btn btn-default btn-sm app-local-uninstall" href="javascript:void(0)" data-type="modules" data-id="'.$val['id'].'" >卸载</a> ';
                     }
                     break;

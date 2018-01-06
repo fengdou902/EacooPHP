@@ -228,11 +228,20 @@ option = {
 
 <script type="text/javascript">
   $(function(){ 
-    //阿里云提示
+    //驱动提示
     {php}if(config('attachment_options.driver')=='local' || !config('attachment_options.driver')){{/php}
-      layer.alert('欢迎使用EacooPHP系统，请优先配置/开启 上传驱动（Tip:前往插件市场安装对象存储服务插件） ，让您的数据更安全可靠，数据掌握在自己手中。<br/>如因未配置/开启 对象云存储服务，造成的数据丢失，由您自行负责！！快去配置吧~<br/>', {icon: 6},function(e) {
-        redirect('{:url('admin/config/attachmentoption')}');
-      }); 
+      var eacooadmin_localdriver_tip = sessionStorage.getItem('eacooadmin_localdriver_tip');
+      if (eacooadmin_localdriver_tip!=1) {
+          layer.alert('欢迎使用EacooPHP系统，请优先配置/开启 上传驱动（Tip:前往插件市场安装对象存储服务插件） ，让您的数据更安全可靠，数据掌握在自己手中。<br/>如因未配置/开启 对象云存储服务，造成的数据丢失，由您自行负责！！快去配置吧~<br/>', {icon: 6,btn: ['去配置','不再提醒'],
+          yes: function(index, layero){
+              redirect('{:url('admin/config/attachmentoption')}');
+          },
+          btn2: function(index, layero){
+              var storage_data = 1;
+              sessionStorage.setItem('eacooadmin_localdriver_tip',storage_data);
+          }}); 
+      }
+      
     {php}}{/php}
   })
 </script>

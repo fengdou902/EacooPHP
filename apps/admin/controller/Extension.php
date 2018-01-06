@@ -104,18 +104,18 @@ class Extension extends Admin {
 				$info_file = $tmpAppDir . 'install/info.json';
                 if (!is_file($info_file))
                 {
-                    throw new Exception('应用信息文件不存在');
+                    throw new \Exception('应用信息文件不存在');
                 }
                 $check_res = $this->checkInfoFile($info_file);
                 
                 if ($check_res['code']==0) {
-                	throw new Exception($check_res['msg']);
+                	throw new \Exception($check_res['msg']);
                 }
                 $name = $check_res['data']['name'];
                 $newAppDir = $this->appsPath . $name . DS;
                 if (is_dir($newAppDir))
                 {
-                    throw new Exception('该应用已存在'.$newAppDir);
+                    throw new \Exception('该应用已存在'.$newAppDir);
                 }
                 $this->appName = $name;
                 //重命名应用文件夹
@@ -543,15 +543,8 @@ class Extension extends Admin {
     	if($name=='') $name = $this->appName;
 		$this->appExtensionPath = $this->appsPath . $name . DS;
 		$info_file = $this->appExtensionPath . 'install/info.json';
-		if (!is_file($info_file))
-        {
-            throw new \Exception('应用信息文件不存在');
-        }
-        $info = $this->getInfoByFile();
-        if (!$info){ 
-            throw new \Exception('应用信息缺失');
-        }
-
+        $result = $this->checkInfoFile($info_file);
+        $info = $result['data'];
         if ($this->type=='plugin') {
             $app_class = get_plugin_class($name);
             if (!class_exists($app_class)) {
@@ -571,7 +564,6 @@ class Extension extends Admin {
             }
         }
 
-        $flag = $this->checkInfoFile($info_file);
         $static_path = $this->appExtensionPath.'static';
         if (is_dir($static_path)) {
             if ($this->type=='plugin') {
@@ -605,16 +597,17 @@ class Extension extends Admin {
 
 		if (!is_file($info_file))
         {
-            throw new \Exception('应用信息文件不存在');
+            throw new \Exception('应用信息文件不存在或文件权限不足');
         }
         $info_check_keys = ['name', 'title', 'description', 'author', 'version'];
+        $app_info = $this->getInfoByFile($info_file);
         foreach ($info_check_keys as $value) {
-            if (!array_key_exists($value, $this->getInfoByFile($info_file))) {
+            if (!array_key_exists($value, $app_info)) {
                 throw new \Exception('应用信息缺失');
             }
 
         }
-        return ['code'=>1,'msg'=>'ok','data'=>$this->getInfoByFile($info_file)];
+        return ['code'=>1,'msg'=>'ok','data'=>$app_info];
     	
     }
 

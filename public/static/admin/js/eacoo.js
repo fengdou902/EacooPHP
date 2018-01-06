@@ -187,6 +187,7 @@
         }
 
         if ((target = $(this).attr('href')) || (target = $(this).attr('url'))) {
+            var is_pjax = $this.attr('data-pjax');
             $.get(target).success(function (result) {
                 var is_redirect = false;//是否跳转
                 var is_remove_disabled = $(this).hasClass('no-refresh');
@@ -210,7 +211,7 @@
                 }
 
                 if (is_redirect==true) {
-                    if ($.support.pjax) {
+                    if ($.support.pjax && is_pjax!='false') {
                         // 加载内容到指定容器
                         $.pjax({ url: result.url, container: '#pjax-container' });
                     } else{
@@ -219,7 +220,7 @@
                 } else if (is_remove_disabled) {
                     $(this).removeClass('disabled').prop('disabled', false);
                 } else {
-                    if ($.support.pjax) {
+                    if ($.support.pjax && is_pjax!='false') {
                         //重新当前页面容器的内容
                         $.pjax.reload('#pjax-container');
                     } else{

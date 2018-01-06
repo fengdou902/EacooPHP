@@ -359,12 +359,12 @@ class Modules extends Admin {
 				}
 
 			} else {
-				throw new Exception($this->moduleModel->getError());
+				throw new \Exception($this->moduleModel->getError());
 			}
 		} catch (\Exception $e) {
 			$this->error($e->getMessage());
 		}	
-		$this->success('更新成功', url('index'));
+		$this->success('更新成功', url('index',['from_type'=>'local']));
 	}
     
     /**
