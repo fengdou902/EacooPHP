@@ -63,10 +63,10 @@ class Attachment extends Admin {
         }
         //筛选start
         if ($term_id>0) {
-            $media_ids = TermRelationships::where(['term_id'=>$term_id,'table'=>'attachment'])->select();
+            //$media_ids = TermRelationships::where(['term_id'=>$term_id,'table'=>'attachment'])->select();
+            $media_ids = TermRelationships::where(['term_id'=>$term_id,'table'=>'attachment'])->column('object_id');
             if(count($media_ids)){
-                $media_ids = array_column($media_ids,'object_id');
-                //$post_ids=array_merge(array($post_ids),$post_ids);
+                //$media_ids = array_column($media_ids,'object_id');
                 $map['id'] = ['in',$media_ids];
             } else{
                 $map['id']  = 0;
