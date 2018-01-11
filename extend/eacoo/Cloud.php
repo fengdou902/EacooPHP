@@ -106,17 +106,17 @@ class Cloud {
             $zip = new ZipArchive;
             if ($zip->open($file) !== TRUE)
             {
-                throw new Exception('无法打开zip文件');
+                throw new \Exception('无法打开zip文件');
             }
             if (!$zip->extractTo($dir))
             {
                 $zip->close();
-                throw new Exception('无法提取文件');
+                throw new \Exception('无法提取文件');
             }
             $zip->close();
             return $dir;
         }
-        throw new Exception("无法执行解压操作，请确保ZipArchive安装正确");
+        throw new \Exception("无法执行解压操作，请确保ZipArchive安装正确");
     }
 
     

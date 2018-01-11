@@ -26,7 +26,13 @@ class Attachment extends Admin {
         $this->attachmentModel  = new AttachmentModel();
     }
 
-    //附件首页
+    /**
+     * 附件首页
+     * @param  integer $term_id [description]
+     * @return [type] [description]
+     * @date   2017-06-11
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
     public function index($term_id=0){
 
         $this->assign('meta_title','附件管理');
@@ -152,6 +158,9 @@ class Attachment extends Admin {
 
     /**
      * 移动分类
+     * @return [type] [description]
+     * @date   2018-01-11
+     * @author 心云间、凝听 <981248356@qq.com>
      */
     public function moveCategory() {
         if (IS_POST) {
@@ -298,7 +307,7 @@ class Attachment extends Admin {
      */
     public function attachmentLayer()
     {
-        $data = input('param.');
+        $data = $this->request->param();
         $path_type = !empty($data['path_type']) ? $data['path_type'] : 'picture';
         $from = !empty($data['from']) ? $data['from'] : '';
 
@@ -367,144 +376,6 @@ class Attachment extends Admin {
         return json($return);
     }
 
-
-    /**用于兼容UM编辑器的图片上传方法
-     * @auth 陈一枭
-     */
-    // public function uploadPictureUM()
-    // {
-    //     header("Content-Type:text/html;charset=utf-8");
-    //     //TODO: 用户登录检测
-    //     /* 返回标准数据 */
-    //     $return = array('status' => 1, 'info' => '上传成功', 'data' => '');
-
-    //     //实际有用的数据只有name和state，这边伪造一堆数据保证格式正确
-    //     $originalName = 'u=2830036734,2219770442&fm=21&gp=0.jpg';
-    //     $newFilename = '14035912861705.jpg';
-    //     $filePath = 'upload\/20140624\/14035912861705.jpg';
-    //     $size = '7446';
-    //     $type = '.jpg';
-    //     $status = 'success';
-    //     $rs = array(
-    //         "originalName" => $originalName,
-    //         'name' => $newFilename,
-    //         'url' => $filePath,
-    //         'size' => $size,
-    //         'type' => $type,
-    //         'state' => $status,
-    //         'original' => $_FILES['upfile']['name']
-    //     );
-
-    //     $setting = config('editor_upload');
-    //     $setting['rootPath']='./Uploads/Editor/Picture/';
-
-    //     //$driver = modC('PICTURE_UPLOAD_DRIVER','local','config');
-    //     $driver ='./Uploads/Editor/Picture/';//图片保存路径
-    //     $driver = check_driver_is_exist($driver);
-    //     $uploadConfig = get_upload_config($driver);
-
-    //     $info = $this->attachmentModel->upload(
-    //         $_FILES,
-    //         $setting,
-    //         $driver,
-    //         $uploadConfig
-    //     ); //TODO:上传到远程服务器
-
-    //     /* 记录图片信息 */
-    //     if ($info) {
-    //         $return['status'] = 1;
-    //         if ($info['Filedata']) {
-    //             $return = array_merge($info['Filedata'], $return);
-    //         }
-    //         if ($info['download']) {
-    //             $return = array_merge($info['download'], $return);
-    //         }
-    //         $rs['state'] = 'SUCCESS';
-    //         $rs['url'] = path_to_url($info['path']);
-    //         if ($type == 'ajax') {
-    //             echo json_encode($rs);
-    //             exit;
-    //         } else {
-    //             echo json_encode($rs);
-    //             exit;
-    //         }
-
-    //     } else {
-    //         $return['state'] = 0;
-    //         $return['info'] = $this->attachmentModel->getError();
-    //     }
-
-    //     /* 返回JSON数据 */
-    //     return json($return);
-    // }
-
-
-    // public function uploadFileUE(){
-    //     $return = ['status' => 1, 'info' =>'上传成功', 'data' => ''];
-
-    //     //实际有用的数据只有name和state，这边伪造一堆数据保证格式正确
-    //     $originalName = 'u=2830036734,2219770442&fm=21&gp=0.jpg';
-    //     $newFilename = '14035912861705.jpg';
-    //     $filePath = 'upload\/20140624\/14035912861705.jpg';
-    //     $size = '7446';
-    //     $type = '.jpg';
-    //     $status = 'success';
-    //     $rs = [
-    //         'name' => $newFilename,
-    //         'url' => $filePath,
-    //         'size' => $size,
-    //         'type' => $type,
-    //         'state' => $status
-    //     ];
-
-    //     /* 调用文件上传组件上传文件 */
-    //     $File = model('File');
-
-    //    // $driver = modC('DOWNLOAD_UPLOAD_DRIVER','local','config');
-    //     $driver ='./Uploads/Editor/File/';//图片保存路径
-    //     $driver = check_driver_is_exist($driver);
-    //     $uploadConfig = get_upload_config($driver);
-
-    //     $setting = config('editor_upload');
-    //     $setting['rootPath']='./Uploads/Editor/File/';
-
-
-    //     $setting['exts'] = 'jpg,gif,png,jpeg,zip,rar,tar,gz,7z,doc,docx,txt,xml,xlsx,xls,ppt,pptx,pdf';
-    //     $info = $File->upload(
-    //         $_FILES,
-    //         $setting,
-    //         $driver,
-    //         $uploadConfig
-    //     );
-
-    //     /* 记录附件信息 */
-    //     if ($info) {
-    //         $return['data'] = $info;
-
-    //         $rs['original'] = $info['name'];
-    //         $rs['state'] = 'SUCCESS';
-    //         $rs['url'] =  strpos($info['savepath'], 'http://') === false ?  __ROOT__.$info['savepath'].$info['savename']:$info['savepath'];
-    //         $rs['size'] = $info['size'];
-    //         $rs['title'] = $info['savename'];
-
-
-    //         if ($type == 'ajax') {
-    //             echo json_encode($rs);
-    //             exit;
-    //         } else {
-    //             echo json_encode($rs);
-    //             exit;
-    //         }
-
-    //     } else {
-    //         $return['status'] = 0;
-    //         $return['info'] = $File->getError();
-    //     }
-
-    //     /* 返回JSON数据 */
-    //     return json($return);
-    // }
-
     /**
      * 上传头像
      * @author 心云间、凝听 <981248356@qq.com>
@@ -571,6 +442,10 @@ class Attachment extends Admin {
     
     /**
      * 设置附件的状态
+     * @param  string $model [description]
+     * @param  boolean $script [description]
+     * @date   2018-01-11
+     * @author 心云间、凝听 <981248356@qq.com>
      */
     public function setStatus($model ='attachment', $script = false){
         $ids    = input('request.ids/a');

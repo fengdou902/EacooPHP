@@ -220,9 +220,10 @@ class Auth extends Admin {
         
         if(IS_POST){
             // 提交数据
-            $data =input('post.');
+            $data = $this->request->param();
             //验证数据
             $this->validateData($data,'AuthRule');
+            $data['depend_type']=1;//后台添加默认依赖模块
             $id   =isset($data['id']) && $data['id']>0 ? $data['id']:false;
 
             if ($this->authRuleModel->editData($data,$id)) {
@@ -336,8 +337,8 @@ class Auth extends Admin {
      */
     public function moveModule() {
         if (IS_POST) {
-            $ids       = input('post.ids');
-            $to_module = input('post.to_module');
+            $ids       = input('param.ids');
+            $to_module = input('param.to_module');
             if ($to_module) {
                 $map['id'] = ['in',$ids];
                 $data      = ['depend_flag' => $to_module];

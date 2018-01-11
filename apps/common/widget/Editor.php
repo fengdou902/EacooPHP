@@ -91,19 +91,46 @@ class Editor extends Base
         }
         switch ($config) {
             case 'all':
-                $menu="'source','|','bold','indent','underline','italic','strikethrough','eraser','forecolor','bgcolor','|','alignleft','aligncenter','alignright','|','quote','fontfamily','fontsize','head','lineheight','unorderlist','orderlist','|','link','unlink','table','emotion','symbol','|','img'{$admin_more},'video','location','insertcode','|','undo','redo','fullscreen'";
-                break;
-            case 'home_publish':
-                $menu="'bold','underline','italic','strikethrough','eraser','forecolor','bgcolor','alignleft','aligncenter','alignright','quote','fontfamily','fontsize','unorderlist','orderlist','img','video','emotion','undo','redo','fullscreen'";
-                break;
-            case 'topic_publish':
-                $menu="'bold','underline','italic','strikethrough','eraser','forecolor','bgcolor','alignleft','aligncenter','alignright','quote','fontfamily','fontsize','unorderlist','orderlist','img','emotion','undo','redo','fullscreen'";
-                break;
-            case 'simple':
-                $menu="'source','|','bold','underline','italic','strikethrough','eraser','forecolor','bgcolor','emotion'";
+                $menu="'head',  // 标题
+                        'bold',  // 粗体
+                        'italic',  // 斜体
+                        'underline',  // 下划线
+                        'strikeThrough',  // 删除线
+                        'foreColor',  // 文字颜色
+                        'backColor',  // 背景颜色
+                        'link',  // 插入链接
+                        'list',  // 列表
+                        'justify',  // 对齐方式
+                        'quote',  // 引用
+                        'emoticon',  // 表情
+                        'image',  // 插入图片
+                        'table',  // 表格
+                        'video',  // 插入视频
+                        'code',  // 插入代码
+                        'undo',  // 撤销
+                        'redo'  // 重复
+                    ";
                 break;
             default:
-                $menu="'source','|','bold','underline','italic','strikethrough','eraser','forecolor','bgcolor','img'";
+                $menu="'head',  // 标题
+                        'bold',  // 粗体
+                        'italic',  // 斜体
+                        'underline',  // 下划线
+                        'strikeThrough',  // 删除线
+                        'foreColor',  // 文字颜色
+                        'backColor',  // 背景颜色
+                        'link',  // 插入链接
+                        'list',  // 列表
+                        'justify',  // 对齐方式
+                        'quote',  // 引用
+                        'emoticon',  // 表情
+                        'image',  // 插入图片
+                        'table',  // 表格
+                        'video',  // 插入视频
+                        'code',  // 插入代码
+                        'undo',  // 撤销
+                        'redo'  // 重复
+                    ";
                 break;
         }
         

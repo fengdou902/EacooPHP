@@ -318,6 +318,10 @@ class Extension extends Admin {
 	            throw new \Exception('写入插件数据失败');
 	        }
 		} catch (\Exception $e) {
+            setAppLog($e,'Extension','install_error');
+            //卸载安装的数据库
+            $sql_file = $this->appExtensionPath.'install/uninstall.sql';
+            if(is_file($sql_file)) Sql::executeSqlByFile($sql_file, $info['database_prefix']);
 			return [
                 	'code'=>0,
                 	'msg'=>$e->getMessage(),
@@ -574,7 +578,7 @@ class Extension extends Admin {
             if(!is_writable(PUBLIC_PATH.'static'.$type_path) || !is_writable($static_path)){
                 $error_msg = '';
                 if (!is_writable(PUBLIC_PATH.'static'.$type_path)) {
-                    $error_msg.=','.PUBLIC_PATH.'static'.$type_path;
+                    $error_msg.='public/static'.$type_path;
                 }
                 if (!is_writable($static_path)) {
                     $error_msg.=','.$static_path;
