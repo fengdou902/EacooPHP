@@ -51,7 +51,7 @@ class Home extends Base {
      * @param  string $mark   [description]
      * @return [type]         [description]
      */
-    public function pageConfig($title='',$mark='',$extend=[])
+    public function pageInfo($title='',$mark='',$extend=[])
     {
         $page_config = [
             'title'  => $title,

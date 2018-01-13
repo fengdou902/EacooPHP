@@ -366,7 +366,7 @@ span.show-media-info{width: 20px;text-align:center;}
                 // swf文件路径
                 swf: '__PUBLIC__/libs/webuploader/Uploader.swf',
                 // 文件接收服务端。
-                server: "{:url('admin/attachment/upload',['path_type'=>$path_type,'uploadtype'=>'picture'])}",
+                server: "{:url('admin/attachment/upload',['path_type'=>$path_type,'type'=>'picture'])}",
                 //验证文件总数量, 超出则不允许加入队列
                 fileNumLimit: 5,
                 // 如果此选项为false, 则图片在上传前不进行压缩

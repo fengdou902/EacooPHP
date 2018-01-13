@@ -233,7 +233,7 @@
             // swf文件路径
             swf: '__STATIC_LIBS__/webuploader/Uploader.swf',
             // 文件接收服务端。
-            server: "{:url('admin/attachment/upload',['path_type'=>$path_type,'uploadtype'=>'picture'])}",
+            server: "{:url('admin/attachment/upload',['path_type'=>$path_type,'type'=>'picture'])}",
             fileNumLimit: 10,
             // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
             compress: false, 

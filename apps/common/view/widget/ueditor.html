@@ -12,18 +12,18 @@
 </label>
 
 {php}}else{{/php}
-    <script type="text/plain" name="{$name}" id="{$id}" style="width:{$width};height:{$height};{$style}">{$default}</script>
+    <script type="text/plain" name="{$name}" id="{$id}" style="width:{$width|default='100%'};height:{$height|default='300px'};{$style|default=''}">{$value|default=''}</script>
     <script>
         var  ue_{$id};
         $(function () {
-            var config = {{$config},'topOffset':$('#nav_bar').height()+$('#sub_nav').height()+5};
+            var config = {{$menus},'topOffset':$('#nav_bar').height()+$('#sub_nav').height()+5};
             ue_{$id} = UE.getEditor('{$id}', config);
         })
 
     </script>
 
-    {php}if(!$param['is_load_script']){{/php}
+    {if condition="$is_load_script"}
     	<script type="text/javascript" charset="utf-8" src="__STATIC__/libs/ueditor/ueditor.config.js"></script>
     	<script type="text/javascript" charset="utf-8" src="__STATIC__/libs/ueditor/ueditor.all.min.js"></script>
-    {php}}{/php}
+    {/if}
 {php}}{/php}

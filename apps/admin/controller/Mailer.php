@@ -35,7 +35,7 @@ class Mailer extends Admin{
     public function template($template_type='register_active'){
         if (IS_POST) {
             // 提交数据
-            $template_data         = input('post.');
+            $template_data         = $this->request->param();
             $content_data['value'] = htmlspecialchars_decode($template_data['template_content']);//模板内容单独存放
             unset($template_data['template_content']);//去除模板内容，模板内容单独放
             $data['value']         = json_encode($template_data);
@@ -107,7 +107,7 @@ class Mailer extends Admin{
                     ->addFormItem('active', 'radio', '邮箱激活', '',[1=>'开启',0=>'关闭'])
                     ->addFormItem('subject', 'text', '邮件主题', '')
                     //->addFormItem('template_content', 'ueditor', '邮箱激活模板', '请用http://#link#代替激活链接，#username#代替用户名',array('width'=>'100%','height'=>'260px','config'=>''))
-                    ->addFormItem('template_content', 'wangeditor', '邮箱激活模板', '请用http://#link#代替激活链接，#username#代替用户名',['width'=>'100%','height'=>'260px','config'=>'simple'])
+                    ->addFormItem('template_content', 'wangeditor', '邮箱激活模板', '请用http://#link#代替激活链接，#username#代替用户名',['picturesModal'=>false,'menus'=>"'head','bold','italic','foreColor','link','emoticon','code','undo','redo'"])
                     ->setFormData($info)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();

@@ -57,7 +57,7 @@ class Plugins extends Admin {
         } elseif($from_type == 'oneline'){
             $meta_title = '插件市场';
             //线上插件
-            $plugins = $this->getAppstorePlugins();
+            $plugins = $this->getCloudAppstore();
             
         }
         $this->assign('meta_title',$meta_title);
@@ -475,7 +475,7 @@ class Plugins extends Admin {
      * @date   2017-09-21
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    private function getAppstorePlugins($paged = 1)
+    private function getCloudAppstore($paged = 1)
     {
         $store_data = cache('eacoo_appstore_plugins_'.$paged);
         if (empty($store_data) || !$store_data) {

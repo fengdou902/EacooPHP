@@ -13,22 +13,14 @@
 
 {php}}else{
 
-    $path_type = isset($field['upload_config']['path_type'])? $field['upload_config']['path_type']:'picture';
-
 {/php}
-{if condition="$param['importWangEditor']"}
-    <!-- <link rel="stylesheet" type="text/css" href="__STATIC__/libs/wangeditor/wangEditor.min.css"> -->
-    <style type="text/css">
-        .wangEditor-menu-container .menu-group{padding: 0 2px;}
-        .wangEditor-container .content{min-height: auto;}
-        .modal{z-index: 10002;}
-        .wangEditor-menu-container .menu_attachment{color:#3bb4f2!important;cursor: pointer;}
-    </style>
+{if condition="$is_load_script"}
+    <link rel="stylesheet" type="text/css" href="__STATIC__/libs/wangeditor/wangEditor-plugins.css">
     <script type="text/javascript" src="__STATIC__/libs/wangeditor/wangEditor.min.js"></script>
-    <!-- <script type="text/javascript" src="__STATIC__/libs/wangeditor/js/custom-menu.js"></script> -->
+    <script type="text/javascript" src="__STATIC__/libs/wangeditor/wangEditor-plugins.js"></script>
 {/if}
-<div id="{$id}_editor">{$default}</div>
-<textarea id="{$id}" name="{$name}" style="display: none;width:{$width};height:{$height};{$style}"></textarea>
+<div id="{$id}_editor" style="{$style|default=''}">{$value|default=''}</div>
+<textarea id="{$id}" name="{$name}" style="display: none;width:{$width|default='100%'};height:{$height|default='300px'};"></textarea>
 
 <!--这里引用jquery和wangEditor.js-->
 <script type="text/javascript">
@@ -63,7 +55,7 @@
     // };
     editor_{$id}.customConfig.zIndex = 10;
     editor_{$id}.customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
-    editor_{$id}.customConfig.uploadImgServer = "{:url('admin/attachment/upload',['path_type'=>$path_type,'uploadtype'=>'picture','upload_from'=>'wangeditor'])}";  // 上传图片到服务器
+    editor_{$id}.customConfig.uploadImgServer = "{:url('admin/attachment/upload',['path_type'=>$upload['path_type'],'uploadtype'=>'picture','upload_from'=>'wangeditor'])}";  // 上传图片到服务器
     // 限制一次最多上传 5 张图片
     editor_{$id}.customConfig.uploadImgMaxLength = 5
     editor_{$id}.customConfig.uploadFileName = 'wangEditorFile'
@@ -76,13 +68,17 @@
     editor_{$id}.create();
     // 初始化 textarea 的值
     $textarea_{$id}.val(editor_{$id}.txt.html());
-
-    var attachmentModal_url ="{:url('admin/Attachment/attachmentLayer',['input_id_name'=>$id,'path_type'=>$path_type,'select_type'=>'multiple','from'=>'wangeditor'])}";//附件选择器地址
-     
-    function setAttachmentWangeditorVal{$id}(data){
-            editor_{$id}.$txt.append(data);
+    E.fullscreen.init('#{$id}_editor');
+    //E.switchCode.init('#{$id}_editor');
+    {eq name="picturesModal" value='1'}
+        E.picturesModal.init('#{$id}_editor',"{:url('admin/Attachment/attachmentLayer',['input_id_name'=>$id,'path_type'=>$upload['path_type'],'select_type'=>'multiple','from'=>'wangeditor'])}");
+        function setAttachmentWangeditorVal{$id}(data){
+            editor_{$id}.txt.append(data);
             layer.closeAll('iframe');
-      }  
+          } 
+    {/eq}
+     
+     
 </script>
 
 {php}}{/php}

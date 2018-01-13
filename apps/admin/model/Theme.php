@@ -11,6 +11,7 @@
 namespace app\admin\model;
 
 use app\common\model\Base;
+use app\admin\controller\Extension;
 //use Think\Storage;
 
 class Theme extends Base {
@@ -18,10 +19,7 @@ class Theme extends Base {
     // 设置数据表（不含前缀）
     protected $name = 'themes';
 
-    protected $insert   = ['current'=>0,'sort'=>0,'status' => 1];
-
-    //安装描述文件名
-    static public $infoFile = 'info.json';
+    protected $insert   = ['current'=>0,'sort'=>0];
 
     //安装菜单文件名
     static public $menusFile = 'menus.php';
@@ -36,30 +34,22 @@ class Theme extends Base {
     public function getAll() {
         $path = THEME_PATH;
         $dirs = array_map('basename', glob($path.'*', GLOB_ONLYDIR));
-        foreach ($dirs as $name) {
-            $info_file = realpath($path.$name).'/'.self::$infoFile;
-            if (is_file($info_file)) {
-                $theme_dir_list[]          = $name;
-                $info                      = self::getInfoByFile($name);
-                $info['status']            = -1; //未安装
-                $theme_list[$info['name']] = $info;
+        $extensionObj = new Extension;
+        foreach ($dirs as $subdir) {
+            $info_file = THEME_PATH.$subdir.'/install/info.json';
+            if (is_file($info_file) && $subdir != '.' && $subdir != '..') {
+                $info = self::getInfo($subdir);//模块名即为当前模块的文件夹名
+                if (!empty($info)) {
+                    $logo = Extension::getLogo($info['name'],'theme');
+                    if ($logo) {
+                        $info['logo'] = '<img src="'.$logo.'" class="theme-logo">';
+                    } else{
+                        $info['logo'] = '<span class="theme-logo theme-avatar-tx">'.mb_substr($info['title'], 0,1,'utf-8').'</span>';
+                    }
+                    $theme_list[] = $info;
+                }
+                unset($info);
             }
-        }
-
-        // 获取系统已经安装的主题信息
-        if (isset($theme_dir_list) && $theme_dir_list) {
-            $map['name'] = ['in', $theme_dir_list];
-        } else {
-            return false;
-        }
-        $installed_theme_list = $this->where($map)->order('sort asc,id desc')->select();
-
-        if ($installed_theme_list) {
-            foreach ($installed_theme_list as $theme) {
-                $theme_list[$theme['name']] = $theme->toArray();
-            }
-            //系统已经安装的主题信息与文件夹下主题信息合并
-            $theme_list = array_merge($theme_list, $theme_list);
         }
 
         foreach ($theme_list as &$val) {
@@ -84,6 +74,38 @@ class Theme extends Base {
             }
         }
         return $theme_list;
+    }
+
+    /**通过模块名来获取模块信息
+     * @param $name 模块名
+     * @return array|mixed
+     */
+    public static function getInfo($name)
+    {
+        $info = self::where(['name' => $name])->field(true)->find();
+        if ($info === false || empty($info)) {//数据库中不存在信息
+            $extensionObj = new Extension;
+            $extensionObj->initInfo('theme',$name);
+            $theme_info = $extensionObj->getInfoByFile();//从文件获取
+
+            if (!empty($theme_info)) {
+                $theme_info['status']=-1;
+                return $theme_info;
+            } else{
+                $theme_info = [
+                    'name'=>$name,
+                    'title'=>'未知',
+                    'description'=>'<span class="text-danger">请在'.$name.'主题目录下的install目录中检测info.json文件信息是否符合格式！</span>',
+                    'author'=>'未知',
+                    'version'=>'未知',
+                    'status'=>-3,
+                ];
+                return $theme_info;
+            }
+
+        } else {
+            return $info->toArray();
+        }
     }
 
     /**

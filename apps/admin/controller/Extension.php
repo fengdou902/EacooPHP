@@ -19,6 +19,7 @@ use app\admin\model\AuthRule;
 use app\admin\model\Hooks;
 use app\admin\model\Plugins as PluginsModel;
 use app\admin\model\Modules as ModuleModel;
+use app\admin\model\Theme as ThemeModel;
 
 class Extension extends Admin {
 
@@ -64,6 +65,11 @@ class Extension extends Admin {
                 $this->appsPath = APP_PATH;
                 $this->depend_type =1;
                 $this->appExtensionModel = new ModuleModel;
+                break;
+            case 'theme':
+                $this->appsPath = THEME_PATH;
+                $this->depend_type =3;
+                $this->appExtensionModel = new ThemeModel;
                 break;
             default:
                 # code...
@@ -904,7 +910,6 @@ class Extension extends Admin {
 
     public static function refresh($type='')
     {
-
         cache('eacoo_appstore_'.$type.'s_1',null);
         cache('local_'.$type.'s_list',null);
         return true;
@@ -924,6 +929,8 @@ class Extension extends Admin {
             $type_path = 'plugins/';
         } elseif ($type=='module') {
             $type_path = '';
+        }elseif ($type=='theme') {
+            $type_path = 'themes/';
         }
         foreach ($file_ext as $key => $ext) {
             $tmp_logo_dir = 'runtime/images/logos/'.$type_path;
@@ -955,6 +962,8 @@ class Extension extends Admin {
                         $original_logo_file = PLUGIN_PATH.$name.'/static/logo.'.$ext;
                     } elseif ($type=='module') {
                         $original_logo_file = APP_PATH.$name.'/static/logo.'.$ext;
+                    } elseif ($type=='theme') {
+                        $original_logo_file = THEME_PATH.$name.'/cover.'.$ext;
                     }
                     if (is_file($original_logo_file)) {
                         if (is_writable(PUBLIC_PATH.$tmp_logo_dir)) {
