@@ -51,7 +51,9 @@ class Theme extends Base {
                 unset($info);
             }
         }
-
+        if (empty($theme_list)) {
+            return [];
+        }
         foreach ($theme_list as &$val) {
             if (!isset($val['right_button'])) {
                 $val['right_button']='';
@@ -109,45 +111,6 @@ class Theme extends Base {
     }
 
     /**
-     * 检测信息
-     * @param  string $name [description]
-     * @return [type] [description]
-     * @date   2017-09-18
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public static function checkInfoFile($name='') {
-        if ($name=='') {
-            $name = self::$pluginName;
-        }
-        $info_check_keys = ['name', 'title', 'description', 'author', 'version'];
-        foreach ($info_check_keys as $value) {
-            if (!array_key_exists($value, self::getInfoByFile($name))) {
-                return false;
-            }
-
-        }
-        return true;
-    }
-
-    /**
-     * 获取插件依赖的钩子
-     * @param  string $name [description]
-     * @return [type] [description]
-     * @date   2017-09-18
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public static function getDependentHooks($name='')
-    {
-        if ($name=='' || !$name) {
-            return false;
-        }
-        $info = self::getInfoByFile($name);
-        $dependent_hooks = !empty($info['dependences']['hooks']) ? $info['dependences']['hooks']:'';
-        $dependent_hooks = explode(',', $dependent_hooks);
-        return $dependent_hooks;
-    }
-
-    /**
      * 文件获取模块信息
      * @param  [type] $name [description]
      * @return [type] [description]
@@ -168,31 +131,6 @@ class Theme extends Base {
             return [];
         }
 
-    }
-
-    /**
-     * 文件获取安装信息的后台菜单
-     * @param  string $name 模块名
-     * @return [type] [description]
-     * @date   2017-09-16
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public static function getAdminMenusByFile($name='')
-    {
-        if ($name=='' || !$name) {
-            return false;
-        }
-        $file = realpath(THEME_PATH.$name).'/'.self::$menusFile;
-
-        if (is_file($file)) {
-
-            $module_menus = include $file;
-
-            return !empty($module_menus['admin_menus']) ? $module_menus['admin_menus'] : false;
-
-        } else {
-            return false;
-        }
     }
 
     /**

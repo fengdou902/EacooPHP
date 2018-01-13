@@ -30,6 +30,9 @@ class Cloud {
 			case 'module':
 				$this->appPath = APP_PATH;
 				break;
+            case 'theme':
+                $this->appPath = THEME_PATH;
+                break;
 			default:
 				# code...
 				break;
