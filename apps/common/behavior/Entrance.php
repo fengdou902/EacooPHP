@@ -64,7 +64,7 @@ class Entrance {
                 401 =>  THEME_PATH.'401.html',
             ],                
         ];
-        $ec_config['eacoo_api_url']='http://www.eacoo123.org';
+        $ec_config['eacoo_api_url']='http://www.eacoo123.com';
         thinkConfig::set($ec_config);// 添加配置
 	}
 
