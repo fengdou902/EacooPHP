@@ -22,7 +22,7 @@ class Terms extends Admin {
     {
         parent::_initialize();
         $this->termsModel = new TermsModel();
-        $this->termTaxonomy = config('termTaxonomy');//获取所有分类法
+        $this->termTaxonomy = config('term_taxonomy');//获取所有分类法
     }
 
 	//分类管理
