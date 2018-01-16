@@ -12,7 +12,7 @@
         <section class="content">
             <div class="row">
                 <div class="login">
-                    <form action="{:url('user/login/login')}" method="post" class="container offset1 loginform">
+                    <form action="{:url('user/register/index')}" method="post" class="container offset1 loginform">
                         <div id="owl-login">
                             <div class="hand"></div>
                             <div class="hand hand-r"></div>
@@ -25,7 +25,19 @@
                             <div class="control-group">
                                 <div class="controls">
                                     <label for="username" class="control-label fa fa-user"></label>
-                                    <input id="username" type="username" name="username" placeholder="账号/邮箱" tabindex="1" autofocus="autofocus" class="form-control input-medium">
+                                    <input id="username" type="username" name="username" placeholder="账号" tabindex="1" autofocus="autofocus" class="form-control input-medium">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="controls">
+                                    <label for="nickname" class="control-label fa fa-user"></label>
+                                    <input id="nickname" type="nickname" name="nickname" placeholder="昵称" tabindex="1" autofocus="autofocus" class="form-control input-medium">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="controls">
+                                    <label for="email" class="control-label fa fa-envelope"></label>
+                                    <input id="email" type="email" name="email" placeholder="邮箱" tabindex="1" autofocus="autofocus" class="form-control input-medium">
                                 </div>
                             </div>
                             <div class="control-group">
@@ -36,15 +48,14 @@
                             </div>
                             <div class="control-group">
                                 <div class="controls">
-                                    <input type="checkbox" id="rememberme" name="rememberme" value="0">
-                                    <span></span> 7天内自动登录?
+                                    <label for="password_confirm" class="control-label fa fa-asterisk"></label>
+                                    <input id="password_confirm" type="password" name="password_confirm" placeholder="确认密码" tabindex="2" class="form-control input-medium">
                                 </div>
                             </div>
                         </div>
                         <div class="form-actions">
-                            <a href="#" tabindex="5" class="btn pull-left btn-link text-muted">忘记密码?</a>
-                            <a href="{:url('user/register/index')}" tabindex="6" class="btn btn-link text-muted">立即注册</a>
-                            <button type="submit" tabindex="4" class="btn btn-primary">登录</button>
+                            <a href="{:url('user/login/login')}" tabindex="5" class="btn pull-left btn-link text-muted">返回登录</a>
+                            <button type="submit" tabindex="4" class="btn btn-primary">立即注册</button>
                         </div>
                     </form>
                 </div>
@@ -60,6 +71,11 @@
 <script type="application/javascript">
   $(function() {
     $('.login #password').focus(function() {
+      $('#owl-login').addClass('password');
+    }).blur(function() {
+      $('#owl-login').removeClass('password');
+    });
+    $('.login #password_confirm').focus(function() {
       $('#owl-login').addClass('password');
     }).blur(function() {
       $('#owl-login').removeClass('password');
