@@ -90,7 +90,7 @@ class Tree {
 			return false;
 		}
 		$list = $this->list_to_tree($list,$pk,$pid,'_child',$root);
-		$this->formatTree = array();
+		$this->formatTree = $data = [];
 		$this->_toFormatTree($list);
 		foreach ($this->formatTree as $key => $value) {
 			$index = ($key+1);

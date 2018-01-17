@@ -16,7 +16,7 @@ class CronRun {
 		if (config('cron_config_on')) { 
 	          // 锁定自动执行
 	        $lockfile	 =	 RUNTIME_PATH.'cron.lock';
-	        if(is_writable($lockfile) && filemtime($lockfile) > $_SERVER['REQUEST_TIME'] - config('cron_max_time',null,60)) {
+	        if(is_really_writable($lockfile) && filemtime($lockfile) > $_SERVER['REQUEST_TIME'] - config('cron_max_time',null,60)) {
 	            return ;
 	        } else {
 	            touch($lockfile);

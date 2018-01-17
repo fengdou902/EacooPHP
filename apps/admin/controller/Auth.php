@@ -134,7 +134,7 @@ class Auth extends Admin {
      * @return [type] [description]
      */
     public function adminMenu(){
-        $manage_type = input('get.manage_type','menu');//管理类型
+        $manage_type = input('param.manage_type','menu');//管理类型
         // 获取所有节点信息
         $map['pid'] = input('param.pid',0);//是否存在父ID
         $map['is_menu']=1;//只显示菜单
@@ -142,13 +142,19 @@ class Auth extends Admin {
             $current_submenu_name = $this->authRuleModel->where(['id'=>(int)$map['pid']])->value('title');
             $meta_title = '<a onclick="javascript:history.back(-1);return false;">'.$current_submenu_name.'</a>》子菜单管理';
         } else{
-            $meta_title='菜单管理';
+            $meta_title='后台菜单管理';
         }
         
         list($data_list,$page) = $this->authRuleModel->getListByPage($map,'sort asc','*',20);
+        $menus = db('auth_rule')->where(['is_menu'=>1])
+        $tree_obj = new Tree;
+        $menus = $tree_obj->toFormatTree($data_list,'title');
+        halt($menus);
+
         foreach ($data_list as $key=>$list) {
             $data_list[$key]['p_menu']= $this->authRuleModel->where(['id'=>(int)$list['pid']])->value('title');
         }
+
 
         //是否标记为菜单：0否，1是
         $marker_menu0_attr['title'] = '取消菜单标记';

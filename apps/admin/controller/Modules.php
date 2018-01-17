@@ -271,7 +271,7 @@ class Modules extends Admin {
 				
 	            $_static_path = PUBLIC_PATH.'static/'.$name;
 	            if (is_dir($_static_path)) {
-	                if(is_writable(PUBLIC_PATH.'static') && is_writable(APP_PATH.$name)){
+	                if(is_really_writable(PUBLIC_PATH.'static') && is_really_writable(APP_PATH.$name)){
 	                	$static_path = APP_PATH.$name.'/static';
 	                    if (!rename($_static_path,$static_path)) {
 	                        trace('模块静态资源移动失败：'.'public/static/'.$name.'->'.$static_path,'error');

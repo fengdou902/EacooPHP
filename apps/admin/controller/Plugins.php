@@ -268,12 +268,12 @@ class Plugins extends Admin {
                 $name        = $plugin_info['name'];
                 $_static_path = PUBLIC_PATH.'static/plugins/'.$name;
                 if (is_dir($_static_path)) {
-                    if(!is_writable(PUBLIC_PATH.'static/plugins') || !is_writable(PLUGIN_PATH.$name)){
+                    if(!is_really_writable(PUBLIC_PATH.'static/plugins') || !is_really_writable(PLUGIN_PATH.$name)){
                         $error_msg = '';
-                        if (!is_writable(PUBLIC_PATH.'static/plugins')) {
+                        if (!is_really_writable(PUBLIC_PATH.'static/plugins')) {
                             $error_msg.=','.PUBLIC_PATH.'static/plugins';
                         }
-                        if (!is_writable(PLUGIN_PATH.$name)) {
+                        if (!is_really_writable(PLUGIN_PATH.$name)) {
                             $error_msg.=','.PLUGIN_PATH.$name;
                         }
                         throw new \Exception($error_msg.'目录写入权限不足',0);
@@ -344,7 +344,7 @@ class Plugins extends Admin {
     public function del($name='')
     {
         if ($name) {
-            if (!is_writable(PLUGIN_PATH.$name)) {
+            if (!is_really_writable(PLUGIN_PATH.$name)) {
                 $this->error('目录权限不足，请手动删除目录');
             }
             @rmdirs(PLUGIN_PATH.$name);
