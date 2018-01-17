@@ -25,8 +25,8 @@ class Upload extends Home {
 
     /* 文件上传 */
     public function upload() {
-        $UploadService = new UploadService;
-        $return = $UploadService->upload();
+        $uploadService = new UploadService;
+        $return = $uploadService->upload();
         return json($return);
     }
     

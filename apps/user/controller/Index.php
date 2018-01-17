@@ -30,7 +30,7 @@ class Index extends Home{
         list($user_list) = $this->userModel->getListByPage($map,'reg_time desc','*',20);
         $this->assign('user_list',$user_list);
         
-        $this->pageConfig('会员列表','users');
+        $this->pageInfo('会员列表','users');
         return $this->fetch();
 
     }
