@@ -1,4 +1,5 @@
 <?php
+// 上传
 // +----------------------------------------------------------------------
 // | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
@@ -9,22 +10,24 @@
 // +----------------------------------------------------------------------
 namespace app\home\controller;
 
-class Index extends Home {
+use app\common\model\User;
+use app\common\controller\Upload as UploadService;
+
+class Upload extends Home {
 
     function _initialize()
     {
         parent::_initialize();
-
+        if (!$this->currentUser || !$this->currentUser['uid']) {
+            $this->redirect(url('home/login/index'));
+        }
     }
-    
-    /**
-     * 首页
-     * @return [type] [description]
-     */
-    public function index()
-    {
-        $this->pageConfig('首页','home');
-    	return $this->fetch();
+
+    /* 文件上传 */
+    public function upload() {
+        $UploadService = new UploadService;
+        $return = $UploadService->upload();
+        return json($return);
     }
     
 }

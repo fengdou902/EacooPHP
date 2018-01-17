@@ -38,9 +38,8 @@ class Base extends Controller {
 		defined('IS_AJAX') or define('IS_AJAX', $this->request->isAjax());
 		defined('IS_PJAX') or define('IS_PJAX', $this->request->isPjax());
 		defined('IS_GET') or define('IS_GET', $this->request->isGet());
-		defined('IS_MOBILE') or define('IS_MOBILE', $this->request->isMobile());
 
-		$this->param = $this->request->param();
+		//$this->param = $this->request->param();
 		$this->urlRule = strtolower($this->request->module() . '/' . $this->request->controller() . '/' . $this->request->action());
 		$this->ip = $this->request->ip();
 		$this->url = $this->request->url(true);//完整url

@@ -136,8 +136,8 @@ class User extends Admin {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     protected function sendMessageHtml(){
-        //$sendmsg_url=url('user/AdminUser/send_message',['from_uid'=>is_login()]);
-        $sendmsg_url='';
+        //需要安装站内信插件才能使用
+        $sendmsg_url = plugin_url('message/Message/send_message',['from_uid'=>is_login()]);
         return <<<EOF
             <div class="modal fade mt100" id="sendmsgModal">
                 <div class="modal-dialog ">

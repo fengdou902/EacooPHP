@@ -12,7 +12,7 @@
     <div class="form-group controls item_{$field.id} {$field.extra_class|default=''}">
         <label for="{$field.id}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{/present}{$field.title}</label>
         <div class="col-md-2" style="padding-bottom: 5px;">
-        <span class="btn btn-info ml-10 btn-sm" data-url="{:url('admin/Attachment/attachmentLayer',['input_id_name'=>$field['id'],'path_type'=>$path_type,'select_type'=>'multiple'])}" onclick="openAttachmentLayer(this);"><i class="fa fa-photo"></i> 选择多图</span>
+        <span class="btn btn-info ml-10 btn-sm" data-url="{:url('admin/Upload/attachmentLayer',['input_id_name'=>$field['id'],'path_type'=>$path_type,'select_type'=>'multiple'])}" onclick="openAttachmentLayer(this);"><i class="fa fa-photo"></i> 选择多图</span>
             <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field.value|default=''}"/>
         </div>
         {notempty name="field.description"}<div class="help-block col-md-8 col-md-offset-2 fn" style="color:#E74C3C;padding-left: 20px;">{$field.description}</div>{/notempty}

@@ -12,6 +12,7 @@ namespace app\common\behavior;
 use think\Config as thinkConfig;
 use app\common\model\Config as ConfigModel;
 use think\Cache;
+use think\Request;
 
 /**
  * 根据不同情况读取数据库的配置信息并与本地配置合并
@@ -32,7 +33,9 @@ class Config {
             }
             
         }
-
+        //关于请求
+        $request = Request::instance();
+        defined('IS_MOBILE') or define('IS_MOBILE', $request->isMobile());
         // 安装模式下直接返回
         if(defined('MODULE_NAME') && MODULE_NAME === 'install') return;
         // 当前模块模版参数配置
@@ -55,7 +58,7 @@ class Config {
             // 获取当前主题的名称
             $current_theme = db('themes')->where('current',1)->value('name');
             //主题区分pc和移动端路径
-            if (is_mobile()) {
+            if (IS_MOBILE==true) {
                 $current_theme = $current_theme."/mobile";
             } else {
                 $current_theme = $current_theme.'/pc';
@@ -159,7 +162,7 @@ class Config {
         }
 
         // 移动端不显示trace
-        if (is_mobile()) {
+        if (IS_MOBILE==true) {
             $system_config['app_trace']=false;
         }
         

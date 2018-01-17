@@ -42,7 +42,7 @@ class Plugins extends Admin {
 
         $this->assign('page_config',['self'=>'<a href="'.url('admin/plugins/hooks').'" class="btn btn-primary btn-sm mr-10">钩子管理</a>']);
         $tab_list = [
-            'local'=>['title'=>'本地','href'=>url('index',['from_type'=>'local'])],
+            'local'=>['title'=>'已安装','href'=>url('index',['from_type'=>'local'])],
             'oneline'=>['title'=>'插件市场','href'=>url('index',['from_type'=>'oneline'])],
         ];
         $this->assign('tab_list',$tab_list);

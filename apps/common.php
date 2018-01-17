@@ -5,7 +5,7 @@ use app\admin\model\Plugins as PluginsModel;
 
 /**
  * 检测是否安装某个模块
- * @param  string $name [description]
+ * @param  string $name 模块标识
  * @return [type] [description]
  * @date   2017-09-17
  * @author 心云间、凝听 <981248356@qq.com>
@@ -17,7 +17,7 @@ function check_install_module($name='')
 
 /**
  * 检测是否安装某个插件
- * @param  string $name [description]
+ * @param  string $name 插件标识
  * @return [type] [description]
  * @date   2017-11-14
  * @author 心云间、凝听 <981248356@qq.com>
@@ -29,9 +29,12 @@ function check_install_plugin($name='')
 
 /**
  * 处理插件钩子
- * @param string $hook 钩子名称
- * @param mixed $params 传入参数
- * @return void
+ * @param  [type] $hook 钩子
+ * @param  array $params 参数
+ * @param  boolean $is_return 是否返回（true:返回值，false:直接输入）
+ * @return [type] [description]
+ * @date   2018-01-17
+ * @author 心云间、凝听 <981248356@qq.com>
  */
 function hook($hook, $params = [],$is_return =false)
 {
@@ -42,8 +45,8 @@ function hook($hook, $params = [],$is_return =false)
 }
 
 /**
- * 获取插件类的类名
- * @param  [type] $name [description]
+ * 返回某个插件类的类名
+ * @param  [type] $name 插件标识
  * @return [type] [description]
  * @date   2017-09-15
  * @author 心云间、凝听 <981248356@qq.com>
@@ -74,7 +77,7 @@ function get_plugin_config($name)
 if (!function_exists('plugin_url')) {
     /**
      * 获取插件地址
-     * @param  [type] $url   [description]
+     * @param  [type] $url   格式三段式，如：插件标识/控制器名称/操作名
      * @param  [type] $param [description]
      * @return [type]        [description]
      */

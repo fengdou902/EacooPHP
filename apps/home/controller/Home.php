@@ -1,4 +1,5 @@
 <?php
+// 前台基类
 // +----------------------------------------------------------------------
 // | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
@@ -51,7 +52,7 @@ class Home extends Base {
      * @param  string $mark   [description]
      * @return [type]         [description]
      */
-    public function pageInfo($title='',$mark='',$extend=[])
+    public function pageConfig($title='',$mark='',$extend=[])
     {
         $page_config = [
             'title'  => $title,
