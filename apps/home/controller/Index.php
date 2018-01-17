@@ -23,12 +23,7 @@ class Index extends Home {
      */
     public function index()
     {
-<<<<<<< HEAD
         $this->pageConfig('首页','home');
-=======
-        $this->pageInfo('首页','home');
-        
->>>>>>> 5f0e7b99aaa6e7046af478f4e5c34ba44065d304
     	return $this->fetch();
     }
     
