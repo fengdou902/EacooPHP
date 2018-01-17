@@ -27,7 +27,7 @@ class Entrance {
             define('SERVER_SOFTWARE_TYPE','no');
         }
        	
-        define('EACOOPHP_V','1.1.1');
+        define('EACOOPHP_V','1.1.2');
 
         //加载模块全局函数
         // $module_names = db('modules')->where(['status' =>1])->column('name');

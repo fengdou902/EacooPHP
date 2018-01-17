@@ -26,8 +26,8 @@ class Extension extends Admin {
     protected $type;//类型：plugin,module
     protected $appsPath;//应用目录
     protected $appName;
-    public $appExtensionPath;//应用具体扩展目录
-    public $info;
+    public  $appExtensionPath;//应用具体扩展目录
+    public  $info;
     protected $hooksModel;
     protected $appExtensionModel;
     protected $uid;
@@ -327,7 +327,7 @@ class Extension extends Admin {
             setAppLog($e,'Extension','install_error');
             //卸载安装的数据库
             $sql_file = $this->appExtensionPath.'install/uninstall.sql';
-            if(is_file($sql_file)) Sql::executeSqlByFile($sql_file, $info['database_prefix']);
+            if(is_file($sql_file) && isset($info['database_prefix'])) Sql::executeSqlByFile($sql_file, $info['database_prefix']);
 			return [
                 	'code'=>0,
                 	'msg'=>$e->getMessage(),
