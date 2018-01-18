@@ -18,13 +18,11 @@ function getRootUrl()
     if (BASE_PATH != '') {
         return BASE_PATH . '/';
     }
-    // if (config('URL_MODEL') == 2)
-    //     return BASE_PATH . '/';
     return BASE_PATH;
 }
 
 /**
- * full_url   渲染链接
+ * root_full_path   渲染链接
  * @param $path
  * @return mixed
  * @author:心云间、凝听 <981248356@qq.com>
