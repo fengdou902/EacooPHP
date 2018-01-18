@@ -236,9 +236,6 @@ class Attachment extends Base {
                     set_attachment_image_thumb($value['path']);
                 }
                 
-              /*  dump(getRootUrl());
-                dump($info);
-                exit;*/
                 $wangEditorFile=null;
                 if ($info['wangEditorFile']) {
                     $wangEditorFile=$info['wangEditorFile'];

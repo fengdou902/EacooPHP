@@ -199,7 +199,6 @@ class Attachment extends Admin {
     
         cache('Attachment_'.$id,null);//删除缓存信息
         if ($return['location']=='local') {
-            //$realpath = realpath('.'.getRootUrl().$return['path']);
             $realpath = $return['real_path'];
 
             $imgInfo = pathinfo($realpath);//图片信息

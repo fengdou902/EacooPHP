@@ -119,7 +119,7 @@ class Upload extends Base
         $files_ids=explode(',',$value);
         if($files_ids){
             foreach ($files_ids as $v) {
-               $files[]=M('File')->find($v);
+               $files[] = db('attachment')->find($v);
             }
             unset($v);
 
