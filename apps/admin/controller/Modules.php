@@ -35,7 +35,7 @@ class Modules extends Admin {
 	 */
 	public function index($from_type = 'oneline') {
 		$tab_list = [
-            'local'=>['title'=>'本地','href'=>url('index',['from_type'=>'local'])],
+            'local'=>['title'=>'已安装','href'=>url('index',['from_type'=>'local'])],
             'oneline'=>['title'=>'模块市场','href'=>url('index',['from_type'=>'oneline'])],
         ];
 
@@ -47,7 +47,7 @@ class Modules extends Admin {
         	$meta_title = '本地模块';
 
         } elseif ($from_type == 'oneline') {
-        	$data_list = $this->getAppstoreModules();
+        	$data_list = $this->getCloudAppstore();
         	$meta_title = '模块市场';
 
         }
@@ -258,6 +258,7 @@ class Modules extends Admin {
             $extensionObj->initInfo('module',$name);
             // 删除后台菜单
             $extensionObj->removeAdminMenus($name,$clear);
+            $extensionObj->removeNavigationMenus($clear);
 			if ($clear) {
 		        //执行卸载sql
 				$sql_file   = APP_PATH.$name.'/install/uninstall.sql';
@@ -271,7 +272,7 @@ class Modules extends Admin {
 				
 	            $_static_path = PUBLIC_PATH.'static/'.$name;
 	            if (is_dir($_static_path)) {
-	                if(is_writable(PUBLIC_PATH.'static') && is_writable(APP_PATH.$name)){
+	                if(is_really_writable(PUBLIC_PATH.'static') && is_really_writable(APP_PATH.$name)){
 	                	$static_path = APP_PATH.$name.'/static';
 	                    if (!rename($_static_path,$static_path)) {
 	                        trace('模块静态资源移动失败：'.'public/static/'.$name.'->'.$static_path,'error');
@@ -396,37 +397,6 @@ class Modules extends Admin {
         $this->error('删除模块失败');
     }
 
-    /**
-     * 更新后台菜单
-     * @param  array $data [description]
-     * @param  string $flag_name [description]
-     * @param  integer $pid [description]
-     * @return [type] [description]
-     * @date   2017-09-16
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    private function updateAdminMenus($data = [], $flag_name = '', $pid = 0)
-    {
-   //  	if (!empty($data) && is_array($data) && $flag_name!='') {
-   //  		$authRuleModel = new AuthRule;
-			// foreach ($data as $key => $menu) {
-			// 	$menu['module'] = $flag_name;
-			// 	$menu['pid']    = $pid;
-			// 	$menu['sort']   = isset($menu['sort']) ? $menu['sort'] : 99;
-			// 	$authRuleModel->allowField(true)->isUpdate(false)->data($menu)->save();
-			// 	//添加子菜单
-			// 	if (isset($menu['sub_menu'])) {
-			// 		if (!empty($menu['sub_menu'])) {
-			// 			$this->updateAdminMenus($menu['sub_menu'], $flag_name, $authRuleModel->id);
-			// 		}
-	                
-	  //           }
-			// }
-			// cache('admin_sidebar_menus',null);//清空后台菜单缓存
-			// return true;
-   //  	}
-    	return false;
-    }
 
     /**
      * 排序
@@ -486,7 +456,7 @@ class Modules extends Admin {
      * @date   2017-09-21
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    private function getAppstoreModules($paged = 1)
+    private function getCloudAppstore($paged = 1)
     {
         $store_data = cache('eacoo_appstore_modules_'.$paged);
         if (empty($store_data) || !$store_data) {

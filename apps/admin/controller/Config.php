@@ -54,7 +54,7 @@ class Config extends Admin {
         $move_attr['title']   = '<i class="fa fa-exchange"></i> 移动分组';
         $move_attr['class']   = 'btn btn-info btn-sm';
         $move_attr['onclick'] = 'move()';
-        $extra_html=$this->moveGroupHtml($config_group_list,$group);//添加移动按钮html
+        $extra_html = $this->moveGroupHtml($config_group_list,$group);//添加移动按钮html
         // 使用Builder快速建立列表页面。
 
         Builder::run('List')

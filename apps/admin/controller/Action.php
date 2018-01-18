@@ -51,6 +51,8 @@ class Action extends Admin {
                 ->keyListItem('name','标识')
                 ->keyListItem('title','行为名称')
                 ->keyListItem('action_type_text','行为类型')
+                ->keyListItem('depend_type','来源类型','array',[0=>'未知',1=>'模块',2=>'插件',3=>'主题'])
+                ->keyListItem('depend_flag','来源标识')
                 ->keyListItem('log','日志规则')
                 ->keyListItem('status', '状态', 'status')
                 ->keyListItem('right_button', '操作', 'btn')
@@ -91,7 +93,7 @@ class Action extends Admin {
 		$title = $id ? "编辑":"新增";
 
 		if (IS_POST) {
-			$data = input('post.');
+			$data = $this->request->param();
             //验证数据
             $this->validateData($data,'Action');
 
@@ -114,6 +116,8 @@ class Action extends Admin {
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
                     ->addFormItem('name', 'text', '行为标识', '输入行为标识 英文字母')
                     ->addFormItem('title', 'text', '行为名称', '输入行为名称')
+                    ->addFormItem('depend_type', 'select', '来源类型', '来源类型。分别是模块，插件，主题',[1=>'模块',2=>'插件',3=>'主题'])
+                    ->addFormItem('depend_flag', 'text', '来源标识', '如模块、插件、主题的标识名。')
                     ->addFormItem('action_type', 'radio', '行为执行类型', '',[1=>'自定义操作',2=>'记录操作'])
                     ->addFormItem('remark', 'text', '行为描述', '')
                     ->addFormItem('rule', 'text', '行为规则', '输入行为规则，不写则只记录日志')
@@ -203,7 +207,7 @@ class Action extends Admin {
 			$this->error('参数错误！');
 		}
 
-		$info = $this->actionLogModel->alias('a')->join('__USERS__ b','a.uid = b.uid')->join('__ACTION__ c','a.action_id = c.id')->order('a.create_time desc')->field('a.*,b.nickname,c.name,c.title')->find();
+		$info = $this->actionLogModel->alias('a')->where('a.id',$id)->join('__USERS__ b','a.uid = b.uid')->join('__ACTION__ c','a.action_id = c.id')->order('a.create_time desc')->field('a.*,b.nickname,c.name,c.title')->find();
 		$info['nickname']= db('users')->where('uid',$info['uid'])->value('nickname');
 		//$info['action_ip']   = long2ip($info['action_ip']);
 		if ($info['ip']!='' && $info['ip']!='127.0.0.1') {

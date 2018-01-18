@@ -16,8 +16,8 @@
 <link type="text/css" rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css"/>
 <!-- Font Awesome -->
 <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
-{load href="__ADMIN_CSS__/AdminLTE.min.css,__ADMIN_CSS__/_all-skins.min.css,__PUBLIC__/css/animate.min.css,__PUBLIC__/css/base.css,__THEME_CSS__/style.css" /}
-
+{load href="__ADMIN_CSS__/AdminLTE.min.css,__ADMIN_CSS__/_all-skins.min.css,__PUBLIC__/css/animate.min.css,__PUBLIC__/css/base.css" /}
+<link type="text/css" rel="stylesheet" href="__THEME_CSS__/style.css?v=1.0.0"/>
 {block name="style"}{/block}
 <script type="text/javascript" src="__PUBLIC__/js/jquery-1.10.2.min.js"></script>    
 <script type="text/javascript">
@@ -51,20 +51,35 @@
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+          <!--顶部导航 start-->
           <ul class="nav navbar-nav">
-            <li class="active"><a href="/">主页 <span class="sr-only">(current)</span></a></li>
-            <li><a href="{:url('user/index/index')}">会员<span class="sr-only">会员</span></a></li>
-            <li><a href="https://gitee.com/ZhaoJunfeng/EacooPHP/attach_files" target="_blank">下载</a></li>
-            <li><a href="http://forum.eacoo123.com" target="_blank">社区</a></li>
-            <li><a href="https://www.kancloud.cn/youpzt/eacoo" target="_blank">文档</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">CMS门户 <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="{:url('cms/index/index')}">文章列表</a></li>
-                <li><a href="{:url('cms/page/index')}">页面列表</a></li>
-              </ul>
-            </li>
+            {notempty name="header_menus"}
+                {volist name="header_menus" id="row"}
+                  <li class="{notempty name="row._child"}dropdown{/notempty}">
+                    {empty name="row._child"}
+                      <a href="{$row.value|eacoo_url=###,[],$row.depend_type|default=''}" target="{$row.target|default=''}" title="{$row.title|default=''}">{notempty name="row.icon"}<i class="{$row.icon}"></i>{/notempty} {$row.title|default='未知'}</a>
+                    {else/}
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">{notempty name="row.icon"}<i class="{$row.icon}"></i>{/notempty} {$row.title|default='未知'}<span class="caret"></span></a>
+                    {/empty}
+                    {notempty name="row._child"}
+                    <ul class="dropdown-menu" role="menu">
+                      <li><a href="{:url('cms/index/index')}">文章列表</a></li>
+                      <li><a href="{:url('cms/page/index')}">页面列表</a></li>
+                    </ul>
+                    {/notempty}
+                  </li>
+                   
+                {/volist}
+            {else/}
+                <li class="active"><a href="/">主页 <span class="sr-only">(current)</span></a></li>
+                <li><a href="{:url('user/index/index')}">会员<span class="sr-only">会员</span></a></li>
+                <li><a href="https://gitee.com/ZhaoJunfeng/EacooPHP/attach_files" target="_blank">下载</a></li>
+                <li><a href="http://forum.eacoo123.com" target="_blank">社区</a></li>
+                <li><a href="https://www.kancloud.cn/youpzt/eacoo" target="_blank">文档</a></li>
+            {/notempty}
+            
           </ul>
+          <!--顶部导航 end-->
           <form class="navbar-form navbar-left" role="search">
             <div class="form-group">
               <input type="text" class="form-control" id="navbar-search-input" placeholder="Search">

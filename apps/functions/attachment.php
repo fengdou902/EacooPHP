@@ -95,6 +95,51 @@ if (!function_exists('copydirs'))
     }
 
 }
+/**
+ * 判断文件的真实可写性(文件/目录 是否可写（取代系统自带的 is_writeable 函数）)
+ *
+ * is_writable() returns TRUE on Windows servers when you really can't write to
+ * the file, based on the read-only attribute.  is_writable() is also unreliable
+ * on Unix servers if safe_mode is on.
+ *
+ * @access    private
+ * @return    void
+ */
+if ( ! function_exists('is_really_writable'))
+{
+    function is_really_writable($file)
+    {
+        // If we're on a Unix server with safe_mode off we call is_writable
+        if (DIRECTORY_SEPARATOR == '/' AND @ini_get("safe_mode") == FALSE)
+        {
+            return is_writable($file);
+        }
+ 
+        // For windows servers and safe_mode "on" installations we'll actually
+        // write a file then read it.  Bah...
+        if (is_dir($file))
+        {
+            $file = rtrim($file, '/').'/'.md5(mt_rand(1,100).mt_rand(1,100));
+ 
+            if (($fp = @fopen($file, FOPEN_WRITE_CREATE)) === FALSE)
+            {
+                return FALSE;
+            }
+ 
+            fclose($fp);
+            @chmod($file, DIR_WRITE_MODE);
+            @unlink($file);
+            return TRUE;
+        }
+        elseif ( ! is_file($file) OR ($fp = @fopen($file, FOPEN_WRITE_CREATE)) === FALSE)
+        {
+            return FALSE;
+        }
+ 
+        fclose($fp);
+        return TRUE;
+    }
+}
 
 /**
  * 快速获取文件的扩展名即后缀。
@@ -266,12 +311,34 @@ function get_cdn_domain()
                     
                 } 
             }
-        }
+        } 
         $cdn_domain = request()->domain();
         cache('cdn_domain',$cdn_domain,3600);
     }
     return $cdn_domain;
     
+}
+
+/**
+ * 图片地址转化为CDN
+ * @param  string $path 图片路径
+ * @param  string $style 样式
+ * @return [type]       [description]
+ */
+function cdn_img_url($path = '', $style='')
+{
+    if($path=='' || !$path) return false;
+
+    if (strpos($path, 'http://')!==false || strpos($path, 'https://')!==false) return $path;
+
+    $cdn_path    = get_cdn_domain().$path;
+    if ($style!='') {
+        $url = $cdn_path.'!'.$style;
+    } else{
+        $url = $cdn_path; 
+    }
+    
+    return $url;
 }
 
 /*******************************images图片相关 start ********************************/
@@ -305,28 +372,6 @@ function get_image($id = 0 , $type='') {
 }
 
 /**
- * 图片地址转化为CDN
- * @param  string $path 图片路径
- * @param  string $style 样式
- * @return [type]       [description]
- */
-function cdn_img_url($path = '', $style='')
-{
-    if($path=='' || !$path) return false;
-
-    if (strpos($path, 'http://') || strpos($path, 'https://')) return $path;
-
-    $cdn_path    = get_cdn_domain().$path;
-    if ($style!='') {
-        $url = $cdn_path.'!'.$style;
-    } else{
-        $url = $cdn_path; 
-    }
-    
-    return $url;
-}
-
-/**
  * 获取缩略图
  * @param  string $path 图片路径
  * @param  string $style 缩略图样式
@@ -335,7 +380,7 @@ function cdn_img_url($path = '', $style='')
 function get_thumb_image($path = '', $style='small')
 {
     if($path=='' || !$path) return false;
-    if (strpos($path, 'http://') || strpos($path, 'https://')) return $path;
+    if (strpos($path, 'http://')!==false || strpos($path, 'https://')!==false) return $path;
     
     $option   = config('attachment_options');//获取附件配置值
 
@@ -428,7 +473,7 @@ function get_first_pic($html_content)
     $p = "#src=('|\")(.*)('|\")#isU"; //正则表达式
     preg_match_all($p, $img, $img1);
     $img_path = $img1[2][0]; //获取第一张图片路径
-    if (!strpos($img_path,'static/emotions')) {//排除表情
+    if (strpos($img_path,'static/emotions')===false) {//排除表情
         return $img_path;
     }  
 }
@@ -447,7 +492,7 @@ function get_first_img($html_content,$check_str='static/emotions')
         $p = "#src=('|\")(.*)('|\")#isU"; //正则表达式
         preg_match_all($p, $img, $img1);
         $img_path = $img1[2][0]; //获取第一张图片路径
-        if (!strpos($img_path,$check_str)) {//排除表情
+        if (strpos($img_path,$check_str)===false) {//排除表情
                 $imgs[]=$img_path;
             }
     }
@@ -456,6 +501,7 @@ function get_first_img($html_content,$check_str='static/emotions')
         return $imgs[0];
     }  
 }
+
 /**获取图片数量
  * @param $html_content
  * @return mixed
@@ -470,17 +516,6 @@ function pic_total($html_content) {
     return $cnt;
 }
 
-/**
- * root_full_path   渲染链接
- * @param $path
- * @return mixed
- * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
- */
-function render_picture_path($path)
-{
-    $path = root_full_path($path);
-    return is_bool(strpos($path, 'http://')) ? 'http://' . str_replace('//', '/', $_SERVER['HTTP_HOST'] . '/' . $path) : $path;
-}
 /*******************************************************************************/
 /**
  * 图片缩略图

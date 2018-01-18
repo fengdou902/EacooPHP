@@ -141,10 +141,10 @@
     if ($.support.pjax) {
       $(document).on('ready pjax:end', function(event) {
         //进行本地安装
-        appLocalInstall();  
+        appLocalInstall('plugin');  
       });
     } else{
-       appLocalInstall();
+       appLocalInstall('plugin');
     }
 
   })

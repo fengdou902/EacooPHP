@@ -19,8 +19,12 @@ class Dashboard extends Admin
     {
         parent::_initialize();
     }
+
     /**
      * 仪表盘
+     * @return [type] [description]
+     * @date   2018-01-11
+     * @author 心云间、凝听 <981248356@qq.com>
      */
     public function index() {
         $this->assign('meta_title','仪表盘');

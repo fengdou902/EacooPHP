@@ -1,4 +1,5 @@
 <?php
+// 主题控制器
 // +----------------------------------------------------------------------
 // | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
@@ -11,9 +12,7 @@ namespace app\admin\controller;
 
 use app\admin\model\Theme as ThemeModel;
 use app\admin\builder\Builder;
-/**
- * 主题控制器
- */
+
 class Theme extends Admin {
     
     protected $themeModel;
@@ -25,18 +24,34 @@ class Theme extends Admin {
     }
 
     /**
-     * 默认方法
+     * 主题列表
+     * @param  string $from_type [description]
+     * @return [type] [description]
+     * @date   2018-01-13
+     * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function index() {
-        $this->assign('meta_title','主题列表');
+    public function index($from_type = 'oneline') {
+        $tab_list = [
+            'local'=>['title'=>'已安装','href'=>url('index',['from_type'=>'local'])],
+            'oneline'=>['title'=>'主题市场','href'=>url('index',['from_type'=>'oneline'])],
+        ];
 
-        $data_list = $this->themeModel->getAll();
+        $this->assign('tab_list',$tab_list);
+        $this->assign('from_type',$this->request->param('from_type','oneline'));
 
-        $attr['title'] = '取消多主题支持';
-        $attr['class'] = 'btn btn-primary ajax-get';
-        $attr['href']  = url('admin/Theme/cancel');
 
-        $this->assign('theme_items',$data_list);
+        if ($from_type == 'local') {
+            $data_list = $this->themeModel->getAll();
+            $meta_title = '本地主题';
+
+        } elseif ($from_type == 'oneline') {
+            $data_list = $this->getCloudAppstore();
+            $meta_title = '主题市场';
+
+        }
+
+        $this->assign('data_list',$data_list);
+        $this->assign('meta_title',$meta_title);
         return $this->fetch('extension/themes');
     }
 
@@ -149,5 +164,81 @@ class Theme extends Admin {
         } else {
             $this->error('取消主题失败', $this->themeModel->getError());
         }
+    }
+
+    /**
+     * 刷新缓存
+     * @return [type] [description]
+     * @date   2017-10-30
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function refresh()
+    {
+        Extension::refresh('theme');
+        $this->success('成功清理缓存','');
+    }
+
+    /**
+     * 删除
+     * @param  string $name [description]
+     * @return [type] [description]
+     * @date   2017-11-07
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function del($name='')
+    {
+        if ($name) {
+            @rmdirs(APP_PATH.$name);
+            Extension::refresh('theme');
+            $this->success('删除主题成功');
+        }
+        $this->error('删除主题失败');
+    }
+
+    /**
+     * 获取主题市场数据
+     * @return [type] [description]
+     * @date   2017-09-21
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    private function getCloudAppstore($paged = 1)
+    {
+        $store_data = cache('eacoo_appstore_themes_'.$paged);
+        if (empty($store_data) || !$store_data) {
+            $url        = config('eacoo_api_url').'/api/appstore/themes';
+            $params = [
+                'paged'=>$paged
+            ];
+            $result = curl_post($url,$params);
+            $result = json_decode($result,true);
+            $store_data = $result['data'];
+            cache('eacoo_appstore_themes_'.$paged,$store_data,3600);
+        }
+        if (!empty($store_data)) {
+            $extensionObj = new Extension();
+            $local_themes = $extensionObj->localApps('theme');
+            foreach ($store_data as $key => &$val) {
+
+                $val['publish_time'] = friendly_date($val['publish_time']);
+                $val['right_button'] = '<a class="btn btn-primary btn-sm app-online-install" data-name="'.$val['name'].'" data-type="theme" href="javascript:void(0);" data-install-method="install">现在安装</a> ';
+                if (!empty($local_themes)) {
+                    foreach ($local_themes as $key => $row) {
+                        if ($row['name']==$val['name']) {
+                            if ($row['version']<$val['version']) {
+                                $val['right_button'] = '<a class="btn btn-success btn-sm app-online-install"  data-name="'.$val['name'].'" data-type="theme" href="javascript:void(0);" data-install-method="upgrade">升级</a> ';
+                            } elseif(isset($row['status']) && $row['status']==3){
+                                $val['right_button'] = '<a class="btn btn-default btn-sm" href="'.url('index',['from_type'=>'local']).'">已下载</a> ';
+                            } else{
+                                $val['right_button'] = '<a class="btn btn-default btn-sm" href="'.url('index',['from_type'=>'local']).'">已安装</a> ';
+                            }
+                            
+                        }
+                    }
+                }
+
+                //$val['right_button'] .= '<a class="btn btn-info btn-sm" href="http://www.eacoo123.com" target="_blank">更多详情</a> ';
+            }
+        }
+        return $store_data;
     }
 }

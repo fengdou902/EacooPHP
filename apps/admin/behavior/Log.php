@@ -31,16 +31,16 @@ class Log {
 		});
 		if ($info) {
 			$action_log_model = new ActionLog;
-			$data = [
-				'param'=>$request->param(),
+			$params = [
+				'param'=>$request->get(),//只记录get的参数。因为post的参数带有敏感数据
 			];
-			if (is_array($data)) {
-	            $data = json_encode($data);
+			if (is_array($params)) {
+	            $params = json_encode($params);
 	        }
 			$uid    = is_login();
 			$remark = $info['title'];
 	        // 保存日志
-	        return $res = $action_log_model->record($info['id'],$uid,$data,$remark);
+	        return $res = $action_log_model->record($info['id'],$uid,$params,$remark);
 		}
 		
 	}

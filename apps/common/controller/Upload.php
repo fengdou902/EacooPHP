@@ -38,7 +38,7 @@ class Upload {
 	 */
 	public function upload() {
 		
-		$upload_type = $this->request->param('uploadtype', 'picture', 'trim');//上传类型包括picture,file,avatar
+		$upload_type = $this->request->param('type', 'picture', 'trim');//上传类型包括picture,file,avatar
 		$config      = config('attachment_options');
 		$config['subName']=['date','Y-m-d'];
 		if ($upload_type=='picture') {
@@ -61,39 +61,8 @@ class Upload {
 		if ($file->validate(['size'=>$config['maxSize'],'ext'=>$config['exts']])) {//验证通过
 			//进行图像处理
 			if ($upload_type == 'picture') {
-				$image              = \think\Image::open($file);
 				
-				$processing_type    = $this->request->param('processing_type',$config['watermark_type'],'intval');//图像处理类型
-				$watermark_scene = intval($config['watermark_scene']);//水印场景
-				if ($watermark_scene==2||($watermark_scene==3 && $this->path_type=='picture')||($watermark_scene==4 && $this->path_type=='product')) {
-					
-					// 图片处理
-	            switch ($processing_type) {
-	                // case 1: // 图片裁剪
-	                //     $image->crop(300, 300);
-	                //     break;
-	                // case 2: // 缩略图
-	                //     $image->thumb(150, 150, Image::THUMB_CENTER);
-	                //     break;
-	                // case 3: // 垂直翻转
-	                //     $image->flip();
-	                //     break;
-	                // case 4: // 水平翻转
-	                //     $image->flip(Image::FLIP_Y);
-	                //     break;
-	                // case 5: // 图片旋转
-	                //     $image->rotate();
-	                //     break;
-	                case 6: // 图片水印
-	                    $image->water($config['water_img'],$config['water_position'], $config['water_opacity']);
-	                    break;
-	                case 7: // 文字水印
-	                    $image->text('EacooPHP', VENDOR_PATH . 'topthink/think-captcha/assets/ttfs/1.ttf', 20, '#ffffff');
-	                    break;
-	            }
-
-				}
-				
+				$this->doImage($file);
 			}
 
 			$info = $file->rule($config['saveName'])->move($upload_path, true, false);//保存文件
@@ -198,7 +167,7 @@ class Upload {
 					'path_type'   => 'picture',
 					'mime_type'   => 'image',
 					'path'        => str_replace("\\", '/', substr($path, 1)),
-					'url'         => render_picture_path($path),
+					'url'         => cdn_img_url($path),
 					'size'        => filesize($path),
 					'md5'         => $md5,
 					'sha1'        => $sha1,
@@ -346,7 +315,7 @@ class Upload {
 					'path_type'   => 'picture',
 					'mime_type'   => 'image',
 					'path'        => str_replace("\\", '/', substr($path, 1)),
-					'url'         => render_picture_path($path),
+					'url'         => cdn_img_url($path),
 					'size'        => filesize($path),
 					'md5'         => $md5,
 					'sha1'        => $sha1,
@@ -383,36 +352,6 @@ class Upload {
 	public function ueditor() {
 		$data = new \eacoo\Ueditor(session('auth_user.uid'));
 		echo $data->output();
-	}
-
-	public function editor() {
-		$callback        = $this->request->get('callback');
-		$CKEditorFuncNum = $this->request->get('CKEditorFuncNum');
-		$file            = $this->request->file('upload');
-		$info            = $file->move('./uploads/editor', true, false);
-		if ($info) {
-			$fileInfo = $this->parseFile($info);
-			$data = [
-				"originalName" => $fileInfo['name'],
-				"name"         => $fileInfo['name'],
-				"url"          => $fileInfo['url'],
-				"size"         => $fileInfo['size'],
-				"type"         => $fileInfo['ext'],
-				"state"        => 'SUCCESS'
-			];
-		} else {
-			$data['state'] = $file->getError();
-		}
-		/**
-		* 返回数据
-		*/
-		if($callback) {
-			return '<script>'.$callback.'('.json_encode($data).')</script>';
-		}elseif($CKEditorFuncNum) {
-			return '<script>window.parent.CKEDITOR.tools.callFunction("'.$CKEditorFuncNum.'","'.$fileInfo['url'].'","'.$data['state'].'");</script>';
-		} else {
-			return json_encode($data);
-		}
 	}
 
 	public function delete() {
@@ -460,6 +399,49 @@ class Upload {
 	}
 
 	/**
+	 * 处理图片
+	 * @param  [type] $file [description]
+	 * @return [type] [description]
+	 * @date   2018-01-13
+	 * @author 心云间、凝听 <981248356@qq.com>
+	 */
+	public function doImage($file=null)
+	{
+		$image       = \think\Image::open($file);
+		$config      = config('attachment_options');		
+		$processing_type    = $this->request->param('processing_type',$config['watermark_type'],'intval');//图像处理类型
+		$watermark_scene = intval($config['watermark_scene']);//水印场景
+		if ($watermark_scene==2||($watermark_scene==3 && $this->path_type=='picture')||($watermark_scene==4 && $this->path_type=='product')) {
+			
+			// 图片处理
+            switch ($processing_type) {
+                // case 1: // 图片裁剪
+                //     $image->crop(300, 300);
+                //     break;
+                // case 2: // 缩略图
+                //     $image->thumb(150, 150, Image::THUMB_CENTER);
+                //     break;
+                // case 3: // 垂直翻转
+                //     $image->flip();
+                //     break;
+                // case 4: // 水平翻转
+                //     $image->flip(Image::FLIP_Y);
+                //     break;
+                // case 5: // 图片旋转
+                //     $image->rotate();
+                //     break;
+                case 6: // 图片水印
+                    $image->water($config['water_img'],$config['water_position'], $config['water_opacity']);
+                    break;
+                case 7: // 文字水印
+                    $image->text('EacooPHP', VENDOR_PATH . 'topthink/think-captcha/assets/ttfs/1.ttf', 20, '#ffffff');
+                    break;
+            }
+
+		}
+	}
+
+	/**
 	 * 获取文件信息
 	 * @param  [type] $info [description]
 	 * @return [type]       [description]
@@ -468,17 +450,17 @@ class Upload {
 		$data = [];
 		if (!empty($info)) {
 			$data['create_time'] = $info->getATime(); //最后访问时间
-			//$data['basename']    = $info->getBasename(); //获取无路径的basename
-			//$data['c_time']      = $info->getCTime(); //获取inode修改时间
+			//$data['basename']  = $info->getBasename(); //获取无路径的basename
+			//$data['c_time']    = $info->getCTime(); //获取inode修改时间
 			$data['ext']         = $info->getExtension(); //文件扩展名
-			$data['name']    	 = $data['alt']= str_replace('.'.$data['ext'],'',$info->getInfo()['name']);
-			//$data['name']        = $info->getFilename(); //获取文件名
-			//$data['m_time']      = $info->getMTime(); //获取最后修改时间
-			//$data['owner']       = $info->getOwner(); //文件拥有者
-			$data['path_type']    = $this->path_type; //文件拥有者
-			$data['mime_type']    = $info->getMime() ? strstr($info->getMime(),'/',true):''; //文件mime类型
+			$data['name']        = $data['alt']= str_replace('.'.$data['ext'],'',$info->getInfo()['name']);
+			//$data['name']      = $info->getFilename(); //获取文件名
+			//$data['m_time']    = $info->getMTime(); //获取最后修改时间
+			//$data['owner']     = $info->getOwner(); //文件拥有者
+			$data['path_type']   = $this->path_type; //路径类型
+			$data['mime_type']   = $info->getMime() ? strstr($info->getMime(),'/',true):''; //文件mime类型
 			$data['savepath']    = $info->getPath(); //不带文件名的文件路径
-			$data['url']         = $data['path']         = str_replace("\\", '/', substr($info->getPathname(), 1)); //全路径
+			$data['url']         = $data['path']  = str_replace("\\", '/', substr($info->getPathname(), 1)); //全路径
 			$data['size']        = $info->getSize(); //文件大小，单位字节
 			$data['md5']         = md5_file($info->getPathname());
 			$data['sha1']        = sha1_file($info->getPathname());

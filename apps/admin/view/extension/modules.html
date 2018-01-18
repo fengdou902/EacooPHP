@@ -91,7 +91,7 @@
 
     <div class="builder-toolbar mt-10 oh">
        <div class="col-xs-12 col-sm-12 button-list clearfix">
-          <button class="btn btn-info btn-sm " id="module-localupload"><i class="fa fa-cloud-upload"></i> 本地安装</button>
+          <button class="btn btn-info btn-sm " id="app-localupload"><i class="fa fa-cloud-upload"></i> 本地安装</button>
           <a class="btn btn-success btn-sm ajax-get" href="{:url('admin/modules/refresh')}"><i class="fa fa-refresh"></i> 刷新缓存</a>
           <button class="btn btn-default btn-sm" id="eacoo-userinfo" ><i class="fa fa-user"></i> 会员信息</button>
       </div>
@@ -137,74 +137,15 @@
 <script>
     //本地上传(分开写为了好控制)
     $(function () {
-        var uploader_localinstall= WebUploader.create({
-            // 选完文件后，是否自动上传。
-            auto: true,
-            duplicate: true,// 同一文件是否可以重复上传
-            // swf文件路径
-            swf: '__PUBLIC__/libs/webuploader/Uploader.swf',
-            // 文件接收服务端。
-            server: "{:url('admin/Extension/localInstall',['type'=>'module'])}",
-            //验证文件总数量, 超出则不允许加入队列
-            fileNumLimit: 1,
-            // 如果此选项为false, 则图片在上传前不进行压缩
-            compress: false, 
-            // 验证单个文件大小是否超出限制, 超出则不允许加入队列 
-            fileSingleSizeLimit:10*1024*1024,  
-            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
-
-            //选择文件的按钮
-            pick: '#module-localupload',
-            // 只允许选择图片文件
-            accept:{title:'module',extensions:'zip',mimeTypes:'application/zip'}
-        });
-        uploader_localinstall.on('fileQueued', function (file) {
-            uploader_localinstall.upload();
-        });
-        /*上传成功**/
-        uploader_localinstall.on('uploadSuccess', function (file, result) {
-            //console.log(result);
-            if (result.code==1) {
-                updateAlert(result.msg,'success');
-                setTimeout(function () {
-                    if ($.support.pjax) {
-                        //重新当前页面容器的内容
-                        $.pjax.reload('#pjax-container');
-                    } else{
-                        location.reload();
-                    }
-                }, 1000);
-                
-                uploader_localinstall.reset();
-            } else {
-                updateAlert(result.msg);
-            }
-        });
-        //安装
-        $('body').on('click','.module-online-install', function() {
-            var name = $(this).data('name');
-               $.ajax({
-                  type: 'POST',
-                  url: '{:BASE_PATH}{:url("admin/Extension/onlineInstall")}',
-                  data: {
-                    name:name,
-                    type:'module',
-                  },
-                  beforeSend:function(){
-                    layer.load(2,{shade: [0.1,'#fff']});
-                  },
-
-                  success:function(result){
-                    layer.closeAll();
-                    if(result.code==1){
-                      window.location.href = result.url; 
-                    }else{
-                      layer.msg(result.msg, {icon:5});
-                    }
-
-                  }
-              });
-          })
+        if ($.support.pjax) {
+          $(document).on('ready pjax:end', function(event) {
+            //进行本地安装初始化
+            appLocalInstall('module');  
+          });
+        } else{
+           appLocalInstall('module');
+        }
+        
     })
 </script>
 {/block}

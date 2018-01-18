@@ -1,5 +1,5 @@
 <?php
-// 导航
+// 导航模型
 // +----------------------------------------------------------------------
 // | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
@@ -9,10 +9,33 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\common\model;
+use eacoo\Tree;
 
 class Nav extends Base
 {
     // 定义时间戳字段名
-	protected $insert = ['status' => 1];
+	protected $insert = [];
 
+	/**
+	 * 获取前台导航
+	 * @param  string $position 位置
+	 * @return [type] [description]
+	 * @date   2018-01-18
+	 * @author 心云间、凝听 <981248356@qq.com>
+	 */
+	public static function getNavigationMenus($position='header')
+	{
+		//先从缓存中获取
+		$menus = cache("front_{$position}_navs");
+		if (!$menus) {
+			$menus = self::where('position',$position)->field('id,title,value,pid,icon,target,depend_type,depend_flag')->order('sort desc')->select();
+			if (!empty($menus)) {
+				$menus = collection($menus)->toArray();
+	            $tree_obj = new Tree;
+	            $menus = $tree_obj->list_to_tree($menus);
+	            cache("front_{$position}_navs",$menus,3600);
+	        }
+		}
+		return $menus;
+	}
 }

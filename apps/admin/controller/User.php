@@ -59,7 +59,7 @@ class User extends Admin {
                 ->keyListItem('username', '用户名')
                 ->keyListItem('email', '邮箱')
                 ->keyListItem('mobile', '手机号')
-                ->keyListItem('reg_time', '注册时间')
+                ->keyListItem('reg_time', '注册时间','time')
                 ->keyListItem('allow_admin', '允许进入后台','status')
                 ->keyListItem('status', '状态', 'array',[0=>'禁用',1=>'正常',2=>'待验证'])
                 ->keyListItem('right_button', '操作', 'btn')
@@ -78,7 +78,7 @@ class User extends Admin {
     public function edit($uid = 0) {
         $title = $uid ? "编辑" : "新增";
         if (IS_POST) {
-            $data = input('post.');
+            $data = input('param.');
             // 密码为空表示不修改密码
             if ($data['password'] === '') {
                 unset($data['password']);
@@ -87,6 +87,9 @@ class User extends Admin {
             $this->validate($data,'User.edit');
 
             $uid  = isset($data['uid']) && $data['uid']>0 ? intval($data['uid']) : false;
+            if (!$uid) {
+                $data['reg_time'] = time();
+            }
             // 提交数据
             $result = $this->userModel->editData($data,$uid,'uid');
 
@@ -114,16 +117,16 @@ class User extends Admin {
                 $builder->addFormItem('uid', 'hidden', 'ID', '');
             }
 
-            $builder->addFormItem('nickname', 'text', '昵称', '填写一个有个性的昵称吧','','required')
-                    ->addFormItem('username', 'text', '用户名', '登录账户所用名称','','required')
+            $builder->addFormItem('nickname', 'text', '昵称', '填写一个有个性的昵称吧','','require')
+                    ->addFormItem('username', 'text', '用户名', '登录账户所用名称','','require')
                     ->addFormItem('password', 'password', '密码', '','','','placeholder="留空则不修改密码"')
-                    ->addFormItem('email', 'email', '邮箱', '','','required')
+                    ->addFormItem('email', 'email', '邮箱', '','','require')
                     ->addFormItem('mobile', 'left_icon_number', '手机号', '',['icon'=>'<i class="fa fa-phone"></i>'],'','placeholder="填写手机号"')
                     ->addFormItem('sex', 'radio', '性别', '',[0=>'保密',1=>'男',2=>'女'])
                     ->addFormItem('allow_admin', 'select', '是否允许访问后台', '',[0=>'不允许',1=>'允许'])
                     ->addFormItem('description', 'textarea', '个人说明', '请填写个人说明');
             if ($uid>0) {
-                $builder->addFormItem('avatar', 'avatar', '头像', '用户头像默认随机分配',['uid'=>$info['uid']],'required');
+                $builder->addFormItem('avatar', 'avatar', '头像', '用户头像默认随机分配',['uid'=>$info['uid']],'require');
             }
             $builder->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'正常',2=>'待验证'])
                     ->setFormData($info)//->setAjaxSubmit(false)
@@ -136,8 +139,8 @@ class User extends Admin {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     protected function sendMessageHtml(){
-        //$sendmsg_url=url('user/AdminUser/send_message',['from_uid'=>is_login()]);
-        $sendmsg_url='';
+        //需要安装站内信插件才能使用
+        $sendmsg_url = plugin_url('message/Message/send_message',['from_uid'=>is_login()]);
         return <<<EOF
             <div class="modal fade mt100" id="sendmsgModal">
                 <div class="modal-dialog ">

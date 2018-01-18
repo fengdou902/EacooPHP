@@ -4,6 +4,7 @@
     .theme-item{padding:10px;}
     .block-content{background-color: #f5f5f5!important;margin:0 10px;border-radius: 3px;color: #666;border:1px solid #f0f0f0;}
     .theme-cover img{height: 230px;}
+    .theme-logo {width: 100%;}
     .block-content h3{font-size: 16px;margin: 0 auto;padding: 20px 0;margin-bottom: 15px;color: #656565;border-bottom: 1px solid #d5d5d5;position: relative;white-space: nowrap;text-align: center;}
     .block-content h3::before {
         content: '';
@@ -96,29 +97,63 @@
 {/block}
 {block name="main"} 
     <div class="builder-tabs builder-form-tabs">
-        
-        <div class="form-group"><a title="取消多主题支持" class="btn btn-primary btn-sm ajax-get" href="{:url('admin/Theme/cancel')}"> 取消多主题支持</a></div>
+        <ul class="nav nav-tabs">
+            {volist name="tab_list" id="tab"}
+                <li class="{php}if($from_type == $key) echo 'active';{/php}"><a href="{$tab.href}" {$tab.extra_attr|default=''}>{$tab.title}</a></li>
+            {/volist}
+        </ul>
+        <div class="form-group"></div>
     </div>
-    <hr/>
+    <div class="builder-toolbar mt-10 oh">
+       <div class="col-xs-12 col-sm-12 button-list clearfix">
+          <button class="btn btn-info btn-sm " id="app-localupload"><i class="fa fa-cloud-upload"></i> 本地安装</button>
+          <a class="btn btn-success btn-sm ajax-get" href="{:url('admin/Theme/refresh')}"><i class="fa fa-refresh"></i> 刷新缓存</a>
+          <a title="取消多主题支持" class="btn btn-primary btn-sm ajax-get" href="{:url('admin/Theme/cancel')}"> 取消多主题支持</a>
+          <button class="btn btn-default btn-sm" id="eacoo-userinfo" ><i class="fa fa-user"></i> 会员信息</button>
+      </div>
+    </div>
+
     <div class="builder formbuilder-box panel-body">
 
     <div class="row">    
-      {foreach name="theme_items" item="item"}
-        <div class="col-md-4 theme-item"> 
-          <div class="block-content">     
-              <div class="theme-cover"><img src="{$item.cover|default=''}" width="100%"></div>
-              <h3>{$item.title}</h3>
-              <div class="item-metas"><span class="meta-author"><i class="fa fa-user"></i> {$item.author}</span><span class="meta-author text-success pull-right">{$item.status}</span></div>
-              <div class="item-description">{$item.description}</div>
-              <div class="ml-10 mt-10 mb-10">{$item.right_button}</div>
-            </div>
+      {notempty name="data_list"}
+        {foreach name="data_list" item="row"}
+          <div class="col-md-4 theme-item"> 
+            <div class="block-content">     
+                <div class="theme-cover view-app-detail" data-name="{$row.name}" data-type="theme" style="cursor: pointer;">{$row.logo|default=''}</div>
+                <h3>{$row.title}</h3>
+                <div class="item-metas"><span class="meta-author"><i class="fa fa-user"></i> {$row.author}</span><span class="meta-author text-success pull-right">{$row.status|default=''}</span></div>
+                <div class="item-description">{$row.description}</div>
+                <div class="ml-10 mt-10 mb-10">{$row.right_button|default=''}</div>
+              </div>
+          </div>
+        {/foreach}
+      {else/}
+        <div class="tc no-found">
+          <p>暂无主题，请前往<a href="{:url('index',['from_type'=>'oneline'])}">主题市场</a>下载</p>
         </div>
-      {/foreach}
+      {/notempty}
    </div><!--row-->
  </div>
 
 {/block}
 
 {block name="script"}
-
+<script type="text/javascript" src="__ADMIN_JS__/eacoo.extension.js" ></script>
+<link href="__STATIC__/libs/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="__STATIC__/libs/webuploader/js/webuploader.min.js"></script>
+<script>
+    //本地上传(分开写为了好控制)
+    $(function () {
+        if ($.support.pjax) {
+          $(document).on('ready pjax:end', function(event) {
+            //进行本地安装初始化
+            appLocalInstall('module');  
+          });
+        } else{
+           appLocalInstall('module');
+        }
+        
+    })
+</script>
 {/block}

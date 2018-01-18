@@ -23,7 +23,7 @@
                               {/foreach}
                           </select>
                       {/case}
-                      {case value="image"}<div class="repeater-img-field" style="min-height: 90px;"><input type="hidden" name="[{$key}]" id="repeater-{$id}-{$key}-" value="{$row.default|default=''}"><span class="repeater-field-img"><img src="{$row.default|get_image=###,'medium'|default='__PUBLIC__/img/noimage.gif'}" width="90" data-url="{:url('admin/Attachment/attachmentLayer',['input_id_name'=>$id,'path_type'=>'picture','select_type'=>'single'])}" onclick="openAttachmentLayer(this);" style="cursor: pointer;"></span></div>{/case}
+                      {case value="image"}<div class="repeater-img-field" style="min-height: 90px;"><input type="hidden" name="[{$key}]" id="repeater-{$id}-{$key}-" value="{$row.default|default=''}"><span class="repeater-field-img"><img src="{$row.default|get_image=###,'medium'|default='__PUBLIC__/img/noimage.gif'}" width="90" data-url="{:url('admin/Upload/attachmentLayer',['input_id_name'=>$id,'path_type'=>'picture','select_type'=>'single'])}" onclick="openAttachmentLayer(this);" style="cursor: pointer;"></span></div>{/case}
                       {default/}
                           <input type="{$row.type}" class="form-control input-sm" name="[{$key}]" value="{$row.default|default=''}" placeholder="{$row.placeholder|default=''}">
                   {/switch}
@@ -69,7 +69,7 @@
           var repeater_img_element=EacooAttachmentOptions_{$id}.currentImgElement;//获取当前图片字段元素节点
             $("input[name='"+repeater_img_element+"']").val(id);
             $("input[name='"+repeater_img_element+"']").parent().find('.repeater-field-img').html(
-                  '<img src="'+ src+'" width="90" data-url="{:url("admin/Attachment/attachmentLayer",["input_id_name"=>$id,"path_type"=>"picture","select_type"=>"single"])}" onclick="openAttachmentLayer(this);" style="cursor: pointer;">'
+                  '<img src="'+ src+'" width="90" data-url="{:url("admin/Upload/attachmentLayer",["input_id_name"=>$id,"path_type"=>"picture","select_type"=>"single"])}" onclick="openAttachmentLayer(this);" style="cursor: pointer;">'
             );
           $(".attachment-content").find('div.cover').hide();
       })
@@ -88,7 +88,7 @@ function newSetAttachmentInputVal(inputName,ids,srcs) {
           var repeater_img_element = EacooAttachmentOptions_{$id}.currentImgElement;//获取当前图片字段元素节点
             $("input[name='"+repeater_img_element+"']").val(ids);
             $("input[name='"+repeater_img_element+"']").parent().find('.repeater-field-img').html(
-                  '<img src="'+ srcs+'" width="90" data-url="{:url("admin/Attachment/attachmentLayer",["input_id_name"=>$id,"path_type"=>"picture","select_type"=>"single"])}" onclick="openAttachmentLayer(this);" style="cursor: pointer;">'
+                  '<img src="'+ srcs+'" width="90" data-url="{:url("admin/Upload/attachmentLayer",["input_id_name"=>$id,"path_type"=>"picture","select_type"=>"single"])}" onclick="openAttachmentLayer(this);" style="cursor: pointer;">'
             );
           $(".attachment-content").find('div.cover').hide();
     }

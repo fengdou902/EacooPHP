@@ -42,7 +42,7 @@ class Plugins extends Admin {
 
         $this->assign('page_config',['self'=>'<a href="'.url('admin/plugins/hooks').'" class="btn btn-primary btn-sm mr-10">钩子管理</a>']);
         $tab_list = [
-            'local'=>['title'=>'本地','href'=>url('index',['from_type'=>'local'])],
+            'local'=>['title'=>'已安装','href'=>url('index',['from_type'=>'local'])],
             'oneline'=>['title'=>'插件市场','href'=>url('index',['from_type'=>'oneline'])],
         ];
         $this->assign('tab_list',$tab_list);
@@ -57,7 +57,7 @@ class Plugins extends Admin {
         } elseif($from_type == 'oneline'){
             $meta_title = '插件市场';
             //线上插件
-            $plugins = $this->getAppstorePlugins();
+            $plugins = $this->getCloudAppstore();
             
         }
         $this->assign('meta_title',$meta_title);
@@ -268,12 +268,12 @@ class Plugins extends Admin {
                 $name        = $plugin_info['name'];
                 $_static_path = PUBLIC_PATH.'static/plugins/'.$name;
                 if (is_dir($_static_path)) {
-                    if(!is_writable(PUBLIC_PATH.'static/plugins') || !is_writable(PLUGIN_PATH.$name)){
+                    if(!is_really_writable(PUBLIC_PATH.'static/plugins') || !is_really_writable(PLUGIN_PATH.$name)){
                         $error_msg = '';
-                        if (!is_writable(PUBLIC_PATH.'static/plugins')) {
+                        if (!is_really_writable(PUBLIC_PATH.'static/plugins')) {
                             $error_msg.=','.PUBLIC_PATH.'static/plugins';
                         }
-                        if (!is_writable(PLUGIN_PATH.$name)) {
+                        if (!is_really_writable(PLUGIN_PATH.$name)) {
                             $error_msg.=','.PLUGIN_PATH.$name;
                         }
                         throw new \Exception($error_msg.'目录写入权限不足',0);
@@ -344,7 +344,7 @@ class Plugins extends Admin {
     public function del($name='')
     {
         if ($name) {
-            if (!is_writable(PLUGIN_PATH.$name)) {
+            if (!is_really_writable(PLUGIN_PATH.$name)) {
                 $this->error('目录权限不足，请手动删除目录');
             }
             @rmdirs(PLUGIN_PATH.$name);
@@ -475,7 +475,7 @@ class Plugins extends Admin {
      * @date   2017-09-21
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    private function getAppstorePlugins($paged = 1)
+    private function getCloudAppstore($paged = 1)
     {
         $store_data = cache('eacoo_appstore_plugins_'.$paged);
         if (empty($store_data) || !$store_data) {

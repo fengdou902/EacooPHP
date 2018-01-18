@@ -13,70 +13,114 @@
 
 {php}}else{
 
-    $path_type = isset($field['upload_config']['path_type'])? $field['upload_config']['path_type']:'picture';
-
 {/php}
-{if condition="$param['importWangEditor']"}
-    <link rel="stylesheet" type="text/css" href="__STATIC__/libs/wangeditor/css/wangEditor.min.css">
-    <style type="text/css">
-        .wangEditor-menu-container .menu-group{padding: 0 2px;}
-        .wangEditor-container .content{min-height: auto;}
-        .modal{z-index: 10002;}
-        .wangEditor-menu-container .menu_attachment{color:#3bb4f2!important;cursor: pointer;}
-    </style>
-    <!-- <script type="text/javascript" src="__STATIC__/libs/wangeditor/js/wangEditor.min.js"></script> -->
-    <script type="text/javascript" src="__STATIC__/libs/wangeditor/js/custom-menu.js"></script>
+{if condition="$is_load_script"}
+    <link rel="stylesheet" type="text/css" href="__STATIC__/libs/wangeditor/wangEditor-plugins.css">
+    <script type="text/javascript" src="__STATIC__/libs/wangeditor/wangEditor.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/libs/wangeditor/wangEditor-plugins.js"></script>
 {/if}
-
-<textarea id="{$id}" name="{$name}" style="width:{$width};height:{$height};{$style}">{$default}</textarea>
+<div id="{$id}_editor" style="{$style|default=''}">{$value|default=''}</div>
+<textarea id="{$id}" name="{$name}" style="display: none;width:{$width|default='100%'};height:{$height|default='300px'};"></textarea>
 
 <!--这里引用jquery和wangEditor.js-->
 <script type="text/javascript">
-    // 为页面所有的editor配置全局的密钥
-    wangEditor.config.mapAk = 'TVhjYjq1ICT2qqL5LdS8mwas';  // 此处换成自己申请的密钥
-    var attachmentModal_url ="{:url('admin/Attachment/attachmentLayer',['input_id_name'=>$id,'path_type'=>$path_type,'select_type'=>'multiple','from'=>'wangeditor'])}";//附件选择器地址
-    var editor_{$id} = new wangEditor('{$id}');
+    var E = window.wangEditor
+    var editor_{$id} = new E('#{$id}_editor')
+    var $textarea_{$id} = $('#{$id}')
+    editor_{$id}.customConfig.onchange = function (html) {
+        // 监控变化，同步更新到 textarea
+        $textarea_{$id}.val(html)
+    }
     {notempty name="menus"}
-        editor_{$id}.config.menus =[{$menus}];//配置工具菜单
+        editor_{$id}.customConfig.menus =[{$menus}];//配置工具菜单
     {else/}
-        editor_{$id}.config.menus ="";
+        editor_{$id}.customConfig.menus ="";
     {/notempty}
-    //上传图片
-    editor_{$id}.config.uploadImgUrl = "{:url('admin/attachment/upload',['path_type'=>$path_type,'uploadtype'=>'picture','upload_from'=>'wangeditor'])}";
-    // 配置自定义参数（举例）
-    editor_{$id}.config.uploadImgFileName = 'wangEditorFile';
-    editor_{$id}.config.uploadParams = {
-        uploadtype: 'image',
+    // 配置自定义表情，在 create() 之前配置
+    // editor_{$id}.customConfig.emotions = {
+    //     // 支持多组表情
+    //     // 第一组，id叫做 'default' 
+    //     'default': {
+    //         title: '默认',  // 组名称
+    //         type: 'image',
+    //         content: '__STATIC__/libs/wangeditor/emotions/default.data'
+    //     },
+    //     // 第二组，id叫做'weibo'
+    //     'weibo': {
+    //         title: '微博表情',  // 组名称
+    //         type: 'image',
+    //         content: '__STATIC__/libs/wangeditor/emotions/weibo.data'
+    //     }
+    //     // 下面还可以继续，第三组、第四组、、、
+    // };
+    editor_{$id}.customConfig.zIndex = 10;
+    editor_{$id}.customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
+    editor_{$id}.customConfig.uploadImgServer = "{:url('admin/Upload/upload')}";  // 上传图片到服务器
+    // 限制一次最多上传 5 张图片
+    editor_{$id}.customConfig.uploadImgMaxLength = 5
+    editor_{$id}.customConfig.uploadFileName = 'file'
+    editor_{$id}.customConfig.uploadImgParams = {
+        path_type:'{$upload.path_type|default="wangeditor"}',
+        uploadtype: 'picture',
         upload_from:'wangeditor'//请求来源
     };
-
-    // 设置 headers（举例）
-    /*editor_{$id}.config.uploadHeaders = {
-        'Accept' : 'text/x-json'
-    };*/
-    // 配置自定义表情，在 create() 之前配置
-    editor_{$id}.config.emotions = {
-        // 支持多组表情
-        // 第一组，id叫做 'default' 
-        'default': {
-            title: '默认',  // 组名称
-            data: '__STATIC__/libs/wangeditor/emotions/default.data'  // data可以是一个url地址，访问该地址要能返回表情包的json文件
+    editor_{$id}.customConfig.uploadImgHooks = {
+        before: function (xhr, editor, files) {
+            // 图片上传之前触发
+            // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，files 是选择的图片文件
+            
+            // 如果返回的结果是 {prevent: true, msg: 'xxxx'} 则表示用户放弃上传
+            // return {
+            //     prevent: true,
+            //     msg: '放弃上传'
+            // }
         },
-        // 第二组，id叫做'weibo'
-        'weibo': {
-            title: '微博表情',  // 组名称
-            data: '__STATIC__/libs/wangeditor/emotions/weibo.data'
-        }
-        // 下面还可以继续，第三组、第四组、、、
-    };
+        success: function (xhr, editor, result) {
+            // 图片上传并返回结果，图片插入成功之后触发
+            // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
+        },
+        fail: function (xhr, editor, result) {
+            // 图片上传并返回结果，但图片插入错误时触发
+            // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
+        },
+        error: function (xhr, editor) {
+            // 图片上传出错时触发
+            // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象
+        },
+        timeout: function (xhr, editor) {
+            // 图片上传超时时触发
+            // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象
+        },
 
-    editor_{$id}.config.menuFixed = false;// 关闭菜单栏fixed
+        // 如果服务器端返回的不是 {errno:0, data: [...]} 这种格式，可使用该配置
+        // （但是，服务器端返回的必须是一个 JSON 格式字符串！！！否则会报错）
+        customInsert: function (insertImg, result, editor) {
+            // 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
+            // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
+
+            // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
+            var url = result.data.url
+            insertImg(url)
+
+            // result 必须是一个 JSON 格式字符串！！！否则报错
+        }
+    }
+    // 通过 url 参数配置 debug 模式。url 中带有 wangeditor_debug_mode=1 才会开启 debug 模式
+    editor_{$id}.customConfig.debug = location.href.indexOf('wangeditor_debug_mode=1') > 0;
     editor_{$id}.create();
-     
-    function setAttachmentWangeditorVal{$id}(data){
-            editor_{$id}.$txt.append(data);
+    // 初始化 textarea 的值
+    $textarea_{$id}.val(editor_{$id}.txt.html());
+    E.fullscreen.init('#{$id}_editor');
+    //E.switchCode.init('#{$id}_editor');
+    {eq name="picturesModal" value='1'}
+        E.picturesModal.init('#{$id}_editor',"{:url('admin/Upload/attachmentLayer',['input_id_name'=>$id,'path_type'=>$upload['path_type'],'select_type'=>'multiple','from'=>'wangeditor'])}");
+        function setAttachmentWangeditorVal{$id}(data){
+            editor_{$id}.txt.append(data);
             layer.closeAll('iframe');
-      }  
+          } 
+    {/eq}
+     
+     
 </script>
 
 {php}}{/php}

@@ -17,7 +17,7 @@ class User extends Base
     protected $name = 'users';
 
     // 定义时间戳字段名
-    protected $createTime = 'reg_time';
+    //protected $createTime = 'reg_time';
     protected $updateTime = '';
     // 自动完成
     protected $auto       = ['last_login_ip'];

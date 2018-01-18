@@ -9,7 +9,7 @@
       $is_sql=isset($field['options']['is_sql'])? $field['options']['is_sql']:'close';
 {/php}
 <div class="form-group controls item_{$field.id} {$field.extra_class|default=''}">
-    <label for="{$field.id}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{/present}{$field.title}</label>
+    <label for="{$field.id}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="require"}<sup>*</sup>{/eq}{/present}{$field.title}</label>
     <div class="col-md-6" style="padding-bottom: 5px;">
         
         <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field.value|default=''}"/>
@@ -49,7 +49,7 @@
             // swf文件路径
             swf: '__PUBLIC__/libs/webuploader/Uploader.swf',
             // 文件接收服务端。
-            server: "{:url('admin/attachment/upload',['path_type'=>$path_type,'uploadtype'=>'picture','is_sql'=>$is_sql])}",
+            server: "{:url('admin/attachment/upload',['path_type'=>$path_type,'type'=>'picture','is_sql'=>$is_sql])}",
             //验证文件总数量, 超出则不允许加入队列
             fileNumLimit: 5,
             // 如果此选项为false, 则图片在上传前不进行压缩

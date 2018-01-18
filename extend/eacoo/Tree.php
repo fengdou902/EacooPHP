@@ -1,11 +1,20 @@
 <?php
+// 树状
+// +----------------------------------------------------------------------
+// | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
+// +----------------------------------------------------------------------
+// | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
+// | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
+// +----------------------------------------------------------------------
+// | Author:  心云间、凝听 <981248356@qq.com>
+// +----------------------------------------------------------------------
 namespace eacoo;
 /**
 * 通用的树型类，可以生成任何树型结构
 */
 class Tree {
 
-	protected $formatTree;
+	protected $formatTree;//用于树型数组完成递归格式的全局变量
 	
 	/**
 	 * 把返回的数据集转换成Tree
@@ -15,9 +24,9 @@ class Tree {
 	 * @return array
 	 * @author 麦当苗儿 <zuojiazi@vip.qq.com>
 	 */
-	protected function list_to_tree($list, $pk='id', $pid = 'pid', $child = '_child', $root = 0) {
+	public function list_to_tree($list, $pk='id', $pid = 'pid', $child = '_child', $root = 0) {
 	    // 创建Tree
-	    $tree = array();
+	    $tree = [];
 	    if(is_array($list)) {
 	        // 创建基于主键的数组引用
 	        $refer = array();
@@ -29,7 +38,7 @@ class Tree {
 	            $parentId =  $data[$pid];
 	            if ($root == $parentId) {
 	                $tree[] =& $list[$key];
-	            }else{
+	            } else{
 	                if (isset($refer[$parentId])) {
 	                    $parent =& $refer[$parentId];
 	                    $parent['childs'][] = $data['id'];
@@ -81,7 +90,7 @@ class Tree {
 			return false;
 		}
 		$list = $this->list_to_tree($list,$pk,$pid,'_child',$root);
-		$this->formatTree = array();
+		$this->formatTree = $data = [];
 		$this->_toFormatTree($list);
 		foreach ($this->formatTree as $key => $value) {
 			$index = ($key+1);

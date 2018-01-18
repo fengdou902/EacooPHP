@@ -1,4 +1,13 @@
 <?php
+// Eacoo云服务
+// +----------------------------------------------------------------------
+// | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
+// +----------------------------------------------------------------------
+// | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
+// | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
+// +----------------------------------------------------------------------
+// | Author:  心云间、凝听 <981248356@qq.com>
+// +----------------------------------------------------------------------
 namespace eacoo;
 use think\Db;
 use think\Cache;
@@ -30,6 +39,9 @@ class Cloud {
 			case 'module':
 				$this->appPath = APP_PATH;
 				break;
+            case 'theme':
+                $this->appPath = THEME_PATH;
+                break;
 			default:
 				# code...
 				break;
@@ -106,17 +118,17 @@ class Cloud {
             $zip = new ZipArchive;
             if ($zip->open($file) !== TRUE)
             {
-                throw new Exception('无法打开zip文件');
+                throw new \Exception('无法打开zip文件');
             }
             if (!$zip->extractTo($dir))
             {
                 $zip->close();
-                throw new Exception('无法提取文件');
+                throw new \Exception('无法提取文件');
             }
             $zip->close();
             return $dir;
         }
-        throw new Exception("无法执行解压操作，请确保ZipArchive安装正确");
+        throw new \Exception("无法执行解压操作，请确保ZipArchive安装正确");
     }
 
     

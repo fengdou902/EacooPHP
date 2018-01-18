@@ -1,6 +1,6 @@
 {extend name="public/iframe_base"/}
 {block name="style"}
- <link href="__STATIC__/libs/icon_picker/iconpicker.css?v=1.0.1" rel="stylesheet" type="text/css">
+ <link href="__STATIC__/libs/icon_picker/iconpicker.css?v=1.0.2" rel="stylesheet" type="text/css">
 {/block}
 {block name="main"}
 
@@ -23,7 +23,7 @@
                 "class": "icon",
                 title: icons[i].name,
                 "data-icon": "fa-"+icons[i].selector,
-                "data-filter": "fa-"+icons[i].filter
+                "data-filter": "fa fa-"+icons[i].filter
             });
             button.html("<i class='fa fa-" + icons[i].selector + "'></i>");
             $('.icon-container').append(button)

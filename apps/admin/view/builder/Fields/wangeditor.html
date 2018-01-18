@@ -1,25 +1,16 @@
-
-  {php}
-        if (strpos($field['name'],'[')) {
-          $field['id']=str_replace(']','',str_replace('[','',$field['name']));
-        }else{
-        	$field['id']=$field['name'];
-        }
-        $wangeditor_attributes = [
-          'id'      => $field['id'],
-          'name'    => $field['name'],
-          'default' => isset($field['value'])? $field['value']:'',
-          'width'   => isset($field['options']['width'])? $field['options']['width']:'',
-          'height'  => isset($field['options']['height'])? $field['options']['height']:'300px',
-          'config'  => isset($field['options']['config'])? $field['options']['config']:'',
-          'upload_config'  => isset($field['options']['upload'])? $field['options']['upload']:[]
-        ];
-        $wangeditor_param=isset($field['options']['param']) ? $field['options']['param']:'';
-  {/php}
-  <div class="form-group item_{$field.name} {$field.extra_class|default=''}">
-      <label for="{$field.name}" class="col-md-2 control-label">{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{$field.title}</label>
-      <div class="col-md-10">
-      	{:widget('common/editor/wangeditor',[$wangeditor_attributes,$wangeditor_param])}
-        {notempty name="field.description"}<p class="help-block">{$field.description}</p>{/notempty}
-      </div>
-  </div>
+{php}
+      if (strpos($field['name'],'[')) {
+        $field['id']=str_replace(']','',str_replace('[','',$field['name']));
+      }else{
+      	$field['id']=$field['name'];
+      }
+      $field = array_merge($field,$field['options']);
+      unset($field['options']);
+{/php}
+<div class="form-group item_{$field.name} {$field.extra_class|default=''}">
+    <label for="{$field.name}" class="col-md-2 control-label">{eq name="field.confirm" value="require"}<sup>*</sup>{/eq}{$field.title}</label>
+    <div class="col-md-10">
+    	{:widget('common/editor/wangeditor',[$field])}
+      {notempty name="field.description"}<p class="help-block">{$field.description}</p>{/notempty}
+    </div>
+</div>

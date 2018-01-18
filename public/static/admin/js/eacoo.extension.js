@@ -3,7 +3,10 @@
  */
 
 //应用本地上传
-function appLocalInstall(arg) {
+function appLocalInstall(apptype) {
+  if (apptype!='module' && apptype!='plugin' && apptype!='theme') {
+    updateAlert('类型错误','warning');
+  }
   var uploader_localinstall= WebUploader.create({
         // 选完文件后，是否自动上传。
         auto: true,
@@ -24,6 +27,9 @@ function appLocalInstall(arg) {
         pick: '#app-localupload',
         // 只允许选择图片文件
         accept:{title:'plugin',extensions:'zip',mimeTypes:'application/zip'}
+    });
+    uploader_localinstall.on( 'uploadBeforeSend', function( block, data ) {  
+        data.apptype = apptype;//添加参数
     });
     uploader_localinstall.on('fileQueued', function (file) {
         uploader_localinstall.upload();

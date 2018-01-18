@@ -3,7 +3,7 @@
         $load_select2=1;
     {/php}
     <div class="form-group item_{$field.name} {$field.extra_class|default=''}">
-       <label for="{$field.name}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{/present}{$field.title}</label>
+       <label for="{$field.name}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="require"}<sup>*</sup>{/eq}{/present}{$field.title}</label>
        <div class="col-md-4">
             <select name="{$field.name}" id="{$field.name}" class="select2-container form-control" {$field.extra_attr|default=''}>
                 {present name="field.options.none"}{notempty name="field.options.none"}<option value=''>{$field.options.none}</option>{/notempty}{php}unset($field['options']['none']);{/php}{else/}<option value=''>请选择</option>{/present}

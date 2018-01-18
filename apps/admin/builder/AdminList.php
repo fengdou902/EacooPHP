@@ -106,13 +106,7 @@ class AdminList extends Builder
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['class'] = 'btn btn-success ajax-post confirm btn-sm';
                 $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;;  // 要操作的数据模型
-                $my_attribute['href']  = url(
-                    MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
-                    array(
-                        'status' => 'resume',
-                        'model' => $my_attribute['model']
-                    )
-                );
+                $my_attribute['href']  = url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status'=>'resume']).'?model='.$my_attribute['model'];
 
                 break;
             case 'forbid':  // 添加禁用按钮(启用的反操作)
@@ -121,13 +115,7 @@ class AdminList extends Builder
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['class'] = 'btn btn-warning ajax-post confirm btn-sm';
                 $my_attribute['model'] = !empty($attribute['model']) ? $attribute['model']: CONTROLLER_NAME;
-                $my_attribute['href']  = url(
-                    MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
-                    array(
-                        'status' => 'forbid',
-                        'model' => $my_attribute['model']
-                    )
-                );
+                $my_attribute['href']  = url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'forbid']).'?model='.$my_attribute['model'];
 
                 break;
             case 'recycle':  // 添加回收按钮(还原的反操作)
@@ -136,13 +124,7 @@ class AdminList extends Builder
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['class'] = 'btn btn-danger ajax-post confirm btn-sm';
                 $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;
-                $my_attribute['href']  = url(
-                    MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
-                    array(
-                        'status' => 'recycle',
-                        'model' => $my_attribute['model']
-                    )
-                );
+                $my_attribute['href']  = url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'recycle']).'?model='.$my_attribute['model'];
 
                 break;
             case 'restore':  // 添加还原按钮(回收的反操作)
@@ -151,13 +133,7 @@ class AdminList extends Builder
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['class'] = 'btn btn-success ajax-post confirm btn-sm';
                 $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;
-                $my_attribute['href']  = url(
-                    MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
-                    array(
-                        'status' => 'restore',
-                        'model' => $my_attribute['model']
-                    )
-                );
+                $my_attribute['href']  = url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'restore']).'?model='.$my_attribute['model'];
 
                 break;
             case 'delete': // 添加删除按钮(我没有反操作，删除了就没有了，就真的找不回来了)
@@ -170,9 +146,8 @@ class AdminList extends Builder
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
                     array(
                         'status' => 'delete',
-                        'model' => $my_attribute['model']
                     )
-                );
+                ).'?model='.$my_attribute['model'];
 
                 break;
             case 'sort':  // 添加排序按钮
@@ -327,9 +302,8 @@ class AdminList extends Builder
                     array(
                         'status' => 'resume',
                         'ids' => '__data_id__',
-                        'model' => $my_attribute['model']
                     )
-                );
+                ).'?model='.$my_attribute['model'];
                 $my_attribute['1']['title'] = '禁用';
                 $my_attribute['1']['class'] = $this->_right_button_type==1 ? 'btn btn-warning btn-xs ajax-get confirm':'ajax-get confirm';
                 $my_attribute['1']['href']  = url(
@@ -337,9 +311,8 @@ class AdminList extends Builder
                     array(
                         'status' => 'forbid',
                         'ids' => '__data_id__',
-                        'model' => $my_attribute['model']
                     )
-                );
+                ).'?model='.$my_attribute['model'];
 
                 break;
             case 'hide':  // 改变记录状态按钮，会更具数据当前的状态自动选择应该显示隐藏/显示
@@ -353,9 +326,8 @@ class AdminList extends Builder
                     array(
                         'status' => 'show',
                         'ids' => '__data_id__',
-                        'model' => $my_attribute['model']
                     )
-                );
+                ).'?model='.$my_attribute['model'];
                 $my_attribute['1']['title'] = '隐藏';
                 $my_attribute['1']['class'] = $this->_right_button_type==1 ? 'btn btn-info btn-xs ajax-get confirm':'ajax-get confirm';
                 $my_attribute['1']['href']  = url(
@@ -363,9 +335,8 @@ class AdminList extends Builder
                     array(
                         'status' => 'hide',
                         'ids' => '__data_id__',
-                        'model' => $my_attribute['model']
                     )
-                );
+                ).'?model='.$my_attribute['model'];
 
                 break;
             case 'recycle':
@@ -378,9 +349,8 @@ class AdminList extends Builder
                     array(
                         'status' => 'recycle',
                         'ids' => '__data_id__',
-                        'model' => $my_attribute['model']
                     )
-                );
+                ).'?model='.$my_attribute['model'];
 
                 break;
             case 'restore':
@@ -393,9 +363,8 @@ class AdminList extends Builder
                     array(
                         'status' => 'restore',
                         'ids' => '__data_id__',
-                        'model' => $my_attribute['model']
                     )
-                );
+                ).'?model='.$my_attribute['model'];
 
                 break;
             case 'delete':
@@ -408,9 +377,8 @@ class AdminList extends Builder
                     array(
                         'status' => 'delete',
                         'ids' => '__data_id__',
-                        'model' => $my_attribute['model']
                     )
-                );
+                ).'?model='.$my_attribute['model'];
 
                 break;
             case 'self':
@@ -582,7 +550,7 @@ class AdminList extends Builder
                         $data[$column['name']] = format_bytes($data[$column['name']]);
                         break;
                     case 'icon':
-                        $data[$column['name']] = '<i class="fa '.$data[$column['name']].'"></i>';
+                        $data[$column['name']] = '<i class="'.$data[$column['name']].'"></i>';
                         break;
                     case 'date':
                         $data[$column['name']] = time_format($data[$column['name']], 'Y-m-d');
@@ -597,7 +565,7 @@ class AdminList extends Builder
                         if (!$data[$column['name']] || empty($data[$column['name']])) {
                             $data[$column['name']] = config('view_replace_str.__PUBLIC__').'/img/default-avatar.svg';
                         }
-                        $data[$column['name']] = '<img style="width:40px;height:40px;" src="'.path_to_url($data[$column['name']]).'">';
+                        $data[$column['name']] = '<img style="width:40px;height:40px;" src="'.cdn_img_url($data[$column['name']]).'">';
                         break;
                     case 'image':
                         $pic_w = '120';
@@ -621,20 +589,30 @@ class AdminList extends Builder
                         $temp = explode(',', $data[$column['name']]);
                         $data[$column['name']] = '<img class="pictures" width="'.$pic_w.'" src="'.get_image($temp[0]).'">';
                         break;
-                    case 'link':
-                        $url_attribute='';
-                        if (is_array($column['param'])) {
-                            $url_attribute=$this->compileHtmlAttr($column['param']);
-                            $column_link= str_replace('__data_id__',$data[$this->_table_data_list_key],$column['param']['link']);
-                            $data[$column['name']] = '<a href="'.$column_link.'" '.$url_attribute.'>'.$data[$column['name']].'</a>';
-                        }
-                        break;
+                    // case 'link':
+                    //     $column_extra_attr='';
+                    //     if (is_array($column['param'])) {
+                    //         $column_extra_attr = $this->compileHtmlAttr($column['param']);
+                    //         $column_link= str_replace('__data_id__',$data[$this->_table_data_list_key],$column['param']['link']);
+                    //         $data[$column['name']] = '<a href="'.$column_link.'" '.$column_extra_attr.'>'.$data[$column['name']].'</a>';
+                    //     }
+                    //     break;
                     case 'url'://以URL形式添加
-                        $url_attribute='';
+                        $column_extra_attr = '';
+                        $column_url = $data[$column['name']];
                         if (is_array($column['param'])) {
-                            $url_attribute=$this->compileHtmlAttr($column['param']);
+                            if (isset($column['param']['extra_attr'])) {
+                                $column_extra_attr = $this->compileHtmlAttr($column['param']);
+                            }
+                            if (isset($column['param']['url'])) {
+                                $column_url = str_replace('__data_id__',$data[$this->_table_data_list_key],$column['param']['url']);
+                            }
+                            if (isset($column['param']['url_callback'])) {
+                                $column_url = call_user_func($column['param']['url_callback'], $data[$column['name']]);
+                            }
+                            
                         }
-                        $data[$column['name']] = '<a href="'.$data[$column['name']].'" '.$url_attribute.'>'.$data[$column['name']].'</a>';
+                        $data[$column['name']] = '<a href="'.$column_url.'" '.$column_extra_attr.'>'.$data[$column['name']].'</a>';
                         break;
                     case 'type':
                         $form_item_type = config('form_item_type');
@@ -656,7 +634,7 @@ class AdminList extends Builder
                                 $callback_param=$column['param']['sub_param'];
                                 array_unshift($callback_param,$data[$column['name']]);
                                 $data[$column['name']] = call_user_func_array($column['param']['callback_fun'],$callback_param);
-                            }else{//否则为回调函数模式
+                            } else{//否则为回调函数模式
                                 $data[$column['name']] = call_user_func_array($column['param'], array($data[$column['name']]));
                             }
 

@@ -26,7 +26,13 @@ class Attachment extends Admin {
         $this->attachmentModel  = new AttachmentModel();
     }
 
-    //附件首页
+    /**
+     * 附件首页
+     * @param  integer $term_id [description]
+     * @return [type] [description]
+     * @date   2017-06-11
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
     public function index($term_id=0){
 
         $this->assign('meta_title','附件管理');
@@ -63,10 +69,10 @@ class Attachment extends Admin {
         }
         //筛选start
         if ($term_id>0) {
-            $media_ids = TermRelationships::where(['term_id'=>$term_id,'table'=>'attachment'])->select();
+            //$media_ids = TermRelationships::where(['term_id'=>$term_id,'table'=>'attachment'])->select();
+            $media_ids = TermRelationships::where(['term_id'=>$term_id,'table'=>'attachment'])->column('object_id');
             if(count($media_ids)){
-                $media_ids = array_column($media_ids,'object_id');
-                //$post_ids=array_merge(array($post_ids),$post_ids);
+                //$media_ids = array_column($media_ids,'object_id');
                 $map['id'] = ['in',$media_ids];
             } else{
                 $map['id']  = 0;
@@ -152,6 +158,9 @@ class Attachment extends Admin {
 
     /**
      * 移动分类
+     * @return [type] [description]
+     * @date   2018-01-11
+     * @author 心云间、凝听 <981248356@qq.com>
      */
     public function moveCategory() {
         if (IS_POST) {
@@ -268,313 +277,16 @@ class Attachment extends Admin {
         \think\Loader::action('admin/Config/attachmentOption',[$tab_list]);
     }
 
-    //附件Widget分页列表(必须有Widget扩展)
-    public function attachmentWidgetList($from_type = null, $paged = 1, $cat = 0, $path_type = 'picture'){
-        widget('common/Attachment/paged_list',[$from_type,$paged,$cat,$path_type]); 
-    }   
-    //获取builder多图上传列表
-    public function builder_multiple_attachmentlist($ids,$nolayout=false,$path_type='picture'){
-        $map['id']     = array('in',$ids);
-        $map['status'] = 1;
-        $file_list=$this->attachmentModel->getList($map);
-        foreach ($file_list as $key => $data) {
-            if ($data['location']!='link') {
-                $data['url']='http://'.$_SERVER['HTTP_HOST'].getImgSrcByExt($data['ext'],$data['path'],true);
-            }else{
-                $data['url']=$data['path'];
-            }
-            if ($nolayout==true) {
-                echo '<img class="" src="'.$data['url'].'" data-id="'.$data['id'].'">';
-            }else{
-                echo '<div class="col-md-3"><div class="thumbnail"><i class="fa fa-times-circle remove-attachment"></i><img class="img" src="'.$data['url'].'" data-id="'.$data['id'].'"></div></div>';
-            }
-            
-        }
-    } 
-
-    /**
-     * 附件弹窗
-     * @return [type] [description]
-     */
-    public function attachmentLayer()
-    {
-        $data = input('param.');
-        $path_type = !empty($data['path_type']) ? $data['path_type'] : 'picture';
-        $from = !empty($data['from']) ? $data['from'] : '';
-
-        $map['path_type'] = ['in',$path_type];
-
-        $widget_show_type = config('attachment_options.widget_show_type');//附件选择器显示类型(0:所有，1:作者)
-        if (intval($widget_show_type)==1) {
-          $map['uid'] = is_login();
-        }
-        //分类
-        if (!empty($data['cat']) && $data['cat']>0) {
-            $media_ids = TermRelationships::where(['term_id'=>$data['cat'],'table'=>'attachment'])->select();
-            if(count($media_ids)){
-                $media_ids = array_column($media_ids,'object_id');
-                //$post_ids=array_merge(array($post_ids),$post_ids);
-                $map['id']=['in',$media_ids];
-            } else{
-                $map['id']=0;
-            }
-        }
-        $map['status'] = 1;
-        $data_list = AttachmentModel::where($map)->order('sort asc,create_time desc,update_time desc')->paginate(20);
-        $this->assign('data_list',$data_list);//附件列表数据
-
-        $page_totalCount = AttachmentModel::where(['status'=>1])->count();
-        $this->assign('media_totalCount',$page_totalCount);//总数量
-
-        $media_cats = model('admin/terms')->getList(['taxonomy'=>'media_cat']);
-
-        foreach ($media_cats as $key => $cat) {
-            $media_cats[$key]['count'] = term_media_count($cat['term_id'],$path_type);
-        }
-        
-        $this->assign('media_cats',$media_cats);//获取分类数据
-        $this->assign('data_page',$data_list->render());//分页
-
-        $this->assign('input_id_name',$data['input_id_name']);//输入框ID
-        $this->assign('select_type',$data['select_type']);//赋值参数
-        $this->assign('mediaTypeList',[1=>'图像',2=>'视频',3=>'音频',4=>'文件']);//媒体类型列表
-        $this->assign('path_type',$path_type);
-        $this->assign('from',$from);
-
-        $param['attachmentDaterangePicker']=1;
-        $this->assign('attachmentDaterangePicker',$param['attachmentDaterangePicker']);//是否导入时间选择器
-
-        return $this->fetch();
-    }
-
-    /**************************************上传相关****************************************/
-    /* 文件上传 */
-    public function upload() {
-        $controller = new Upload;
-        $return = $controller->upload();
-        return json($return);
-    }
-    
-    /**
-     * 上传远程文件
-     * @param  string  $url            远程文件地址
-     * @param  boolean $download_local 是否同时下载到本地
-     * @return [type]                  [description]
-     */
-    public function uploadRemoteFile($url='',$download_local=false){
-        $controller = new Upload;
-        $return = $controller->uploadRemoteFile();
-        return json($return);
-    }
-
-
-    /**用于兼容UM编辑器的图片上传方法
-     * @auth 陈一枭
-     */
-    // public function uploadPictureUM()
-    // {
-    //     header("Content-Type:text/html;charset=utf-8");
-    //     //TODO: 用户登录检测
-    //     /* 返回标准数据 */
-    //     $return = array('status' => 1, 'info' => '上传成功', 'data' => '');
-
-    //     //实际有用的数据只有name和state，这边伪造一堆数据保证格式正确
-    //     $originalName = 'u=2830036734,2219770442&fm=21&gp=0.jpg';
-    //     $newFilename = '14035912861705.jpg';
-    //     $filePath = 'upload\/20140624\/14035912861705.jpg';
-    //     $size = '7446';
-    //     $type = '.jpg';
-    //     $status = 'success';
-    //     $rs = array(
-    //         "originalName" => $originalName,
-    //         'name' => $newFilename,
-    //         'url' => $filePath,
-    //         'size' => $size,
-    //         'type' => $type,
-    //         'state' => $status,
-    //         'original' => $_FILES['upfile']['name']
-    //     );
-
-    //     $setting = config('editor_upload');
-    //     $setting['rootPath']='./Uploads/Editor/Picture/';
-
-    //     //$driver = modC('PICTURE_UPLOAD_DRIVER','local','config');
-    //     $driver ='./Uploads/Editor/Picture/';//图片保存路径
-    //     $driver = check_driver_is_exist($driver);
-    //     $uploadConfig = get_upload_config($driver);
-
-    //     $info = $this->attachmentModel->upload(
-    //         $_FILES,
-    //         $setting,
-    //         $driver,
-    //         $uploadConfig
-    //     ); //TODO:上传到远程服务器
-
-    //     /* 记录图片信息 */
-    //     if ($info) {
-    //         $return['status'] = 1;
-    //         if ($info['Filedata']) {
-    //             $return = array_merge($info['Filedata'], $return);
-    //         }
-    //         if ($info['download']) {
-    //             $return = array_merge($info['download'], $return);
-    //         }
-    //         $rs['state'] = 'SUCCESS';
-    //         $rs['url'] = path_to_url($info['path']);
-    //         if ($type == 'ajax') {
-    //             echo json_encode($rs);
-    //             exit;
-    //         } else {
-    //             echo json_encode($rs);
-    //             exit;
-    //         }
-
-    //     } else {
-    //         $return['state'] = 0;
-    //         $return['info'] = $this->attachmentModel->getError();
-    //     }
-
-    //     /* 返回JSON数据 */
-    //     return json($return);
-    // }
-
-
-    // public function uploadFileUE(){
-    //     $return = ['status' => 1, 'info' =>'上传成功', 'data' => ''];
-
-    //     //实际有用的数据只有name和state，这边伪造一堆数据保证格式正确
-    //     $originalName = 'u=2830036734,2219770442&fm=21&gp=0.jpg';
-    //     $newFilename = '14035912861705.jpg';
-    //     $filePath = 'upload\/20140624\/14035912861705.jpg';
-    //     $size = '7446';
-    //     $type = '.jpg';
-    //     $status = 'success';
-    //     $rs = [
-    //         'name' => $newFilename,
-    //         'url' => $filePath,
-    //         'size' => $size,
-    //         'type' => $type,
-    //         'state' => $status
-    //     ];
-
-    //     /* 调用文件上传组件上传文件 */
-    //     $File = model('File');
-
-    //    // $driver = modC('DOWNLOAD_UPLOAD_DRIVER','local','config');
-    //     $driver ='./Uploads/Editor/File/';//图片保存路径
-    //     $driver = check_driver_is_exist($driver);
-    //     $uploadConfig = get_upload_config($driver);
-
-    //     $setting = config('editor_upload');
-    //     $setting['rootPath']='./Uploads/Editor/File/';
-
-
-    //     $setting['exts'] = 'jpg,gif,png,jpeg,zip,rar,tar,gz,7z,doc,docx,txt,xml,xlsx,xls,ppt,pptx,pdf';
-    //     $info = $File->upload(
-    //         $_FILES,
-    //         $setting,
-    //         $driver,
-    //         $uploadConfig
-    //     );
-
-    //     /* 记录附件信息 */
-    //     if ($info) {
-    //         $return['data'] = $info;
-
-    //         $rs['original'] = $info['name'];
-    //         $rs['state'] = 'SUCCESS';
-    //         $rs['url'] =  strpos($info['savepath'], 'http://') === false ?  __ROOT__.$info['savepath'].$info['savename']:$info['savepath'];
-    //         $rs['size'] = $info['size'];
-    //         $rs['title'] = $info['savename'];
-
-
-    //         if ($type == 'ajax') {
-    //             echo json_encode($rs);
-    //             exit;
-    //         } else {
-    //             echo json_encode($rs);
-    //             exit;
-    //         }
-
-    //     } else {
-    //         $return['status'] = 0;
-    //         $return['info'] = $File->getError();
-    //     }
-
-    //     /* 返回JSON数据 */
-    //     return json($return);
-    // }
-
-    /**
-     * 上传头像
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public function uploadAvatar(){
-
-        $uid = input('param.uid',0,'intval');
-
-        $controller = controller('common/Upload');
-        $return = $controller->uploadAvatar($uid);
-
-        return json($return);
-    }
-
-    /**
-     * Base64方式上传
-     * @param  string $post_field [description]
-     * @return [type]             [description]
-     */
-    public function uploadPictureBase64($post_field='data')
-    {
-        $upload_type = 'picture';
-        $path_type   = 'picture';
-        $controller = new Upload;
-        $return = $controller->uploadRemoteFile($post_field,$upload_type,$path_type);
-        return json($return);
-
-    }
-
-    /* 下载文件 */
-    public function download($id = null){
-        if(empty($id) || !is_numeric($id)){
-            $this->error('参数错误');
-        }
-
-        if(!$this->attachmentModel->download($id)){
-            $this->error($logic->getError());
-        }
-
-    }
-    // //实现php文件安全下载！
-    // public function downloads($name){
-    //     $name_tmp = explode("_",$name);
-    //     $type = $name_tmp[0];
-    //     $file_time = explode(".",$name_tmp[3]);
-    //     $file_time = $file_time[0];
-    //     $file_date = date("Y/md",$file_time);
-    //     $file_dir = SITE_PATH."/data/uploads/$type/$file_date/";    
-
-    //     if (!file_exists($file_dir.$name)){
-    //         header("Content-type: text/html; charset=utf-8");
-    //         echo "File not found!";
-    //         exit; 
-    //     } else {
-    //         $file = fopen($file_dir.$name,"r"); 
-    //         Header("Content-type: application/octet-stream");
-    //         Header("Accept-Ranges: bytes");
-    //         Header("Accept-Length: ".filesize($file_dir . $name));
-    //         Header("Content-Disposition: attachment; filename=".$name);
-    //         echo fread($file, filesize($file_dir.$name));
-    //         fclose($file);
-    //     }
-    // }
-    
     /**
      * 设置附件的状态
+     * @param  string $model [description]
+     * @param  boolean $script [description]
+     * @date   2018-01-11
+     * @author 心云间、凝听 <981248356@qq.com>
      */
     public function setStatus($model ='attachment', $script = false){
-        $ids    = input('request.ids/a');
-        $status = input('request.status');
+        $ids    = input('param.ids/a');
+        $status = input('param.status');
         if (empty($ids)) {
             $this->error('请选择要操作的数据');
         }

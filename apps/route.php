@@ -10,8 +10,10 @@
 // +----------------------------------------------------------------------
 use think\Route;
 
-//导航
+//微信接口
 Route::rule('WxInterface/:wxid', 'wechat/WxInterface/index');
 Route::rule('wechat/Oauth/:wxid', 'wechat/home/wechatOauth');
-//插件执行入口
+//前台插件执行入口
 Route::rule('plugin_execute', 'home/plugin/execute');
+//前台上传入口
+Route::rule('upload', 'home/Upload/upload');

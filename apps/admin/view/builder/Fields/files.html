@@ -12,7 +12,7 @@
         };
     </script>
     <div class="form-group controls item_{$field.name} {$field.extra_class|default=''}">
-    <label for="{$field.name}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{/present}{$field.title|htmlspecialchars}</label>
+    <label for="{$field.name}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="require"}<sup>*</sup>{/eq}{/present}{$field.title|htmlspecialchars}</label>
     <div class="col-md-6" style="padding-bottom: 5px;"><span class="btn btn-info ml-10 btn-sm" data-toggle="modal" data-target="#attachmentModal"><i class="fa fa-file"></i> 选择多文件</span>{notempty name="field.description"}<span class="color-red f12 ml-10">{$field.description}</span>{/notempty}
     <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field['value']}"/>
     </div>
@@ -69,13 +69,13 @@
                     // swf文件路径
                     swf: '__PUBLIC__/lib/webuploader/Uploader.swf',
                     // 文件接收服务端。
-                    server: "{:url('Admin/Attachment/upload',['session_id'=>session_id(),'uploadtype'=>'file'])}",
+                    server: "{:url('Admin/Attachment/upload',['session_id'=>session_id(),'type'=>'file'])}",
                     //验证文件总数量, 超出则不允许加入队列
                     fileNumLimit: 5,
                     // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
                     resize: false, 
                     // 验证单个文件大小是否超出限制, 超出则不允许加入队列 
-                    fileSingleSizeLimit:{php}echo intval(config('UPLOAD_FILE_SIZE')) ? : 2;{/php}*1024*1024,  
+                    fileSingleSizeLimit:{php}echo intval(config('attachment_options.file_max_size')) ? : 50*1024*1024;{/php},  
                     // 内部根据当前运行是创建，可能是input元素，也可能是flash.
 
                     //选择文件的按钮

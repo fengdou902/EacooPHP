@@ -161,11 +161,34 @@
 
 
 /*User home*/
+.homebox {
+    margin-bottom: 20px;
+    font-size: 12px;
+}
 .card {
     width: 100%;
+    text-align: center;
+    background: #fff;
+    padding-top: 20px;
 }
-.img-circle img {
+.card:hover {
+    box-shadow: 0 0 5px 1px rgba(0,0,0,.3);
+}
+.img-circlea {
+
+}
+.img-circlea img {
     border-radius: 50%;
+    width: 80px;
+}
+.card-heading {
+    padding-top: 20px;
+}
+.card-heading a {
+    color: #767676;
+}
+.card-actions {
+    padding-bottom: 40px;
 }
 .p-box {
     margin-bottom: 15px;

@@ -32,7 +32,6 @@
 
     <link type="text/css" rel="stylesheet" href="__STATIC__/libs/nprogress/nprogress.css"/>
     <script type="text/javascript" src="__STATIC__/libs/nprogress/nprogress.js"></script>
-    <script type="text/javascript" src="__STATIC__/libs/wangeditor/js/wangEditor.min.js"></script>
      <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -54,7 +53,7 @@
       <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
         <span class="sr-only">Toggle navigation</span>
       </a>
-      {php}if(!is_mobile()){{/php}
+      {php}if(!IS_MOBILE){{/php}
         <ul class="nav navbar-nav">
           <li><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-star" style="font-size: 20px!important;"></i></a>
           <ul class="dropdown-menu" role="menu">
