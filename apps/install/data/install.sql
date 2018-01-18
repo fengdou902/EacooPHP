@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 2018-01-06 10:19:48
+-- Generation Time: 2018-01-18 09:30:59
 -- 服务器版本： 5.7.15
 -- PHP Version: 7.0.14
 
@@ -86,6 +86,8 @@ CREATE TABLE `eacoo_action_log` (
   `user_agent` varchar(230) NOT NULL DEFAULT '' COMMENT 'User-Agent',
   `create_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '操作时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='行为日志表' ROW_FORMAT=DYNAMIC;
+
+-- --------------------------------------------------------
 
 --
 -- 表的结构 `eacoo_attachment`
@@ -176,7 +178,6 @@ INSERT INTO `eacoo_attachment` (`id`, `uid`, `name`, `path`, `url`, `location`, 
 (63, 1, 'wx1image_14751588213497.png', '/uploads/picture/2016-09-29/wx1image_14751588213497.png', '', 'local', 'picture', 'jpg', '', 14153, NULL, '', '', 0, 1475158821, 0, 0, 1),
 (64, 1, 'wx1image_14751588212612.png', '/uploads/picture/2016-09-29/wx1image_14751588212612.png', '', 'local', 'picture', 'jpg', '', 15962, NULL, '', '', 0, 1475158821, 0, 0, 1),
 (65, 1, 'wx1image_14751588215121.png', '/uploads/picture/2016-09-29/wx1image_14751588215121.png', '', 'local', 'picture', 'jpg', '', 22820, NULL, '', '', 0, 1475158821, 0, 0, 1),
-(66, 1, 'wx1image_14751588222935.png', '/uploads/picture/2016-09-29/wx1image_14751588222935.png', '', 'local', 'picture', 'jpg', '', 72312, NULL, '', '', 0, 1475158822, 0, 0, 1),
 (67, 1, 'wx1image_14751588223870', '/uploads/picture/2016-09-29/wx1image_14751588223870.jpg', '', 'local', 'picture', 'jpg', '', 31690, NULL, '', '', 0, 1475158822, 0, 0, 1),
 (68, 1, 'wx1image_14751588235543.png', '/uploads/picture/2016-09-29/wx1image_14751588235543.png', '', 'local', 'picture', 'jpg', '', 32383, NULL, '', '', 0, 1475158823, 0, 0, 1),
 (69, 1, 'wx1image_14751588233114.png', '/uploads/picture/2016-09-29/wx1image_14751588233114.png', '', 'local', 'picture', 'jpg', '', 16871, NULL, '', '', 0, 1475158823, 0, 0, 1),
@@ -206,7 +207,8 @@ INSERT INTO `eacoo_attachment` (`id`, `uid`, `name`, `path`, `url`, `location`, 
 (93, 1, '9812496129086622', '/uploads/picture/2016-10-06/57f6136b5bd4e.jpg', '', 'local', 'picture', 'jpg', '', 164177, NULL, '983944832c987b160ae409f71acc7933', 'bce6147f4070989fc0349798acf6383938e5563a', 0, 1475744619, 1475744619, 0, 1),
 (94, 1, 'eacoophp-watermark-banner-1', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg', 'link', 'picture', 'jpg', 'image', 171045, 'eacoophp-watermark-banner-1', '', '', 0, 1506215777, 1506215780, 0, 1),
 (95, 1, 'eacoophp-banner-3', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-banner-3.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-banner-3.jpg', 'link', 'picture', 'jpg', 'image', 356040, 'eacoophp-banner-3', '', '', 0, 1506215801, 1506554992, 0, 1),
-(96, 1, 'eacoophp-watermark-banner-2', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'link', 'picture', 'jpg', 'image', 356040, 'eacoophp-watermark-banner-2', '', '', 0, 1506215801, 1506215803, 0, 1);
+(96, 1, 'eacoophp-watermark-banner-2', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'link', 'picture', 'jpg', 'image', 356040, 'eacoophp-watermark-banner-2', '', '', 0, 1506215801, 1506215803, 0, 1),
+(98, 1, '150217753092666', '/uploads/picture/2018-01-17/5a5e2b89ae856.jpg', '/uploads/picture/2018-01-17/5a5e2b89ae856.jpg', 'local', 'picture', 'jpg', 'image', 67406, '150217753092666', '82a25ea71fd7db1a2180894086790ea9', '87a03fe9161c0d3b4b757e999160355f9ce0ee75', 0, 1516120969, 1516120969, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -272,7 +274,7 @@ CREATE TABLE `eacoo_auth_rule` (
   `name` char(80) NOT NULL DEFAULT '' COMMENT '导航链接',
   `title` char(20) NOT NULL DEFAULT '' COMMENT '导航名字',
   `depend_type` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '来源类型。1module，2plugin，3theme',
-  `depend_flag` varchar(50) NOT NULL DEFAULT '' COMMENT '来源标记',
+  `depend_flag` varchar(30) NOT NULL DEFAULT '' COMMENT '来源标记。如：模块或插件标识',
   `type` tinyint(1) DEFAULT '1' COMMENT '是否支持规则表达式',
   `pid` smallint(6) UNSIGNED DEFAULT '0' COMMENT '上级id',
   `icon` varchar(50) DEFAULT NULL COMMENT '图标',
@@ -290,31 +292,32 @@ CREATE TABLE `eacoo_auth_rule` (
 --
 
 INSERT INTO `eacoo_auth_rule` (`id`, `name`, `title`, `depend_type`, `depend_flag`, `type`, `pid`, `icon`, `sort`, `condition`, `is_menu`, `no_pjax`, `developer`, `update_time`, `status`) VALUES
-(1, 'admin/dashboard/index', '仪表盘', 1, 'admin', 1, 0, 'fa-tachometer', 1, NULL, 1, 1, 0, 1507798445, 1),
-(2, 'admin', '系统设置', 1, 'admin', 1, 0, 'fa-cog', 2, NULL, 1, 0, 0, 1507604200, 1),
-(3, 'admin/user/', '用户管理', 1, 'user', 1, 0, 'fa-users', 5, NULL, 1, 0, 0, 1505816276, 1),
-(4, 'admin/attachment/index', '附件空间', 1, 'admin', 1, 0, 'fa-picture-o', 7, NULL, 1, 1, 0, 1505816276, 1),
-(5, 'admin/extend/index', '扩展中心', 1, 'admin', 1, 0, 'fa-cloud', 11, NULL, 1, 0, 0, 1507798466, 1),
-(6, 'admin/nav/index', '导航管理', 1, 'admin', 1, 0, 'fa-leaf', 6, NULL, 1, 0, 0, 1505816276, 0),
+(1, 'admin/dashboard/index', '仪表盘', 1, 'admin', 1, 0, 'fa fa-tachometer', 1, NULL, 1, 1, 0, 1507798445, 1),
+(2, 'admin', '系统设置', 1, 'admin', 1, 0, 'fa fa-cog', 2, NULL, 1, 0, 0, 1507604200, 1),
+(3, 'admin/user/', '用户管理', 1, 'user', 1, 0, 'fa fa-users', 5, NULL, 1, 0, 0, 1505816276, 1),
+(4, 'admin/attachment/index', '附件空间', 1, 'admin', 1, 0, 'fa fa-picture-o', 7, NULL, 1, 1, 0, 1505816276, 1),
+(5, 'admin/extend/index', '扩展中心', 1, 'admin', 1, 0, 'fa fa-cloud', 11, NULL, 1, 1, 0, 1507798466, 1),
+(6, 'admin/navigation/index', '前台导航菜单', 1, 'admin', 1, 2, 'fa fa-leaf', 6, NULL, 1, 0, 0, 1516203955, 1),
 (7, 'admin/user/index', '用户列表', 1, 'user', 1, 3, '', 1, NULL, 1, 0, 0, 1505816276, 1),
 (8, 'admin/auth/role', '角色组', 1, 'user', 1, 15, '', 1, NULL, 1, 0, 0, 1506843587, 1),
-(9, 'admin/auth/adminMenu', '后台菜单管理', 1, 'admin', 1, 2, '', 11, NULL, 1, 0, 1, 1505816276, 1),
-(10, 'tools', '工具', 1, 'admin', 1, 0, 'fa-gavel', 9, NULL, 1, 0, 1, 1505816276, 1),
-(11, 'admin/database', '安全', 1, 'admin', 1, 10, 'fa-database', 12, NULL, 0, 0, 0, 1505816276, 1),
+(9, 'admin/auth/adminMenu', '后台菜单管理', 1, 'admin', 1, 2, '', 11, NULL, 1, 0, 1, 1516203939, 1),
+(10, 'tools', '工具', 1, 'admin', 1, 0, 'fa fa-gavel', 9, NULL, 1, 0, 1, 1505816276, 1),
+(11, 'admin/database', '安全', 1, 'admin', 1, 10, 'fa fa-database', 12, NULL, 0, 0, 0, 1505816276, 1),
 (12, 'admin/attachment/setting', '设置', 1, 'admin', 1, 2, '', 0, NULL, 0, 0, 0, 1505816276, 1),
 (13, 'admin/link/index', '友情链接', 1, 'admin', 1, 10, '', 6, NULL, 1, 0, 0, 1505816276, 1),
 (14, 'admin/link/edit', '链接编辑', 1, 'admin', 1, 13, '', 1, NULL, 1, 0, 0, 1505816276, 0),
-(15, 'user/auth', '权限管理', 1, 'user', 1, 0, 'fa-sun-o', 4, NULL, 1, 0, 0, 1505816276, 1),
-(16, 'admin/auth/index', '规则管理', 1, 'admin', 1, 15, '', 2, NULL, 1, 0, 0, 1505816276, 1),
+(15, 'user/auth', '权限管理', 1, 'user', 1, 0, 'fa fa-sun-o', 4, NULL, 1, 0, 0, 1505816276, 1),
+(16, 'admin/auth/index', '节点管理', 1, 'admin', 1, 15, '', 2, NULL, 1, 0, 0, 1505816276, 1),
 (17, 'admin/config/edit', '配置编辑或添加', 1, 'admin', 1, 2, '', 6, NULL, 0, 0, 0, 1505816276, 1),
+(18, 'admin/navigation/edit', '导航编辑或添加', 1, 'admin', 1, 6, '', 1, NULL, 0, 0, 0, 1505816276, 1),
 (19, 'admin/config/website', '网站设置', 1, 'admin', 1, 2, '', 4, NULL, 1, 0, 0, 1505816276, 1),
-(20, 'admin/database/index', '数据库管理', 1, 'admin', 1, 10, 'fa-database', 13, NULL, 1, 0, 0, 1505816276, 1),
+(20, 'admin/database/index', '数据库管理', 1, 'admin', 1, 10, 'fa fa-database', 13, NULL, 1, 0, 0, 1505816276, 1),
 (22, 'admin/theme/index', '主题', 1, 'admin', 1, 5, '', 3, NULL, 1, 0, 0, 1505816276, 1),
 (23, 'admin/plugins/index', '插件', 1, 'admin', 1, 5, '', 2, NULL, 1, 0, 0, 1505816276, 1),
 (24, 'admin/modules/index', '模块', 1, 'admin', 1, 5, '', 0, NULL, 1, 0, 0, 1505816276, 1),
 (25, 'admin/config/index', '配置管理', 1, 'admin', 1, 2, '', 15, NULL, 1, 0, 1, 1505816276, 1),
 (26, 'admin/config/group', '系统设置', 1, 'admin', 1, 2, '', 1, NULL, 1, 0, 0, 1505816276, 1),
-(27, 'admin/action', '系统安全', 1, 'admin', 1, 0, 'fa-list-alt', 3, NULL, 1, 0, 0, 1507798449, 1),
+(27, 'admin/action', '系统安全', 1, 'admin', 1, 0, 'fa fa-list-alt', 3, NULL, 1, 0, 0, 1507798449, 1),
 (28, 'admin/action/index', '用户行为', 1, 'user', 1, 27, NULL, 1, NULL, 1, 0, 0, 1505816276, 1),
 (29, 'admin/action/log', '行为日志', 1, 'user', 1, 27, NULL, 2, NULL, 1, 0, 0, 1505816276, 1),
 (30, 'admin/plugins/hooks', '钩子管理', 1, 'admin', 1, 23, '', 1, NULL, 0, 0, 1, 1505816276, 1),
@@ -505,16 +508,31 @@ INSERT INTO `eacoo_modules` (`id`, `name`, `title`, `description`, `author`, `ve
 --
 
 CREATE TABLE `eacoo_nav` (
-  `id` int(11) UNSIGNED NOT NULL,
+  `id` smallint(6) UNSIGNED NOT NULL,
   `title` varchar(60) NOT NULL DEFAULT '' COMMENT '标题',
-  `position` varchar(30) NOT NULL DEFAULT '' COMMENT '位置。头部：top，用户中心：usercenter',
-  `type` tinyint(2) UNSIGNED NOT NULL COMMENT '类型。1模块',
-  `value` varchar(120) NOT NULL DEFAULT '' COMMENT 'url地址',
+  `value` varchar(120) DEFAULT '' COMMENT 'url地址',
+  `pid` smallint(6) UNSIGNED NOT NULL DEFAULT '0' COMMENT '父级',
+  `position` varchar(20) NOT NULL DEFAULT '' COMMENT '位置。头部：header，我的：my',
+  `target` varchar(15) DEFAULT '_self' COMMENT '打开方式。',
+  `depend_type` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '来源类型。0普通外链http，1模块扩展，2插件扩展，3主题扩展',
+  `depend_flag` varchar(30) NOT NULL DEFAULT '' COMMENT '来源标记。如：模块或插件标识',
   `icon` varchar(120) NOT NULL DEFAULT '' COMMENT '图标',
-  `create_time` int(10) UNSIGNED NOT NULL COMMENT '创建时间',
+  `sort` smallint(6) UNSIGNED NOT NULL DEFAULT '99' COMMENT '排序',
   `update_time` int(10) UNSIGNED NOT NULL COMMENT '更新时间',
-  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `create_time` int(10) UNSIGNED NOT NULL COMMENT '创建时间',
+  `status` tinyint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '状态。0禁用，1启用'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='前台导航';
+
+--
+-- 转存表中的数据 `eacoo_nav`
+--
+
+INSERT INTO `eacoo_nav` (`id`, `title`, `value`, `pid`, `position`, `target`, `depend_type`, `depend_flag`, `icon`, `sort`, `update_time`, `create_time`, `status`) VALUES
+(1, '主页', '/', 0, 'header', '_self', 1, 'home', 'fa fa-home', 99, 1516253206, 1516206948, 1),
+(2, '会员', 'user/index/index', 0, 'header', '_self', 1, 'user', '', 99, 1516245690, 1516245690, 1),
+(3, '下载', 'https://gitee.com/ZhaoJunfeng/EacooPHP/attach_files', 0, 'header', '_blank', 0, '', '', 99, 1516245884, 1516245884, 1),
+(4, '社区', 'http://forum.eacoo123.com', 0, 'header', '_blank', 0, '', '', 99, 1516246000, 1516246000, 1),
+(5, '文档', 'https://www.kancloud.cn/youpzt/eacoo', 0, 'header', '_blank', 0, '', '', 99, 1516249947, 1516249947, 1);
 
 -- --------------------------------------------------------
 
@@ -631,7 +649,6 @@ CREATE TABLE `eacoo_themes` (
   `id` int(11) UNSIGNED NOT NULL COMMENT 'ID',
   `name` varchar(32) NOT NULL DEFAULT '' COMMENT '名称',
   `title` varchar(64) NOT NULL DEFAULT '' COMMENT '标题',
-  `cover` varchar(80) DEFAULT NULL COMMENT '封面',
   `description` varchar(127) NOT NULL DEFAULT '' COMMENT '描述',
   `author` varchar(32) NOT NULL DEFAULT '' COMMENT '开发者',
   `version` varchar(8) NOT NULL DEFAULT '' COMMENT '版本',
@@ -648,8 +665,8 @@ CREATE TABLE `eacoo_themes` (
 -- 转存表中的数据 `eacoo_themes`
 --
 
-INSERT INTO `eacoo_themes` (`id`, `name`, `title`, `cover`, `description`, `author`, `version`, `config`, `current`, `website`, `sort`, `create_time`, `update_time`, `status`) VALUES
-(1, 'default', '官方默认主题', '/themes/default/cover.jpeg', '内置于系统中，是其它主题的基础主题', '心云间、凝听', '1.0.0', '', 1, 'http://www.eacoo123.com', 0, 1475899420, 1510326902, 1);
+INSERT INTO `eacoo_themes` (`id`, `name`, `title`, `description`, `author`, `version`, `config`, `current`, `website`, `sort`, `create_time`, `update_time`, `status`) VALUES
+(1, 'default', '官方默认主题', '内置于系统中，是其它主题的基础主题', '心云间、凝听', '1.0.0', '', 1, 'http://www.eacoo123.com', 0, 1475899420, 1510326902, 1);
 
 -- --------------------------------------------------------
 
@@ -839,12 +856,12 @@ ALTER TABLE `eacoo_action`
 -- 使用表AUTO_INCREMENT `eacoo_action_log`
 --
 ALTER TABLE `eacoo_action_log`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=2;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=8;
 --
 -- 使用表AUTO_INCREMENT `eacoo_attachment`
 --
 ALTER TABLE `eacoo_attachment`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=97;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=99;
 --
 -- 使用表AUTO_INCREMENT `eacoo_auth_group`
 --
@@ -879,12 +896,12 @@ ALTER TABLE `eacoo_modules`
 -- 使用表AUTO_INCREMENT `eacoo_nav`
 --
 ALTER TABLE `eacoo_nav`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` smallint(6) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- 使用表AUTO_INCREMENT `eacoo_plugins`
 --
 ALTER TABLE `eacoo_plugins`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键';
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=8;
 --
 -- 使用表AUTO_INCREMENT `eacoo_rewrite`
 --
@@ -899,7 +916,7 @@ ALTER TABLE `eacoo_terms`
 -- 使用表AUTO_INCREMENT `eacoo_term_relationships`
 --
 ALTER TABLE `eacoo_term_relationships`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=132;
 --
 -- 使用表AUTO_INCREMENT `eacoo_themes`
 --

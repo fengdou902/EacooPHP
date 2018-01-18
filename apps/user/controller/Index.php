@@ -27,7 +27,7 @@ class Index extends Home{
     public function index(){
 
         $map['status'] = 1; // 禁用和正常状态
-        list($user_list) = $this->userModel->getListByPage($map,'reg_time desc','*',20);
+        list($user_list,$page) = $this->userModel->getListByPage($map,'reg_time desc','uid,username,nickname,avatar,reg_time',20);
         $this->assign('user_list',$user_list);
         
         $this->pageInfo('会员列表','users');

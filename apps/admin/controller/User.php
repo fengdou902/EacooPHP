@@ -59,7 +59,7 @@ class User extends Admin {
                 ->keyListItem('username', '用户名')
                 ->keyListItem('email', '邮箱')
                 ->keyListItem('mobile', '手机号')
-                ->keyListItem('reg_time', '注册时间')
+                ->keyListItem('reg_time', '注册时间','time')
                 ->keyListItem('allow_admin', '允许进入后台','status')
                 ->keyListItem('status', '状态', 'array',[0=>'禁用',1=>'正常',2=>'待验证'])
                 ->keyListItem('right_button', '操作', 'btn')
@@ -78,7 +78,7 @@ class User extends Admin {
     public function edit($uid = 0) {
         $title = $uid ? "编辑" : "新增";
         if (IS_POST) {
-            $data = input('post.');
+            $data = input('param.');
             // 密码为空表示不修改密码
             if ($data['password'] === '') {
                 unset($data['password']);
@@ -87,6 +87,9 @@ class User extends Admin {
             $this->validate($data,'User.edit');
 
             $uid  = isset($data['uid']) && $data['uid']>0 ? intval($data['uid']) : false;
+            if (!$uid) {
+                $data['reg_time'] = time();
+            }
             // 提交数据
             $result = $this->userModel->editData($data,$uid,'uid');
 

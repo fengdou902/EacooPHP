@@ -207,7 +207,7 @@ class Action extends Admin {
 			$this->error('参数错误！');
 		}
 
-		$info = $this->actionLogModel->alias('a')->join('__USERS__ b','a.uid = b.uid')->join('__ACTION__ c','a.action_id = c.id')->order('a.create_time desc')->field('a.*,b.nickname,c.name,c.title')->find();
+		$info = $this->actionLogModel->alias('a')->where('a.id',$id)->join('__USERS__ b','a.uid = b.uid')->join('__ACTION__ c','a.action_id = c.id')->order('a.create_time desc')->field('a.*,b.nickname,c.name,c.title')->find();
 		$info['nickname']= db('users')->where('uid',$info['uid'])->value('nickname');
 		//$info['action_ip']   = long2ip($info['action_ip']);
 		if ($info['ip']!='' && $info['ip']!='127.0.0.1') {
