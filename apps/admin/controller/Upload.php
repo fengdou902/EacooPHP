@@ -80,15 +80,11 @@ class Upload extends Admin {
     }   
     //获取builder多图上传列表
     public function getViewAttachmentList($ids,$nolayout=false,$path_type='picture'){
-        $map['id']     = array('in',$ids);
+        $map['id']     = ['in',$ids];
         $map['status'] = 1;
-        $file_list=$this->attachmentModel->getList($map);
+        $file_list = $this->attachmentModel->getList($map);
         foreach ($file_list as $key => $data) {
-            if ($data['location']!='link') {
-                $data['url']='http://'.$_SERVER['HTTP_HOST'].getImgSrcByExt($data['ext'],$data['path'],true);
-            }else{
-                $data['url']=$data['path'];
-            }
+            $data['url'] = cdn_img_url($data['path']);
             if ($nolayout==true) {
                 echo '<img class="" src="'.$data['url'].'" data-id="'.$data['id'].'">';
             }else{

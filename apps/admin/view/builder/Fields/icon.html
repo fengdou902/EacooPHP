@@ -4,7 +4,7 @@
   $icon_id = $field['name'];
 {/php}
 	<div class="form-group item_{$field.name} {$field.extra_class|default=''}">
-		<label for="{$field.name}" class="col-md-2 control-label">{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{$field.title}</label>
+		<label for="{$field.name}" class="col-md-2 control-label">{eq name="field.confirm" value="require"}<sup>*</sup>{/eq}{$field.title}</label>
 		 <div class="col-md-6">
 		 			<div class="input-group input" id="{$field.name}-picker">
               <span class="input-group-btn">

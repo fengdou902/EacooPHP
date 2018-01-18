@@ -167,7 +167,7 @@ class Upload {
 					'path_type'   => 'picture',
 					'mime_type'   => 'image',
 					'path'        => str_replace("\\", '/', substr($path, 1)),
-					'url'         => render_picture_path($path),
+					'url'         => cdn_img_url($path),
 					'size'        => filesize($path),
 					'md5'         => $md5,
 					'sha1'        => $sha1,
@@ -315,7 +315,7 @@ class Upload {
 					'path_type'   => 'picture',
 					'mime_type'   => 'image',
 					'path'        => str_replace("\\", '/', substr($path, 1)),
-					'url'         => render_picture_path($path),
+					'url'         => cdn_img_url($path),
 					'size'        => filesize($path),
 					'md5'         => $md5,
 					'sha1'        => $sha1,
@@ -460,7 +460,7 @@ class Upload {
 			$data['path_type']   = $this->path_type; //路径类型
 			$data['mime_type']   = $info->getMime() ? strstr($info->getMime(),'/',true):''; //文件mime类型
 			$data['savepath']    = $info->getPath(); //不带文件名的文件路径
-			$data['url']         = $data['path']         = str_replace("\\", '/', substr($info->getPathname(), 1)); //全路径
+			$data['url']         = $data['path']  = str_replace("\\", '/', substr($info->getPathname(), 1)); //全路径
 			$data['size']        = $info->getSize(); //文件大小，单位字节
 			$data['md5']         = md5_file($info->getPathname());
 			$data['sha1']        = sha1_file($info->getPathname());

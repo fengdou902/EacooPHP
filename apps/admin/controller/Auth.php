@@ -13,7 +13,7 @@ namespace app\admin\controller;
 use app\admin\model\AuthRule;
 use app\admin\model\AuthGroup;
 use app\admin\model\AuthGroupAccess;
-use app\common\model\User;
+use app\common\model\User as UserModel;
 
 use app\admin\builder\Builder;
 use eacoo\Tree;
@@ -31,7 +31,7 @@ class Auth extends Admin {
 
         $this->authRuleModel  = new AuthRule();
         $this->authGroupModel = new AuthGroup();
-        $this->userModel     = new User;
+        $this->userModel     = new UserModel;
 
         $default_module = [ 
                         'admin'   =>'后台模块',
@@ -69,17 +69,6 @@ class Auth extends Admin {
             $data_list[$key]['p_menu']= $this->authRuleModel->where(['id'=>(int)$list['pid']])->value('title');
         }
 
-        //是否标记为菜单：0否，1是
-        $marker_menu0_attr['title'] = '取消菜单标记';
-        $marker_menu0_attr['class'] = 'btn btn-primary btn-sm confirm ajax-post';
-        $marker_menu0_attr['href'] = url('markerMenu',['status'=>0]);
-        $marker_menu0_attr['target-form'] ="ids";
-
-        $marker_menu1_attr['title'] = '标记为菜单';
-        $marker_menu1_attr['class'] = 'btn btn-primary btn-sm ajax-post';
-        $marker_menu1_attr['href'] = url('markerMenu',['status'=>1]);
-        $marker_menu1_attr['target-form'] ="ids";
-
          //移动模块按钮属性
         $movemodule_attr['title'] = '<i class="fa fa-exchange"></i> 移动模块';
         $movemodule_attr['class'] = 'btn btn-info btn-sm';
@@ -105,7 +94,7 @@ class Auth extends Admin {
             ->setTabNav($tab_list, $depend_flag)  // 设置页面Tab导航
             //->addTopButton('self', $movemodule_attr) //移动模块
             ->addTopButton('self', $moveparent_attr) //移动菜单位置
-            ->addTopBtn('sort',['model'=>'auth_rule','href'=>url('rule_sort',['pid'=>$pid])])  // 添加排序按钮
+            ->addTopBtn('sort',['model'=>'auth_rule','href'=>url('ruleSort',['pid'=>$pid])])  // 添加排序按钮
             //->setSearch('', url('rule'))
             ->keyListItem('id','ID')
             ->keyListItem('title','名称')
@@ -122,7 +111,6 @@ class Auth extends Admin {
             ->setExtraHtml($extra_html)
             ->addRightButton('edit',array('href'=>url('ruleEdit',array('id'=>'__data_id__'))))      // 添加编辑按钮
             ->addRightButton('forbid',array('model'=>'auth_rule'))// 添加删除按钮
-            ->addFootBtn('self', $marker_menu0_attr)->addFootBtn('self', $marker_menu1_attr)
             ->alterListData(
                 array('key' => 'pid', 'value' =>'0'),
                 array('p_menu' => '无'))
@@ -134,27 +122,22 @@ class Auth extends Admin {
      * @return [type] [description]
      */
     public function adminMenu(){
-        $manage_type = input('param.manage_type','menu');//管理类型
-        // 获取所有节点信息
-        $map['pid'] = input('param.pid',0);//是否存在父ID
-        $map['is_menu']=1;//只显示菜单
-        if ($map['pid']>0) {
-            $current_submenu_name = $this->authRuleModel->where(['id'=>(int)$map['pid']])->value('title');
-            $meta_title = '<a onclick="javascript:history.back(-1);return false;">'.$current_submenu_name.'</a>》子菜单管理';
-        } else{
-            $meta_title='后台菜单管理';
-        }
-        
-        list($data_list,$page) = $this->authRuleModel->getListByPage($map,'sort asc','*',20);
-        $menus = db('auth_rule')->where(['is_menu'=>1])
+        $page = null;
+        $menus = $this->authRuleModel->field(true)->select();
+        $menus = collection($menus)->toArray();
         $tree_obj = new Tree;
-        $menus = $tree_obj->toFormatTree($data_list,'title');
-        halt($menus);
+        $menus = $tree_obj->toFormatTree($menus,'title');
 
-        foreach ($data_list as $key=>$list) {
-            $data_list[$key]['p_menu']= $this->authRuleModel->where(['id'=>(int)$list['pid']])->value('title');
-        }
+         //移动模块按钮属性
+        $movemodule_attr['title'] = '<i class="fa fa-exchange"></i> 移动模块';
+        $movemodule_attr['class'] = 'btn btn-info btn-sm';
+        $movemodule_attr['onclick'] = 'move_module()';
 
+        //移动上级按钮属性
+        $moveparent_attr['title'] = '<i class="fa fa-exchange"></i> 移动位置';
+        $moveparent_attr['class'] = 'btn btn-info btn-sm';
+        $moveparent_attr['onclick'] = 'move_menuparent()';
+        $extra_html=$this->moveMenuHtml();//添加移动按钮html
 
         //是否标记为菜单：0否，1是
         $marker_menu0_attr['title'] = '取消菜单标记';
@@ -167,44 +150,34 @@ class Auth extends Admin {
         $marker_menu1_attr['href'] = url('markerMenu',['status'=>1]);
         $marker_menu1_attr['target-form'] ="ids";
 
-         //移动模块按钮属性
-        $movemodule_attr['title'] = '<i class="fa fa-exchange"></i> 移动模块';
-        $movemodule_attr['class'] = 'btn btn-info btn-sm';
-        $movemodule_attr['onclick'] = 'move_module()';
-
-        //移动上级按钮属性
-        $moveparent_attr['title'] = '<i class="fa fa-exchange"></i> 移动位置';
-        $moveparent_attr['class'] = 'btn btn-info btn-sm';
-        $moveparent_attr['onclick'] = 'move_menuparent()';
-
-        $extra_html=$this->moveMenuHtml();//添加移动按钮html
-
         Builder::run('List')
-            ->setMetaTitle($meta_title)
-            ->addTopBtn('addnew',array('href'=>url('ruleEdit',array('pid'=>$map['pid']))))  // 添加新增按钮
-            ->addTopBtn('resume',array('model'=>'auth_rule'))  // 添加启用按钮
-            ->addTopBtn('forbid',array('model'=>'auth_rule'))  // 添加禁用按钮
-            ->addTopBtn('delete',array('model'=>'auth_rule'))  // 添加删除按钮
-            //->addTopButton('self', $movemodule_attr) //移动模块
+            ->setMetaTitle('后台菜单管理')
+            ->addTopBtn('addnew',['href'=>url('ruleEdit',['pid'=>0])])  // 添加新增按钮
+            ->addTopBtn('resume',['model'=>'auth_rule'])  // 添加启用按钮
+            ->addTopBtn('forbid',['model'=>'auth_rule'])  // 添加禁用按钮
+            ->addTopBtn('delete',['model'=>'auth_rule'])  // 添加删除按钮
+            ->addTopButton('self', $marker_menu0_attr)->addTopButton('self', $marker_menu1_attr)
+            ->addTopButton('self', $movemodule_attr) //移动模块
             ->addTopButton('self', $moveparent_attr) //移动菜单位置
-            ->addTopBtn('sort',array('model'=>'auth_rule','href'=>url('rule_sort',['pid'=>$map['pid']])))  // 添加排序按钮
+            ->addTopBtn('sort',array('model'=>'auth_rule','href'=>url('ruleSort')))  // 添加排序按钮
             //->setSearch('', url('rule'))
             ->keyListItem('id','ID')
-            ->keyListItem('title','名称','link',['link'=>url('Auth/adminMenu',['pid'=>'__data_id__'])])
-            ->keyListItem('p_menu','上级菜单')
-            ->keyListItem('name', 'URL')
+            ->keyListItem('title_show','名称')
+            ->keyListItem('name', 'URL','url',['url_callback'=>'url'])
+            ->keyListItem('icon','图标','icon')
+            ->keyListItem('depend_type', '来源类型','array',[1=>'模块',2=>'插件',3=>'主题'])
             ->keyListItem('depend_flag', '来源标识')
             ->keyListItem('sort', '排序')
             ->keyListItem('is_menu','菜单','array',[0=>'否',1=>'是'])
+            ->keyListItem('no_pjax','Pjax加载','array',[0=>'是',1=>'否'])
             ->keyListItem('status','状态','status')
             ->keyListItem('right_button', '操作', 'btn')
             ->setListDataKey('id')
-            ->setListData($data_list)    // 数据列表
+            ->setListData($menus)    // 数据列表
             ->setListPage($page) // 数据列表分页
             ->setExtraHtml($extra_html)
             ->addRightButton('edit',array('href'=>url('ruleEdit',array('id'=>'__data_id__'))))      // 添加编辑按钮
-            ->addRightButton('forbid',array('model'=>'auth_rule'))// 添加删除按钮
-            ->addFootBtn('self', $marker_menu0_attr)->addFootBtn('self', $marker_menu1_attr)
+            ->addRightButton('forbid',['model'=>'auth_rule'])// 添加删除按钮
             ->alterListData(
                 array('key' => 'pid', 'value' =>'0'),
                 array('p_menu' => '无'))
@@ -220,7 +193,7 @@ class Auth extends Admin {
         $title=$id ? "编辑":"新增";
         if ($id==0) {//新增
             $pid       = (int)input('param.pid');
-            $pid_data  = $this->authRuleModel->find($pid);
+            $pid_data  = $this->authRuleModel->get($pid);
             $menu_data = array('depend_flag'=>$pid_data['depend_flag'],'pid'=>$pid);
         }
         
@@ -230,11 +203,11 @@ class Auth extends Admin {
             //验证数据
             $this->validateData($data,'AuthRule');
             $data['depend_type']=1;//后台添加默认依赖模块
-            $id   =isset($data['id']) && $data['id']>0 ? $data['id']:false;
+            $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
 
             if ($this->authRuleModel->editData($data,$id)) {
                 cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);//清空后台菜单缓存
-                $this->success($title.'菜单成功', url('index',array('pid'=>input('param.pid'))));
+                $this->success($title.'菜单成功', url('index',['pid'=>input('param.pid')]));
             } else {
                 $this->error($this->authRuleModel->getError());
             }   
@@ -244,18 +217,22 @@ class Auth extends Admin {
             if ($id!=0) {
                 $menu_data = $this->authRuleModel->find($id);
             }
-            $menus = db('auth_rule')->select();
-            $tree_obj = new Tree;
-            $menus = $tree_obj->toFormatTree($menus,'title');
-
+            $menus = $this->authRuleModel->select();
+            if (!empty($menus)) {
+                $menus = collection($menus)->toArray();
+                $tree_obj = new Tree;
+                $menus = $tree_obj->toFormatTree($menus,'title');
+            }
+            
             $menus = array_merge([0=>['id'=>0,'title_show'=>'顶级菜单']], $menus);
 
             Builder::run('Form')
                     ->setMetaTitle($title.'菜单')  // 设置页面标题
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
                     ->addFormItem('title', 'text', '标题', '用于后台显示的配置标题')
-                    ->addFormItem('depend_flag', 'select', '所属模块', '所属的模块，模块菜单必须选择，否则无法导出',$this->moduleList)  
                     ->addFormItem('pid', 'multilayer_select', '上级菜单', '上级菜单',$menus)
+                    ->addFormItem('depend_type', 'select', '来源类型', '来源类型。分别是模块，插件，主题',[1=>'模块',2=>'插件',3=>'主题'])
+                    ->addFormItem('depend_flag', 'text', '来源标识', '如模块、插件、主题的标识名')
                     ->addFormItem('icon', 'icon', '字体图标', '字体图标')
                     ->addFormItem('name', 'text', '链接', '链接')
                     ->addFormItem('is_menu', 'radio', '后台菜单', '是否标记为后台菜单',[1=>'是',0=>'否'])
@@ -272,10 +249,15 @@ class Auth extends Admin {
      * 对菜单进行排序
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function rule_sort($ids = null)
+    public function ruleSort($ids = null)
     {
         $builder    = Builder::run('Sort');
-        $map['pid'] = input('param.pid',0,'intval');//是否存在父ID
+        $pid = input('param.pid',false);//是否存在父ID
+        $map = [];
+        if ($pid>0 || $pid===0) {
+            $map['pid'] = $pid;
+        } 
+        
         if (IS_POST) {
             cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);//清空后台菜单缓存
             $builder->doSort('auth_rule', $ids);
@@ -363,8 +345,8 @@ class Auth extends Admin {
      */
     public function moveMenuParent() {
         if (IS_POST) {
-            $ids    = input('post.ids');
-            $to_pid = input('post.to_pid');
+            $ids    = input('param.ids');
+            $to_pid = input('param.to_pid');
             if ($to_pid || $to_pid==0) {
                 cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);
                 $map['id'] = ['in',$ids];
@@ -516,7 +498,7 @@ EOF;
     
          $info =$this->authGroupModel->find($group_id);
          if (IS_POST) {
-            $data = input('post.');
+            $data = $this->request->param();
             $this->validateData($data,  
                                 [
                                     ['title','require|chsAlpha','用户组名称不能为空|用户组名称只能是汉字和字母'],
@@ -639,7 +621,7 @@ EOF;
      * @author 朱亚杰 <zhuyajie@topthink.net>
      */
     public function writeGroup(){
-        $data = input('post.');
+        $data = input('param.');
         if(isset($data['rules'])){
             sort($data['rules']);
             $data['rules']  = implode( ',' , array_unique($data['rules']));
@@ -658,9 +640,9 @@ EOF;
      */
     public function descriptionGroup()
     {
-        $title               = input('post.title');
-        $description         = input('post.description');
-        $id                  = input('post.id');
+        $title               = input('param.title');
+        $description         = input('param.description');
+        $id                  = input('param.id');
         $data['description'] = $description;
         $data['title']       = $title;
         $res=$this->authGroupModel->where('id='.$id)->save($data);

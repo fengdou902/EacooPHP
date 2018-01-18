@@ -106,11 +106,7 @@ class Attachment extends Base {
 
             $result['real_path']= PUBLIC_PATH.$result['path'];
             $result['src'] = getImgSrcByExt($result['ext'],$result['path'],true);
-            if (in_array($result['ext'],['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'wps', 'txt', 'zip', 'rar', 'gz', 'bz2', '7z','wav','mp3','mp4','wmv'])) {
-                $result['url'] = get_cdn_domain().root_full_path($result['path']);
-            } else{
-                $result['url'] = get_cdn_domain().$result['path'];
-            }
+            $result['url'] = cdn_img_url($result['path']);
             
         }
         $result['size']       = format_file_size($result['size']);

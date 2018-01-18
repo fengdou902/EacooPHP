@@ -15,8 +15,9 @@ use eacoo\Sql;
 use eacoo\EacooAccredit;
 
 use think\Exception;
-use app\admin\model\AuthRule;
-use app\admin\model\Hooks;
+use app\admin\model\AuthRule as AuthRuleModel;
+use app\common\model\Nav as NavModel;
+use app\admin\model\Hooks as HooksModel;
 use app\admin\model\Plugins as PluginsModel;
 use app\admin\model\Modules as ModuleModel;
 use app\admin\model\Theme as ThemeModel;
@@ -41,7 +42,7 @@ class Extension extends Admin {
 			'type'=>$this->type,
 		];
 		$this->cloudService = new Cloud($option);
-		$this->hooksModel  = new Hooks();
+		$this->hooksModel  = new HooksModel();
         $this->uid = is_login();
 	}
 
@@ -56,15 +57,15 @@ class Extension extends Admin {
     {
         $this->type = $type;
         switch ($type) {
-            case 'plugin':
-                $this->appsPath = PLUGIN_PATH;
-                $this->depend_type = 2;
-                $this->appExtensionModel = new PluginsModel;
-                break;
             case 'module':
                 $this->appsPath = APP_PATH;
                 $this->depend_type =1;
                 $this->appExtensionModel = new ModuleModel;
+                break;
+            case 'plugin':
+                $this->appsPath = PLUGIN_PATH;
+                $this->depend_type = 2;
+                $this->appExtensionModel = new PluginsModel;
                 break;
             case 'theme':
                 $this->appsPath = THEME_PATH;
@@ -301,9 +302,15 @@ class Extension extends Admin {
                     } 
                     
                 } 
+                //设置后台菜单
                 $admin_menus = $this->getAdminMenusByFile($name);
                 if (!empty($admin_menus) && is_array($admin_menus)) {
                     $this->addAdminMenus($admin_menus,$name);
+                }
+                //设置前台导航菜单
+                $navigation_menus = $this->getNavigationByFile($name);
+                if (!empty($navigation_menus) && is_array($navigation_menus)) {
+                    $this->addNavigationMenus($navigation_menus);
                 }
                 $static_path = $this->appExtensionPath.'static';
                 if (is_dir($static_path)) {
@@ -313,7 +320,7 @@ class Extension extends Admin {
                         $type_path = '';
                     }
                     if (!rename($static_path,PUBLIC_PATH.'static'.$type_path.'/'.$name)) {
-                        trace('应用静态资源移动失败'.PUBLIC_PATH.'static'.$type_path.'/'.$name,'error');
+                        setAppLog('应用静态资源移动失败'.PUBLIC_PATH.'static'.$type_path.'/'.$name,'Extension','error');
                     } 
                 }
 
@@ -337,6 +344,13 @@ class Extension extends Admin {
         
 	}
 
+    /**
+     * 升级操作
+     * @param  string $name [description]
+     * @return [type] [description]
+     * @date   2018-01-18
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
     public function upgradeAction($name='')
     {
         $install_method = $this->request->param('install_method','install');
@@ -357,7 +371,7 @@ class Extension extends Admin {
             if (is_dir($_static_path)) {
                 if(is_really_writable(PUBLIC_PATH.'static/'.$type_path) && is_really_writable($this->appsPath.$name)){
                     if (!rename($_static_path,$static_path)) {
-                        trace('静态资源移动失败：'.'public/static/'.$name.'->'.$static_path,'error');
+                        setAppLog('静态资源移动失败：'.$static_path.'移动到'.$_static_path,'error');
                     } 
                 }
             }
@@ -438,107 +452,6 @@ class Extension extends Admin {
             return $this->fetch('extension/userinfo');
         }
         
-    }
-
-    /**
-     * 添加后台菜单
-     * @param  array $data 菜单数据
-     * @param  integer $pid 父级ID
-     * @param  string $flag_name 插件名
-     * @date   2017-09-15
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public function addAdminMenus($data = [], $flag_name = '', $pid = 0)
-    {
-        if (!empty($data) && is_array($data) && $flag_name!='') {
-            $authRuleModel = new AuthRule;
-            foreach ($data as $key => $menu) {
-                $pid = isset($menu['pid']) ? (int)$menu['pid'] : $pid;
-
-                $menu['depend_type'] = $this->depend_type;
-                $menu['depend_flag'] = $flag_name;
-                $menu['pid']    = $pid;
-                $menu['sort']   = isset($menu['sort']) ? $menu['sort'] : 99;
-                if ($authRuleModel->where(['name'=>$menu['name'],'depend_type'=>$this->depend_type,'depend_flag'=>$flag_name])->find()) {
-                    $authRuleModel->where(['name'=>$menu['name'],'depend_type'=>$this->depend_type,'depend_flag'=>$flag_name])->update(['status'=>1]);
-                } else{
-                    $authRuleModel->allowField(true)->isUpdate(false)->data($menu)->save();
-                }
-                
-                //添加子菜单
-                if (!empty($menu['sub_menu'])) {
-                    $this->addAdminMenus($menu['sub_menu'], $flag_name, $authRuleModel->id);
-                }
-            }
-            cache('admin_sidebar_menus_'.$this->uid,null);//清空后台菜单缓存
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * 移除后台菜单
-     * @param  string $flag_name 模块名
-     * @param  boolean $delete 是否删除数据
-     * @return [type] [description]
-     * @date   2017-09-18
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public function removeAdminMenus($flag_name='' ,$delete=true)
-    {
-        if ($flag_name!='') {
-            $map = [
-                'depend_type'=>$this->depend_type,
-                'depend_flag'=>$flag_name
-            ];
-            if ($delete) {
-                $res = AuthRule::where($map)->delete();
-            } else{
-                $res = AuthRule::where($map)->update(['status'=>0]);
-            }
-            if (false === $res) {
-                return false;
-            } else{
-                cache('admin_sidebar_menus_'.$this->uid,null);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 启用和禁用后台菜单
-     * @param  string $flag_name [description]
-     * @param  boolean $delete [description]
-     * @return [type] [description]
-     * @date   2017-11-02
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public function switchAdminMenus($flag_name='' ,$status='')
-    {
-        if($flag_name=='') $flag_name = $this->appName;
-        if ($flag_name!='') {
-            if ($status!='resume' && $status!='forbid') return false;
-            $map = [
-                'depend_type'=>$this->depend_type,
-                'depend_flag'=>$flag_name
-            ];
-            $state = 0;
-            if ($status=='resume') {
-                $state = 1;
-            } elseif ($status=='forbid') {
-                $state = 0;
-            }
-            $menus = AuthRule::where($map)->update(['status'=>$state]);
-            
-            if (false === $menus) {
-                return false;
-            } else{
-                cache('admin_sidebar_menus_'.$this->uid,null);
-                return true;
-            }
-        }
-        return false;
     }
 
 	/**
@@ -784,6 +697,107 @@ class Extension extends Admin {
     }
 
     /**
+     * 添加后台菜单
+     * @param  array $data 菜单数据
+     * @param  integer $pid 父级ID
+     * @param  string $flag_name 插件名
+     * @date   2017-09-15
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function addAdminMenus($data = [], $flag_name = '', $pid = 0)
+    {
+        if (!empty($data) && is_array($data) && $flag_name!='') {
+            $authRuleModel = new AuthRuleModel;
+            foreach ($data as $key => $menu) {
+                $pid = isset($menu['pid']) ? (int)$menu['pid'] : $pid;
+
+                $menu['depend_type'] = $this->depend_type;
+                $menu['depend_flag'] = $flag_name;
+                $menu['pid']    = $pid;
+                $menu['sort']   = isset($menu['sort']) ? $menu['sort'] : 99;
+                if ($authRuleModel->where(['name'=>$menu['name'],'depend_type'=>$this->depend_type,'depend_flag'=>$flag_name])->find()) {
+                    $authRuleModel->where(['name'=>$menu['name'],'depend_type'=>$this->depend_type,'depend_flag'=>$flag_name])->update(['status'=>1]);
+                } else{
+                    $authRuleModel->allowField(true)->isUpdate(false)->data($menu)->save();
+                }
+                
+                //添加子菜单
+                if (!empty($menu['sub_menu'])) {
+                    $this->addAdminMenus($menu['sub_menu'], $flag_name, $authRuleModel->id);
+                }
+            }
+            cache('admin_sidebar_menus_'.$this->uid,null);//清空后台菜单缓存
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 移除后台菜单
+     * @param  string $flag_name 模块名
+     * @param  boolean $delete 是否删除数据
+     * @return [type] [description]
+     * @date   2017-09-18
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function removeAdminMenus($flag_name='' ,$delete=true)
+    {
+        if ($flag_name!='') {
+            $map = [
+                'depend_type'=>$this->depend_type,
+                'depend_flag'=>$flag_name
+            ];
+            if ($delete) {
+                $res = AuthRuleModel::where($map)->delete();
+            } else{
+                $res = AuthRuleModel::where($map)->update(['status'=>0]);
+            }
+            if (false === $res) {
+                return false;
+            } else{
+                cache('admin_sidebar_menus_'.$this->uid,null);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 启用和禁用后台菜单
+     * @param  string $flag_name [description]
+     * @param  boolean $delete [description]
+     * @return [type] [description]
+     * @date   2017-11-02
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function switchAdminMenus($flag_name='' ,$status='')
+    {
+        if($flag_name=='') $flag_name = $this->appName;
+        if ($flag_name!='') {
+            if ($status!='resume' && $status!='forbid') return false;
+            $map = [
+                'depend_type'=>$this->depend_type,
+                'depend_flag'=>$flag_name
+            ];
+            $state = 0;
+            if ($status=='resume') {
+                $state = 1;
+            } elseif ($status=='forbid') {
+                $state = 0;
+            }
+            $menus = AuthRuleModel::where($map)->update(['status'=>$state]);
+            
+            if (false === $menus) {
+                return false;
+            } else{
+                cache('admin_sidebar_menus_'.$this->uid,null);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 文件获取安装的前台导航
      * @param  string $name [description]
      * @return [type] [description]
@@ -807,6 +821,88 @@ class Extension extends Admin {
     }
 
     /**
+     * 添加前台导航菜单
+     * @param  array $data 菜单数据
+     * @param  integer $pid 父级ID
+     * @date   2017-09-15
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function addNavigationMenus($data = [], $pid = 0)
+    {
+        if (!empty($data) && is_array($data)) {
+            $flag_name = $this->appName;
+            $navModel = new NavModel;
+            //头部导航
+            if (!empty($data['header'])) {
+                $header_menus = $data['header'];
+                foreach ($header_menus as $key => $menu) {
+                    $menu['position'] = 'header';
+                    $menu['pid'] = $pid;
+                    $menu['depend_type'] = $this->depend_type;
+                    $menu['depend_flag'] = $flag_name;
+                    $navModel->allowField(true)->isUpdate(false)->data($menu)->save();
+                    
+                    //添加子菜单
+                    if (!empty($menu['sub_menu'])) {
+                        $this->addNavigationMenus(['header'=>$menu['sub_menu']], $navModel->id);
+                    }
+                }
+                cache('front_header_navs',null);//清空前台导航缓存
+            }
+            
+            //个人中心导航
+            if (!empty($data['my'])) {
+                $my_menus = $data['my'];
+                foreach ($my_menus as $key => $menu) {
+                    $menu['position'] = 'my';
+                    $menu['pid'] = $pid;
+                    $menu['depend_type'] = $this->depend_type;
+                    $menu['depend_flag'] = $flag_name;
+                    $navModel->allowField(true)->isUpdate(false)->data($menu)->save();
+                    
+                    //添加子菜单
+                    if (!empty($menu['sub_menu'])) {
+                        $this->addNavigationMenus(['my'=>$menu['sub_menu']], $navModel->id);
+                    }
+                }
+                cache('front_my_navs',null);//清空前台我的缓存
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 移除前台导航菜单
+     * @param  boolean $delete 是否删除数据
+     * @return [type] [description]
+     * @date   2017-09-18
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function removeNavigationMenus($delete=true)
+    {
+        $map = [
+            'depend_type'=>$this->depend_type,
+            'depend_flag'=>$this->appName
+        ];
+        if ($delete) {
+            $res = NavModel::where($map)->delete();
+        } else{
+            $res = NavModel::where($map)->update(['status'=>0]);
+        }
+        if (false === $res) {
+            return false;
+        } else{
+            cache('front_header_navs',null);//清空前台导航缓存
+            cache('front_my_navs',null);//清空前台我的缓存
+            return true;
+        }
+        
+        return false;
+    }
+
+    /**
      * 文件获取安装的后台选项
      * @param  string $name [description]
      * @return [type] [description]
@@ -819,9 +915,7 @@ class Extension extends Admin {
         $file = $this->appExtensionPath . 'install/options.php';
 
         if (is_file($file)) {
-
             $module_menus = include $file;
-
             return $module_menus;
 
         } else {

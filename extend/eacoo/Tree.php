@@ -24,9 +24,9 @@ class Tree {
 	 * @return array
 	 * @author 麦当苗儿 <zuojiazi@vip.qq.com>
 	 */
-	protected function list_to_tree($list, $pk='id', $pid = 'pid', $child = '_child', $root = 0) {
+	public function list_to_tree($list, $pk='id', $pid = 'pid', $child = '_child', $root = 0) {
 	    // 创建Tree
-	    $tree = array();
+	    $tree = [];
 	    if(is_array($list)) {
 	        // 创建基于主键的数组引用
 	        $refer = array();
@@ -38,7 +38,7 @@ class Tree {
 	            $parentId =  $data[$pid];
 	            if ($root == $parentId) {
 	                $tree[] =& $list[$key];
-	            }else{
+	            } else{
 	                if (isset($refer[$parentId])) {
 	                    $parent =& $refer[$parentId];
 	                    $parent['childs'][] = $data['id'];

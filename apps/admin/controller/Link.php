@@ -45,9 +45,9 @@ class Link extends Admin{
                 ->addTopButton('resume')  // 添加启用按钮
                 ->addTopButton('forbid')  // 添加禁用按钮
                 ->addTopButton('sort')  // 添加排序按钮
-                ->setSearch('请输入关键字', url('index'))
+                ->setSearch('请输入关键字')
                 ->keyListItem('title', '站点名称')
-                ->keyListItem('url', '链接地址','url',array('target'=>'_blank'))
+                ->keyListItem('url', '链接地址','url',['extra_attr'=>['target'=>'_blank']])
                 ->keyListItem('image', '图像', 'picture')
                 ->keyListItem('type', '类型', 'array',$this->linkType)
                 ->keyListItem('rating','评级')

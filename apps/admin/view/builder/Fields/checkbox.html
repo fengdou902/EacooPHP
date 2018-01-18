@@ -5,7 +5,7 @@
         $option = array('title' => 标题, 'data-id' => 1);
     -->
    <div class="form-group item_{$field.name} {$field.extra_class|default=''}">
-   <label for="{$field.name}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{/present}{$field.title}</label>
+   <label for="{$field.name}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="require"}<sup>*</sup>{/eq}{/present}{$field.title}</label>
     <div class="col-md-6">       
       {assign name="num" value="0" /}             
           <div class="checkbox checkbox-primary">

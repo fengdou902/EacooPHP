@@ -108,16 +108,14 @@ if (!function_exists('plugin_url')) {
  *  url地址转换
  * @param  [type] $url [description]
  * @param  array $param [description]
- * @param  string $type 模块:1,插件：2,主题：theme
+ * @param  string $type 类型。0完整url，1模块地址，2插件地址，3主题
  * @return [type] [description]
  * @date   2017-11-14
  * @author 心云间、凝听 <981248356@qq.com>
  */
 function eacoo_url($url, $param=[],$type=1)
 {
-    if ($type==1) {//模块
-        return url($url,$param);
-    } elseif ($type==2) {//插件
+    if ($type==2) {//插件
         $url_params = [];
         $query      = parse_url($url);
         $url        = $query['path'];
@@ -126,12 +124,15 @@ function eacoo_url($url, $param=[],$type=1)
             $url_params = array_merge($url_params, $param);
         }
         if (strtolower($url)!='admin/plugins/config') {
-        
             return plugin_url($url,$url_params);
         } else{
             return url($url,$url_params);
         }
-        
+    } else{
+        if($url=='' || !$url || strpos($url, 'http://')!==false || strpos($url, 'https://')!==false){
+            return $url;
+        } 
+        return url($url,$param);
     }
 }
 

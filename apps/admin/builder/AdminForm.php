@@ -135,7 +135,7 @@ class AdminForm extends Builder
         $item['title']       = $title;
         $item['description'] = $description;
         $item['options']     = $options;
-        $item['confirm']     = $confirm;//验证。required必填，
+        $item['confirm']     = $confirm;//验证。require必填，
         $item['extra_class'] = $extra_class;
         $item['extra_attr']  = $extra_attr;
         $this->_form_items[] = $item;

@@ -114,8 +114,8 @@ class Terms extends Admin {
              $builder->setTabNav($tab_obj['tab_list'],$tab_obj['current']);  // 设置页面Tab导航
             }
             $builder->addFormItem('term_id', 'hidden', 'ID', 'ID')
-                    ->addFormItem('name', 'text', '分类名称', '分类名称','','required')
-                    ->addFormItem('slug', 'text', '分类别名', '分类别名','','required')
+                    ->addFormItem('name', 'text', '分类名称', '分类名称','','require')
+                    ->addFormItem('slug', 'text', '分类别名', '分类别名','','require')
                     ->addFormItem('taxonomy', 'select', '分类类型', '选择一个分类法',$this->termTaxonomy)
                     ->addFormItem('pid', 'multilayer_select', '上级分类', '上级分类',$p_terms)
                     ->addFormItem('limit', 'number', '分页条数', '设置前台的分页条数')

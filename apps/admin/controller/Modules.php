@@ -258,6 +258,7 @@ class Modules extends Admin {
             $extensionObj->initInfo('module',$name);
             // 删除后台菜单
             $extensionObj->removeAdminMenus($name,$clear);
+            $extensionObj->removeNavigationMenus($clear);
 			if ($clear) {
 		        //执行卸载sql
 				$sql_file   = APP_PATH.$name.'/install/uninstall.sql';

@@ -12,7 +12,7 @@
         };
     </script>
     <div class="form-group controls item_{$field.name} {$field.extra_class|default=''}">
-    <label for="{$field.name}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="required"}<sup>*</sup>{/eq}{/present}{$field.title|htmlspecialchars}</label>
+    <label for="{$field.name}" class="col-md-2 control-label">{present name="field.confirm"}{eq name="field.confirm" value="require"}<sup>*</sup>{/eq}{/present}{$field.title|htmlspecialchars}</label>
     <div class="col-md-6" style="padding-bottom: 5px;"><span class="btn btn-info ml-10 btn-sm" data-toggle="modal" data-target="#attachmentModal"><i class="fa fa-file"></i> 选择多文件</span>{notempty name="field.description"}<span class="color-red f12 ml-10">{$field.description}</span>{/notempty}
     <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field['value']}"/>
     </div>
