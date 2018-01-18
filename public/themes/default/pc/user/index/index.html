@@ -17,22 +17,21 @@
             <div class="row">
                 {notempty name="user_list"}
                 {volist name="user_list" id="data"}
-                <div class="col-xs-6 col-sm-3 col-md-3">
-                    <div class="card">
-                        <a class="img-circle" href="{:URL('user/index/home',['uid'=>$data['uid']])}">
-                            <img src="{$data.avatar}" alt="{$data.nickname}" class="avatar" style="height: 200px;">
-                        </a>
-                        <div class="card-heading">
-                            <a href="{:URL('/user/index/home/uid',['id'=>$data['uid']])}">
-                                <strong>{$data.nickname}</strong>
+                    <div class="col-xs-6 col-sm-3 col-md-3 homebox">
+                        <div class="card">
+                            <a class="img-circlea" href="{:URL('user/index/home',['uid'=>$data['uid']])}">
+                                <img src="{$data.avatar}" alt="{$data.nickname}" class="avatar">
                             </a>
-                        </div>
-                        <div class="card-actions">
-                            <span class="text-muted">加入时间：{$data.reg_time}</span>
+                            <div class="card-heading">
+                                <a href="{:URL('/user/index/home',['uid'=>$data['uid']])}">
+                                    {$data.nickname}</strong>
+                                </a>
+                            </div>
+                            <div class="card-actions">
+                                <span class="text-muted">加入时间：{$data.reg_time,'ymd'|friendly_date}</span>
+                            </div>
                         </div>
                     </div>
-
-                </div>
                 {/volist}
                 {else/}
                 <p class="tc">暂无内容</p>
