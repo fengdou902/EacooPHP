@@ -15,10 +15,6 @@ use eacoo\EacooAccredit;
 
 class Dashboard extends Admin
 {
-    function _initialize()
-    {
-        parent::_initialize();
-    }
 
     /**
      * 仪表盘
@@ -84,7 +80,7 @@ class Dashboard extends Admin
     public function getEacooNews()
     {
         $data = [
-            'access_token'=>input('param.access_token')
+            'access_token'=>$this->request->param('access_token')
         ];
         $result = EacooAccredit::getEacooNews($data);
         return $result;

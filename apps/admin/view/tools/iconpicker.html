@@ -1,4 +1,4 @@
-{extend name="public/iframe_base"/}
+{extend name="public/layerbase"/}
 {block name="style"}
  <link href="__STATIC__/libs/icon_picker/iconpicker.css?v=1.0.2" rel="stylesheet" type="text/css">
 {/block}
@@ -32,7 +32,7 @@
       $('a.icon').click(function () {
         var $this = $(this);
         var filter = $this.data('filter');
-        javascript:window.parent.setIconFilter(filter);
+        window.parent.setIconFilter(filter);
       });
     });
 

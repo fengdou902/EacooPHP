@@ -1,7 +1,7 @@
 <?php
 // 公共控制器       
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
+// | Copyright (c) 2017-2018 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -44,58 +44,5 @@ class Base extends Controller {
 		$this->ip = $this->request->ip();
 		$this->url = $this->request->url(true);//完整url
 	}
-
-	/**
-     * 加载模板输出
-     * @access protected
-     * @param string $template 模板文件名
-     * @param array  $vars     模板输出变量
-     * @param array  $replace  模板替换
-     * @param array  $config   模板参数
-     * @return mixed
-     */
-    protected function fetch($template = '', $vars = [], $replace = [], $config = [])
-    {
-    	if (IS_PJAX) {
-    		echo $this->view->fetch($template, $vars, $replace, $config);
-    	} else{
-    		return $this->view->fetch($template, $vars, $replace, $config);
-    	}
-        
-    }
-
-	/**
-	 * 获取输入数据，带默认值
-     * @param string    $key 获取的变量名
-     * @param mixed     $default 默认值
-     * @param string    $filter 过滤方法
-	 * @return mixed
-	 */
-	// public function input($key='',$default=false, $filter = '')
-	// {
-	// 	if (!$key) return false;
-	// 	if ($pos = strpos($key, '.')) {
- //            // 指定参数来源
- //            list($method, $key) = explode('.', $key);
- //            if (!in_array($method, ['get', 'post', 'put', 'patch', 'delete', 'param', 'request', 'session', 'cookie', 'server', 'env', 'path', 'file'])) {
- //                $key    = $method . '.' . $key;
- //                $method = 'param';
- //            }
- //        } else {
- //            // 默认为自动判断
- //            $method = 'param';
- //        }
-	// 	return $this->request->param($key, $default, $filter);
-	// }
-
-	/**
-	 * 获取单个参数的数组形式
-	 */
-	// protected function getArrayParam($param) {
-	// 	if (isset($this->param['id'])) {
-	// 		return array_unique((array) $this->param[$param]);
-	// 	} else {
-	// 		return [];
-	// 	}
-	// }
+    
 }

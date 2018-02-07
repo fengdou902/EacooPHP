@@ -1,43 +1,10 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{$meta_title}|{:config('web_site_title')}后台管理</title>   
-    <link type="text/css" rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css"/>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <!-- Ionicons -->
-  <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">-->
-   {load href="__ADMIN_CSS__/AdminLTE.min.css,__ADMIN_CSS__/_all-skins.min.css,__PUBLIC__/css/base.css,__ADMIN_CSS__/style.css,__STATIC__/libs/iCheck/all.css" /}
-  <link type="text/css" href="__STATIC__/libs/datetimepicker/datetimepicker.css" rel="stylesheet" >
-  <link href="__STATIC__/libs/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
-    <script type="text/javascript" src="__PUBLIC__/js/jquery-1.12.4.min.js"></script>
-    <!-- <script type="text/javascript" src="__PUBLIC__/js/jquery-3.2.1.min.js"></script> -->  
-    <script type="text/javascript">
-        var EacooPHP = window.EacooPHP = {
-            "url_model":2,
-            "root":'{:BASE_PATH}',
-            "root_domain": "{$Request.domain}/admin.php", //当前网站地址
-            "static": "__STATIC__", //静态资源地址
-            "public": "__PUBLIC__", //项目公共目录地址
-            "uploads_url" :'/uploads/',
-            "upload_driver":"{:config('attachment_options.driver')}",
-            "cdn_domain":"{:get_cdn_domain()}",
-            "eacoo_api_url":"{:config('eacoo_api_url')}",
-        }
-    </script>
-
-    <link type="text/css" rel="stylesheet" href="__STATIC__/libs/nprogress/nprogress.css"/>
-    <script type="text/javascript" src="__STATIC__/libs/nprogress/nprogress.js"></script>
-</head>
+{include file="$_admin_document_header_"/}
 <body class="hold-transition skin-blue sidebar-mini fixed">
-<!-- <body class="hold-transition skin-red-light sidebar-mini fixed"> -->
+<!-- <body class="hold-transition skin-blue sidebar-mini fixed"> -->
 <div class="wrapper">
     <header class="main-header">
       <!-- Logo -->
-      <a href="{:url('admin/dashboard/index')}" class="logo" data-pjax=false>
+      <a href="{:url('admin/index/index')}" class="logo" >
        <img class="logo-img" src="__ROOT__/eacoophp_logo_v1.png">  <span class="logo-lg"><b>Eacoo</b>PHP</span>
       </a>
     <!-- Header Navbar: style can be found in header.less -->
@@ -47,7 +14,7 @@
         <span class="sr-only">Toggle navigation</span>
       </a>
       {php}if(!IS_MOBILE){{/php}
-        <ul class="nav navbar-nav hidden-xs">
+        <ul class="nav navbar-nav">
           <li><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-star" style="font-size: 20px!important;"></i></a>
           <ul class="dropdown-menu" role="menu">
                 <li><a href="{:url('cms/posts/edit')}"><i class="fa fa-circle-o"></i> 发布文章</a></li>
@@ -70,10 +37,10 @@
           <li class="dropdown messages-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <i class="fa fa-envelope-o"></i>
-              <span class="label label-success">{$current_message_count}</span>
+              <span class="label label-success">{$current_message_count|default='0'}</span>
             </a>
             <ul class="dropdown-menu">
-              <li class="header">你有{$current_message_count}条消息</li>
+              <li class="header">你有{$current_message_count|default='0'}条消息</li>
               <li class="msg-ul">
                 <!-- inner menu: contains the actual data -->
                 <ul class="menu msg-list">
@@ -156,8 +123,8 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="{:url('admin/user/profile',array('uid'=>$current_user['uid']))}" class="btn btn-default btn-flat">个人资料</a>
-                  <a href="{:url('admin/user/resetPassword',array('uid'=>$current_user['uid']))}" class="btn btn-default btn-flat">修改密码</a>
+                  <a href="{:url('user/user/profile',array('uid'=>$current_user['uid']))}" class="btn btn-default btn-flat">个人资料</a>
+                  <a href="{:url('user/user/resetPassword',array('uid'=>$current_user['uid']))}" class="btn btn-default btn-flat">修改密码</a>
                 </div>
                 <div class="pull-right">
                   <a href="javascript:void(0);" class="loginout btn btn-default btn-flat">退出</a>
@@ -166,10 +133,13 @@
             </ul>
           </li>
           <li data-toggle="tooltip" data-placement="bottom" title="" data-original-title="清除缓存">
-            <a onclick="delcahe()" href="javascript:void(0);"><i class="fa f16 fa-trash-o"></i></a>
+            <a class="ajax-get" href="{:url('admin/index/delcache')}"><i class="fa f16 fa-trash-o"></i></a>
           </li>
           <li data-toggle="tooltip" data-placement="bottom" title="" data-original-title="打开前台">
             <a href="/" target="_blank"><i class="fa fa-desktop"></i></a>
+          </li>
+          <li>
+            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
           </li>
         </ul>
       </div>

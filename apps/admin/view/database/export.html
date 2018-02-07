@@ -10,9 +10,9 @@
              <li class=""><a href="{:url('admin/Database/index',['type'=>'import'])}">数据恢复</a></li>
         </ul>
         <div class="mt-10">
-            <a id="export" class="btn btn-success" href="javascript:;" autocomplete="off">立即备份</a>
-            <a id="optimize" class="btn btn-success" href="{:url('optimize')}">优化表</a>
-            <a id="repair" class="btn btn-success" href="{:url('repair')}">修复表</a>
+            <a id="export" class="btn btn-primary" href="javascript:;" autocomplete="off"><i class="fa fa-download"></i> 立即备份</a>
+            <a id="optimize" class="btn btn-primary" href="{:url('optimize')}"><i class="fa fa-shield"></i> 优化表</a>
+            <a id="repair" class="btn btn-primary" href="{:url('repair')}"><i class="fa fa-wrench"></i> 修复表</a>
         </div>
     </div>
 
@@ -24,7 +24,7 @@
                     <tr>
                         <th width="48" class="checkbox-toggle"><input class="check-all" checked="chedked" type="checkbox" value=""></th>
                         <th>表名</th>
-                        <th width="120">类型</th>
+                        <th width="120">引擎</th>
                         <th width="120">编码</th>
                         <th width="120">记录数</th>                      
                         <th width="120">大小</th>

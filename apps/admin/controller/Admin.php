@@ -39,13 +39,13 @@ class Admin extends Base
         
         if( !is_login()){
             // 还没登录 跳转到登录页面
-            $this->redirect('admin/index/login');
+            $this->redirect('admin/login/index');
             exit;
         } else {
             $this->currentUser = session('user_login_auth');
         }
 
-        if (!in_array($this->urlRule,['admin/index/login', 'admin/index/logout'])) {
+        if (!in_array($this->urlRule,['admin/login/index', 'admin/index/logout'])) {
             // 检测系统权限
             if(!is_administrator()){
                 if (config('admin_allow_ip')) {
@@ -78,15 +78,17 @@ class Admin extends Base
 
             $_admin_public_base = '';
             if ($this->request->param('load_type')=='iframe') {
-                $_admin_public_base = $template_path_str.'apps/admin/view/public/iframe_base.html';
+                $_admin_public_base = $template_path_str.'apps/admin/view/public/layerbase.html';
             } else{
                 $_admin_public_base = $template_path_str.'apps/admin/view/public/base.html';
             }
+            $_admin_public_base = APP_PATH.'admin/view/public/base.html';
+            $this->assign('_admin_document_header_',$template_path_str.'apps/admin/view/public/document_header.html');
             $this->assign('_admin_public_left_',$template_path_str.'apps/admin/view/public/left.html');
             $this->assign('_admin_public_base_', $_admin_public_base);
-            $this->assign('_admin_public_iframe_base_', $template_path_str.'apps/admin/view/public/iframe_base.html');  // 页面公共继承模版    
+            $this->assign('_admin_public_layerbase_', $template_path_str.'apps/admin/view/public/layerbase.html');
         } 
-
+        
     }
 
     /**
@@ -191,10 +193,9 @@ class Admin extends Base
                 );
                 break;
             case 'delete'  :  // 删除条目
-                action_log(0, is_login(), ['param'=>$this->param],'删除操作');
+                //action_log(0, is_login(), ['param'=>$this->request->param()],'删除操作');
                 $result = model($model)->where($map)->delete();
                 if ($result) {
-
                     $this->success('删除成功，不可恢复！');
                 } else {
                     $this->error('删除失败');

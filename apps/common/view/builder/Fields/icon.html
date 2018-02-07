@@ -1,0 +1,29 @@
+{php}
+  $iconpicker=1;
+  $icon_id = $field['name'];
+{/php}
+	<div class="form-group item_{$field.name} {$field.extra_class|default=''}">
+		<label for="{$field.name}" class="col-md-2 control-label">{$field.title}</label>
+		 <div class="col-md-6">
+		 			<div class="input-group input" id="{$field.name}-picker" onclick="javascript:layer.open({
+                      type: 2,
+                      title: '图标选择器',
+                      shadeClose: true,
+                      shade: 0.8,
+                      area: ['36%', '52%'],
+                      content:'{:url("admin/tools/iconPicker")}', 
+                  });">
+              <span class="input-group-btn">
+                  <button class="btn btn-raised btn-default btn-sm" type="button" ><i class="fa fa-info-circle"></i> 选择图标</button>
+              </span>
+              <input type="text" class="form-control iconpicker" name="{$field.name}" id="{$field.name}" value="{present name="field.value"}{$field.value}{/present}" {$field.extra_attr|default=''}>
+          </div>
+		   
+    </div>
+  </div>
+<script type="text/javascript">
+  function setIconFilter(filter) {
+    $('#{$icon_id}').val(filter);
+    layer.closeAll('iframe');
+  }
+</script>

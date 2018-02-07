@@ -1,0 +1,9 @@
+
+<div class="form-group item_{$field.name} {$field.extra_class|default=''}">
+    <label for="{$field.name}" class="col-md-2 control-label">{$field.title}</label>
+    <div class="col-md-10">
+        {$field.options}
+        {notempty name="field.description"}<p class="help-block"> {$field.description}</p>{/notempty}
+
+    </div>
+</div>

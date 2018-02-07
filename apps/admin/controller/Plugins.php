@@ -14,7 +14,7 @@ use app\admin\model\Plugins as PluginsModel;
 use app\admin\model\Hooks;
 use app\admin\model\AuthRule;
 
-use app\admin\builder\Builder;
+use app\common\builder\Builder;
 use eacoo\Sql;
 use eacoo\Cloud;
 
@@ -40,7 +40,7 @@ class Plugins extends Admin {
      */
     public function index($from_type = 'oneline') {
 
-        $this->assign('page_config',['self'=>'<a href="'.url('admin/plugins/hooks').'" class="btn btn-primary btn-sm mr-10">钩子管理</a>']);
+        $this->assign('page_config',['self'=>'<a href="'.url('admin/Hook/index').'" class="btn btn-primary btn-sm mr-10">钩子管理</a>']);
         $tab_list = [
             'local'=>['title'=>'已安装','href'=>url('index',['from_type'=>'local'])],
             'oneline'=>['title'=>'插件市场','href'=>url('index',['from_type'=>'oneline'])],
@@ -171,7 +171,7 @@ class Plugins extends Admin {
                 $this->assign('custom_config', $this->fetch($plugin['plugin_path'].$plugin['custom_config']));
                 return $this->fetch($plugin['plugin_path'].$plugin['custom_config']);
             } else {
-                Builder::run('Form')
+                return builder('Form')
                         ->setMetaTitle($this->meta_title)  //设置页面标题
                         ->setPostUrl(url('config')) //设置表单提交地址
                         ->addFormItem('id', 'hidden', 'ID', 'ID')
@@ -223,7 +223,7 @@ class Plugins extends Admin {
         $extensionObj->initInfo('plugin');
         $result = $extensionObj->install($name,$clear);
         if ($result['code']==1) {
-            $this->success('安装成功', url('index'));
+            $this->success('安装成功', '');
         } else{
             $this->error($result['msg'], '');
         }
@@ -268,12 +268,12 @@ class Plugins extends Admin {
                 $name        = $plugin_info['name'];
                 $_static_path = PUBLIC_PATH.'static/plugins/'.$name;
                 if (is_dir($_static_path)) {
-                    if(!is_really_writable(PUBLIC_PATH.'static/plugins') || !is_really_writable(PLUGIN_PATH.$name)){
+                    if(!is_writable(PUBLIC_PATH.'static/plugins') || !is_writable(PLUGIN_PATH.$name)){
                         $error_msg = '';
-                        if (!is_really_writable(PUBLIC_PATH.'static/plugins')) {
+                        if (!is_writable(PUBLIC_PATH.'static/plugins')) {
                             $error_msg.=','.PUBLIC_PATH.'static/plugins';
                         }
-                        if (!is_really_writable(PLUGIN_PATH.$name)) {
+                        if (!is_writable(PLUGIN_PATH.$name)) {
                             $error_msg.=','.PLUGIN_PATH.$name;
                         }
                         throw new \Exception($error_msg.'目录写入权限不足',0);
@@ -318,7 +318,7 @@ class Plugins extends Admin {
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
-        $this->success('卸载成功',url('index'));
+        $this->success('卸载成功','');
 
     }
 
@@ -344,7 +344,7 @@ class Plugins extends Admin {
     public function del($name='')
     {
         if ($name) {
-            if (!is_really_writable(PLUGIN_PATH.$name)) {
+            if (!is_writable(PLUGIN_PATH.$name)) {
                 $this->error('目录权限不足，请手动删除目录');
             }
             @rmdirs(PLUGIN_PATH.$name);
@@ -382,69 +382,6 @@ class Plugins extends Admin {
     }
 
     /**
-     * 钩子列表
-     */
-    public function hooks(){
-        $this->assign('page_config',['back'=>true]);
-        // 获取所有钩子
-        $map['status'] = ['egt', '0'];  // 禁用和正常状态
-        list($data_list,$page) = $this->hooksModel->getListByPage($map,'create_time desc','*',20);
-        Builder::run('List')
-                ->setMetaTitle('钩子列表')  // 设置页面标题
-                ->addTopButton('addnew',array('href'=>url('edithook'),'title'=>'<i class="fa fa-plus"></i> 新增钩子','class'=>'btn bg-purple margin'))    // 添加新增按钮
-                ->keyListItem('id', 'ID')
-                ->keyListItem('name', '名称')
-                ->keyListItem('description', '描述')
-                ->keyListItem('type', '类型', 'array', config('hooks_type'))
-                ->keyListItem('right_button', '操作', 'btn')
-                ->setListData($data_list)     // 数据列表
-                ->setListPage($page)  // 数据列表分页
-                ->addRightButton('edit',['href'=>url('edithook',['id'=>'__data_id__'])])           // 添加编辑按钮
-                ->addRightButton('delete')  // 添加删除按钮
-                ->fetch();
-    }
-
-    /**
-     * 钩子出编辑挂载插件页面
-     * @param  integer $id [description]
-     * @return [type] [description]
-     * @date   2017-09-02
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public function edithook($id=0){
-        $title=$id ? "编辑" : "新增";
-        if (IS_POST) {
-            $data = input('post.');
-            //验证数据
-            $this->validateData($data,'Hook');
-
-            $id = isset($data['id']) && $data['id']>0 ? $data['id']:false;
-            if ($this->hooksModel->editData($data,$id)) {
-                $this->success($title.'成功', url('hooks'));
-            } else {
-                $this->error($this->hooksModel->getError());
-            }
-            
-        } else {
-            $info = [];
-            if ($id!=0) {
-                $info = Hooks::get($id);
-            }
-            $builder = Builder::run('Form');
-            $builder->setMetaTitle($title.'钩子'); // 设置页面标题
-                if ($id!=0) {
-                    $builder->addFormItem('id', 'hidden', 'ID', '');
-                }
-            $builder->addFormItem('name', 'text', '名称', '需要在程序中先添加钩子，否则无效')
-                    ->addFormItem('description', 'textarea', '描述', '钩子的描述信息')
-                    ->addFormItem('type', 'radio', '类型', '链接类型',config('hooks_type'))
-                    ->setFormData($info)
-                    ->addButton('submit')->addButton('back')    // 设置表单按钮
-                    ->fetch();
-        }
-    }
-    
-    /**
      * 检测钩子是否存在
      * @param  [type] $name [description]
      * @param  [type] $data [description]
@@ -455,19 +392,6 @@ class Plugins extends Admin {
         return $this->hooksModel->existHook($name, $data);
     }
     
-    /**
-     * 超级管理员删除钩子
-     * @param  [type] $id [description]
-     * @return [type] [description]
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public function delhook($id){
-        if(Hooks::destroy($id)){
-            $this->success('删除成功');
-        } else{
-            $this->error('删除失败');
-        }
-    }
 
     /**
      * 获取插件市场数据

@@ -1,7 +1,7 @@
 /**
  * 应用扩展
  */
-
+var p_layer = parent.layer;
 //应用本地上传
 function appLocalInstall(apptype) {
   if (apptype!='module' && apptype!='plugin' && apptype!='theme') {
@@ -55,24 +55,9 @@ function appLocalInstall(apptype) {
     });
 }
 
-// 卸载返回
-function uninstallCallBack(result)
-{
-    layer.closeAll('iframe');
-    updateAlert(result.msg,'success');
-    setTimeout(function () {
-        if ($.support.pjax) {
-            //重新当前页面容器的内容
-            $.pjax.reload('#pjax-container');
-        } else{
-            location.reload();
-        }
-    }, 1000);
-}
-
 function purchaseApp(result) {
   //console.log(result);
-  layer.open({
+  parent.layer.open({
           title: '购买提示',
           shadeClose: true,
           shade: 0.8,
@@ -110,10 +95,10 @@ function onlineInstall(name,app_type,install_method,only_download) {
           install_method:install_method,
         },
         beforeSend:function(){
-          layer.load(2,{shade: [0.1,'#fff']});
+          p_layer.load(2,{shade: [0.1,'#fff']});
         },
         success:function(result){
-          layer.closeAll();
+          p_layer.closeAll();
           if(result.code==1){
             window.location.href = result.url; 
           } else if(result.code==2){
@@ -122,7 +107,38 @@ function onlineInstall(name,app_type,install_method,only_download) {
             result.url='http://www.eacoo123.com/appstore_'+app_type+'/'+name;
             purchaseApp(result);
           }else{
-            layer.msg(result.msg, {icon:5});
+            p_layer.msg(result.msg, {icon:5});
+          }
+
+        }
+    });
+}
+
+/**
+ * 单个应用提交表单操作
+ * @param  {[type]} argument [description]
+ * @return {[type]} [description]
+ * @date   2018-02-08
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function app_form_submit(action_url,params) {
+  $.ajax({
+        type: 'POST',
+        url: action_url,
+        data: params,
+        beforeSend:function(){
+          p_layer.load(2,{shade: [0.1,'#fff']});
+        },
+        success:function(result){
+          p_layer.closeAll();
+          if(result.code==1){
+            parent.layer.msg(result.msg);
+            setTimeout(function () {
+                window.location.href = result.url;
+            }, 1000);
+            
+          }else{
+            updateAlert(result.msg,'warning');
           }
 
         }
@@ -136,7 +152,7 @@ function onlineInstall(name,app_type,install_method,only_download) {
  * @author 心云间、凝听 <981248356@qq.com>
  */
 function eacooTokenIdentification() {
-    layer.open({
+    parent.layer.open({
           type: 2,
           title: '会员身份验证',
           shadeClose: true,
@@ -146,15 +162,15 @@ function eacooTokenIdentification() {
           resize: false,
           btn: ['登录','注册账户'],
           yes: function(index, layero){
-              var account = layer.getChildFrame('#inputAccount', index).val();
-              var password = layer.getChildFrame('#password', index).val();
+              var account = p_layer.getChildFrame('#inputAccount', index).val();
+              var password = p_layer.getChildFrame('#password', index).val();
               $.post(url("admin/Extension/userinfo"),{from:'login',account:account,password:password},function(result){
                   if (result.code==1) {
-                    layer.msg(result.msg, {icon:1});
-                    layer.closeAll();
+                    p_layer.msg(result.msg, {icon:1});
+                    p_layer.closeAll();
                     getEacooUserinfo();
                   } else{
-                    layer.msg(result.msg, {icon:5});
+                    p_layer.msg(result.msg, {icon:5});
                     
                   }
               });
@@ -175,7 +191,7 @@ function eacooTokenIdentification() {
  * @author 心云间、凝听 <981248356@qq.com>
  */
 function getEacooUserinfo() {
-    layer.open({
+    parent.layer.open({
           type: 2,
           title: '会员信息',
           shadeClose: true,
@@ -208,20 +224,7 @@ function getEacooUserinfo() {
 }
 
 $(function () {
-  //准备安装之前
-  $(document).on('click','.app-install-before', function() {
-      layer.closeAll();
-      var app_type = $(this).data('type');
-      var app_name = $(this).data('name');
-      layer.open({
-            type: 2,
-            title: '准备安装之前',
-            shadeClose: true,
-            shade: 0.8,
-            area: ['25%', '35%'],
-            content: url('admin/'+app_type+'/installBefore')+'?name='+app_name+'&load_type=iframe', 
-        });
-    });
+
   //应用在线安装
     $(document).on('click','.app-online-install,.view-app-detail', function() {
         layer.closeAll();
@@ -235,7 +238,7 @@ $(function () {
         } else{
             var layer_btns = [];
         };
-        layer.open({
+        parent.layer.open({
           type: 2,
           title: '准备在线安装',
           shadeClose: true,
@@ -255,23 +258,49 @@ $(function () {
       });
        
    });
+    //准备安装之前
+  $(document).on('click','.app-install-before', function() {
+      layer.closeAll();
+      var app_type = $(this).data('type');
+      var app_name = $(this).data('name');
+      parent.layer.open({
+            type: 2,
+            title: '准备安装之前',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['25%', '35%'],
+            content: url('admin/'+app_type+'/installBefore')+'?name='+app_name+'&load_type=iframe', 
+            btn: ['提交'],
+            yes: function(index, layero){
+                var action_url = p_layer.getChildFrame('#action_url', index).val();
+                var params = p_layer.getChildFrame('.app-form', index).serialize();
+                app_form_submit(action_url,params);
+            }
+        });
+    });
     //卸载
     $(document).on('click','.app-local-uninstall', function() {
-        layer.closeAll();
+        p_layer.closeAll();
         var app_type = $(this).data('type');
         var app_id = $(this).data('id');
-        layer.open({
+        p_layer.open({
               type: 2,
               title: '准备卸载',
               shadeClose: true,
               shade: 0.8,
               area: ['25%', '35%'],
               content: url('admin/'+app_type+'/uninstallBefore')+'?id='+app_id+'&load_type=iframe', 
+              btn: ['提交'],
+              yes: function(index, layero){
+                  var action_url = p_layer.getChildFrame('#action_url', index).val();
+                  var params = p_layer.getChildFrame('.app-form', index).serialize();
+                  app_form_submit(action_url,params);
+              }
           });
       });
     //会员信息
     $(document).on('click','#eacoo-userinfo', function() {
-        layer.closeAll();
+        p_layer.closeAll();
         $.ajax({
           type: 'POST',
           url: url("admin/Extension/userinfo"),
@@ -279,16 +308,16 @@ $(function () {
             from:'iframe',
           },
           beforeSend:function(){
-            layer.load(2,{shade: [0.1,'#fff']});
+            p_layer.load(2,{shade: [0.1,'#fff']});
           },
           success:function(result){
-            layer.closeAll();
+            p_layer.closeAll();
             if(result.code==1){
               getEacooUserinfo();
-            }else if(result.code==2){
+            } else if(result.code==2){
                 eacooTokenIdentification();
             }else{
-              layer.msg(result.msg, {icon:5});
+              p_layer.msg(result.msg, {icon:5});
             }
             
           }

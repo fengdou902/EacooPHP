@@ -145,15 +145,7 @@
 <script>
     //本地上传(分开写为了好控制)
     $(function () {
-        if ($.support.pjax) {
-          $(document).on('ready pjax:end', function(event) {
-            //进行本地安装初始化
-            appLocalInstall('module');  
-          });
-        } else{
-           appLocalInstall('module');
-        }
-        
+        appLocalInstall('theme');
     })
 </script>
 {/block}

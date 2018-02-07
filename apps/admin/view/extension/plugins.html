@@ -138,14 +138,7 @@
 <script type="text/javascript" src="__STATIC__/libs/webuploader/js/webuploader.min.js"></script>
 <script>
   $(function () {
-    if ($.support.pjax) {
-      $(document).on('ready pjax:end', function(event) {
-        //进行本地安装
-        appLocalInstall('plugin');  
-      });
-    } else{
-       appLocalInstall('plugin');
-    }
+    appLocalInstall('plugin');
 
   })
    

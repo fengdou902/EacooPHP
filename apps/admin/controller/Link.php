@@ -9,9 +9,7 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
-
-use app\admin\model\Links;
-use app\admin\builder\Builder;
+use app\admin\model\Links as LinksModel;
 
 class Link extends Admin{
     
@@ -21,25 +19,24 @@ class Link extends Admin{
     function _initialize()
     {
         parent::_initialize();
-        $this->linkModel = new Links();
+        $this->linkModel = model('links');
         $this->linkType  = [
                     1 => '友情链接',
                     2 => '合作伙伴'
                 ];
     }
 
+    /**
+     * 友情链接管理
+     * @return [type] [description]
+     * @date   2018-02-05
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
     public function index() {
-        // 搜索
-        $keyword =$this->request->param('keyword');
-        if ($keyword) {
-            $this->linkModel->where('id|title','like','%'.$keyword.'%');
-        }
-
         // 获取所有链接
-        $map['status'] = ['egt', '0'];  // 禁用和正常状态
-        list($data_list,$page) = $this->linkModel->getListByPage($map,'sort,create_time desc','*',15);
+        list($data_list,$total) = $this->linkModel->search('title,url')->getListByPage([],true,'sort,create_time desc',15);
 
-        Builder::run('List')
+        return builder('List')
                 ->setMetaTitle('友情链接')  // 设置页面标题
                 ->addTopButton('addnew')    // 添加新增按钮
                 ->addTopButton('resume')  // 添加启用按钮
@@ -55,9 +52,8 @@ class Link extends Admin{
                 ->keyListItem('status', '状态', 'status')
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListData($data_list)     // 数据列表
-                ->setListPage($page)  // 数据列表分页
-                ->addRightButton('edit')           // 添加编辑按钮
-                ->addRightButton('forbid')  // 添加禁用/启用按钮
+                ->setListPage($total,15)  // 数据列表分页
+                ->addRightButton('edit')     // 添加编辑按钮
                 ->addRightButton('delete',['model'=>'Links'])  // 添加删除按钮
                 ->fetch();
     }
@@ -82,10 +78,10 @@ class Link extends Admin{
         } else {
             $info = ['type'=>1,'target'=>'_blank','rating'=>0,'sort'=>99];
             if ($id>0) {
-                $info = Links::get($id);
+                $info = LinksModel::get($id);
             }
 
-            Builder::run('Form')
+            return builder('Form')
                     ->setMetaTitle($title.'链接')  // 设置页面标题
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
                     ->addFormItem('title', 'text', '站点名称', '请输入链接站点名称')
@@ -107,16 +103,16 @@ class Link extends Admin{
      */
     public function sort($ids = null)
     {
-        $builder = Builder::run('Sort');
+        $builder = builder('Sort');
         if (IS_POST) {
-            $builder->doSort('links', $ids);
+            return $builder->doSort('links', $ids);
         } else {
             $map['status'] = ['egt', 0];
-            $list = $this->linkModel->selectByMap($map, 'sort asc', 'id,title,sort');
+            $list = $this->linkModel->getList($map,'id,title,sort', 'sort asc');
             foreach ($list as $key => $val) {
                 $list[$key]['title'] = $val['title'];
             }
-            $builder->setMetaTitle('配置排序')
+            return $builder->setMetaTitle('配置排序')
                     ->setListData($list)
                     ->addButton('submit')->addButton('back')
                     ->fetch();

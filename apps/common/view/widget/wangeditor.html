@@ -55,7 +55,7 @@
     // };
     editor_{$id}.customConfig.zIndex = 10;
     editor_{$id}.customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
-    editor_{$id}.customConfig.uploadImgServer = "{:url('admin/Upload/upload')}";  // 上传图片到服务器
+    editor_{$id}.customConfig.uploadImgServer = "{$upload.upload_img_server}";  // 上传图片到服务器
     // 限制一次最多上传 5 张图片
     editor_{$id}.customConfig.uploadImgMaxLength = 5
     editor_{$id}.customConfig.uploadFileName = 'file'
@@ -113,7 +113,7 @@
     E.fullscreen.init('#{$id}_editor');
     //E.switchCode.init('#{$id}_editor');
     {eq name="picturesModal" value='1'}
-        E.picturesModal.init('#{$id}_editor',"{:url('admin/Upload/attachmentLayer',['input_id_name'=>$id,'path_type'=>$upload['path_type'],'select_type'=>'multiple','from'=>'wangeditor'])}");
+        E.picturesModal.init('#{$id}_editor',"{$pictures_dialog.url|default=''}");
         function setAttachmentWangeditorVal{$id}(data){
             editor_{$id}.txt.append(data);
             layer.closeAll('iframe');

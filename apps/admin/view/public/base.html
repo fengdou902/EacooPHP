@@ -1,245 +1,31 @@
-{if condition="!$Request.isPjax"}
-<!DOCTYPE html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{$meta_title}|{:config('web_site_title')}后台管理</title>   
-    <link type="text/css" rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css"/>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <!-- Ionicons -->
-  <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">-->
-   {load href="__ADMIN_CSS__/AdminLTE.min.css,__ADMIN_CSS__/_all-skins.min.css,__PUBLIC__/css/base.css,__ADMIN_CSS__/style.css,__STATIC__/libs/iCheck/all.css" /}
-  <link type="text/css" href="__STATIC__/libs/datetimepicker/datetimepicker.css" rel="stylesheet" >
-<!--   <link href="__STATIC__/libs/webuploader/css/webuploader.css" type="text/css" rel="stylesheet"> -->
-    <script type="text/javascript" src="__PUBLIC__/js/jquery-1.12.4.min.js"></script>
-    <!-- <script type="text/javascript" src="__PUBLIC__/js/jquery-3.2.1.min.js"></script> -->  
-    <script type="text/javascript">
-        var EacooPHP = window.EacooPHP = {
-            "url_model":2,
-            "root":'__ROOT__',
-            "root_domain": "{$Request.domain}/admin.php", //当前网站地址
-            "static": "__STATIC__", //静态资源地址
-            "public": "__PUBLIC__", //项目公共目录地址
-            "uploads_url" :'/uploads/',
-            "upload_driver":"{:config('attachment_options.driver')}",
-            "cdn_domain":"{:get_cdn_domain()}",
-            "eacoo_api_url":"{:config('eacoo_api_url')}",
-        }
-    </script>
-
-    <link type="text/css" rel="stylesheet" href="__STATIC__/libs/nprogress/nprogress.css"/>
-    <script type="text/javascript" src="__STATIC__/libs/nprogress/nprogress.js"></script>
-     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-</head>
-<body class="hold-transition skin-blue sidebar-mini fixed">
-<!-- <body class="hold-transition skin-red-light sidebar-mini fixed"> -->
-<div class="wrapper">
-    <header class="main-header">
-      <!-- Logo -->
-      <a href="{:url('admin/dashboard/index')}" class="logo" data-pjax=false>
-       <img class="logo-img" src="__ROOT__/eacoophp_logo_v1.png">  <span class="logo-lg"><b>Eacoo</b>PHP</span>
-      </a>
-    <!-- Header Navbar: style can be found in header.less -->
-    <nav class="navbar navbar-static-top">
-      <!-- Sidebar toggle button-->
-      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-        <span class="sr-only">Toggle navigation</span>
-      </a>
-      {php}if(!IS_MOBILE){{/php}
-        <ul class="nav navbar-nav">
-          <li><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-star" style="font-size: 20px!important;"></i></a>
-          <ul class="dropdown-menu" role="menu">
-                <li><a href="{:url('cms/posts/edit')}"><i class="fa fa-circle-o"></i> 发布文章</a></li>
-                <li><a href="{:url('cms/posts/index')}"><i class="fa fa-circle-o"></i> 文章列表</a></li>
-              </ul>
-          </li>
-          <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cloud"></i> 扩展中心<span class="label label-danger">新</span> <!-- <span class="caret"></span> --></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="{:url('admin/modules/index')}"><i class="fa fa-circle-o"></i> 模块</a></li>
-                <li><a href="{:url('admin/plugins/index')}"><i class="fa fa-circle-o"></i> 插件</a></li>
-                <li><a href="{:url('admin/theme/index')}"><i class="fa fa-circle-o"></i> 主题</a></li>
-              </ul>
-            </li>
-        </ul>
-      {php}}{/php}
-      <div class="navbar-custom-menu">
-        <ul class="nav navbar-nav">
-          <!-- Messages: style can be found in dropdown.less-->
-          <li class="dropdown messages-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <i class="fa fa-envelope-o"></i>
-              <span class="label label-success">{$current_message_count|default='0'}</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="header">你有{$current_message_count|default='0'}条消息</li>
-              <li class="msg-ul">
-                <!-- inner menu: contains the actual data -->
-                <ul class="menu msg-list">
-                {present name="current_messages"}
-                  {volist name="current_messages" id="message"}
-                      <li>
-                      <a href="{:url('User/Message/message_detail',array('to_uid'=>$message['from_uid']))}" class="popover-toggle" tabindex="0" data-trigger="hover" role="button" data-toggle="popover" data-trigger="focus" data-content="{$message.content}">
-                        <div class="pull-left">
-                          <img src="{$message.fromuid_avatar|root_full_path=###}" class="img-circle">
-                        </div>
-                        <h4>{$message.title}
-                          <small><i class="fa fa-clock-o"></i> {$message.create_time}</small>
-                        </h4>
-                        <p>{$message.content|cutStr=###,18}</p>
-                      </a>
-                    </li>
-                  {/volist}
-                  {/present}
-                </ul>
-              </li>
-              <li class="footer"><a href="{:url('user/Message/messages',['box_type'=>'inbox'])}">查看所有消息</a></li>
-            </ul>
-          </li>
-          <!-- Notifications: style can be found in dropdown.less -->
-          <li class="dropdown notifications-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <i class="fa fa-bell-o"></i>
-              <span class="label label-warning">0</span>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="header">有0条通知</li>
-              <li>
-
-                <ul class="menu">
-                <!-- <volist name="tixian_data" id="tixian">
-                    <li>
-                    <a href="{:url('Sns/Funds/withdrawals')}" class="f13 color-6">
-                      <i class="fa fa-info text-yellow"></i> {/*$tixian.realname*/}在{/*$data.create_time|date="m-d H:i",###*/}申请提现{/*$tixian.money*/}元
-                    </a>
-                  </li>
-                </volist> -->
-                  
-                </ul>
-              </li>
-              <li class="footer"><a href="#">查看所有</a></li>
-            </ul>
-          </li>
-
-          <!-- User Account: style can be found in dropdown.less -->
-          <li class="dropdown user user-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="{$current_user.avatar|root_full_path|default='/static/assets/img/default-avatar.svg'}" class="user-image" alt="{$current_user.nickname}">
-              <span class="hidden-xs">{$current_user.nickname}</span>
-            </a>
-            <ul class="dropdown-menu">
-              <!-- User image -->
-              <li class="user-header">
-                <img src="{$current_user.avatar|root_full_path|default='/static/assets/img/default-avatar.svg'}" class="img-circle" alt="User Image">
-
-                <p>
-                  {$current_user.nickname} - {/*$current_user.role_name*/}
-                  <small>注册时间：{$current_user.reg_time}</small>
-                </p>
-              </li>
-              <!-- Menu Body -->
-              <!--<li class="user-body">
-                <div class="row">
-                  <div class="col-xs-4 text-center">
-                    <a href="#">关注</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Sales</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a href="#">朋友</a>
-                  </div>
-                </div>
-
-              </li>-->
-              <!-- Menu Footer-->
-              <li class="user-footer">
-                <div class="pull-left">
-                  <a href="{:url('admin/user/profile',array('uid'=>$current_user['uid']))}" class="btn btn-default btn-flat">个人资料</a>
-                  <a href="{:url('admin/user/resetPassword',array('uid'=>$current_user['uid']))}" class="btn btn-default btn-flat">修改密码</a>
-                </div>
-                <div class="pull-right">
-                  <a href="javascript:void(0);" class="loginout btn btn-default btn-flat">退出</a>
-                </div>
-              </li>
-            </ul>
-          </li>
-          <li data-toggle="tooltip" data-placement="bottom" title="" data-original-title="清除缓存">
-            <a onclick="delcahe()" href="javascript:void(0);"><i class="fa f16 fa-trash-o"></i></a>
-          </li>
-          <li data-toggle="tooltip" data-placement="bottom" title="" data-original-title="打开前台">
-            <a href="/" target="_blank"><i class="fa fa-desktop"></i></a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  </header>
-
-  {include file="$_admin_public_left_" /}
-  <div class="content-wrapper" id="pjax-container">
-{/if}
+{include file="$_admin_document_header_"/}
 {block name="style"}{/block}
-   <section class="content-header">
-      <!-- 面包屑导航 -->
-       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> <a href="{:url('admin/dashboard/index')}">首页</a></a></li>
-        {notempty name="parent_menu_list"}
-          {volist name="parent_menu_list" id="vo"}
-              <li class="text-muted">{$vo.title}</li>
-          {/volist}
-        {else/}
-          <li class="active">{$meta_title}</li>
-        {/notempty}
-      </ol>
-   </section>
-   <!--内容-->
-   <section class="content">
-      {block name="main-top"}{/block}
+<body class="hold-transition skin-blue" style="background-color:#ecf0f5;">
+<div class="iframe-wrapper">
+    {/*include file="public/crumb"/*/}
+     <!--内容-->
+     <section class="content">
+        {block name="main-top"}{/block}
 
-       {php}if(isset($page_config['disable_panel']) && $page_config['disable_panel']===true){ {/php}
-            {block name="main"}{/block}
-       {php} }else{ {/php}
-        <div class="box box-solid">
-            <div class="box-header with-border">
-                  <h3 class="box-title">{$meta_title}</h3> {present name="page_config.help"}<a href="{$page_config.help}" class="color-6" title="帮助" target="_blank"><i class="fa fa-question-circle f15"></i></a>{/present}
-                  <div class="box-tools pull-right">{present name="page_config.self"}{$page_config.self}{/present}
-                  {present name="page_config.back"}<button type="button" class="btn btn-box-tool f16" onclick="javascript:history.go(-1);"><i class="fa fa-reply"></i></button>{/present}
-                  <button type="button" class="btn btn-box-tool f16" onclick="javascript:location.reload();"><i class="fa fa-refresh"></i></button>
-                </div>
-            </div>
-            <div class="box-body">
+         {php}if(isset($page_config['disable_panel']) && $page_config['disable_panel']===true){ {/php}
               {block name="main"}{/block}
-            </div>
-        </div>
-       {php}}{/php}
-</section>
+         {php} }else{ {/php}
+          <div class="box box-solid">
+              <div class="box-header with-border">
+                    <h3 class="box-title">{$meta_title}</h3> {present name="page_config.help"}<a href="{$page_config.help}" class="color-6" title="帮助" target="_blank"><i class="fa fa-question-circle f15"></i></a>{/present}
+                    <div class="box-tools pull-right">{present name="page_config.self"}{$page_config.self}{/present}
+                    {present name="page_config.back"}<button type="button" class="btn btn-box-tool f16" onclick="javascript:history.go(-1);"><i class="fa fa-reply"></i></button>{/present}
+                    <button type="button" class="btn btn-box-tool f16" onclick="javascript:location.reload();"><i class="fa fa-refresh"></i></button>
+                  </div>
+              </div>
+              <div class="box-body">
+                {block name="main"}{/block}
+              </div>
+          </div>
+         {php}}{/php}
+    </section>
 
-{block name="script"}{/block}
-{if condition="!$Request.isPjax"}
-  </div>
-  <!-- /.content-wrapper -->
-  <footer class="main-footer">
-    <div class="pull-right hidden-xs">
-      <b>Version</b> {:EACOOPHP_V}
-    </div>
-    <strong>Copyright &copy; 2016-2017 <a href="http://www.eacoo123.com" target="_blank">EacooPHP</a>.</strong> 保留所有权利。
-  </footer>
- <div class="control-sidebar-bg"></div>
 </div>
-<!-- ./wrapper -->
-<div id="loading" style="top: 150px;">
-    <div class="lbk"></div>
-    <div class="lcont"><img src="__PUBLIC__/img/loading.gif" alt="loading...">正在加载...</div>
-</div>
-
 <script type="text/javascript" src="__PUBLIC__/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/jquery.cookie.js"></script>
 
@@ -248,41 +34,25 @@
 <!-- FastClick -->
 <script type="text/javascript" src="__STATIC__/libs/fastclick/fastclick.min.js"></script>
 <script type="text/javascript" src="__ADMIN_JS__/app.min.js" ></script>
-<script  type="text/javascript" src="__PUBLIC__/js/jquery.nestable.js"></script>
+<!-- <script  type="text/javascript" src="__PUBLIC__/js/jquery.nestable.js"></script> -->
+<script  type="text/javascript" src="__STATIC_LIBS__/nice-validator/jquery.validator.min.js?local=zh-CN"></script>
 <!-- <script type="text/javascript" src="__PUBLIC__/js/think.js"></script> -->
 <script type="text/javascript" src="__STATIC_LIBS__/layer/layer.js"></script>
 
 <script type="text/javascript" src="__STATIC_LIBS__/iCheck/icheck.min.js"></script>
-<script type="text/javascript" src="__PUBLIC__/js/jquery.pjax.js?v=1.0.0" ></script>
 <script type="text/javascript" src="__PUBLIC__/js/jquery.toaster.js"></script>
 <script type="text/javascript" src="__ADMIN_JS__/eacoo.js" ></script>
-
+<script type="text/javascript" src="__ADMIN_JS__/main.js" ></script>
+{block name="script"}{/block}
 <script type="text/javascript">
-$(function(){
-  {present name="eacoo_version"}
-  //检测新版本
-    layer.confirm('发现了新版本V{$eacoo_version.version}。点击查看<a href="http://forum.eacoo123.com/t/updating">更新详情</a><br><br>当前版本V{:EACOOPHP_V}', {
-      icon:1,
-      title:'新版本提醒',
-      offset: '100px',
-      btn: ['查看更新','以后提醒'],
-    }, function(){
-        redirect('http://forum.eacoo123.com/t/updating');
-    }, function(){
-      $.ajax({
-            type: 'get',
-            url: "{:url('admin/tools/version')}",
-            success: function (res) {
-                layer.closeAll();
-            }
-        });
-       
+   // Custom theme
+    $.validator.setTheme('bootstrap', {
+        validClass: 'has-success',
+        invalidClass: 'has-error',
+        bindClassTo: '.form-group',
+        formClass: 'n-default n-bootstrap',
+        msgClass: 'n-right'
     });
-  {/present}
-  
-});
-
 </script>
-  </body>
+</body>
 </html>
-{/if}

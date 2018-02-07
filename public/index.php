@@ -23,10 +23,11 @@ define('PUBLIC_PATH', __DIR__ . '/');
 
 //主题目录
 define('THEME_PATH',__DIR__ . '/themes/');
+// 检测是否安装
 /**
  * 定义标记
  */
-define('MODULE_MARK', 'front');
+is_file(APP_PATH . 'database.php') && is_file(APP_PATH . 'install.lock') ?  define('MODULE_MARK', 'front') : define('MODULE_MARK', 'install');
 
 /**
  * 项目定义

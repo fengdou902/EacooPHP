@@ -1,4 +1,4 @@
-{extend name="$_admin_public_base_"/}
+{extend name="public/base"/}
 {block name="style"}
   <style type="text/css">
     .webmanage-item{margin: 15px 10px;text-align: center;color: #666;font-size: 16px;border-right: 1px solid #ddd;}
@@ -44,7 +44,7 @@
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer text-center">
-                  <a href="{:url('admin/User/index')}" class="uppercase">查看所有用户</a>
+                  <a href="{:url('user/User/index')}" class="uppercase">查看所有用户</a>
                 </div>
                 <!-- /.box-footer -->
               </div>

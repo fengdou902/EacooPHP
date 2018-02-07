@@ -1,0 +1,62 @@
+
+{php}
+    if (strpos($field['name'],'[')) {
+        $field['id']=str_replace(']','',str_replace('[','',$field['name']));
+      }else{
+        $field['id']=$field['name'];
+      }
+    $path_type=isset($field['options']['path_type'])? $field['options']['path_type'] : 'picture';
+{/php}
+<div class="row">
+    
+    <div class="form-group controls item_{$field.id} {$field.extra_class|default=''}">
+        <label for="{$field.id}" class="col-md-2 control-label">{$field.title}</label>
+        <div class="col-md-2" style="padding-bottom: 5px;">
+        <span class="btn btn-info ml-10 btn-sm" data-url="{:url('admin/Upload/attachmentLayer',['input_id_name'=>$field['id'],'path_type'=>$path_type,'select_type'=>'multiple'])}" onclick="openAttachmentLayer(this);"><i class="fa fa-photo"></i> 选择多图</span>
+            <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field.value|default=''}"/>
+        </div>
+        {notempty name="field.description"}<div class="help-block col-md-8 col-md-offset-2 fn" style="color:#E74C3C;padding-left: 20px;">{$field.description}</div>{/notempty}
+        <div id="{$field.id}-gallery-box" class="uploader-list col-md-9 col-md-offset-2 img-box {notempty name="field.value"}gallery-box-bg{/notempty}">
+            
+           {notempty name="field.value"}
+                {php}
+                    if (is_array($field['value'])) {
+                        $images = $field['value'];
+                        $input_value = implode(',', $field['value']);
+                    } else {
+                        $images = explode(',',$field['value']);
+                        $input_value = $field['value'];
+                    }
+                {/php}
+                {foreach name="images" item="img"}
+                    {notempty name="img"}
+                        <div class="col-md-3">
+                            <div class="thumbnail">
+                            <i class="fa fa-times-circle remove-attachment"></i>
+                            <img class="img" src="{$img|get_image=###}" data-id="{$img}">
+                            </div>
+                        </div>
+                    {/notempty}
+                {/foreach}
+            {/notempty}
+        </div>
+
+    </div>
+    <script>
+    $(function () {
+        // 删除图片
+        $('body').on('click', '#{$field.id}-gallery-box .remove-attachment', function() {
+            var ready_for_remove_id = $(this).closest('.thumbnail').find('img').attr('data-id'); //获取待删除的图片ID
+            if (!ready_for_remove_id) {
+                updateAlert('错误', 'danger');
+            }
+            var current_picture_ids = $('#{$field.id}').val().split(","); //获取当前图集以逗号分隔的ID并转换成数组
+            current_picture_ids.splice($.inArray(ready_for_remove_id,current_picture_ids),1); //从数组中删除待删除的图片ID
+            $('#{$field.id}').val(current_picture_ids.join(',')) //删除后覆盖原input的值
+            $(this).closest('.col-md-3').remove(); //删除图片预览图
+        });
+
+    })
+    </script>
+</div>
+

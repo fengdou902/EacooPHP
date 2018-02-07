@@ -10,9 +10,6 @@
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
 
-use app\admin\builder\Builder;
-use app\common\model\Config as ConfigModel;
-
 /**
  * 系统配置控制器
  */
@@ -23,7 +20,7 @@ class Config extends Admin {
     function _initialize()
     {
         parent::_initialize();
-        $this->configModel = new ConfigModel();
+        $this->configModel = model('common/config');
     }
 
     /**
@@ -31,18 +28,13 @@ class Config extends Admin {
      * @param $tab 配置分组ID
      */
     public function index($group = 1) {
-        // 搜索
-        $keyword = input('param.keyword');
-        if ($keyword) {
-            $this->configModel->where('id|name|title','like','%'.$keyword.'%');
-        }
 
         // 获取所有配置
         $map['status'] = ['egt', '0'];  // 禁用和正常状态
         $map['group']  = ['eq', $group];
         //$map['type']  = ['neq', 'json'];
 
-        list($data_list,$page) = $this->configModel->getListByPage($map,'sort asc,id asc','*',20);
+        list($data_list,$page) = $this->configModel->search('id|name|title')->getListByPage($map,true,'sort asc,id asc',20);
         // 设置Tab导航数据列表
         $config_group_list = config('config_group_list');  // 获取配置分组
 
@@ -57,7 +49,7 @@ class Config extends Admin {
         $extra_html = $this->moveGroupHtml($config_group_list,$group);//添加移动按钮html
         // 使用Builder快速建立列表页面。
 
-        Builder::run('List')
+        return builder('list')
                 ->setMetaTitle('配置列表')  // 设置页面标题
                 ->addTopButton('addnew',['href'=>url('edit',['group_id'=>$group])])   // 添加新增按钮
                 //->addTopButton('resume',array('title'=>'显示'))   // 添加启用按钮
@@ -149,8 +141,8 @@ EOF;
                 ];
             // 使用FormBuilder快速建立表单页面。
 
-            $builder = Builder::run('Form');
-            $builder->setMetaTitle($title.'配置')  // 设置页面标题
+            return builder('form')
+                    ->setMetaTitle($title.'配置')  // 设置页面标题
                     //->setPostUrl(url('edit'))    // 设置表单提交地址
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
                     ->addFormItem('group', 'select', '配置分组', '配置所属的分组', config('config_group_list'))
@@ -207,17 +199,8 @@ EOF;
             
         }
 
-        $builder = Builder::run('Form');
-        switch ($group) {
-            case 5:
-                $builder->setPageTips('请在官网(http://www.eacoo123.com)<a href="http://www.eacoo123.com/register" target="_blank">注册账户</a>，然后填写下方注册信息');
-                break;
-            
-            default:
-                # code...
-                break;
-        }
-        $builder->setMetaTitle('系统设置')       // 设置页面标题
+        return builder('form')
+                ->setMetaTitle('系统设置')       // 设置页面标题
                 ->setTabNav($tab_list, $group)  // 设置Tab按钮列表
                 ->setExtraItems($data_list)     // 直接设置表单数据
                 ->addButton('submit','确认',url('groupSave'))->addButton('back') // 设置表单按钮
@@ -296,7 +279,7 @@ EOF;
                 $info['water_img'] = './logo.png';
             }
             //自定义表单项
-            Builder::run('Form')
+            return builder('Form')
                     ->setMetaTitle('多媒体设置')  // 设置页面标题
                     ->setTabNav($tab_list,'attachment_option')  // 设置页面Tab导航
                     ->addFormItem('driver', 'select', '上传驱动', '选择上传驱动插件用于七牛云、又拍云等第三方文件上传的扩展',upload_drivers())
@@ -371,7 +354,7 @@ EOF;
 
         // 使用FormBuilder快速建立表单页面。
 
-        Builder::run('Form')
+        return builder('form')
                 ->setMetaTitle('网站设置')       // 设置页面标题
                 ->SetTabNav($tab_list, $sub_group)  // 设置Tab按钮列表
                 ->setPostUrl(url('groupSave'))    // 设置表单提交地址

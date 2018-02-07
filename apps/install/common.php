@@ -75,7 +75,7 @@ function check_dirfile(){
 			if (!is_dir($item)) {
 				@mkdirs($item);
 			}
-			if(!is_really_writable($item)) {
+			if(!is_writable($item)) {
 				if(is_dir($item)) {
 					$val[1] = '可读';
 					$val[2] = 'bg-yellow';
@@ -88,13 +88,13 @@ function check_dirfile(){
 			}
 		} else {
 			if(file_exists($item)) {
-				if(!is_really_writable($item)) {
+				if(!is_writable($item)) {
 					$val[1] = '不可写';
 					$val[2] = 'bg-yellow';
 					session('error', true);
 				}
 			} else {
-				if(!is_really_writable(dirname($item))) {
+				if(!is_writable(dirname($item))) {
 					$val[1] = '不存在';
 					$val[2] = 'bg-yellow';
 					session('error', true);

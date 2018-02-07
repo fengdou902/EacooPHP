@@ -11,8 +11,7 @@
 namespace app\common\model;
 
 class Terms extends Base {
-
-    protected $insert = ['status' => 1];
+    protected $resultSetType = 'collection';
     /**
      * 获取父分类名称
      * @param  [type] $value [description]
@@ -21,7 +20,8 @@ class Terms extends Base {
      */
     public function getParentAttr($value,$data)
     {
-        return $this->where(['term_id'=>(int) $data['pid']])->value('name');
+        $name = $this->where(['term_id'=>$data['pid']])->value('name');
+        return $name ? :'顶级分类';
     }
     
     /**

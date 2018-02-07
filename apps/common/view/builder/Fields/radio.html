@@ -1,0 +1,35 @@
+
+    <!--
+        如果选项的值是自定义数组(必须定义key为title的元素)需要解析，如果选项的值是常规字符串直接显示
+        此处主要是用来给option定义更多的属性，比如data-ia=1，那么option应为
+        $option = array('title' => 标题, 'data-id' => 1);
+    -->
+   <div class="form-group item_{$field.name} {$field.extra_class|default=''}">
+   <label for="{$field.name}" class="col-md-2 control-label">{$field.title|htmlspecialchars}</label>
+    <div class="col-md-8">
+          <div class="oh mb-10 pl-5">
+          {assign name="num" value="0" /}
+            {foreach name="field.options" item="option" key="option_key"}
+                {php}$num++;if(is_array($option)):{/php}
+                    <label for="{$field.name}{$option_key}" class="radio-label{$num}"><input type="radio" id="{$field.name}{$option_key}" class="radio" name="{$field.name}" value="{$option_key}" {eq name="field.value" value="$option_key"} checked{/eq} {$field.extra_attr|default=""}
+                        {foreach name="option" item="option2" key="option_key2"}
+                            {$option_key2}="{$option2}"
+                        {/foreach}>
+                        <span class="check"></span>
+                   {$option.title}</label>
+                {php}else:{/php}
+                    <div class="radio radio-primary fl mr-10">
+                        <label for="{$field.name}{$option_key}" class="radio-label{$num}">
+                          <input type="radio" name="{$field.name}" id="{$field.name}{$option_key}" value="{$option_key}" {present name="field.value"}{eq name="field.value" value="$option_key"} checked{/eq}{/present} {$field.extra_attr|default=""}><span class="circle"></span><span class="check"></span>
+                         {$option}
+                        </label>
+                      </div>
+
+                {php}endif;{/php}
+            {/foreach}
+            
+            </div>
+            {notempty name="field.description"}<div class="help-block "><i class="fa fa-info-circle color-info1"></i> {$field.description}</div>{/notempty}
+      </div>
+      
+    </div>

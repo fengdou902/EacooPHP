@@ -1,9 +1,9 @@
-  <!-- /.content-wrapper -->
+<!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
       <b>Version</b> {:EACOOPHP_V}
     </div>
-    <strong>Copyright &copy; 2016-2017 <a href="http://forum.eacoo123.com" target="_blank">EacooPHP</a>.</strong> 保留所有权利。
+    <strong>Copyright &copy; 2017-2018 <a href="http://www.eacoo123.com" target="_blank">EacooPHP</a>.</strong> 保留所有权利。
   </footer>
  <div class="control-sidebar-bg"></div>
 </div>
@@ -21,70 +21,18 @@
 <!-- FastClick -->
 <script type="text/javascript" src="__STATIC__/libs/fastclick/fastclick.min.js"></script>
 <script type="text/javascript" src="__ADMIN_JS__/app.min.js" ></script>
-<script  type="text/javascript" src="__PUBLIC__/js/jquery.nestable.js"></script>
 <!-- <script type="text/javascript" src="__PUBLIC__/js/think.js"></script> -->
 <script type="text/javascript" src="__STATIC_LIBS__/layer/layer.js"></script>
-<!-- webuploader -->
-<script type="text/javascript" src="__STATIC_LIBS__/webuploader/js/webuploader.min.js"></script>
 
-<script type="text/javascript" src="__STATIC_LIBS__/iCheck/icheck.min.js"></script>
-<script type="text/javascript" src="__PUBLIC__/js/jquery.pjax.js" ></script>
 <script type="text/javascript" src="__PUBLIC__/js/jquery.toaster.js"></script>
 <script type="text/javascript" src="__ADMIN_JS__/eacoo.js" ></script>
-
-<script type="text/javascript">
-  /*复选框操作*/
-   $('input').iCheck({
-      checkboxClass:'icheckbox_minimal-blue',
-      radioClass:'iradio_minimal-blue',
-      increaseArea:'20%' // optional
-    });
-    //Enable check and uncheck all functionality
-    $(".checkbox-toggle,.check-all").click(function () {
-      var clicks = $(this).data('clicks');
-      if (clicks) {
-        //Uncheck all checkboxes
-        $("input[type='checkbox']").iCheck("uncheck");
-        $(".fa", this).removeClass("fa-check-square-o").addClass('fa-square-o');
-      } else {
-        //Check all checkboxes
-        $("input[type='checkbox']").iCheck("check");
-        $(".fa", this).removeClass("fa-square-o").addClass('fa-check-square-o');
-      }
-      $(this).data("clicks", !clicks);
-    });
-    //复选框方式
-      $(".checkbox-toggle .iCheck-helper").click(function () {
-            var all_checked=$('.checkbox-toggle>div.icheckbox_minimal-blue').hasClass('checked');
-            if (!all_checked) {
-              $("input[type='checkbox']").iCheck("uncheck");
-            } else{
-              $("input[type='checkbox']").iCheck("check");
-            }
-      });
-
-</script>
-
+<script type="text/javascript" src="__ADMIN_JS__/main.js" ></script>
+<script type="text/javascript" src="__ADMIN_JS__/layout.js" ></script>
 <script type="text/javascript">
 $(function(){
-  /*退出*/
-  $('.loginout').click(function(){
-      layer.confirm('确定要退出吗？', {icon: 3},function(){
-          parent.layer.msg('退出成功!', {
-            shift: 2,
-            time: 1000,
-            shade: [0.1,'#000'],
-            end: function(){
-              window.location.href = '{:url("index/logout")}';
-            }
-          });
-      });
-
-   });
-
-  //检测新版本
   {present name="eacoo_version"}
-    layer.confirm('发现了新版本V{$eacoo_version.version}。点击查看<a href="http://forum.eacoo123.com/t/updating">更新详情</a><br><br>当前版本V1.0.4', {
+  //检测新版本
+    layer.confirm('发现了新版本V{$eacoo_version.version}。点击查看<a href="http://forum.eacoo123.com/t/updating">更新详情</a><br><br>当前版本V{:EACOOPHP_V}', {
       icon:1,
       title:'新版本提醒',
       offset: '100px',
@@ -102,20 +50,8 @@ $(function(){
        
     });
   {/present}
-  $('.popover-toggle').popover();
+  
 });
-
-  function delcahe(){
-    $.get("{:url('admin/index/delcache')}",function(data){
-      updateAlert(data.msg,'success');
-    })
-  }
-    //全局配置
-  layer.config({
-      extend: [
-          'extend/layer.ext.js' 
-      ]
-  });
 
 </script>
   </body>

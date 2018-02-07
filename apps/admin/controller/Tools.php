@@ -43,7 +43,7 @@ class Tools extends Admin{
      */
     public function iconPicker()
     {
-        
+        $this->assign('meta_title','图标选择器');
         return $this->fetch();
     }
 }

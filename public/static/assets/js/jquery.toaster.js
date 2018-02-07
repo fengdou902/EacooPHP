@@ -91,7 +91,7 @@
 			'css'       :
 			{
 				'position' : 'fixed',
-				'top'      : '80px',
+				'top'      : '30px',
 				'right'    : '10px',
 				'width'    : '300px',
 				'zIndex'   : 50000

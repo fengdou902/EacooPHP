@@ -84,6 +84,14 @@ class Editor extends Base
         if(!isset($attributes['upload']['path_type'])){
             $attributes['upload']['path_type'] = 'picture';
         }
+        //上传图片的服务器地址
+        if(!isset($attributes['upload']['upload_img_server'])){
+            $attributes['upload']['upload_img_server'] = url('admin/Upload/upload');
+        }
+        //图片选择器弹窗地址
+        if(!isset($attributes['pictures_dialog']['url'])){
+            $attributes['pictures_dialog']['url'] = url('admin/Upload/attachmentLayer',['input_id_name'=>$attributes['id'],'path_type'=>$attributes['upload']['path_type'],'select_type'=>'multiple','from'=>'wangeditor']);
+        }
 
         /**
          * 字段：id,name,style,width,height,

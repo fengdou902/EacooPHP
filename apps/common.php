@@ -1,7 +1,45 @@
 <?php 
 use think\Route;
+use app\common\builder\Builder;
 use app\admin\model\Modules as ModulesModel;
 use app\admin\model\Plugins as PluginsModel;
+
+/**
+ * 获取构建器实例
+ * @param  string $type 类型（list|form）
+ * @return [type] [description]
+ * @date   2018-02-02
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function builder($type='')
+{
+    $builder = Builder::run($type);
+    return $builder;
+}
+
+/**
+ * 获取逻辑层实例
+ * @param  string $name [description]
+ * @return [type] [description]
+ * @date   2018-02-02
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function logic($name='')
+{
+    return model($name,'logic');
+}
+
+/**
+ * 获取服务层实例
+ * @param  string $name [description]
+ * @return [type] [description]
+ * @date   2018-02-02
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function getService($name='')
+{
+    return model($name,'service');
+}
 
 /**
  * 检测是否安装某个模块

@@ -11,7 +11,7 @@
 namespace app\admin\controller;
 use app\admin\builder\Builder;
 
-use app\common\controller\Upload;
+use app\common\logic\Upload as UploadLogic;
 use app\common\model\Attachment as AttachmentModel;
 use app\common\model\TermRelationships;
 use app\common\model\Config;

@@ -145,7 +145,7 @@ class Upload extends Admin {
 
         $param['attachmentDaterangePicker']=1;
         $this->assign('attachmentDaterangePicker',$param['attachmentDaterangePicker']);//是否导入时间选择器
-
+        $this->assign('meta_title','附件选择器');
         return $this->fetch();
     }
 

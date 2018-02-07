@@ -14,9 +14,6 @@ class TermRelationships extends Base {
 
 	// 定义时间戳字段名
     protected $createTime = false;
-    protected $updateTime = false;
-
-    protected $insert = ['status' => 1];
-    
+    protected $updateTime = false;    
 
 }

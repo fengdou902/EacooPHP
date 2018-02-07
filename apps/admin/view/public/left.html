@@ -1,6 +1,6 @@
   <aside class="main-sidebar sidebar-wrapper">
 
-    <section class="sidebar">
+    <section class="sidebar" id="sidebar">
       <!-- Sidebar user panel -->
       <div class="user-panel">
         <div class="pull-left image">
@@ -13,35 +13,34 @@
       </div>
       <ul class="sidebar-menu">
       <li class="header">MAIN NAVIGATION</li>
-
-           {volist name="sidebar_menus" id="vo"}
-                <li class="{notempty name="vo._child"}treeview{/notempty}">
-                    {present name="vo"}
-                    <a href="{notempty name="vo._child"}#{else/}{:url($vo['name'])}{/notempty}" {eq name="vo.no_pjax" value="1"}data-pjax=false{/eq}>
-                        <i class="fa {$vo.icon|default='fa-circle-o'}"></i>
-                          <span>{$vo.title}</span>
-                          {notempty name="vo._child"}<i class="fa fa-angle-left pull-right"></i>{/notempty}
-                      </a>
-                    {/present}
-                    {notempty name="vo._child"}
-                      <ul class="treeview-menu">
-                        {volist name="vo._child" id="v"}
-                             {empty name="v._child"}
-                              <li ><a href="{:eacoo_url($v['name'],[],$v['depend_type'])}" ><i class="fa fa-circle-o"></i> {$v.title}</a> </li>
-                              {else/}
-                               <li ><a href="{:eacoo_url($v['name'],[],$v['depend_type'])}" ><i class="fa fa-circle-o"></i> {$v.title} <i class="fa fa-angle-left pull-right"></i></a>
-                                 <ul class="treeview-menu">
-                                  {volist name="v._child" id="_v"}
-                                    <li><a href="{:eacoo_url($_v['name'],[],$v['depend_type'])}" ><i class="fa fa-circle-o"></i> {$_v.title}</a></li>
-                                  {/volist}                 
-                               </ul>
-                                </li>
-                              {/empty}
-                        {/volist}                 
-                     </ul>
-                     {/notempty}
-                </li>
-            {/volist}
+         {volist name="sidebar_menus" id="vo"}
+              <li class="{notempty name="vo._child"}treeview{/notempty}">
+                  {present name="vo"}
+                  <a href="{notempty name="vo._child"}#{else/}{:url($vo['name'])}{/notempty}" {empty name="vo._child" }class="opentab" tab-name="navtab-collapse-{$vo.id}"{/empty}>
+                      <i class="fa {$vo.icon|default='fa-circle-o'}"></i>
+                        <span>{$vo.title}</span>
+                        {notempty name="vo._child"}<i class="fa fa-angle-left pull-right"></i>{/notempty}
+                    </a>
+                  {/present}
+                  {notempty name="vo._child"}
+                    <ul class="treeview-menu">
+                      {volist name="vo._child" id="v"}
+                           {empty name="v._child"}
+                            <li ><a href="{:eacoo_url($v['name'],[],$v['depend_type'])}" class="opentab" tab-name="navtab-collapse-{$v.id}"><i class="fa {$v.icon|default='fa-circle-o'}"></i> {$v.title}</a> </li>
+                            {else/}
+                             <li ><a href="{:eacoo_url($v['name'],[],$v['depend_type'])}" class="opentab" tab-name="navtab-collapse-{$v.id}"><i class="fa {$v.icon|default='fa-circle-o'}"></i> {$v.title} <i class="fa fa-angle-left pull-right"></i></a>
+                               <ul class="treeview-menu">
+                                {volist name="v._child" id="_v"}
+                                  <li><a href="{:eacoo_url($_v['name'],[],$v['depend_type'])}" class="opentab" tab-name="navtab-collapse-{$_v.id}"><i class="fa fa-circle-o"></i> {$_v.title}</a></li>
+                                {/volist}                 
+                             </ul>
+                              </li>
+                            {/empty}
+                      {/volist}                 
+                   </ul>
+                   {/notempty}
+              </li>
+          {/volist}
 
         <li class="header">LABELS</li>
         <li><a href="http://forum.eacoo123.com" target="_blank"><i class="fa fa-circle-o text-red"></i> <span>交流社区</span></a></li>

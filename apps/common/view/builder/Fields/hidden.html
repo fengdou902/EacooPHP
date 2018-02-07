@@ -1,0 +1,8 @@
+
+ <div class="form-group item_{$field.name} {$field.extra_class|default=''}" style="display:none;">
+    <label for="{$field.name}" class="col-md-2 control-label">{$field.title}</label>
+    <div class="col-md-4">
+        <input type="hidden" class="form-control" id="{$field.name}" name="{$field.name}" value="{$field.value|default=''}" {$field.extra_attr|default=""}>
+    </div>
+    {notempty name="field.description"}<div class="col-md-5 help-block"><i class="fa fa-info-circle color-info1"></i> {$field.description}</div>{/notempty}
+</div>
