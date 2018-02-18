@@ -11,8 +11,6 @@
 namespace app\user\controller;
 use app\home\controller\Home;
 
-use app\common\controller\Upload as UploadService;
-
 class Upload extends Home{
   function _initialize()
     {
@@ -30,9 +28,7 @@ class Upload extends Home{
   public function uploadAvatar(){
 
     $uid = input('param.uid',0,'intval');
-
-    $uploadService = new UploadService;
-    $return = $uploadService->uploadAvatar($uid);
+    $return = logic('common/Upload')->uploadAvatar($uid);
 
     return json($return);
   }

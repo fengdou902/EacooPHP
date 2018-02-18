@@ -9,12 +9,10 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
-use app\admin\builder\Builder;
 
 use app\common\logic\Upload as UploadLogic;
 use app\common\model\Attachment as AttachmentModel;
-use app\common\model\TermRelationships;
-use app\common\model\Config;
+use app\common\model\TermRelationships as TermRelationshipsModel;
 
 class Attachment extends Admin {
 
@@ -48,7 +46,7 @@ class Attachment extends Admin {
                   </ul>
                 </div>']);
         // 搜索
-        $keyword = input('get.keyword');
+        $keyword = input('param.keyword');
         if ($keyword) {
             $this->attachmentModel->where('id|name','like','%'.$keyword.'%');
         }
@@ -70,7 +68,7 @@ class Attachment extends Admin {
         //筛选start
         if ($term_id>0) {
             //$media_ids = TermRelationships::where(['term_id'=>$term_id,'table'=>'attachment'])->select();
-            $media_ids = TermRelationships::where(['term_id'=>$term_id,'table'=>'attachment'])->column('object_id');
+            $media_ids = TermRelationshipsModel::where(['term_id'=>$term_id,'table'=>'attachment'])->column('object_id');
             if(count($media_ids)){
                 //$media_ids = array_column($media_ids,'object_id');
                 $map['id'] = ['in',$media_ids];
@@ -129,7 +127,7 @@ class Attachment extends Admin {
      * @param  int $id id
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function attachmentInfo($id){
+    public function info($id){
         $return = get_attachment_info($id);//附件信息 
         return json($return);
     }
@@ -139,7 +137,7 @@ class Attachment extends Admin {
      * @param  int $id id
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function editAttachment($data=[]){
+    public function edit($data=[]){
         if (IS_POST) {
             $id          = input('post.id',0,'intval');
             $data['alt'] = input('post.alt','');
@@ -164,9 +162,9 @@ class Attachment extends Admin {
      */
     public function moveCategory() {
         if (IS_POST) {
-            $ids      = input('post.ids');
-            $from_cid = input('post.from_cid');
-            $to_cid   = input('post.to_cid');
+            $ids      = input('param.ids');
+            $from_cid = input('param.from_cid');
+            $to_cid   = input('param.to_cid');
             if ($from_cid === $to_cid) {
                 $this->error('目标分类与当前分类相同');
             }
@@ -194,9 +192,8 @@ class Attachment extends Admin {
      * @param  int $id id
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function delAttachment($id = 0,$is_return=true){ 
+    public function del($id = 0,$is_return=true){ 
         $return = get_attachment_info($id);//附件信息 
-    
         cache('Attachment_'.$id,null);//删除缓存信息
         if ($return['location']=='local') {
             $realpath = $return['real_path'];
@@ -228,16 +225,44 @@ class Attachment extends Admin {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function category(){
+        
+        $map =[
+            'taxonomy'=>'media_cat'
+        ];
+        
+        list($data_list,$total) = model('common/Terms')->search('name,slug')->getListByPage($map,true,'sort desc,create_time desc',15);
+        if (!empty($data_list)) {
+            foreach ($data_list as $key => &$row) {
+                $row['object_count'] = logic('common/Terms')->termRelationCount($row['term_id'],'attachment');
+            }
+        }
         $tab_list = [
-                'index'    =>['title'=>'媒体文件','href'=>url('index'),'extra_attr'=>'data-pjax=false'],
+                'index'    =>['title'=>'媒体文件','href'=>url('index')],
                 'category' =>['title'=>'附件分类','href'=>url('category')],
                 'setting'  =>['title'=>'设置','href'=>url('setting')]
             ];
-        $tab_obj=[
-            'tab_list'=>$tab_list,
-            'current'=>'category'
-            ];
-        \think\Loader::action('Terms/index',['media_cat','attachment',$tab_obj,url('mediaCatEdit',['term_id'=>'__data_id__'])]);
+        $builder = builder('List')
+                    ->setMetaTitle('分类管理')
+                    ->setTabNav($tab_list,'category')  // 设置页面Tab导航
+                    ->addTopButton('addnew',['href'=>url('categoryEdit')])  // 添加新增按钮
+                    ->addTopButton('resume')  // 添加启用按钮
+                    ->addTopButton('forbid')  // 添加禁用按钮
+                    ->addTopButton('recycle') //添加回收按钮
+                    ->setSearch()
+                    ->keyListItem('term_id', 'ID')
+                    ->keyListItem('name', '名称','link',url('index',['term_id'=>'__data_id__']))//约定分类对象
+                    ->keyListItem('slug', '别名')
+                    ->keyListItem('parent', '父分类')
+                    ->keyListItem('seo_description', '描述')
+                    ->keyListItem('object_count', '对象数')
+                    ->keyListItem('status', '状态', 'status')
+                    ->keyListItem('right_button', '操作', 'btn')
+                    ->setListPrimaryKey('term_id')
+                    ->setListData($data_list)    // 数据列表
+                    ->setListPage($total,15) // 数据列表分页
+                    ->addRightButton('edit',['href'=>url('categoryEdit',['term_id'=>'__data_id__'])])// 添加编辑按钮
+                    ->addRightButton('recycle')// 添加删除按钮
+                    ->fetch();
 
     }
 
@@ -246,7 +271,7 @@ class Attachment extends Admin {
      * @param  int $term_id term_id
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function mediaCatEdit($term_id = 0){
+    public function CategoryEdit($term_id = 0){
         $tab_list=[
                 'index'    =>['title'=>'媒体文件','href'=>url('index'),'extra_attr'=>'data-pjax=false'],
                 'category' =>['title'=>'附件分类','href'=>url('category')],

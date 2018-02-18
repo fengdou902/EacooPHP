@@ -1,7 +1,22 @@
 //dom加载完成后执行的js
 ;
 (function ($) {
-    
+    //收藏菜单
+    $('body').on('click', '.eacoo-menu-collect', function() {
+        var $this = $(this);
+        $.get(url("admin/menu/toggleCollect"),{title:$this.data('title'),url:$this.data('url')}).success(function (result) {
+            //console.log(result);
+            parent.loadTopMenus();
+            if (result.code==1) {
+                $this.children('i').attr('class','fa fa-star');
+            } else if(result.code==2){
+                $this.children('i').attr('class','fa fa-star-o');
+            } else{
+                updateAlert(result.msg, 'warning');
+            }
+        })
+    })
+
     //ajax get请求
     $('body').on('click','.ajax-get',function () {
         var target;
@@ -217,6 +232,7 @@
         });
     })
 })(jQuery);
+
 //重置alert
 window.updateAlert = function (message,type,title) {
     if (typeof title=='undefined') {
@@ -334,26 +350,23 @@ function batchUrl(url, is_pajx) {
 function url(url, params, rewrite) {
     var website = EacooPHP.root_domain;
     if (window.EacooPHP.url_model == 2) {
+        website = website+'?s=';
+    } 
+    url = url.split('/');
+    if (url[0] == '' || url[0] == '@')
+        url[0] = EacooPHP.root;
+    if (!url[1])
+        url[1] = 'Index';
+    if (!url[2])
+        url[2] = 'index';
+    if (!url[3])
+        url[3] = 'index';
+    if (!url[4])
+        url[4] = 'index';
+    website = website + '/' + url[0] + '/' + url[1] + '/' + url[2]+ '/' + url[3]+ '/' + url[4];
 
-    } else{
-        
-        url = url.split('/');
-        if (url[0] == '' || url[0] == '@')
-            url[0] = EacooPHP.root;
-        if (!url[1])
-            url[1] = 'Index';
-        if (!url[2])
-            url[2] = 'index';
-        if (!url[3])
-            url[3] = 'index';
-        if (!url[4])
-            url[4] = 'index';
-        website = website + '/' + url[0] + '/' + url[1] + '/' + url[2]+ '/' + url[3]+ '/' + url[4];
-
-
-        if (!rewrite) {
-            website = website + '.html';
-        }
+    if (!rewrite) {
+        website = website + '.html';
     }
 
     website = website+ '/'  + url;

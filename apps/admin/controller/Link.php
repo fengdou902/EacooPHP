@@ -34,7 +34,7 @@ class Link extends Admin{
      */
     public function index() {
         // 获取所有链接
-        list($data_list,$total) = $this->linkModel->search('title,url')->getListByPage([],true,'sort,create_time desc',15);
+        list($data_list,$total) = $this->linkModel->search('title,url')->getListByPage([],true,'sort,create_time desc');
 
         return builder('List')
                 ->setMetaTitle('友情链接')  // 设置页面标题
@@ -52,7 +52,7 @@ class Link extends Admin{
                 ->keyListItem('status', '状态', 'status')
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListData($data_list)     // 数据列表
-                ->setListPage($total,15)  // 数据列表分页
+                ->setListPage($total)  // 数据列表分页
                 ->addRightButton('edit')     // 添加编辑按钮
                 ->addRightButton('delete',['model'=>'Links'])  // 添加删除按钮
                 ->fetch();

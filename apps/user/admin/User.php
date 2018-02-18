@@ -48,7 +48,7 @@ class User extends Admin {
         $extra_html = $message_html.$Role_html;
 
         return builder('list')
-                ->setMetaTitle('用户管理') // 设置页面标题
+                ->setMetaTitle('用户列表') // 设置页面标题
                 ->addTopButton('addnew')  // 添加新增按钮
                 ->addTopButton('delete')  // 添加删除按钮
                 ->addTopButton('self', $send_message_attr) //发送消息按钮按钮

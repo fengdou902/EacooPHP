@@ -181,7 +181,7 @@ span.show-media-info{width: 20px;text-align:center;}
           </div>
 
           <div class="modal-body pt-5">
-             <form action="{:url('editAttachment')}" method="post" class="editAttachment">
+             <form action="{:url('Attachment/edit')}" method="post" class="editAttachment">
              <div class="row">
              <input type="hidden" name="id" id="file-id" value="">
                 <div class="row ml-0 mr-0">
@@ -215,13 +215,13 @@ span.show-media-info{width: 20px;text-align:center;}
 {/block}
 
 {block name="script"}
-<link href="__STATIC__/libs/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
 <!-- webuploader -->
-<script type="text/javascript" src="__STATIC_LIBS__/webuploader/js/webuploader.min.js"></script>
+<script type="text/javascript" src="__LIBS__/webuploader/js/webuploader.min.js"></script>
   {if condition="$attachmentDaterangePicker"}
-      <link href="__STATIC__/libs/daterangepicker/daterangepicker-bs3.css" type="text/css" rel="stylesheet">
-      <script src="__STATIC__/libs/daterangepicker/moment.min.js"></script>
-      <script src="__STATIC__/libs/daterangepicker/daterangepicker.js"></script>
+      <link href="__LIBS__/daterangepicker/daterangepicker-bs3.css" type="text/css" rel="stylesheet">
+      <script src="__LIBS__/daterangepicker/moment.min.js"></script>
+      <script src="__LIBS__/daterangepicker/daterangepicker.js"></script>
           <script type="text/javascript">
               //Date range as a button
             $('#choice_date_range').daterangepicker(

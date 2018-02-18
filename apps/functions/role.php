@@ -63,16 +63,3 @@ function get_role_info($uid=0,$field=true)
     return $role_info;
 }
 
-/*获取角色类型
-*$unids 排除的角色id
-*/
-function role_type($unids=false){
-    $role_type = [];
-    $role_map['status']=array('egt','0');
-    if($unids) $role_map['id']=array('not in',$unids);
-    $auth_role= model('AuthGroup')->where($role_map)->field('id,title')->select();
-    foreach ($auth_role as $key => $role) {
-        $role_type[$role['id']]=$role['title'];
-    }
-    return $role_type;
-}

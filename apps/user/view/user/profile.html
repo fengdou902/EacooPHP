@@ -1,6 +1,6 @@
 {extend name="$_admin_public_base_"/}
 {block name="style"}
-<link href="__STATIC__/libs/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
 <style type="text/css">
 /*tab*/
 .nav-tabs-custom>.nav-tabs>li:first-of-type.active>a{border-left-color:#e0e0e0;}
@@ -205,7 +205,7 @@
 {/block}
 
 {block name="script"}
-<script type="text/javascript" src="__STATIC_LIBS__/webuploader/js/webuploader.min.js"></script>
+<script type="text/javascript" src="__LIBS__/webuploader/js/webuploader.min.js"></script>
 <script>
 //本地上传(分开写为了好控制)
 $(function () {
@@ -214,7 +214,7 @@ $(function () {
         auto: true,
         duplicate: true,// 同一文件是否可以重复上传
         // swf文件路径
-        swf: '__STATIC__/libs/webuploader/Uploader.swf',
+        swf: '__LIBS__/webuploader/Uploader.swf',
         // 文件接收服务端。
         server: "{:url('admin/attachment/uploadAvatar',['uid'=>$user_info['uid']])}",
         //验证文件总数量, 超出则不允许加入队列

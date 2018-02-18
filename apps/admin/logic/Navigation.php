@@ -1,7 +1,7 @@
 <?php
 // 前台导航
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
+// | Copyright (c) 2017-2018 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -11,7 +11,6 @@
 namespace app\admin\logic;
 
 use app\common\model\Nav as NavModel;
-use app\common\builder\Builder;
 use eacoo\Tree;
 
 class Navigation extends Base {
@@ -27,6 +26,8 @@ class Navigation extends Base {
     /**
      * 前台导航菜单管理
      * @return [type] [description]
+     * @date   2018-02-12
+     * @author 心云间、凝听 <981248356@qq.com>
      */
     public function getNavMenus(){
         $menus = NavModel::all(function($query)

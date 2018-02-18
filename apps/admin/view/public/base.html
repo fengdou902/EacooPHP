@@ -12,7 +12,7 @@
          {php} }else{ {/php}
           <div class="box box-solid">
               <div class="box-header with-border">
-                    <h3 class="box-title">{$meta_title}</h3> {present name="page_config.help"}<a href="{$page_config.help}" class="color-6" title="帮助" target="_blank"><i class="fa fa-question-circle f15"></i></a>{/present}
+                  <h3 class="box-title">{$meta_title}</h3> <span class="color-warning eacoo-menu-collect" data-title="{$meta_title}" data-url="{$Request.url}" style="cursor: pointer;"> <i class="fa {eq name="is_menu_collected" value="1"}fa-star{else/}fa-star-o{/eq}"></i></span> {present name="page_config.help"}<a href="{$page_config.help}" class="color-6" title="帮助" target="_blank"><i class="fa fa-question-circle f15"></i></a>{/present}
                     <div class="box-tools pull-right">{present name="page_config.self"}{$page_config.self}{/present}
                     {present name="page_config.back"}<button type="button" class="btn btn-box-tool f16" onclick="javascript:history.go(-1);"><i class="fa fa-reply"></i></button>{/present}
                     <button type="button" class="btn btn-box-tool f16" onclick="javascript:location.reload();"><i class="fa fa-refresh"></i></button>
@@ -30,16 +30,16 @@
 <script type="text/javascript" src="__PUBLIC__/js/jquery.cookie.js"></script>
 
 <!-- Slimscroll -->
-<script src="__STATIC_LIBS__/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="__LIBS__/slimscroll/jquery.slimscroll.min.js"></script>
 <!-- FastClick -->
-<script type="text/javascript" src="__STATIC__/libs/fastclick/fastclick.min.js"></script>
+<script type="text/javascript" src="__LIBS__/fastclick/fastclick.min.js"></script>
 <script type="text/javascript" src="__ADMIN_JS__/app.min.js" ></script>
 <!-- <script  type="text/javascript" src="__PUBLIC__/js/jquery.nestable.js"></script> -->
-<script  type="text/javascript" src="__STATIC_LIBS__/nice-validator/jquery.validator.min.js?local=zh-CN"></script>
+<script  type="text/javascript" src="__LIBS__/nice-validator/jquery.validator.min.js?local=zh-CN"></script>
 <!-- <script type="text/javascript" src="__PUBLIC__/js/think.js"></script> -->
-<script type="text/javascript" src="__STATIC_LIBS__/layer/layer.js"></script>
+<script type="text/javascript" src="__LIBS__/layer/layer.js"></script>
 
-<script type="text/javascript" src="__STATIC_LIBS__/iCheck/icheck.min.js"></script>
+<script type="text/javascript" src="__LIBS__/iCheck/icheck.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/jquery.toaster.js"></script>
 <script type="text/javascript" src="__ADMIN_JS__/eacoo.js" ></script>
 <script type="text/javascript" src="__ADMIN_JS__/main.js" ></script>

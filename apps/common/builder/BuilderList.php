@@ -18,7 +18,7 @@ class BuilderList extends Builder {
     private $metaTitle;      // 页面标题
     private $tips;         // 页面提示文字
     private $topButtonList   = [];   // 顶部工具栏按钮组
-    private $_select         = [];             //添加下拉框
+    //private $_select         = [];             //添加下拉框
     private $search          = ['type'=>'basic'];           // 搜索参数配置
     private $tabNav          = [];           // 页面Tab导航
     private $tableColumns    = [];    //表格数据标题
@@ -192,11 +192,11 @@ class BuilderList extends Builder {
      * @param string $arrvalue 筛选数据（包含ID 和value的数组:array(array('id'=>1,'value'=>'系统'),array('id'=>2,'value'=>'项目'),array('id'=>3,'value'=>'机构'));）
      * @return $this
      */
-    public function addSelect($title = '筛选', $name = 'key', $arrvalue = null)
-    {
-        $this->_select[] = array('title' => $title, 'name' => $name,'arrvalue' => $arrvalue);
-        return $this;
-    }
+    // public function addSelect($title = '筛选', $name = 'key', $arrvalue = null)
+    // {
+    //     $this->_select[] = array('title' => $title, 'name' => $name,'arrvalue' => $arrvalue);
+    //     return $this;
+    // }
 
     /**
      * 设置搜索参数
@@ -344,7 +344,7 @@ class BuilderList extends Builder {
                 $my_attribute['title'] = '回收';
                 $my_attribute['icon'] = 'fa fa-trash';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-danger btn-xs ajax-get confirm':'ajax-get confirm';
-                $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;
+                $my_attribute['model'] = isset($attribute['model']) ? $attribute['model'] : CONTROLLER_NAME;
                 $my_attribute['href'] = url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
                     array(
@@ -358,7 +358,7 @@ class BuilderList extends Builder {
                 // 预定义按钮属性以简化使用
                 $my_attribute['title'] = '还原';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-success btn-xs ajax-get confirm':'ajax-get confirm';
-                $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;
+                $my_attribute['model'] = isset($attribute['model']) ? $attribute['model'] : CONTROLLER_NAME;
                 $my_attribute['href'] = url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
                     array(
@@ -373,7 +373,7 @@ class BuilderList extends Builder {
                 $my_attribute['title'] = '删除';
                 $my_attribute['icon'] = 'fa fa-trash';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-danger btn-xs ajax-get confirm':'ajax-get confirm';
-                $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;
+                $my_attribute['model'] = isset($attribute['model']) ? $attribute['model'] : CONTROLLER_NAME;
                 $my_attribute['href'] = url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
                     array(
@@ -426,8 +426,10 @@ class BuilderList extends Builder {
      * @date   2018-02-06
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function setListPage($total = 0, $page_size=15) {
-        
+    public function setListPage($total = 0, $page_size=12) {
+        if (!$page_size) {
+            $page_size = $total;
+        }
         $this->tableDataPage = ['total' => $total, 'page_size' => $page_size];
         return $this;
     }
@@ -526,16 +528,16 @@ class BuilderList extends Builder {
                 'meta_title'          => $this->metaTitle,// 页面标题
                 'page_tips'           => $this->tips,// 页面提示说明
                 'top_button_list'     => $this->topButtonList,// 顶部工具栏按钮
-                'action_url'          => url(MODULE_NAME.'/'.CONTROLLER_NAME.'/'.ACTION_NAME),
+                'action_url'          => $this->request->url(),
                 'search'              => $this->search,// 搜索配置
                 'tab_nav'             => $this->tabNav,// 页面Tab导航
                 'table_columns'       => $this->tableColumns,// 表格的列
                 'table_column_fields' => json_encode($table_column_fields),//表格列bootstrap-table
                 'table_primary_key'   => $this->tablePrimaryKey,// 表格数据主键字段名称
-                //'alter_data_list'     => $this->alterDataList,// 表格数据列表重新修改的项目
+                //'alter_data_list'   => $this->alterDataList,// 表格数据列表重新修改的项目
                 'table_data_page'     => $this->tableDataPage, //数据分页
                 'extra_html'          => $this->extraHtml, // 额外HTML代码
-                'staticFiles'     => $this->staticFiles,// 加载静态资源文件
+                'staticFiles'         => $this->staticFiles,// 加载静态资源文件
             ];
             $this->assign($template_val);
             

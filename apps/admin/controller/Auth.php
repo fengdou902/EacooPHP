@@ -50,25 +50,19 @@ class Auth extends Admin {
                 ->search() //添加搜索查询
                 ->getListByPage([],true,'depend_flag,pid asc,sort asc',20);
 
-        foreach ($data_list as $key=>$list) {
-            $data_list[$key]['p_menu']= $this->authRuleModel->where(['id'=>(int)$list['pid']])->value('title');
+        foreach ($data_list as &$row) {
+            $row['p_menu']=$row->parent_menu ;
         }
-
-        //移动上级按钮属性
-        $moveparent_attr['title'] = '<i class="fa fa-exchange"></i> 移动位置';
-        $moveparent_attr['class'] = 'btn btn-info btn-sm';
-        $moveparent_attr['onclick'] = 'move_menuparent()';
         
         $pid = input('param.pid',0);
 
         return builder('list')
             ->setMetaTitle('规则管理')
-            ->addTopBtn('addnew',array('href'=>url('ruleEdit',['pid'=>$pid])))  // 添加新增按钮
+            ->addTopBtn('addnew',array('href'=>url('edit',['pid'=>$pid])))  // 添加新增按钮
             ->addTopBtn('resume',array('model'=>'auth_rule'))  // 添加启用按钮
             ->addTopBtn('forbid',array('model'=>'auth_rule'))  // 添加禁用按钮
             ->addTopBtn('delete',array('model'=>'auth_rule'))  // 添加删除按钮
             ->setTabNav(logic('Auth')->getTabList(), $depend_flag)  // 设置页面Tab导航
-            ->addTopButton('self', $moveparent_attr) //移动菜单位置
             ->addTopBtn('sort',['model'=>'auth_rule','href'=>url('Sort',['pid'=>$pid])])  // 添加排序按钮
             //->setSearch('', url('rule'))
             ->keyListItem('id','ID')
@@ -122,11 +116,10 @@ class Auth extends Admin {
 
         } else{
             // 获取菜单数据
-            if ($id!=0) {
-                $menu_data = $this->authRuleModel->find($id);
+            if ($id>0) {
+                $menu_data = $this->authRuleModel->get($id);
             }
-            $menus = $menus = logic('Auth')->getAdminMenu();
-            
+            $menus = logic('Auth')->getAdminMenu();
             $menus = array_merge([0=>['id'=>0,'title_show'=>'顶级菜单']], $menus);
 
             return builder('Form')
@@ -139,8 +132,8 @@ class Auth extends Admin {
                     ->addFormItem('icon', 'icon', '字体图标', '字体图标')
                     ->addFormItem('name', 'text', '链接', '链接')
                     ->addFormItem('is_menu', 'radio', '后台菜单', '是否标记为后台菜单',[1=>'是',0=>'否'])
-                    ->addFormItem('no_pjax', 'radio', 'Pjax加载', '标记后台菜单后，是否Pjax方式打开该页面',[0=>'是',1=>'否'])
                     ->addFormItem('sort', 'number', '排序', '排序')
+                    ->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'启用'])
                     ->setFormData($menu_data)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
@@ -166,7 +159,7 @@ class Auth extends Admin {
             $builder->doSort('auth_rule', $ids);
         } else {
             //$map['status'] = array('egt', 0);
-            $list = $this->authRuleModel->getList($map, 'sort asc', 'id,title,sort');
+            $list = $this->authRuleModel->getList($map,'id,title,sort','sort asc');
             foreach ($list as $key => $val) {
                 $list[$key]['title'] = $val['title'];
             }
@@ -397,65 +390,66 @@ class Auth extends Admin {
      * 创建管理员用户组
      * @author 朱亚杰 <zhuyajie@topthink.net>
      */
-    public function createGroup(){
-        if ( empty($this->auth_group) ) {
-            $this->assign('auth_group',['title'=>null,'id'=>null,'description'=>null,'rules'=>null]);//排除notice信息
-        }
-        $this->assign('meta_title','新增用户组');
-        return $this->fetch('editgroup');
-    }
+    // public function createGroup(){
+    //     if ( empty($this->auth_group) ) {
+    //         $this->assign('auth_group',['title'=>null,'id'=>null,'description'=>null,'rules'=>null]);//排除notice信息
+    //     }
+    //     $this->assign('meta_title','新增用户组');
+    //     return $this->fetch('editgroup');
+    // }
 
     /**
      * 编辑管理员用户组
      * @author 朱亚杰 <zhuyajie@topthink.net>
      */
-    public function editGroup(){
-        $auth_group = $this->authGroupModel->find( (int)$_GET['id'] );
-        $this->assign('auth_group',$auth_group);
-        $this->assign('meta_title','编辑用户组');
-        return $this->fetch();
-    }
+    // public function editGroup(){
+    //     $auth_group = $this->authGroupModel->find( (int)$_GET['id'] );
+    //     $this->assign('auth_group',$auth_group);
+    //     $this->assign('meta_title','编辑用户组');
+    //     return $this->fetch();
+    // }
 
     /**
      * 管理员用户组数据写入/更新
      * @author 朱亚杰 <zhuyajie@topthink.net>
      */
-    public function writeGroup(){
-        $data = input('param.');
-        if(isset($data['rules'])){
-            sort($data['rules']);
-            $data['rules']  = implode( ',' , array_unique($data['rules']));
-        }
+    // public function writeGroup(){
+    //     $data = input('param.');
+    //     if(isset($data['rules'])){
+    //         sort($data['rules']);
+    //         $data['rules']  = implode( ',' , array_unique($data['rules']));
+    //     }
 
-        $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
-        if ($this->authGroupModel->editData($data,$id)) {
-            $this->success('操作成功!',url('index'));
-        } else {
-            $this->error('操作失败'.$this->authGroupModel->getError());
-        }
+    //     $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
+    //     if ($this->authGroupModel->editData($data,$id)) {
+    //         $this->success('操作成功!',url('index'));
+    //     } else {
+    //         $this->error('操作失败'.$this->authGroupModel->getError());
+    //     }
 
-    }
+    // }
+    
     /**
      * 修改用户组描述
      */
-    public function descriptionGroup()
-    {
-        $title               = input('param.title');
-        $description         = input('param.description');
-        $id                  = input('param.id');
-        $data['description'] = $description;
-        $data['title']       = $title;
-        $res=$this->authGroupModel->where('id='.$id)->save($data);
-        if($res)
-        {
-            $this->success('修改成功!');
-        }
-        else{
-            $this->error('修改失败!');
-        }
+    // public function descriptionGroup()
+    // {
+    //     $title               = input('param.title');
+    //     $description         = input('param.description');
+    //     $id                  = input('param.id');
+    //     $data['description'] = $description;
+    //     $data['title']       = $title;
+    //     $res=$this->authGroupModel->where('id='.$id)->save($data);
+    //     if($res)
+    //     {
+    //         $this->success('修改成功!');
+    //     }
+    //     else{
+    //         $this->error('修改失败!');
+    //     }
 
-    }
-    
+    // }
+
     /**
      * 将用户添加到用户组,入参uid,group_id
      * @author 朱亚杰 <zhuyajie@topthink.net>

@@ -13,6 +13,7 @@ namespace app\common\logic;
 
 use app\common\model\Attachment;
 use think\Request;
+use think\Hook;
 
 class Upload {
 
@@ -379,10 +380,14 @@ class Upload {
 			$data['msg']     ='文件已存在';
 			return $data;
 		} else {
-			$upload_info = $file;
         	// 上传文件钩子，用于阿里云oss、七牛云、又拍云等第三方文件上传的扩展
-			$upload_info['uploadtype'] = $config['driver'];
-        	hook('UploadFile', $upload_info);
+	        if ($config['driver'] != 'local') {
+	            $hook_result = Hook::listen('UploadFile', $file, ['driver' => $config['driver']], true);
+	            if (false !== $hook_result) {
+	                return $hook_result;
+	            }
+	        }
+        	//hook('UploadFile', $file);
 			$this->attachment_model->allowField(true)->isUpdate(false)->data($file)->save();
 			$id  = $this->attachment_model->id;
 			if ($id>0) {

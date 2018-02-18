@@ -49,33 +49,32 @@ class Terms extends Admin {
         }
         if (!empty($data_list)) {
             foreach ($data_list as $key => &$row) {
-                $row['object_count'] = TermsModel::termRelationCount($row['term_id'],$from_table);
+                $row['object_count'] = logic('common/Terms')->termRelationCount($row['term_id'],$from_table);
             }
         }
         $builder = builder('List')->setMetaTitle('分类管理');
         if (!empty($tab_nav)) {//构建tab
             $builder->setTabNav($tab_nav['tab_list'],$tab_nav['current']);  // 设置页面Tab导航
         }
-        
         return $builder->addTopButton('addnew',$addnew_href)  // 添加新增按钮
-                ->addTopButton('resume')  // 添加启用按钮
-                ->addTopButton('forbid')  // 添加禁用按钮
-                ->addTopButton('recycle') //添加回收按钮
-                ->setSearch('输入分类名称', url('index'))
-                ->keyListItem('term_id', 'ID')
-                ->keyListItem('name', '名称','link',url('index',['term_id'=>'__data_id__']))//约定分类对象
-                ->keyListItem('slug', '别名')
-                ->keyListItem('parent', '父分类')
-                ->keyListItem('seo_description', '描述')
-                ->keyListItem('object_count', '对象数')
-                ->keyListItem('status', '状态', 'status')
-                ->keyListItem('right_button', '操作', 'btn')
-                ->setListPrimaryKey('term_id')
-                ->setListData($data_list)    // 数据列表
-                ->setListPage($total,15) // 数据列表分页
-                ->addRightButton('edit',$addnew_href)// 添加编辑按钮
-                ->addRightButton('recycle')// 添加删除按钮
-                ->fetch();
+                        ->addTopButton('resume')  // 添加启用按钮
+                        ->addTopButton('forbid')  // 添加禁用按钮
+                        ->addTopButton('recycle') //添加回收按钮
+                        ->setSearch('输入分类名称', url('index'))
+                        ->keyListItem('term_id', 'ID')
+                        ->keyListItem('name', '名称','link',url('index',['term_id'=>'__data_id__']))//约定分类对象
+                        ->keyListItem('slug', '别名')
+                        ->keyListItem('parent', '父分类')
+                        ->keyListItem('seo_description', '描述')
+                        ->keyListItem('object_count', '对象数')
+                        ->keyListItem('status', '状态', 'status')
+                        ->keyListItem('right_button', '操作', 'btn')
+                        ->setListPrimaryKey('term_id')
+                        ->setListData($data_list)    // 数据列表
+                        ->setListPage($total,15) // 数据列表分页
+                        ->addRightButton('edit',$addnew_href)// 添加编辑按钮
+                        ->addRightButton('recycle')// 添加删除按钮
+                        ->fetch();
 
     }
 

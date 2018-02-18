@@ -46,13 +46,22 @@
     </div>
   </aside>
 
+{include file="public/footer"/}
 <script type="text/javascript">
+    loadTopMenus();//加载收藏菜单
+    loadSidebarMenus();//加载菜单
+    var eacoo_tab_content_height = $('.eacoo-tab-content').height();
     (function ($) {
+        //加载上次页面窗口
+        if (localStorage.getItem('latest_iframe_tab')) {
+            refreshIframe();
+        }
         $("#navtab-collapse-1 iframe").load(function(){
             //autoHeight(document.getElementById(tab_name));
-            var mainheight = $(this).contents().find("body").height()+30;
+            //var mainheight = $(this).contents().find("body").height()+30;
+            var mainheight = eacoo_tab_content_height+20;
             $(this).height(mainheight);
         });
     })(jQuery);
+    
 </script>
-{include file="public/footer"/}

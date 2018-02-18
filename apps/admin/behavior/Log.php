@@ -42,7 +42,7 @@ class Log {
 			$uid    = is_login();
 			$remark = $info['title'];
 	        // 保存日志
-	        return $res = logic('common/ActionLog')->record($info['id'],$uid,$params,$remark);
+	        return $res = logic('common/Action')->recordLog($info['id'],$uid,$params,$remark);
 		}
 		
 	}

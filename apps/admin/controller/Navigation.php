@@ -37,7 +37,7 @@ class Navigation extends Admin {
             'class'   =>'btn btn-info btn-sm',
             'onclick' =>'move_menu_position()'
         ];
-
+        $total = $this->navModel->count();
         return builder('List')
                 ->setMetaTitle('前台导航管理')
                 ->addTopBtn('addnew')  // 添加新增按钮
@@ -58,6 +58,7 @@ class Navigation extends Admin {
                 ->keyListItem('status','状态','status')
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListPrimaryKey('id')
+                ->setListPage($total,false)
                 ->setListData(logic('Navigation')->getNavMenus())    // 从逻辑层获取数据
                 ->setExtraHtml(logic('Navigation')->moveMenuHtml())//添加移动按钮html
                 ->addRightButton('edit')      // 添加编辑按钮
@@ -98,7 +99,7 @@ class Navigation extends Admin {
             }   
 
         } else{
-            $info = ['target'=>'_self','sort'=>99];
+            $info = ['target'=>'_self','sort'=>99,'status'=>1];
             // 获取菜单数据
             if ($id>0) {
                 $info = NavModel::get($id);
@@ -111,9 +112,9 @@ class Navigation extends Admin {
             }
             $menus = array_merge([0=>['id'=>0,'title_show'=>'顶级菜单']], $menus);
             return builder('Form')
-                    ->setMetaTitle($title.'菜单')  // 设置页面标题
+                    ->setMetaTitle($title.'导航菜单')  // 设置页面标题
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
-                    ->addFormItem('title', 'text', '标题', '用于后台显示的配置标题')
+                    ->addFormItem('title', 'text', '标题', '用于前台显示的导航标题')
                     ->addFormItem('pid', 'multilayer_select', '上级菜单', '上级菜单',$menus)
                     ->addFormItem('value', 'text', 'URL', '导航地址。支持url生成规则，三段式')
                     ->addFormItem('position', 'select', '位置', '导航菜单显示位置，页面头部，登录个人中心',['header'=>'头部(Header)','my'=>'我的(My)'],'require')
@@ -122,6 +123,7 @@ class Navigation extends Admin {
                     ->addFormItem('depend_type', 'select', '来源类型', '来源类型。分别是模块，插件，主题',[0=>'外部链接',1=>'模块',2=>'插件',3=>'主题'])
                     ->addFormItem('depend_flag', 'text', '来源标识', '如模块、插件、主题的标识名。外部链接可不填写')
                     ->addFormItem('sort', 'number', '排序', '排序')
+                    ->addFormItem('status', 'radio', '状态', '状态，开启或关闭',[1=>'是',0=>'否'])
                     ->setFormData($info)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();

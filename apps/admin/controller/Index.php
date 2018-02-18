@@ -21,59 +21,62 @@ class Index extends Admin
     public function index()
     {
         $this->assign('meta_title','首页');
+        $this->assign('current_message_count',0);//当前消息数量
+
         return $this->fetch();
     }
 
     /**
-     * 退出登录
-     * @return [type] [description]
-     */
-    public function logout(){
-        session(null);
-        cookie(null,config('cookie.prefix'));
-        $this->redirect('admin/index/login');
-    }
-    
-    /**
      * 清理缓存
      * @return [type] [description]
      */
-    public function delcache() { 
+    public function delCache() { 
+        //防止认证信息被清理
         $eacoo_identification = cache('eacoo_identification');
-         header("Content-type: text/html; charset=utf-8");
+        header("Content-type: text/html; charset=utf-8");
         //清文件缓存
         $dirs = [ROOT_PATH.'runtime/'];
         @mkdir('runtime',0777,true);
         //清理缓存
         foreach($dirs as $dir) {
-            $this->rmdirr($dir);
+            rmdirs($dir);
         }
         cache('admin_sidebar_menus_'.is_login(),null);//清空后台菜单缓存
         cache('DB_CONFIG_DATA',null);
         cache('eacoo_identification',$eacoo_identification);
         $this->success('清除缓存成功！');
-     } 
+    } 
 
-    /////////////下面是处理方法
+    /**
+     * 获取侧边栏菜单
+     * @return [type] [description]
+     * @date   2018-02-12
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function getSidebarMenus()
+    {
+        try {
+            $result = logic('index')->getAdminSidebarMenu();
+            return json(['code'=>1,'msg'=>'获取侧边栏菜单成功','data'=>$result]);
+        } catch (\Exception $e) {
+            return json(['code'=>$e->getCode(),'msg'=>$e->getMessage(),'data'=>[]]);
+        }
+    }
+
+    /**
+     * 获取顶部菜单
+     * @return [type] [description]
+     * @date   2018-02-15
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function getTopMenus()
+    {
+        try {
+            $result = logic('index')->getAdminTopMenu();
+            return json(['code'=>1,'msg'=>'获取顶部收藏菜单成功','data'=>$result]);
+        } catch (\Exception $e) {
+            return json(['code'=>$e->getCode(),'msg'=>$e->getMessage(),'data'=>[]]);
+        }
         
-     public function rmdirr($dirname) {
-          if (!file_exists($dirname)) {
-                return false;
-          }
-          if (is_file($dirname) || is_link($dirname)) {
-                return unlink($dirname);
-          }
-          $dir = dir($dirname);
-          if($dir){
-               while (false !== $entry = $dir->read()) {
-                if ($entry == '.' || $entry == '..') {
-                 continue;
-                }
-                //递归
-                $this->rmdirr($dirname . DIRECTORY_SEPARATOR . $entry);
-               }
-          }
-          $dir->close();
-          return rmdir($dirname);
     }
 }

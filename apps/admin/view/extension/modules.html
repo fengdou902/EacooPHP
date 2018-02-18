@@ -6,7 +6,7 @@
   /*.plugin-item:hover { -webkit-box-shadow: 0px 10px 20px rgba(226,226,226,.8); box-shadow: 0px 10px 20px rgba(226,226,226,.8); -webkit-transform: translate3d(0,-10px,0); -moz-transform: translate3d(0,-10px,0); transform: translate3d(0,-1px,0); z-index: 4;}*/
   .module-item:hover h4{ color: #0db252; }
   .module-item h4{font-size: 15px;color: #666;}
-  .module-item .item-desc{font-size: 13px;color: #777;height: 40px;}
+  .module-item .item-desc{font-size: 13px;color: #777;min-height: 40px;}
   .module-item label.label{display: block;font-size: 12px;color: #808080;height: 26px;line-height: 26px;padding: 0 10px;background: #f4f4f4;border-radius: 4px;float: left;margin-right: 12px;}
   .module-item .item-logo{padding-left: 0;padding-right: 0;height: 80px;line-height: 80px;overflow: hidden;margin-top: 10px;}
   .module-item .module-logo{max-width:100%;max-height: 85px;}
@@ -132,8 +132,8 @@
 
 {block name="script"}
 <script type="text/javascript" src="__ADMIN_JS__/eacoo.extension.js" ></script>
-<link href="__STATIC__/libs/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
-<script type="text/javascript" src="__STATIC__/libs/webuploader/js/webuploader.min.js"></script>
+<link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="__LIBS__/webuploader/js/webuploader.min.js"></script>
 <script>
     //本地上传(分开写为了好控制)
     $(function () {

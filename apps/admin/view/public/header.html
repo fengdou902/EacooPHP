@@ -13,20 +13,28 @@
       <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
         <span class="sr-only">Toggle navigation</span>
       </a>
+      
       {php}if(!IS_MOBILE){{/php}
+        <script id="collect_top_menus" type="text/html">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-star" style="font-size: 20px!important;"></i></a>
+            <ul class="dropdown-menu" role="menu">
+                <% for (var i = 0; i < data.length; i ++) { %>
+                <% var vo = data[i]; %>
+                  <li><a href="<%=vo.url %>" class="opentab" tab-name="navtab-collapse-<%=vo.title %>" style="font-weight:bold!important;"><i class="fa fa-circle-o"></i> <%=vo.title %></a></li>
+                <% } %>
+                <% if (data.length==0) { %>
+                    <li class="f13 ml-10 color-6">Tips: 点击<i class="fa fa-star-o"></i>可添加菜单收藏</li>
+                <% } %>
+            </ul>
+        </script>
         <ul class="nav navbar-nav">
-          <li><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-star" style="font-size: 20px!important;"></i></a>
-          <ul class="dropdown-menu" role="menu">
-                <li><a href="{:url('cms/posts/edit')}"><i class="fa fa-circle-o"></i> 发布文章</a></li>
-                <li><a href="{:url('cms/posts/index')}"><i class="fa fa-circle-o"></i> 文章列表</a></li>
-              </ul>
-          </li>
+          <li id="top-collect-menus"></li>
           <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cloud"></i> 扩展中心<span class="label label-danger">新</span> <!-- <span class="caret"></span> --></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cloud"></i> 应用中心<span class="label label-danger">新</span> <!-- <span class="caret"></span> --></a>
               <ul class="dropdown-menu" role="menu">
-                <li><a href="{:url('admin/modules/index')}"><i class="fa fa-circle-o"></i> 模块</a></li>
-                <li><a href="{:url('admin/plugins/index')}"><i class="fa fa-circle-o"></i> 插件</a></li>
-                <li><a href="{:url('admin/theme/index')}"><i class="fa fa-circle-o"></i> 主题</a></li>
+                <li><a href="{:url('admin/modules/index')}" class="opentab" tab-title="应用中心-模块" tab-name="navtab-collapse-app-modules"><i class="fa fa-circle-o"></i> 模块</a></li>
+                <li><a href="{:url('admin/plugins/index')}" class="opentab" tab-title="应用中心-插件" tab-name="navtab-collapse-app-plugins"><i class="fa fa-circle-o"></i> 插件</a></li>
+                <li><a href="{:url('admin/theme/index')}" class="opentab" tab-title="应用中心-主题" tab-name="navtab-collapse-app-themes"><i class="fa fa-circle-o"></i> 主题</a></li>
               </ul>
             </li>
         </ul>
@@ -51,8 +59,7 @@
                         <div class="pull-left">
                           <img src="{$message.fromuid_avatar|root_full_path=###}" class="img-circle">
                         </div>
-                        <h4>{$message.title}
-                          <small><i class="fa fa-clock-o"></i> {$message.create_time}</small>
+                        <h4>{$message.title}<small><i class="fa fa-clock-o"></i> {$message.create_time}</small>
                         </h4>
                         <p>{$message.content|cutStr=###,18}</p>
                       </a>
@@ -75,13 +82,11 @@
               <li>
 
                 <ul class="menu">
-                <!-- <volist name="tixian_data" id="tixian">
-                    <li>
+                <li>
                     <a href="{:url('Sns/Funds/withdrawals')}" class="f13 color-6">
                       <i class="fa fa-info text-yellow"></i> {/*$tixian.realname*/}在{/*$data.create_time|date="m-d H:i",###*/}申请提现{/*$tixian.money*/}元
                     </a>
                   </li>
-                </volist> -->
                   
                 </ul>
               </li>
@@ -99,7 +104,6 @@
               <!-- User image -->
               <li class="user-header">
                 <img src="{$current_user.avatar|root_full_path|default='/static/assets/img/default-avatar.svg'}" class="img-circle" alt="User Image">
-
                 <p>
                   {$current_user.nickname} - {/*$current_user.role_name*/}
                   <small>注册时间：{$current_user.reg_time}</small>
@@ -123,8 +127,8 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="{:url('user/user/profile',array('uid'=>$current_user['uid']))}" class="btn btn-default btn-flat">个人资料</a>
-                  <a href="{:url('user/user/resetPassword',array('uid'=>$current_user['uid']))}" class="btn btn-default btn-flat">修改密码</a>
+                  <a href="{:url('user/user/profile',array('uid'=>$current_user['uid']))}" class="btn btn-default btn-flat opentab" tab-name="navtab-collapse-profile">个人资料</a>
+                  <a href="{:url('user/user/resetPassword',['uid'=>$current_user['uid']])}" class="btn btn-default btn-flat opentab" tab-name="navtab-collapse-resetPassword">修改密码</a>
                 </div>
                 <div class="pull-right">
                   <a href="javascript:void(0);" class="loginout btn btn-default btn-flat">退出</a>

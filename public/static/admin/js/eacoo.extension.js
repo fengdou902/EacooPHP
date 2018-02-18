@@ -100,7 +100,8 @@ function onlineInstall(name,app_type,install_method,only_download) {
         success:function(result){
           p_layer.closeAll();
           if(result.code==1){
-            window.location.href = result.url; 
+            window.location.href = result.url;
+            parent.loadSidebarMenus();//加载菜单
           } else if(result.code==2){
             eacooTokenIdentification();
           }else if(result.code==3){
@@ -136,8 +137,8 @@ function app_form_submit(action_url,params) {
             setTimeout(function () {
                 window.location.href = result.url;
             }, 1000);
-            
-          }else{
+            parent.loadSidebarMenus();//加载菜单
+          } else{
             updateAlert(result.msg,'warning');
           }
 
@@ -225,39 +226,45 @@ function getEacooUserinfo() {
 
 $(function () {
 
-  //应用在线安装
-    $(document).on('click','.app-online-install,.view-app-detail', function() {
-        layer.closeAll();
-        var name           = $(this).data('name');
-        var app_type       = $(this).data('type');
-        var install_method = $(this).data('install-method');
-        if (install_method=='upgrade') {
-            var layer_btns = ['立即升级','仅下载覆盖'];
-        } else if(install_method=='install') {
-            var layer_btns = ['直接安装','仅下载'];
-        } else{
-            var layer_btns = [];
-        };
-        parent.layer.open({
-          type: 2,
-          title: '准备在线安装',
-          shadeClose: true,
-          shade: 0.8,
-          area: ['580px', '530px'],
-          //content: url('admin/Extension/onlineInstallBefore',['load_type=iframe','install_method='+install_method]),
-          content:EacooPHP.eacoo_api_url+'/appstore/appinfo?install_method='+install_method+'&type='+app_type+'&name='+name,
-          resize: false,
-          btn: layer_btns,
-          yes: function(index, layero){
-              onlineInstall(name,app_type,install_method,0);
-          },
-          btn2: function(index, layero){
-              onlineInstall(name,app_type,install_method,1);
-              
-          } 
-      });
-       
-   });
+  /**
+   * 应用在线安装
+   * @param  {[type]} ) {        layer.closeAll();        var name [description]
+   * @return {[type]} [description]
+   * @date   2018-02-16
+   * @author 心云间、凝听 <981248356@qq.com>
+   */
+  $(document).on('click','.app-online-install,.view-app-detail', function() {
+      layer.closeAll();
+      var name           = $(this).data('name');
+      var app_type       = $(this).data('type');
+      var install_method = $(this).data('install-method');
+      if (install_method=='upgrade') {
+          var layer_btns = ['立即升级','仅下载覆盖'];
+      } else if(install_method=='install') {
+          var layer_btns = ['直接安装','仅下载'];
+      } else{
+          var layer_btns = [];
+      };
+      parent.layer.open({
+        type: 2,
+        title: '准备在线安装',
+        shadeClose: true,
+        shade: 0.8,
+        area: ['670px', '530px'],
+        //content: url('admin/Extension/onlineInstallBefore',['load_type=iframe','install_method='+install_method]),
+        content:EacooPHP.eacoo_api_url+'/appstore/appinfo?install_method='+install_method+'&type='+app_type+'&name='+name+'&epv='+EacooPHP.eacoophp_version,
+        resize: false,
+        btn: layer_btns,
+        yes: function(index, layero){
+            onlineInstall(name,app_type,install_method,0);
+        },
+        btn2: function(index, layero){
+            onlineInstall(name,app_type,install_method,1);
+            
+        } 
+    });
+     
+ });
     //准备安装之前
   $(document).on('click','.app-install-before', function() {
       layer.closeAll();

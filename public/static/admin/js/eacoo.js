@@ -3,42 +3,25 @@
 (function ($) {
     // 设置eacoo-tab的宽度
     $('.eacoo-tab').width($(window).width()-373);
-    var eacoo_tab_content_height = $('.eacoo-tab-content').height();
+    
     // 打开新Tab
-    $('body').delegate('#sidebar a.opentab', 'click', function() {
+    $('body').delegate('a.opentab', 'click', function() {
         var tab_url   = $(this).attr('href');
         var tab_name  = $(this).attr('tab-name');
-
-        localStorage.setItem('latest_tab_name',tab_name);//设置最新tab_name存储
-        var is_open   = $('.eacoo-tab-content #' + tab_name).length;
-        if(is_open !== 0){
-            $('.eacoo-tab a[href="#' + tab_name + '"]').tab('show');
-        } else {
-            var tab  = '<li class="new-add" style="position: relative;float:left;display: inline-block;"><a href="#'
-                     + tab_name
-                     + '" role="tab" data-toggle="tab">'
-                     + $(this).html()
-                     + '<button type="button" class="close" aria-label="Close">'
-                     + '<span aria-hidden="true">&times;</span></button></a></li>';
-            var tab_content = '<div role="tabpanel" class="new-add tab-pane fade" id="'
-                            + tab_name
-                            + '"><iframe name="#'
-                            + tab_name
-                            + '" id="'
-                            + tab_name
-                            + '" class="iframe" src="'
-                            + tab_url
-                            +'" ></iframe></div>';
-            $('.eacoo-tab').width($('.eacoo-tab').width() + 60);
-            $('.eacoo-tab').append(tab);
-            $('.eacoo-tab-content').append(tab_content);
-            $('.eacoo-tab a:last').tab('show');
-            $("#"+tab_name+" iframe").load(function(){
-                var mainheight = $(this).contents().find("body").height()+30;
-                var mainheight = eacoo_tab_content_height+20;
-                $(this).height(mainheight);
-            });
+        var tab_title = $(this).attr('tab-title');
+        var is_iframe = $(this).data('iframe');//true|false
+        var tab_html = $(this).html();
+        //标题替换
+        if (tab_title) {
+            tab_html = tab_html.replace($(this).text(),tab_title);
         }
+        tab_html+='<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+        
+        //设置最新latest_iframe_tab存储
+        var latest_iframe_tab = {tab_name:tab_name,tab_url:tab_url,tab_html:tab_html};
+        localStorage.setItem('latest_iframe_tab',JSON.stringify(latest_iframe_tab));
+
+        showTabIframe(latest_iframe_tab,is_iframe);
         return false;
     });
     // 给Bootstrap标签切换增加关闭功能
@@ -47,9 +30,19 @@
         if(id) {
             // 删除前先显示前一个tab
             if ($(id).hasClass('active')) {
-                $(this).closest('li').prev().addClass('active');
-                $($(this).closest('li').prev().find('a').attr('href')).removeClass('fade').addClass('active');
-                localStorage.setItem('latest_tab_name',id.substr(1));//设置最新tab_name存储
+                var prevLi = $(this).closest('li').prev();
+                prevLi.addClass('active');
+                $(prevLi.find('a').attr('href')).removeClass('fade').addClass('active');
+                //设置最新latest_iframe_tab存储
+                
+                var pre_id = prevLi.find('a').attr('href');
+                var tab_name = pre_id.substr(1);
+                var tab_url = $(pre_id + ' iframe').attr('src');
+                var tab_html = prevLi.find('a').html();
+                var latest_iframe_tab = {tab_name:tab_name,tab_url:tab_url,tab_html:tab_html};
+                //console.log(latest_iframe_tab);
+                //localStorage.removeItem("latest_iframe_tab");
+                localStorage.setItem('latest_iframe_tab',JSON.stringify(latest_iframe_tab));
             }
             // 删除标签对应的内容
             if ($(id).remove()) {
@@ -67,9 +60,24 @@
     });
 
     // 关闭所有标签
-    $('body').delegate('.close-all', 'click', function() {
+    $('body').delegate('.eacoo-tab-nav .close-all', 'click', function() {
         $('.new-add').remove();
         $('.eacoo-tab a:first').tab('show');
+        localStorage.removeItem("latest_iframe_tab");
+    });
+
+    // 单击标签
+    $('body').delegate('.eacoo-tab a', 'click', function() {
+        var id = $(this).attr('href');
+        var tab_name = id.substr(1);
+        var tab_url = $(id + ' iframe').attr('src');
+        if (tab_url) {
+            var tab_html = $(this).html();
+            var latest_iframe_tab = {tab_name:tab_name,tab_url:tab_url,tab_html:tab_html};
+            //console.log(latest_iframe_tab);
+            localStorage.setItem('latest_iframe_tab',JSON.stringify(latest_iframe_tab));
+        }
+        
     });
 
     // 双击刷新标签
@@ -98,33 +106,21 @@
     // $(window).resize(function () {
     //     $(".iframe-wrapper").css("height", $(".content-wrapper").height() + "px");
     // });
-
-    //刷新浏览器导航菜单同步
-    var pathname = window.location.pathname;
-    if (pathname=='/admin.php') {
-        var search = window.location.search;
-        pathname = pathname + search;
-    } 
-    //pathname = EacooPHP.root_domain+pathname;
-    pathname = pathname;
-
-    //列表全选的实现
+    
+    //侧边栏菜单点击状态转换
+    $('body').on('click',".sidebar-menu>li.no_tree>a",function () {
+        $('.sidebar-menu').find('li').removeClass('active');
+        $(this).parent().addClass('active');
+        $('.sidebar-menu').find('ul.treeview-menu').hide();
+        //$.cookie('old_eacoo_pathname',pathname, { expires: 7, path: '/' });
+    });
     $('body').on('click',".sidebar-menu .treeview-menu a",function () {
         $('.sidebar-menu').find('ul.treeview-menu li').removeClass('active');
         $(this).parent().addClass('active');
         
-        $.cookie('old_eacoo_pathname',pathname, { expires: 7, path: '/' });
+        //$.cookie('old_eacoo_pathname',pathname, { expires: 7, path: '/' });
     });
-
-    var findsamehref = $('.sidebar-menu').find('a[href="' + pathname + '"]');
-    if (findsamehref.length>0) {
-        $.cookie('old_eacoo_pathname',pathname, { expires: 7, path: '/' });
-    } else{
-        var old_eacoo_pathname = $.cookie('old_eacoo_pathname');
-        findsamehref = $('.sidebar-menu').find('a[href="' + old_eacoo_pathname + '"]');
-    }
-    findsamehref.parent().addClass('active').parent().parent().addClass('active').parent().parent().addClass('active');
-
+   
     //iframe打开
     $('body').on('click','[load-type=iframe]',function () {
         var target;
@@ -170,7 +166,7 @@
         }
     });
 
-/*退出*/
+  /*退出*/
   $('.loginout').click(function(){
       layer.confirm('确定要退出吗？', {icon: 3},function(){
           parent.layer.msg('退出成功!', {
@@ -201,9 +197,87 @@
  * @author 心云间、凝听 <981248356@qq.com>
  */
 function refreshIframe(param) {
-    var id = "#"+localStorage.setItem('latest_tab_name');//获取最新tab_name存储
-    console.log(id);
-    $(id+' .iframe').attr('src', $(id+' .iframe').attr('src'));
+    var latest_iframe = JSON.parse(localStorage.getItem('latest_iframe_tab'));
+    //console.log(latest_iframe_tab.tab_url);
+    showTabIframe(latest_iframe);
+}
+
+/**
+ * 置iframe
+ * @param  {Boolean} is_from_iframe 是否来源框架的链接
+ * @param  {[type]} iframe 对象
+ * @date   2018-02-08
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function showTabIframe(iframe,is_from_iframe=false) {
+    //设置打开对象
+    var windowObj = window;
+    if (is_from_iframe==true) {
+        windowObj = windowObj.parent;
+    }
+    var tab_name = iframe.tab_name;
+    var tab_url = iframe.tab_url;
+    var tab_html = iframe.tab_html;
+
+    var is_open   = windowObj.$('.eacoo-tab-content #' + tab_name).length;
+    if(is_open !== 0){
+        windowObj.$('.eacoo-tab a[href="#' + tab_name + '"]').tab('show');return true;
+    } 
+
+    var tab  = '<li class="new-add" style="position: relative;float:left;display: inline-block;"><a href="#'
+             + tab_name
+             + '" role="tab" data-toggle="tab">'
+             + tab_html
+             + '</a></li>';
+    var tab_content = '<div role="tabpanel" class="new-add tab-pane fade" id="'
+                    + tab_name
+                    + '"><iframe name="#'
+                    + tab_name
+                    + '" id="iframe-'
+                    + tab_name
+                    + '" class="iframe" src="'
+                    + tab_url
+                    +'" ></iframe></div>';
+    windowObj.$('.eacoo-tab').width(windowObj.$('.eacoo-tab').width() + 60);
+    windowObj.$('.eacoo-tab').append(tab);
+    windowObj.$('.eacoo-tab-content').append(tab_content);
+    windowObj.$('.eacoo-tab a:last').tab('show');
+    $("#"+tab_name+" iframe").load(function(){
+        //var eacoo_tab_content_height = $('.eacoo-tab-content').height();
+        //var mainheight = $(this).contents().find("body").height()+30;
+        var mainheight = eacoo_tab_content_height+20;
+        $(this).height(mainheight);
+    });
+}
+
+/**
+ * 加载侧边栏菜单
+ * @return {[type]} [description]
+ * @date   2018-02-12
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function loadSidebarMenus() {
+    $.get(url("admin/index/getSidebarMenus")).success(function (result) {
+        //console.log(result);
+        var html = template("sidebar_menus", result);
+        $("#sidebar-menus").html(html);
+    })
+    
+}
+
+/**
+ * 加载顶部菜单
+ * @return {[type]} [description]
+ * @date   2018-02-12
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function loadTopMenus() {
+    $.get(url("admin/index/getTopMenus")).success(function (result) {
+        //console.log(result);
+        var html = template("collect_top_menus", result);
+        $("#top-collect-menus").html(html);
+    })
+    
 }
 
 /**************************附件选择器弹框 start*******************************/

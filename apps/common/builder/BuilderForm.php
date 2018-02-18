@@ -16,18 +16,17 @@ namespace app\common\builder;
  */
 class BuilderForm extends Builder
 {
-    private $_meta_title;    // 页面标题
-    private $_sub_title;    // 页面子标题
-    private $_tip;         // 页面子标题
-    private $_tab_nav     = [];     // 页面Tab导航
-    private $_group_tab_nav=[]; //页面Tab分组
-    private $_post_url;              // 表单提交地址
-    private $_buttonList  = [];    //按钮组
-    private $_form_items  = [];  // 表单项目
-    private $_extra_items = []; // 额外已经构造好的表单项目
-    private $_form_data   = [];   // 表单数据
-    private $_extra_html;            // 额外功能代码
-    private $_ajax_submit = true;    // 是否ajax提交
+    private $metaTitle;    // 页面标题
+    private $tips;         // 页面子标题
+    private $tabNav     = [];     // 页面Tab导航
+    private $groupTabNav=[]; //页面Tab分组
+    private $postUrl;              // 表单提交地址
+    private $buttonList  = [];    //按钮组
+    private $formItems  = [];  // 表单项目
+    private $extraItems = []; // 额外已经构造好的表单项目
+    private $formData   = [];   // 表单数据
+    private $extraHtml;            // 额外功能代码
+    private $ajaxSubmit = true;    // 是否ajax提交
 
     /**
      * 设置页面标题
@@ -35,27 +34,7 @@ class BuilderForm extends Builder
      * @return $this    
      */
     public function setMetaTitle($meta_title) {
-        $this->_meta_title = $meta_title;
-        return $this;
-    }
-
-    /**
-     * 设置页面子标题
-     * @param $title 标题文本
-     * @return $this
-     */
-    public function setSubTitle($sub_title) {
-        $this->_sub_title = $sub_title;
-        return $this;
-    }
-
-    /**
-     * 设置页面说明
-     * @param $title 标题文本
-     * @return $this
-     */
-    public function setTip($content) {
-        $this->_tip = $content;
+        $this->metaTitle = $meta_title;
         return $this;
     }
 
@@ -65,7 +44,7 @@ class BuilderForm extends Builder
      * @return $this
      */
     public function setPageTips($content,$type='info') {
-        $this->_tip = $content;
+        $this->tips = $content;
         return $this;
     }
 
@@ -76,7 +55,7 @@ class BuilderForm extends Builder
      * @return $this
      */
     public function setTabNav($tab_list, $current_tab) {
-        $this->_tab_nav = ['tab_list' => $tab_list, 'current_tab' => $current_tab];
+        $this->tabNav = ['tab_list' => $tab_list, 'current_tab' => $current_tab];
         return $this;
     }
 
@@ -87,21 +66,21 @@ class BuilderForm extends Builder
      * @return $this
      */
     public function setGTabNav($tab_list, $current_tab) {
-        $this->_group_tab_nav = ['tab_list' => $tab_list, 'current_tab' => $current_tab];
+        $this->groupTabNav = ['tab_list' => $tab_list, 'current_tab' => $current_tab];
         return $this;
     }
 
     public function group($name, $list = array())
     {
         !is_array($list) && $list = explode(',', $list);
-        $this->_group_tab_nav[$name] = $list;
+        $this->groupTabNav[$name] = $list;
         return $this;
     }
 
     public function groups($list = array())
     {
         foreach ($list as $key => $v) {
-            $this->_group_tab_nav[$key] = is_array($v) ? $v : explode(',', $v);
+            $this->groupTabNav[$key] = is_array($v) ? $v : explode(',', $v);
         }
         return $this;
     }
@@ -111,7 +90,7 @@ class BuilderForm extends Builder
      * @return $this
      */
     public function setExtraItems($extra_items) {
-        $this->_extra_items = $extra_items;
+        $this->extraItems = $extra_items;
         return $this;
     }
 
@@ -121,7 +100,7 @@ class BuilderForm extends Builder
      * @return $this
      */
     public function setPostUrl($post_url) {
-        $this->_post_url = $post_url;
+        $this->postUrl = $post_url;
         return $this;
     }
 
@@ -147,7 +126,7 @@ class BuilderForm extends Builder
             'extra_attr'  => $extra_attr,
             'extra_class' => $extra_class
         ];
-        $this->_form_items[] = $item;
+        $this->formItems[] = $item;
         return $this;
     }
 
@@ -157,7 +136,7 @@ class BuilderForm extends Builder
      * @return $this
      */
     public function setFormData($form_data) {
-        $this->_form_data = $form_data;
+        $this->formData = $form_data;
         return $this;
     }
 
@@ -167,7 +146,7 @@ class BuilderForm extends Builder
      * @return $this
      */
     public function setExtraHtml($extra_html) {
-        $this->_extra_html = $extra_html;
+        $this->extraHtml = $extra_html;
         return $this;
     }
 
@@ -189,7 +168,7 @@ class BuilderForm extends Builder
                 }
                 
                 $ajax_submit='';
-                if ($this->_ajax_submit==true) {
+                if ($this->ajaxSubmit==true) {
                     $ajax_submit='ajax-post';
                 }
                 $attr = [];
@@ -238,7 +217,7 @@ class BuilderForm extends Builder
      */
     public function button($title, $attr = [])
     {
-        $this->_buttonList[] = ['title' => $title, 'attr' => $attr];
+        $this->buttonList[] = ['title' => $title, 'attr' => $attr];
         return $this;
     }
 
@@ -248,7 +227,7 @@ class BuilderForm extends Builder
      * @return $this
      */
     public function setAjaxSubmit($ajax_submit = true) {
-        $this->_ajax_submit = $ajax_submit;
+        $this->ajaxSubmit = $ajax_submit;
         return $this;
     }
 
@@ -261,22 +240,22 @@ class BuilderForm extends Builder
      */
     public function fetch($template_name='formbuilder',$vars =[], $replace ='', $config = '') {
          //额外已经构造好的表单项目与单个组装的的表单项目进行合并
-       if (!empty($this->_extra_items)) {
-           $this->_form_items = array_merge($this->_form_items, $this->_extra_items);
+       if (!empty($this->extraItems)) {
+           $this->formItems = array_merge($this->formItems, $this->extraItems);
        }
         //设置post_url默认值
-        $this->_post_url=$this->_post_url? $this->_post_url : $this->url;
+        $this->postUrl=$this->postUrl? $this->postUrl : $this->url;
         //编译表单值
-        if ($this->_form_data) {
-            foreach ($this->_form_items as &$item) {
+        if ($this->formData) {
+            foreach ($this->formItems as &$item) {
                 if ($item['type']!='group') {
-                    if (isset($this->_form_data[$item['name']])) {
-                        $item['value'] = $this->_form_data[$item['name']];
+                    if (isset($this->formData[$item['name']])) {
+                        $item['value'] = $this->formData[$item['name']];
                     }
                 } else{
                     foreach ($item['options'] as $gkey => $gvalue) {
-                        // if (isset($this->_form_data[$item['name']])) {
-                        //     $item['value'] = $this->_form_data[$item['name']];
+                        // if (isset($this->formData[$item['name']])) {
+                        //     $item['value'] = $this->formData[$item['name']];
                         // }
                     }
                 }
@@ -287,24 +266,25 @@ class BuilderForm extends Builder
         /**
          * 设置按钮
          */
-        if (empty($this->_buttonList)) {
+        if (empty($this->buttonList)) {
             $this->addButton('submit')->addButton('back');
         }
         //编译按钮的html属性
-        foreach ($this->_buttonList as &$button) {
+        foreach ($this->buttonList as &$button) {
             $button['attr'] = $this->compileHtmlAttr($button['attr']);
         }
 
-        $this->assign('meta_title',  $this->_meta_title);  //页面标题
-        $this->assign('sub_title',   $this->_sub_title);    // 页面子标题
-        $this->assign('tip',         $this->_tip);          // 页面提示说明
-        $this->assign('tab_nav',    $this->_tab_nav);     //页面Tab导航
-        $this->assign('group_tab_nav',$this->_group_tab_nav);//页面Tab分组
-        $this->assign('post_url',    $this->_post_url);    //标题提交地址
-        $this->assign('fieldList',  $this->_form_items);  //表单项目
-        $this->assign('ajax_submit', $this->_ajax_submit);//是否ajax提交
-        $this->assign('buttonList', $this->_buttonList);//按钮组
-        $this->assign('extra_html',  $this->_extra_html);  //额外HTML代码 
+        $template_val = [
+            'meta_title'     => $this->metaTitle,//页面标题
+            'page_tips'      => $this->tips,//页面提示说明
+            'tab_nav'        => $this->tabNav,// 页面Tab导航
+            'grouptabNav'  => $this->groupTabNav,//页面Tab分组
+            'post_url'       => $this->postUrl,//表单提交地址
+            'fieldList'      => $this->formItems,//表单项目
+            'button_list'    => $this->buttonList,//按钮组
+            'extra_html'     => $this->extraHtml//额外HTML代码 
+        ];
+        $this->assign($template_val);
 
         $templateFile = APP_PATH.'/common/view/builder/'.$template_name.'.html';
         parent::fetch($templateFile);

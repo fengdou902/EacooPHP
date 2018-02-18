@@ -49,13 +49,13 @@ class InitApp {
         //定义模版变量
         $ec_config = [
             'view_replace_str'=>[
-                                '__ROOT__'        => BASE_PATH.PUBLIC_RELATIVE_PATH,
-                                '__STATIC__'      => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static',
-                                '__PUBLIC__'      => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/assets',
-                                '__STATIC_LIBS__' => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/libs',
-                                '__ADMIN_CSS__'   => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/css',
-                                '__ADMIN_JS__'    => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/js',
-                                '__ADMIN_IMG__'   => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/img',
+                                '__ROOT__'      => BASE_PATH.PUBLIC_RELATIVE_PATH,
+                                '__STATIC__'    => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static',
+                                '__PUBLIC__'    => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/assets',
+                                '__LIBS__'      => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/libs',
+                                '__ADMIN_CSS__' => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/css',
+                                '__ADMIN_JS__'  => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/js',
+                                '__ADMIN_IMG__' => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/img',
                             ],
             //404页面
             'http_exception_template'    =>  [

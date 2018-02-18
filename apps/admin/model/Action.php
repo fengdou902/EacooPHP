@@ -14,10 +14,16 @@ use app\common\model\Base;
 
 class Action extends Base {
     
-    protected $insert = ['status'=>1];
-    
+    /**
+     * 获取状态显示
+     * @param  [type] $value [description]
+     * @param  [type] $data [description]
+     * @return [type] [description]
+     * @date   2018-02-08
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
     protected function getStatusTextAttr($value, $data){
-		$status = array(-1=>'删除',0=>'禁用',1=>'正常',2=>'待审核');
+		$status = array(-1=>'删除',0=>'禁用',1=>'正常');
 		return $status[$data['status']];
 	}
 

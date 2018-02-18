@@ -15,7 +15,7 @@ use app\common\model\User as UserModel;
 use think\captcha\Captcha;
 use think\Url;
 
-class Index extends Base
+class Login extends Base
 {
     public function _initialize() {
         parent::_initialize();
@@ -32,7 +32,7 @@ class Index extends Base
      */
     public function index(){ 
 
-        if(session('user_login_auth')) $this->redirect('admin/dashboard/index');
+        if(session('user_login_auth')) $this->redirect('admin/index/index');
 
         if (IS_POST) {
           $data = $this->request->param();
@@ -65,7 +65,7 @@ class Index extends Base
             $result = UserModel::login($data['username'],$data['password'], $rememberme);
             if ($result['code']==1) {
                 $uid = !empty($result['data']['uid']) ? $result['data']['uid']:0;
-                $this->success('登录成功！',url('admin/dashboard/index'));
+                $this->success('登录成功！',url('admin/index/index'));
 
             } elseif ($result['code']==0) {
                 $this->error($result['msg']);

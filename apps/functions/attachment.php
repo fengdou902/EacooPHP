@@ -9,7 +9,7 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 
-use app\common\model\Attachment;
+use app\common\logic\Attachment as AttachmentLogic;
 
 if (!function_exists('mkdirs'))
 {
@@ -306,7 +306,7 @@ function term_media_count($term_id,$path_type='picture'){
         $map['id']        = ['in',$object_ids];
         
         $map['path_type'] = ['in',$path_type];//过滤目录
-        $count            = Attachment::where($map)->count();
+        $count            = model('Attachment')->where($map)->count();
     }
     return isset($count) && $count ? $count:0;
 }
@@ -362,8 +362,8 @@ function get_thumb_image($path = '', $style='small')
  */
 function get_attachment_info($id) {
     if ((int)$id) {
-        $attachment_info = Attachment::info($id);
-        return $attachment_info;
+        $info = AttachmentLogic::info($id);
+        return $info;
     }
     return false;
 }

@@ -12,7 +12,7 @@
     <link type="text/css" rel="stylesheet" href="__ADMIN_CSS__/AdminLTE.min.css"/>
     <link type="text/css" rel="stylesheet" href="__ADMIN_CSS__/_all-skins.min.css"/>
     <link type="text/css" rel="stylesheet" href="__PUBLIC__/css/base.css"/>
-    <link type="text/css" rel="stylesheet" href="__STATIC__/libs/iCheck/all.css"/>
+    <link type="text/css" rel="stylesheet" href="__LIBS__/iCheck/all.css"/>
     <style type="text/css">
     .login-page{background: #fff url("__ADMIN_IMG__/login-bg.jpg");}
     .login-box, .register-box{width:360px;}
@@ -44,7 +44,7 @@
               <input type="text"  id="captcha" class=" form-control"  name="captcha" placeholder="验证码" size="10"/>
             </div>
             <div class="col-sm-4">
-              <img class="right" src="{:BASE_PATH}{:url('index/verify_img')}" id="code" height="34" onclick="verifys('code')"/>
+              <img class="right" src="{:BASE_PATH}{:url('login/verify_img')}" id="code" height="34" onclick="verifys('code')"/>
           </div>
           </div>
       </div>
@@ -76,8 +76,8 @@
   <!-- /.login-box-body -->
 </div>
 	</body>
-<script type="text/javascript" src="__STATIC__/libs/layer/layer.js"></script>
-<script type="text/javascript" src="__STATIC__/libs/iCheck/icheck.min.js"></script>
+<script type="text/javascript" src="__LIBS__/layer/layer.js"></script>
+<script type="text/javascript" src="__LIBS__/iCheck/icheck.min.js"></script>
 <script type="text/javascript">
 (function ($) {
   $('input').iCheck({
@@ -88,7 +88,7 @@
 })(jQuery);
 
 function verifys(code){
-			document.getElementById(code).src="{:BASE_PATH}{:url('index/verify_img',['v'=>rand_string(15)])}"; 
+			document.getElementById(code).src="{:BASE_PATH}{:url('login/verify_img',['v'=>rand_string(15)])}"; 
 }
 
 function BindEnter(obj)
@@ -126,7 +126,7 @@ $("#login").click(function(){
 
     $.ajax({
       type: 'POST',
-      url: '{:BASE_PATH}{:url("index/login")}',
+      url: '{:BASE_PATH}{:url("login/index")}',
       data: {
         username:username.val(),
         password:password.val(),

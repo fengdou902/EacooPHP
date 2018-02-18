@@ -34,16 +34,4 @@ class Tools extends Admin{
         return json($return);
     }
 
-    /**
-     * 图标选择器
-     * @param  string $value [description]
-     * @return [type] [description]
-     * @date   2017-10-13
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public function iconPicker()
-    {
-        $this->assign('meta_title','图标选择器');
-        return $this->fetch();
-    }
 }

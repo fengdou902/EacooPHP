@@ -10,9 +10,9 @@
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
 
-use app\admin\model\AuthRule;
-use app\admin\model\AuthGroup;
-use app\admin\model\AuthGroupAccess;
+use app\admin\model\AuthRule as AuthRuleModel;
+use app\admin\model\AuthGroup as AuthGroupModel;
+use app\admin\model\AuthGroupAccess as AuthGroupAccessModel;
 use app\common\model\User as UserModel;
 
 use eacoo\Tree;
@@ -28,8 +28,8 @@ class Menu extends Admin {
     {
         parent::_initialize();
 
-        $this->authRuleModel  = new AuthRule();
-        $this->authGroupModel = new AuthGroup();
+        $this->authRuleModel  = new AuthRuleModel();
+        $this->authGroupModel = new AuthGroupModel();
         $this->userModel     = new UserModel;
 
         $default_module = [ 
@@ -47,29 +47,38 @@ class Menu extends Admin {
      */
     public function index(){
         $menus = logic('Auth')->getAdminMenu();
-
+        $total = model('AuthRule')->count();
          //移动模块按钮属性
-        $movemodule_attr['title'] = '<i class="fa fa-exchange"></i> 移动模块';
-        $movemodule_attr['class'] = 'btn btn-info btn-sm';
-        $movemodule_attr['onclick'] = 'move_module()';
+        $movemodule_attr = [
+            'title'   => '移动模块',
+            'icon'    => 'fa fa-exchange',
+            'class'   => 'btn btn-info btn-sm',
+            'onclick' => 'move_module()'
+        ];
 
         //移动上级按钮属性
-        $move_position_attr['icon'] = 'fa fa-exchange"';
-        $move_position_attr['title'] = '移动位置';
-        $move_position_attr['class'] = 'btn btn-info btn-sm';
-        $move_position_attr['onclick'] = 'move_menuparent()';
+        $move_position_attr = [
+            'title'   => '移动位置',
+            'icon'    => 'fa fa-exchange',
+            'class'   => 'btn btn-info btn-sm',
+            'onclick' => 'move_menuparent()'
+        ];
         $extra_html = logic('Auth')->moveMenuHtml();//添加移动按钮html
 
         //是否标记为菜单：0否，1是
-        $marker_menu0_attr['title'] = '取消菜单标记';
-        $marker_menu0_attr['class'] = 'btn btn-primary btn-sm confirm ajax-post';
-        $marker_menu0_attr['href'] = url('markerMenu',['status'=>0]);
-        $marker_menu0_attr['target-form'] ="ids";
+        $marker_menu0_attr = [
+            'title'       => '取消菜单标记',
+            'class'       => 'btn btn-primary btn-sm confirm ajax-post',
+            'href'        => url('markerMenu',['status'=>0]),
+            'target-form' => 'ids'
+        ];
 
-        $marker_menu1_attr['title'] = '标记为菜单';
-        $marker_menu1_attr['class'] = 'btn btn-primary btn-sm ajax-post';
-        $marker_menu1_attr['href'] = url('markerMenu',['status'=>1]);
-        $marker_menu1_attr['target-form'] ="ids";
+        $marker_menu1_attr = [
+            'title'       =>'标记为菜单',
+            'class'       =>'btn btn-primary btn-sm ajax-post',
+            'href'        =>url('markerMenu',['status'=>1]),
+            'target-form' =>'ids'
+        ];
 
         return builder('list')
             ->setMetaTitle('后台菜单管理')
@@ -77,7 +86,8 @@ class Menu extends Admin {
             ->addTopBtn('resume',['model'=>'auth_rule'])  // 添加启用按钮
             ->addTopBtn('forbid',['model'=>'auth_rule'])  // 添加禁用按钮
             ->addTopBtn('delete',['model'=>'auth_rule'])  // 添加删除按钮
-            ->addTopButton('self', $marker_menu0_attr)->addTopButton('self', $marker_menu1_attr)
+            ->addTopButton('self', $marker_menu0_attr) //取消菜单标记
+            ->addTopButton('self', $marker_menu1_attr) //标记为菜单
             ->addTopButton('self', $movemodule_attr) //移动模块
             ->addTopButton('self', $move_position_attr) //移动菜单位置
             ->addTopBtn('sort',array('model'=>'auth_rule','href'=>url('Sort')))  // 添加排序按钮
@@ -93,6 +103,7 @@ class Menu extends Admin {
             ->keyListItem('status','状态','status')
             ->keyListItem('right_button', '操作', 'btn')
             ->setListPrimaryKey('id')
+            ->setListPage($total,false)
             ->setListData($menus)    // 数据列表
             ->setExtraHtml($extra_html)
             ->addRightButton('edit')      // 添加编辑按钮
@@ -116,7 +127,7 @@ class Menu extends Admin {
             //验证数据
             $this->validateData($data,'AuthRule');
             $data['depend_type']=1;//后台添加默认依赖模块
-            $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
+            $id = isset($data['id']) && $data['id']>0 ? $data['id']:false;
 
             if ($this->authRuleModel->editData($data,$id)) {
                 cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);//清空后台菜单缓存
@@ -129,7 +140,7 @@ class Menu extends Admin {
             if ($id==0) {//新增
                 $pid       = (int)input('param.pid');
                 $pid_data  = $this->authRuleModel->get($pid);
-                $menu_data = array('depend_flag'=>$pid_data['depend_flag'],'pid'=>$pid);
+                $menu_data = ['depend_flag'=>$pid_data['depend_flag'],'pid'=>$pid];
             }
             // 获取菜单数据
             if ($id>0) {
@@ -144,10 +155,11 @@ class Menu extends Admin {
                     ->addFormItem('pid', 'multilayer_select', '上级菜单', '上级菜单',$menus)
                     ->addFormItem('depend_type', 'select', '来源类型', '来源类型。分别是模块，插件，主题',[1=>'模块',2=>'插件',3=>'主题'])
                     ->addFormItem('depend_flag', 'text', '来源标识', '如模块、插件、主题的标识名')
-                    ->addFormItem('icon', 'icon', '字体图标', '字体图标')
+                    ->addFormItem('icon', 'icon', '字体图标', '请选择一个图标')
                     ->addFormItem('name', 'text', '链接', '链接')
                     ->addFormItem('is_menu', 'radio', '后台菜单', '是否标记为后台菜单',[1=>'是',0=>'否'])
                     ->addFormItem('sort', 'number', '排序', '排序')
+                    ->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'启用'])
                     ->setFormData($menu_data)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
@@ -161,9 +173,9 @@ class Menu extends Admin {
      */
     public function Sort($ids = null)
     {
-        $builder    = builder('Sort');
-        $pid = input('param.pid',false);//是否存在父ID
-        $map = [];
+        $builder = builder('Sort');
+        $pid     = input('param.pid',false);//是否存在父ID
+        $map     = [];
         if ($pid>0 || $pid===0) {
             $map['pid'] = $pid;
         } 
@@ -173,7 +185,7 @@ class Menu extends Admin {
             $builder->doSort('auth_rule', $ids);
         } else {
             //$map['status'] = array('egt', 0);
-            $list = $this->authRuleModel->getList($map, 'sort asc', 'id,title,sort');
+            $list = $this->authRuleModel->getList($map,'id,title,sort','sort asc');
             foreach ($list as $key => $val) {
                 $list[$key]['title'] = $val['title'];
             }
@@ -194,7 +206,6 @@ class Menu extends Admin {
         //是否标记菜单：0否，1是
         $model='AuthRule';
         if (IS_POST) {
-
             cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);//清空后台菜单缓存
 
             $ids    = input('post.ids/a');
@@ -257,7 +268,44 @@ class Menu extends Admin {
         logic('Auth')->moveMenusPosition();
     }
 
-    //角色管理
+    /**
+     * 收藏菜单
+     * @param  integer $id 菜单ID
+     * @return [type] [description]
+     * @date   2018-02-15
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function toggleCollect()
+    {
+        try {
+            if (!IS_GET) {
+                throw new \Exception("非法请求", 0);
+                
+            }
+            $param = $this->request->param();
+            $collect_menus = config('admin_collect_menus');
+            if (isset($collect_menus[$param['url']])) {
+                unset($collect_menus[$param['url']]);
+                $return = ['code'=>2,'msg'=>'取消收藏','data'=>[]];
+            } else{
+                $collect_menus[$param['url']] = ['title'=>$param['title']];
+                $return = ['code'=>1,'msg'=>'收藏成功','data'=>[]];
+            }
+            model('Config')->where('name','admin_collect_menus')->setField('value',json_encode($collect_menus));
+            cache('DB_CONFIG_DATA',null);
+            return json($return);
+        } catch (\Exception $e) {
+            return json(['code'=>0,'msg'=>$e->getMessage()]);
+        }
+        
+    }
+
+    /**
+     * 角色管理
+     * @return [type] [description]
+     * @date   2018-02-15
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
     public function role(){
         // 搜索
         $keyword = input('param.keyword');
@@ -386,126 +434,6 @@ class Menu extends Admin {
         $this->assign('this_group', $authGroup[(int)$group_id]);
         $this->assign('meta_title','成员授权');
         return $this->fetch();
-    }
-
-    /**
-     * 创建管理员用户组
-     * @author 朱亚杰 <zhuyajie@topthink.net>
-     */
-    public function createGroup(){
-        if ( empty($this->auth_group) ) {
-            $this->assign('auth_group',['title'=>null,'id'=>null,'description'=>null,'rules'=>null]);//排除notice信息
-        }
-        $this->assign('meta_title','新增用户组');
-        return $this->fetch('editgroup');
-    }
-
-    /**
-     * 编辑管理员用户组
-     * @author 朱亚杰 <zhuyajie@topthink.net>
-     */
-    public function editGroup(){
-        $auth_group = $this->authGroupModel->find( (int)$_GET['id'] );
-        $this->assign('auth_group',$auth_group);
-        $this->assign('meta_title','编辑用户组');
-        return $this->fetch();
-    }
-
-    /**
-     * 管理员用户组数据写入/更新
-     * @author 朱亚杰 <zhuyajie@topthink.net>
-     */
-    public function writeGroup(){
-        $data = input('param.');
-        if(isset($data['rules'])){
-            sort($data['rules']);
-            $data['rules']  = implode( ',' , array_unique($data['rules']));
-        }
-
-        $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
-        if ($this->authGroupModel->editData($data,$id)) {
-            $this->success('操作成功!',url('index'));
-        } else {
-            $this->error('操作失败'.$this->authGroupModel->getError());
-        }
-
-    }
-    /**
-     * 修改用户组描述
-     */
-    public function descriptionGroup()
-    {
-        $title               = input('param.title');
-        $description         = input('param.description');
-        $id                  = input('param.id');
-        $data['description'] = $description;
-        $data['title']       = $title;
-        $res=$this->authGroupModel->where('id='.$id)->save($data);
-        if($res)
-        {
-            $this->success('修改成功!');
-        }
-        else{
-            $this->error('修改失败!');
-        }
-
-    }
-    /**
-     * 将用户添加到用户组,入参uid,group_id
-     * @author 朱亚杰 <zhuyajie@topthink.net>
-     */
-    public function addToGroup(){
-        $uids = input('uids',false);//新增批量用户
-        if ($uids) {
-            $uid = explode(',',$uids);
-        }else{
-            $uid = input('uid');
-        }
-        
-        $gid = input('param.group_id');
-        if( empty($uid) ){
-            $this->error('参数有误');
-        }
-        if(is_numeric($uid)){
-            if ( is_administrator($uid) ) {
-                $this->error('该用户为超级管理员');
-            }
-            if( !$this->userModel->where(['uid'=>$uid])->find() ){
-                $this->error('用户不存在');
-            }
-        }
-
-        if( $gid && !$this->authGroupModel->checkGroupId($gid)){
-            $this->error($this->authGroupModel->error);
-        }
-        if ( $this->authGroupModel->addToGroup($uid,$gid) ){
-            $this->success('操作成功');
-        }else{
-            $this->error($this->authGroupModel->getError());
-        }
-    }
-
-    /**
-     * 将用户从用户组中移除  入参:uid,group_id
-     * @author 朱亚杰 <zhuyajie@topthink.net>
-     */
-    public function removeFromGroup(){
-        $uid = input('param.uid');
-        $gid = input('param.group_id');
-        if( $uid==UID ){
-            $this->error('不允许解除自身授权');
-        }
-        if( empty($uid) || empty($gid) ){
-            $this->error('参数有误');
-        }
-        if( !$this->authGroupModel->find($gid)){
-            $this->error('用户组不存在');
-        }
-        if ( $this->authGroupModel->removeFromGroup($uid,$gid) ){
-            $this->success('操作成功');
-        }else{
-            $this->error('操作失败');
-        }
     }
 
     /**

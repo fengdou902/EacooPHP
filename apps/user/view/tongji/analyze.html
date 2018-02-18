@@ -1,6 +1,6 @@
   {extend name="../apps/admin/view/public/base.html"/}
   {block name="style"}
-  <link href="__STATIC__/libs/daterangepicker/daterangepicker-bs3.css" type="text/css" rel="stylesheet">
+  <link href="__LIBS__/daterangepicker/daterangepicker-bs3.css" type="text/css" rel="stylesheet">
   {/block}
 
   {block name="main"}
@@ -58,12 +58,12 @@
   {/block}
 
   {block name="script"}
-  <script src="__STATIC__/libs/echarts/echarts.common.min.js" type="text/javascript"></script>
-<!--   <script src="__STATIC__/libs/echarts/macarons.js"></script>
-  <script src="__STATIC__/libs/echarts/china.js"></script> -->
+  <script src="__LIBS__/echarts/echarts.common.min.js" type="text/javascript"></script>
+<!--   <script src="__LIBS__/echarts/macarons.js"></script>
+  <script src="__LIBS__/echarts/china.js"></script> -->
 
-<script src="__STATIC__/libs/daterangepicker/moment.min.js"></script>
-<script src="__STATIC__/libs/daterangepicker/daterangepicker.js"></script>
+<script src="__LIBS__/daterangepicker/moment.min.js"></script>
+<script src="__LIBS__/daterangepicker/daterangepicker.js"></script>
   <script type="text/javascript">
     var myChart = echarts.init(document.getElementById('statistics'),'macarons');
     var res = {$result};

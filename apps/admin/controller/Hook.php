@@ -35,12 +35,11 @@ class Hook extends Admin {
      */
     public function index(){
         $this->assign('page_config',['back'=>true]);
-        // 获取所有钩子
-        $map['status'] = ['egt', '0'];  // 禁用和正常状态
-        list($data_list,$total) = $this->hooksModel->search('name')->getListByPage($map,true,'create_time desc',20);
+
+        list($data_list,$total) = $this->hooksModel->search('name|description')->getListByPage([],true,'create_time desc',20);
         return builder('List')
                 ->setMetaTitle('钩子列表')  // 设置页面标题
-                ->addTopButton('addnew',array('href'=>url('edithook'),'title'=>'新增钩子','class'=>'btn bg-purple margin'))    // 添加新增按钮
+                ->addTopButton('addnew',array('href'=>url('edit'),'title'=>'新增钩子','class'=>'btn bg-purple btn-sm margin'))    // 添加新增按钮
                 ->keyListItem('id', 'ID')
                 ->keyListItem('name', '名称')
                 ->keyListItem('description', '描述')
@@ -49,7 +48,7 @@ class Hook extends Admin {
                 ->setListData($data_list)     // 数据列表
                 ->setListPage($total,20)  // 数据列表分页
                 ->addRightButton('edit')           // 添加编辑按钮
-                ->addRightButton('delete')  // 添加删除按钮
+                ->addRightButton('delete',['href'=>url('del',['id'=>'__data_id__']),'model'=>'Hooks'])  // 添加删除按钮
                 ->fetch();
     }
 
@@ -63,7 +62,7 @@ class Hook extends Admin {
     public function edit($id=0){
         $title=$id ? "编辑" : "新增";
         if (IS_POST) {
-            $data = input('post.');
+            $data = input('param.');
             //验证数据
             $this->validateData($data,'Hook');
 
@@ -110,8 +109,8 @@ class Hook extends Admin {
      * @return [type] [description]
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function delhook($id){
-        if(Hooks::destroy($id)){
+    public function del($id){
+        if(HooksModel::destroy($id)){
             $this->success('删除成功');
         } else{
             $this->error('删除失败');

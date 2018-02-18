@@ -23,20 +23,5 @@ class Terms extends Base {
         $name = $this->where(['term_id'=>$data['pid']])->value('name');
         return $name ? :'顶级分类';
     }
-    
-    /**
-     * 获取文章数
-     * @param  [type] $term_id [description]
-     * @param  string $table   [description]
-     * @return [type]          [description]
-     */
-    public static function termRelationCount($term_id,$table='posts'){
-        if ($term_id) {
-            $map['term_id'] = $term_id;
-            $map['table']   = $table;
-            return db('term_relationships')->where($map)->count();
-        }
-
-    }
 
 }

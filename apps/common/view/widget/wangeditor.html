@@ -15,9 +15,9 @@
 
 {/php}
 {if condition="$is_load_script"}
-    <link rel="stylesheet" type="text/css" href="__STATIC__/libs/wangeditor/wangEditor-plugins.css">
-    <script type="text/javascript" src="__STATIC__/libs/wangeditor/wangEditor.min.js"></script>
-    <script type="text/javascript" src="__STATIC__/libs/wangeditor/wangEditor-plugins.js"></script>
+    <link rel="stylesheet" type="text/css" href="__LIBS__/wangeditor/wangEditor-plugins.css">
+    <script type="text/javascript" src="__LIBS__/wangeditor/wangEditor.min.js"></script>
+    <script type="text/javascript" src="__LIBS__/wangeditor/wangEditor-plugins.js"></script>
 {/if}
 <div id="{$id}_editor" style="{$style|default=''}">{$value|default=''}</div>
 <textarea id="{$id}" name="{$name}" style="display: none;width:{$width|default='100%'};height:{$height|default='300px'};"></textarea>
@@ -43,13 +43,13 @@
     //     'default': {
     //         title: '默认',  // 组名称
     //         type: 'image',
-    //         content: '__STATIC__/libs/wangeditor/emotions/default.data'
+    //         content: '__LIBS__/wangeditor/emotions/default.data'
     //     },
     //     // 第二组，id叫做'weibo'
     //     'weibo': {
     //         title: '微博表情',  // 组名称
     //         type: 'image',
-    //         content: '__STATIC__/libs/wangeditor/emotions/weibo.data'
+    //         content: '__LIBS__/wangeditor/emotions/weibo.data'
     //     }
     //     // 下面还可以继续，第三组、第四组、、、
     // };

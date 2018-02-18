@@ -29,12 +29,10 @@ class Config extends Admin {
      */
     public function index($group = 1) {
 
-        // 获取所有配置
-        $map['status'] = ['egt', '0'];  // 禁用和正常状态
-        $map['group']  = ['eq', $group];
-        //$map['type']  = ['neq', 'json'];
-
-        list($data_list,$page) = $this->configModel->search('id|name|title')->getListByPage($map,true,'sort asc,id asc',20);
+        $map = [
+            'group'=>$group
+        ];
+        list($data_list,$total) = $this->configModel->search('id|name|title')->getListByPage($map,true,'sort asc,id asc');
         // 设置Tab导航数据列表
         $config_group_list = config('config_group_list');  // 获取配置分组
 
@@ -43,9 +41,12 @@ class Config extends Admin {
             $tab_list[$key]['href']  = url('index', ['group' => $key]);
         }
         //移动按钮属性
-        $move_attr['title']   = '<i class="fa fa-exchange"></i> 移动分组';
-        $move_attr['class']   = 'btn btn-info btn-sm';
-        $move_attr['onclick'] = 'move()';
+        $move_attr = [
+            'title'   =>'移动分组',
+            'icon'    =>'fa fa-exchange',
+            'class'   =>'btn btn-info btn-sm',
+            'onclick' =>'move()'
+        ];
         $extra_html = $this->moveGroupHtml($config_group_list,$group);//添加移动按钮html
         // 使用Builder快速建立列表页面。
 
@@ -68,7 +69,7 @@ class Config extends Admin {
                 ->keyListItem('status', '状态', 'status')
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListData($data_list)     // 数据列表
-                ->setListPage($page)  // 数据列表分页
+                ->setListPage($total)  // 数据列表分页
                 ->setExtraHtml($extra_html)
                 ->addRightButton('edit')           // 添加编辑按钮
                 ->addRightButton('delete')         // 添加删除按钮
@@ -80,13 +81,9 @@ class Config extends Admin {
      */
     public function edit($id=0){
         $title = $id>0 ? "编辑" : "新增";
-        if ($id>0) {
-            $Config_data = $this->configModel->where('id',$id)->field(true)->find();
-        } elseif ($id==0) {
-            $Config_data['group'] = input('param.group_id');
-        }
+        $group_id = input('param.group_id');
         if (IS_POST) {
-            $data = input('post.');
+            $data = $this->request->param();
             $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
             $result = $this->validateData($data,
                                 [
@@ -97,7 +94,6 @@ class Config extends Admin {
                                 ]);
             if ($this->configModel->editData($data,$id)) {
                 if ($id != 0) {
-                    cache('db_'.$Config_data['name'].'_options',null);
                     cache('DB_CONFIG_DATA',null);
                 }
                 $this->success($title.'成功',url('index',['group'=>$data['group']]));
@@ -106,59 +102,35 @@ class Config extends Admin {
             }
 
         } else {
+            $info = [
+                'sort'   => 99,
+                'group'  => $group_id,
+                'status' => 1
+            ];
+            if ($id>0) {
+                $info = $this->configModel->where('id',$id)->field(true)->find();
+            }
             // 获取Builder表单类型转换成一维数组
-            $switch_function_html=<<<EOF
-<script type="text/javascript">
- $(function () {
-        var type = $('#switch_function').find("option:selected").attr("data-type");
-        switch_form_item_function(type);
-    $('#switch_function').on('change',function(){
-        var type = $('#switch_function').find("option:selected").attr("data-type");
-        switch_form_item_function(type);
-    });
-})
-//事件方法
-function switch_form_item_function(type){
-        type=parseInt(type);
-    if(type == 1){
-        $('.item_function').show();
-        $('.item_options').hide();
-        $('.item_function input').val('role_type');
-    }else if(type == 2){
-        $('.item_function').show();
-        $('.item_options').hide();
-        $('.item_function input').val('');
-    }else{
-        $('.item_options').show();
-        $('.item_function').hide();
-    }
-}
-</script>
-EOF;
-            $switch_function_arg=[
-                'role_type'=>['title'=>'角色类型(role_type)','data-type'=>'1'],
-                'custom_function'=>['title'=>'自定义函数','data-type'=>'2']
-                ];
-            // 使用FormBuilder快速建立表单页面。
+            $sub_group = logic('Config')->getSubGroup($group_id);
 
-            return builder('form')
+            $builder = builder('form')
                     ->setMetaTitle($title.'配置')  // 设置页面标题
-                    //->setPostUrl(url('edit'))    // 设置表单提交地址
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
-                    ->addFormItem('group', 'select', '配置分组', '配置所属的分组', config('config_group_list'))
-                    ->addFormItem('sub_group','number','配置子分组','先对大分组创建一个子分组，一般不填写')
-                    ->addFormItem('type', 'select', '配置类型', '配置类型的分组',config('form_item_type'))
-                    ->addFormItem('switch_function','select','关联函数','可选(关联一个函数返回值，生成选项值)',$switch_function_arg)
+                    ->addFormItem('group', 'select', '配置分组', '配置所属的分组', config('config_group_list'));
+            if (!empty($sub_group['sub_group'])) {
+                $builder->addFormItem('sub_group','select','配置子分组','先对大分组创建一个子分组，一般不填写',$sub_group['sub_group']);
+            }
+            $builder->addFormItem('type', 'select', '配置类型', '配置类型的分组',config('form_item_type'))
                     ->addFormItem('name', 'text', '配置名称', '配置名称')
                     ->addFormItem('title', 'text', '配置标题', '配置标题')
                     ->addFormItem('value', 'textarea', '配置值', '配置值')
                     ->addFormItem('options', 'textarea', '配置项', '如果是单选、多选、下拉等类型 需要配置该项')
-                    ->addFormItem('function', 'text', '关联函数', '确保函数已创建，并且函数具有返回值')
+                    //->addFormItem('function', 'text', '关联函数', '确保函数已创建，并且函数具有返回值')
                     ->addFormItem('remark', 'textarea', '配置说明', '配置说明')
                     ->addFormItem('sort', 'number', '排序', '用于显示的顺序')
-                    //->addFormItem('status', 'radio', '是否显示', '显示或隐藏',array(0=>'否',1=>'是'))
-                    ->setFormData($Config_data)
-                    ->setExtraHtml($switch_function_html)
+                    ->addFormItem('status', 'radio', '状态', '状态，开启或关闭',[1=>'是',0=>'否'])
+                    ->setExtraHtml($sub_group['html'])
+                    ->setFormData($info)
                     //->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
         }
@@ -173,7 +145,7 @@ EOF;
             'status'=>['egt', '1'],
             'group' =>['eq', $group]
         ];
-        $data_list =$this->configModel->getList($map,'*','sort asc,id asc');
+        $data_list =$this->configModel->getList($map,true,'sort asc,id asc');
 
         // 设置Tab导航数据列表
         $config_group_list = config('config_group_list');  // 获取配置分组
@@ -191,11 +163,7 @@ EOF;
             $data['name']        = 'config['.$data['name'].']';
             $data['description'] = $data['remark'];
             $data['confirm']     = $data['extra_class'] = $data['extra_attr']='';
-            if ($data['function']!='0'&&$data['function']) {
-                $data['options'] = call_user_func_array($data['function'],array('1'));
-            }else{
-                $data['options'] = parse_config_attr($data['options']);
-            }
+            $data['options']     = parse_config_attr($data['options']);
             
         }
 
@@ -203,7 +171,8 @@ EOF;
                 ->setMetaTitle('系统设置')       // 设置页面标题
                 ->setTabNav($tab_list, $group)  // 设置Tab按钮列表
                 ->setExtraItems($data_list)     // 直接设置表单数据
-                ->addButton('submit','确认',url('groupSave'))->addButton('back') // 设置表单按钮
+                ->addButton('submit','确认',url('groupSave'))
+                ->addButton('back') // 设置表单按钮
                 ->fetch();
     }
 
@@ -226,6 +195,21 @@ EOF;
         }
         cache('DB_CONFIG_DATA',null);
         $this->success('保存成功！');
+    }
+
+    /**
+     * 高级配置
+     * @return [type] [description]
+     * @date   2018-02-16
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function advancedConfig()
+    {
+        if (IS_POST) {
+            # code...
+        } else{
+            
+        }
     }
 
     /**

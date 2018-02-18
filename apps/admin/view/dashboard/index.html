@@ -1,240 +1,80 @@
 {extend name="public/base"/}
 {block name="style"}
   <style type="text/css">
-    .webmanage-item{margin: 15px 10px;text-align: center;color: #666;font-size: 16px;border-right: 1px solid #ddd;}
-    .webmanage-item a{color: #666;}
+
   </style>
 {/block}
 
 {block name="main"}
   <!--此页面主体内容-->
   <div class="dashboard-container">
-  {php}
-    if(check_install_module('cms')){ 
-  {/php}
-    {:widget('cms/Dashboard/tool')}
-  {php}}{/php}
   <div class="row">
+     {:hook('AdminIndex')}
+      <div class="col-md-7">
+        <div class="box box-default">
+          <div class="box-header with-border">
+            <h3 class="box-title">系统信息</h3>
 
-      <div class="col-md-6">
-          <div class="box box-danger">
-                <div class="box-header with-border">
-                  <h3 class="box-title">最新注册用户</h3>
-
-                  <div class="box-tools pull-right">
-                    <span class="label label-danger hide">326732个新用户</span>
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
-                    </button>
-                  </div>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body no-padding">
-                  <ul class="users-list clearfix">
-                    {volist name="user_list" id="row"}
-                      <li>
-                        <img src="{$row.avatar|default='/static/assets/img/default-avatar.svg'}" width="45" height="45">
-                        <a class="users-list-name" href="{:url('admin/user/edit',['uid'=>$row['uid']])}">{$row.nickname}</a>
-                        <span class="users-list-date">{$row.reg_time|friendly_date=###,'mohu'}</span>
-                      </li>
-                    {/volist}
-                  </ul>
-                  <!-- /.users-list -->
-                </div>
-                <!-- /.box-body -->
-                <div class="box-footer text-center">
-                  <a href="{:url('user/User/index')}" class="uppercase">查看所有用户</a>
-                </div>
-                <!-- /.box-footer -->
-              </div>
-        </div> 
-
-      <div class="col-md-6">
-          <div class="box box-default">
-            <div class="box-header with-border">
-              <h3 class="box-title">用户增长分析</h3>
-
-              <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-              </div>
-              <!-- /.box-tools -->
+            <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+              </button>
             </div>
-             <div class="box-body">
-                <div class="users-chart mt-10">
-                    <div id="user_statistics" style="height: 230px;"></div>
-                </div>
-             </div>
-                   
+            <!-- /.box-tools -->
           </div>
-        </div> 
-    <!--     <div class="col-md-12">
-          <div class="box box-solid">
-            <div class="box-header with-border">
-              <h3 class="box-title">网站管理</h3>
-            </div>
-            <div class="box-body">
-              <div class="col-md-2 webmanage-item">
-              <a href="#">
-                <div><i class="fa fa-file-text-o"></i> 文章</div>
-                <h4>10</h4>
-                </a>
-              </div>
-              <div class="col-md-2 webmanage-item">
-                <a href="#">
-                  <div><i class="fa fa-map-o text-green"></i> 产品</div>
-                  <h4>98</h4>
-                </a>
-              </div>
-              <div class="col-md-2 webmanage-item">
-                <a href="#">
-                  <div><i class="fa fa-photo text-aqua"></i> 图片</div>
-                  <h4>76</h4>
-                </a>
-              </div>
-              <div class="col-md-2 webmanage-item">
-                <a href="#">
-                  <div><i class="fa fa-users text-red"></i> 用户</div>
-                  <h4>129</h4>
-                </a>
-              </div>
-              <div class="col-md-2 webmanage-item">
-                <a href="#">
-                <div><i class="fa fa-comment text-yellow"></i> 留言</div>
-                <h4>3261</h4>
-                </a>
-              </div>
-
-            </div>
-          </div>
-        </div>-->
-          <div class="col-md-7">
-            <div class="box box-default">
-              <div class="box-header with-border">
-                <h3 class="box-title">系统信息</h3>
-
-                <div class="box-tools pull-right">
-                  <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                  </button>
-                </div>
-                <!-- /.box-tools -->
-              </div>
-               <div class="box-body">
-                  <table class="table table-bordered">
-                    <tbody>
-                      {volist name="server_info" id="info" key="i" mod="2"}
-                          {eq name="mod" value="0"}<tr>{/eq}
-                          <td>{$key}：<span style="font-weight:normal!important;">{$info}</span></td>
-                            {if condition="$i eq count($server_info)"}</tr>
-                          {else/}
-                            {eq name="mod" value="1"}</tr>{/eq}
-                          {/if}
-                      {/volist}
-                    </tbody>
-                  </table>
-               </div>
-                     
-            </div>
-          </div>  
-
-          <div class="col-md-5">
-            <div class="box">
-              <div class="box-header">
-                <h3 class="box-title">官方动态</h3>
-              </div>
-              <!-- /.box-header -->
-              <div class="box-body pt-0" id="eacoo_news">
-                <table class="table table-condensed f14">
-                  <tbody>
-                  {volist name="eacoo_news_list.data" id="row"}
-                      <tr>
-                        <td><a href="{$row.href}" target="_blank">{$row.title}</a></td>
-                      </tr>
+           <div class="box-body">
+              <table class="table table-bordered">
+                <tbody>
+                  {volist name="server_info" id="info" key="i" mod="2"}
+                      {eq name="mod" value="0"}<tr>{/eq}
+                      <td>{$key}：<span style="font-weight:normal!important;">{$info}</span></td>
+                        {if condition="$i eq count($server_info)"}</tr>
+                      {else/}
+                        {eq name="mod" value="1"}</tr>{/eq}
+                      {/if}
                   {/volist}
-                  </tbody>
-                </table>
-              </div>
-              <!-- /.box-body -->
-            </div>
+                </tbody>
+              </table>
+           </div>
+                 
+        </div>
+      </div>  
+
+      <div class="col-md-5">
+        <div class="box">
+          <div class="box-header">
+            <h3 class="box-title">官方动态</h3>
           </div>
+          <!-- /.box-header -->
+          <div class="box-body pt-0" id="eacoo_news">
+            <table class="table table-condensed f14">
+              <tbody>
+              {volist name="eacoo_news_list.data" id="row"}
+                  <tr>
+                    <td><a href="{$row.href}" target="_blank">{$row.title}</a></td>
+                  </tr>
+              {/volist}
+              </tbody>
+            </table>
+          </div>
+          <!-- /.box-body -->
+        </div>
+      </div>
     </div> 
 
   </div>
 {/block}
-{block name="script"}
-<script type="text/javascript">
-  delete(echarts);
-</script>
-<script type="text/javascript" src="__STATIC_LIBS__/echarts/echarts.common.min.js" ></script>
-<script type="text/javascript">
-delete(myChart);
-var myChart = echarts.init(document.getElementById('user_statistics'),'macarons');
-var res = {$user_result};
-option = {
-      title : {
-          text: '七日增长',
-          textStyle:{color:'#666',fontSize:12},
-      },
-      tooltip : {
-          trigger: 'axis'
-      },
-      legend: {
-          data:['用户增长','七日待返积金']
-      },
-      toolbox: {
-          show : true,
-          feature : {
-              mark : {show: true},
-              dataView : {show: true, readOnly: false},
-              magicType : {show: true, type: ['line', 'bar']},
-              restore : {show: true},
-          }
-      },
-      calculable : true,
-      xAxis : [
-          {
-            name:'日期',
-            type : 'category',
-            boundaryGap : false,
-            data : res.time,
-            axisLabel : {
-                //formatter: '{value}',
-                interval:0,
-                textStyle:{fontSize:8}
-            }
-          }
-      ],
-      yAxis : [
-          {
-              name:'数量（人）',
-              type : 'value',
-              axisLabel : {
-                  //formatter: '{value}',
-                  textStyle:{fontSize:8}
-              }
-          }
-      ],
-      series : [
-          {
-              name:'增长用户',
-              type:'line',
-              data:res.data
-          }
-      ]
-  };
-  myChart.setOption(option);
-</script>
 
+{block name="script"}
 <script type="text/javascript">
   $(function(){ 
     //驱动提示
     {php}if(config('attachment_options.driver')=='local' || !config('attachment_options.driver')){{/php}
       var eacooadmin_localdriver_tip = sessionStorage.getItem('eacooadmin_localdriver_tip');
       if (eacooadmin_localdriver_tip!=1) {
-          layer.alert('欢迎使用EacooPHP系统，请优先配置/开启 上传驱动（Tip:前往插件市场安装对象存储服务插件） ，让您的数据更安全可靠，数据掌握在自己手中。<br/>如因未配置/开启 对象云存储服务，造成的数据丢失，由您自行负责！！快去配置吧~<br/>', {icon: 6,btn: ['去配置','不再提醒'],
+          parent.layer.alert('欢迎使用EacooPHP系统，请优先配置/开启 上传驱动（Tip:前往插件市场安装对象存储服务插件） ，让您的数据更安全可靠，数据掌握在自己手中。<br/>如因未配置/开启 对象云存储服务，造成的数据丢失，由您自行负责！！快去配置吧~<br/>', {icon: 6,btn: ['去配置','不再提醒'],
           yes: function(index, layero){
-              redirect('{:url('admin/config/attachmentoption')}');
+            parent.layer.closeAll();
+            redirect('{:url("admin/config/attachmentoption")}');
           },
           btn2: function(index, layero){
               var storage_data = 1;
