@@ -68,9 +68,12 @@ class Base extends Model
      * @param  integer $page_size 每页数量
      * @return 结果集
      */
-    public function getListByPage($map,$field=true,$order='sort asc',$page_size=12)
+    public function getListByPage($map,$field=true,$order='sort asc',$page_size=null)
     {
         $paged     = input('param.paged',1);//分页值
+        if (!$page_size) {
+            $page_size = config('admin_page_size');
+        }
         $page_size = input('param.page_size',$page_size);//每页数量
         $order     = input('param.order',$order);
         $list      = $this->where($map)->field($field)->order($order)->page($paged,$page_size)->select();

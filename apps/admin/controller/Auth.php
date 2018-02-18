@@ -21,7 +21,6 @@ class Auth extends Admin {
 
     protected $authRuleModel;
     protected $authGroupModel;
-    protected $moduleList;
     protected $userModel;
 
     function _initialize()
@@ -117,8 +116,13 @@ class Auth extends Admin {
         } else{
             // 获取菜单数据
             if ($id>0) {
-                $menu_data = $this->authRuleModel->get($id);
+                $info = $this->authRuleModel->get($id);
+            } else{
+                $pid       = (int)input('param.pid');
+                $pid_data  = $this->authRuleModel->get($pid);
+                $info = ['depend_flag'=>$pid_data['depend_flag'],'pid'=>$pid,'is_menu'=>1,'sort'=>99,'status'=>1];
             }
+
             $menus = logic('Auth')->getAdminMenu();
             $menus = array_merge([0=>['id'=>0,'title_show'=>'顶级菜单']], $menus);
 
@@ -134,7 +138,7 @@ class Auth extends Admin {
                     ->addFormItem('is_menu', 'radio', '后台菜单', '是否标记为后台菜单',[1=>'是',0=>'否'])
                     ->addFormItem('sort', 'number', '排序', '排序')
                     ->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'启用'])
-                    ->setFormData($menu_data)
+                    ->setFormData($info)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
         }   

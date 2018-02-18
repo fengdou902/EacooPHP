@@ -87,6 +87,8 @@ class Admin extends Base
                 $_admin_public_base = $template_path_str.'apps/admin/view/public/base.html';
             }
             $_admin_public_base = APP_PATH.'admin/view/public/base.html';
+
+            //顶部模版
             $this->assign('_admin_document_header_',$template_path_str.'apps/admin/view/public/document_header.html');
             $this->assign('_admin_public_left_',$template_path_str.'apps/admin/view/public/left.html');
             $this->assign('_admin_public_base_', $_admin_public_base);

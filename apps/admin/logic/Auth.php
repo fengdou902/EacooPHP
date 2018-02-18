@@ -21,7 +21,6 @@ class Auth extends Base {
 
     protected $authRuleModel;
     protected $authGroupModel;
-    protected $moduleList;
     protected $userModel;
 
     protected function _initialize()
@@ -39,7 +38,7 @@ class Auth extends Base {
      * @return [type] [description]
      */
     public function getAdminMenu(){
-        $menus = model('AuthRule')->search()->getList([],true,'id desc');
+        $menus = model('AuthRule')->search()->getList([],true,'sort asc,id asc');
 
         $menus = collection($menus)->toArray();
         $tree_obj = new Tree;
@@ -53,13 +52,8 @@ class Auth extends Base {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function getTabList()
-    {
-        $default_module = [ 
-                        'admin'   =>'后台模块',
-                        'home'    =>'前台模块',
-                        ];
-        $module_list = db('modules')->where('status',1)->column('title','name');                
-        $module_list = $default_module+$module_list;
+    {             
+        $module_list = logic('Module')->getModules();
         $tab_list = ['all'=>['title'=>'全部','href'=>url('index')]];
         foreach ($module_list as $key => $row) {
             $tab_list[$key] = ['title'=>$row,'href'=>url('index',['depend_flag'=>$key])];
@@ -186,19 +180,6 @@ class Auth extends Base {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function moveMenuHtml(){
-        $default_module = [ 
-                        'admin'   =>'后台模块',
-                        'home'    =>'前台模块',
-                        ];
-        $moduleList = db('modules')->where('status',1)->column('title','name');                
-        $moduleList = $default_module+$moduleList;
-        //构造移动文档的目标分类列表
-        $options = '';
-        foreach ($moduleList as $key => $val) {
-            $options .= '<option value="'.$key.'">'.$val.'</option>';
-        }
-        //文档移动POST地址
-        $move_url = url('moveModule');
 
         //移动菜单位置
         $menus = db('auth_rule')->select();
@@ -215,27 +196,6 @@ class Auth extends Base {
         }
         $move_position_url = url('moveMenusPosition');
         return <<<EOF
-        <div class="modal fade mt100" id="movemoduleModal">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-                        <p class="modal-title">移动至</p>
-                    </div>
-                    <div class="modal-body">
-                        <form action="{$move_url}" method="post" class="form-movemodule">
-                            <div class="form-group">
-                                <select name="to_module" class="form-control">{$options}</select>
-                            </div>
-                            <div class="form-group">
-                                <input type="hidden" name="ids">
-                                <button class="btn btn-primary btn-block submit ajax-post" type="submit" target-form="form-movemodule">确 定</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="modal fade mt100" id="movemenuPositionModal">
             <div class="modal-dialog modal-sm">
                 <div class="modal-content">
@@ -258,21 +218,7 @@ class Auth extends Base {
             </div>
         </div>
         <script type="text/javascript">
-            function move_module(){
-                var ids = '';
-                $('input[name="ids[]"]:checked').each(function(){
-                   ids += ',' + $(this).val();
-                });
-                if(ids != ''){
-                    ids = ids.substr(1);
-                    $('input[name="ids"]').val(ids);
-                    $('.modal-title').html('移动选中的菜单至：');
-                    $('#movemoduleModal').modal('show', 'fit')
-                }else{
-                    updateAlert('请选择需要移动的菜单', 'warning');
-                }
-            }
-            function move_menuparent(){
+            function move_menuposition(){
                 var ids = '';
                 $('input[name="ids[]"]:checked').each(function(){
                    ids += ',' + $(this).val();

@@ -21,7 +21,6 @@ class Menu extends Admin {
 
     protected $authRuleModel;
     protected $authGroupModel;
-    protected $moduleList;
     protected $userModel;
 
     function _initialize()
@@ -32,13 +31,6 @@ class Menu extends Admin {
         $this->authGroupModel = new AuthGroupModel();
         $this->userModel     = new UserModel;
 
-        $default_module = [ 
-                        'admin'   =>'后台模块',
-                        'home'    =>'前台模块',
-                        ];
-        $moduleList = db('modules')->where('status',1)->column('title','name');                
-        $this->moduleList = $default_module+$moduleList;
-
     }
 
     /**
@@ -48,20 +40,13 @@ class Menu extends Admin {
     public function index(){
         $menus = logic('Auth')->getAdminMenu();
         $total = model('AuthRule')->count();
-         //移动模块按钮属性
-        $movemodule_attr = [
-            'title'   => '移动模块',
-            'icon'    => 'fa fa-exchange',
-            'class'   => 'btn btn-info btn-sm',
-            'onclick' => 'move_module()'
-        ];
 
         //移动上级按钮属性
         $move_position_attr = [
             'title'   => '移动位置',
             'icon'    => 'fa fa-exchange',
             'class'   => 'btn btn-info btn-sm',
-            'onclick' => 'move_menuparent()'
+            'onclick' => 'move_menuposition()'
         ];
         $extra_html = logic('Auth')->moveMenuHtml();//添加移动按钮html
 
@@ -88,7 +73,6 @@ class Menu extends Admin {
             ->addTopBtn('delete',['model'=>'auth_rule'])  // 添加删除按钮
             ->addTopButton('self', $marker_menu0_attr) //取消菜单标记
             ->addTopButton('self', $marker_menu1_attr) //标记为菜单
-            ->addTopButton('self', $movemodule_attr) //移动模块
             ->addTopButton('self', $move_position_attr) //移动菜单位置
             ->addTopBtn('sort',array('model'=>'auth_rule','href'=>url('Sort')))  // 添加排序按钮
             //->setSearch('', url('rule'))
@@ -137,14 +121,14 @@ class Menu extends Admin {
             }   
 
         } else{
-            if ($id==0) {//新增
-                $pid       = (int)input('param.pid');
-                $pid_data  = $this->authRuleModel->get($pid);
-                $menu_data = ['depend_flag'=>$pid_data['depend_flag'],'pid'=>$pid];
-            }
+
             // 获取菜单数据
             if ($id>0) {
-                $menu_data = $this->authRuleModel->find($id);
+                $info = $this->authRuleModel->get($id);
+            } else{
+                $pid       = (int)input('param.pid');
+                $pid_data  = $this->authRuleModel->get($pid);
+                $info = ['depend_flag'=>$pid_data['depend_flag'],'pid'=>$pid,'is_menu'=>1,'sort'=>99,'status'=>1];
             }
             $menus = logic('Auth')->getAdminMenu();
             $menus = array_merge([0=>['id'=>0,'title_show'=>'顶级菜单']], $menus);
@@ -154,13 +138,13 @@ class Menu extends Admin {
                     ->addFormItem('title', 'text', '标题', '用于后台显示的配置标题')
                     ->addFormItem('pid', 'multilayer_select', '上级菜单', '上级菜单',$menus)
                     ->addFormItem('depend_type', 'select', '来源类型', '来源类型。分别是模块，插件，主题',[1=>'模块',2=>'插件',3=>'主题'])
-                    ->addFormItem('depend_flag', 'text', '来源标识', '如模块、插件、主题的标识名')
+                    ->addFormItem('depend_flag', 'text', '来源标识', '请选择标识名，模块、插件、主题的标识名')
                     ->addFormItem('icon', 'icon', '字体图标', '请选择一个图标')
                     ->addFormItem('name', 'text', '链接', '链接')
                     ->addFormItem('is_menu', 'radio', '后台菜单', '是否标记为后台菜单',[1=>'是',0=>'否'])
                     ->addFormItem('sort', 'number', '排序', '排序')
                     ->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'启用'])
-                    ->setFormData($menu_data)
+                    ->setFormData($info)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
         }   

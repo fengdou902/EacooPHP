@@ -29,7 +29,7 @@ class User extends Admin {
     public function index(){
         // 获取所有用户
         $map['status'] = ['egt', '0']; // 禁用和正常状态
-        list($data_list,$total) = $this->userModel->search('uid|username|nickname')->getListByPage($map,true,'reg_time desc',20);
+        list($data_list,$total) = $this->userModel->search('uid|username|nickname')->getListByPage($map,true,'reg_time desc');
         
         $send_message_attr['title']   = '<i class="fa fa-comment-o"></i> 发送消息';
         $send_message_attr['class']   = 'btn btn-info btn-raised btn-sm';

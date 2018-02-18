@@ -94,7 +94,7 @@ class BuilderList extends Builder {
                 //预定义按钮属性以简化使用
                 $my_attribute['title'] = '启用';
                 $my_attribute['target-form'] = 'ids';
-                //$my_attribute['icon'] = 'fa fa-plus';
+                $my_attribute['icon'] = 'fa fa-play';
                 $my_attribute['class'] = 'btn btn-success ajax-table-btn confirm btn-sm';
                 $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;;  // 要操作的数据模型
                 $my_attribute['href']  = url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status'=>'resume']).'?model='.$my_attribute['model'];
@@ -104,7 +104,7 @@ class BuilderList extends Builder {
                 // 预定义按钮属性以简化使用
                 $my_attribute['title'] = '禁用';
                 $my_attribute['target-form'] = 'ids';
-                //$my_attribute['icon'] = 'fa fa-plus';
+                $my_attribute['icon'] = 'fa fa-pause';
                 $my_attribute['class'] = 'btn btn-warning ajax-table-btn confirm btn-sm';
                 $my_attribute['model'] = !empty($attribute['model']) ? $attribute['model']: CONTROLLER_NAME;
                 $my_attribute['href']  = url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'forbid']).'?model='.$my_attribute['model'];
@@ -114,7 +114,7 @@ class BuilderList extends Builder {
                 // 预定义按钮属性以简化使用
                 $my_attribute['title'] = '回收';
                 $my_attribute['target-form'] = 'ids';
-                $my_attribute['icon'] = 'fa fa-trash';
+                $my_attribute['icon'] = 'fa fa-recycle';
                 $my_attribute['class'] = 'btn btn-danger ajax-table-btn confirm btn-sm';
                 $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;
                 $my_attribute['href']  = url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'recycle']).'?model='.$my_attribute['model'];
@@ -342,7 +342,7 @@ class BuilderList extends Builder {
             case 'recycle':
                 // 预定义按钮属性以简化使用
                 $my_attribute['title'] = '回收';
-                $my_attribute['icon'] = 'fa fa-trash';
+                $my_attribute['icon'] = 'fa fa-recycle';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-danger btn-xs ajax-get confirm':'ajax-get confirm';
                 $my_attribute['model'] = isset($attribute['model']) ? $attribute['model'] : CONTROLLER_NAME;
                 $my_attribute['href'] = url(
@@ -426,8 +426,11 @@ class BuilderList extends Builder {
      * @date   2018-02-06
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function setListPage($total = 0, $page_size=12) {
-        if (!$page_size) {
+    public function setListPage($total = 0, $page_size = null) {
+        if (is_null($page_size)) {
+            $page_size = config('admin_page_size');
+        }
+        if ($page_size === false) {
             $page_size = $total;
         }
         $this->tableDataPage = ['total' => $total, 'page_size' => $page_size];
