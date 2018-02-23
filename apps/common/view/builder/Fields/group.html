@@ -1,0 +1,13 @@
+
+<div class="builder-group-container ">
+    <div class="group-content box-body ">
+    	<h3 class="form-section">{$field.title}{notempty name="field.description"}<small>{$field.description|default=''}</small> {/notempty}</h3>
+    	<div class="col-md-offset-1 col-md-11">
+    		{volist name="field.options" id="field" key="group_k"}
+	            {:action('common/BuilderForm/fieldType',['field'=>$field],'builder')}
+	            {/*:hook('FormBuilderExtend', array('form' => $tab_form, 'type' => tab_))*/}
+	        {/volist}
+    	</div>
+        
+    </div>
+</div>

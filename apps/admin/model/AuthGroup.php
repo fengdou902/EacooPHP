@@ -25,9 +25,6 @@ class AuthGroup extends Base
     // 定义时间戳字段名 
      protected $createTime = '';
      protected $updateTime = '';
-    
-
-    protected $insert =['status'=>1];
 
     /**
      * 返回用户组列表
@@ -42,66 +39,6 @@ class AuthGroup extends Base
         return $this->where($map)->select();
     }
 
-    /**
-     * 把用户添加到用户组,支持批量添加用户到用户组
-     * @author 朱亚杰 <zhuyajie@topthink.net>
-     * 
-     * 示例: 把uid=1的用户添加到group_id为1,2的组 `AuthGroupModel->addToGroup(1,'1,2');`
-     */
-    public function addToGroup($uid, $gid){
-        $uid = is_array($uid)? implode(',',$uid) : trim($uid,',');
-        $gid = is_array($gid)? $gid:explode( ',',trim($gid,',') );
-
-        $Access = model(self::AUTH_GROUP_ACCESS);
-        $del = true;
-        if( isset($_REQUEST['batch']) ){
-            //为单个用户批量添加用户组时,先删除旧数据
-            $del = $Access->where(['uid'=>['in',$uid]])->delete();
-        }
-
-        $uid_arr = explode(',',$uid);
-        $uid_arr = array_diff($uid_arr,get_administrators());
-        $add = [];
-        if( $del!==false ){
-            foreach ($uid_arr as $u){
-                foreach ($gid as $g){
-                    if( is_numeric($u) && is_numeric($g) ){
-                        //防止重复添加
-                        if (!$Access->where(['group_id'=>$g,'uid'=>$u])->count()) {
-                            $add[] = ['group_id'=>$g,'uid'=>$u];
-                        }
-                        
-                    }
-                }
-                // $user_auth_role = db('users')->where(array('uid'=>$u))->value('auth_groups');
-                // if ($user_auth_role) {
-                //     $user_auth_role = explode(',', $user_auth_role);
-                //     $user_auth_role = array_merge($user_auth_role,$gid);
-                // } else{
-                //     $user_auth_role = $gid;
-                // }
-                // db('users')->where(array('uid'=>$u))->update(['auth_groups',implode(',',$user_auth_role)]);//同时将用户角色关联（16/07/06新增）
-                
-            }
-
-            if (!empty($add) && is_array($add)) {
-                $Access->saveAll($add);
-            } else{
-                $this->error = "添加失败，可能有重复添加操作";
-                return false;
-            }
-            
-        }
-        if ($Access->getError()) {
-            if( count($uid_arr)==1 && count($gid)==1 ){
-                //单个添加时定制错误提示
-                $this->error = "不能重复添加";
-            }
-            return false;
-        } 
-        return true;
-
-    }
 
     /**
      * 返回用户所属用户组信息
@@ -126,24 +63,6 @@ class AuthGroup extends Base
     }
     
     /**
-     * 将用户从用户组中移除
-     * @param int|string|array $gid   用户组id
-     * @param int|string|array $cid   分类id
-     * @author 朱亚杰 <xcoolcc@gmail.com>
-     */
-    public function removeFromGroup($uid,$gid){
-        $del_result = model(self::AUTH_GROUP_ACCESS)->where( array( 'uid'=>$uid,'group_id'=>$gid) )->delete();
-        if ($del_result) {
-            $user_auth_role = db('users')->where(array('uid'=>$uid))->value('auth_groups');
-            if ($user_auth_role) {
-                $user_auth_role=array_merge(array_diff(explode(',', $user_auth_role), array($gid)));
-                model('user')->where(array('uid'=>$uid))->setField('auth_groups',$user_auth_role);//同时将用户角色关联删除
-            }
-            
-        }
-        return $del_result;
-    }
-        /**
      * 获取某个用户组的用户列表
      *
      * @param int $group_id   用户组id

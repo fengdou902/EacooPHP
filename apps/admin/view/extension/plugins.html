@@ -134,18 +134,11 @@
 
 {block name="script"}
 <script type="text/javascript" src="__ADMIN_JS__/eacoo.extension.js" ></script>
-<link href="__STATIC__/libs/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
-<script type="text/javascript" src="__STATIC__/libs/webuploader/js/webuploader.min.js"></script>
+<link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="__LIBS__/webuploader/js/webuploader.min.js"></script>
 <script>
   $(function () {
-    if ($.support.pjax) {
-      $(document).on('ready pjax:end', function(event) {
-        //进行本地安装
-        appLocalInstall('plugin');  
-      });
-    } else{
-       appLocalInstall('plugin');
-    }
+    appLocalInstall('plugin');
 
   })
    

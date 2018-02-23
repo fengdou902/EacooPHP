@@ -11,7 +11,7 @@
 namespace app\admin\controller;
 use app\common\controller\Base;
 
-use app\common\model\User;
+use app\common\model\User as UserModel;
 use app\admin\model\AuthRule;
 
 use eacoo\EacooAccredit;
@@ -33,19 +33,21 @@ class Admin extends Base
 
         if (SERVER_SOFTWARE_TYPE=='nginx') {
             \think\Url::root('/admin.php?s=');
+            $this->assign('url_model',2);
         } else{
             \think\Url::root('/admin.php');
+            $this->assign('url_model',1);
         }
         
         if( !is_login()){
             // 还没登录 跳转到登录页面
-            $this->redirect('admin/index/login');
+            $this->redirect('admin/login/index');
             exit;
         } else {
             $this->currentUser = session('user_login_auth');
         }
 
-        if (!in_array($this->urlRule,['admin/index/login', 'admin/index/logout'])) {
+        if (!in_array($this->urlRule,['admin/login/index', 'admin/index/logout'])) {
             // 检测系统权限
             if(!is_administrator()){
                 if (config('admin_allow_ip')) {
@@ -59,17 +61,19 @@ class Admin extends Base
             
         }
 
-        if (session('activation_auth_sign') != User::where('uid',$this->currentUser['uid'])->value('activation_auth_sign')) {
-            $this->error('您的帐号正在别的地方登录!',url('admin/index/logout'));
+        if (session('activation_auth_sign') != UserModel::where('uid',$this->currentUser['uid'])->value('activation_auth_sign')) {
+            $this->error('您的帐号正在别的地方登录!',url('admin/login/logout'));
         }
 
         $this->assign('current_user',$this->currentUser);
 
         if(!IS_AJAX){
-
-            $this->assign('current_message_count',0);//当前消息数量
-            $this->assign('sidebar_menus',$this->getSidebarMenu());//侧边栏菜单
-
+            //是否菜单被收藏
+            $collect_menus = config('admin_collect_menus');
+            $this->assign('is_menu_collected',0);
+            if (isset($collect_menus[$this->request->url()])) {
+                $this->assign('is_menu_collected',1);
+            }
             if (PUBLIC_RELATIVE_PATH=='') {
                 $template_path_str = '../';
             } else{
@@ -78,42 +82,19 @@ class Admin extends Base
 
             $_admin_public_base = '';
             if ($this->request->param('load_type')=='iframe') {
-                $_admin_public_base = $template_path_str.'apps/admin/view/public/iframe_base.html';
+                $_admin_public_base = $template_path_str.'apps/admin/view/public/layerbase.html';
             } else{
                 $_admin_public_base = $template_path_str.'apps/admin/view/public/base.html';
             }
+            $_admin_public_base = APP_PATH.'admin/view/public/base.html';
+
+            //顶部模版
+            $this->assign('_admin_document_header_',$template_path_str.'apps/admin/view/public/document_header.html');
             $this->assign('_admin_public_left_',$template_path_str.'apps/admin/view/public/left.html');
             $this->assign('_admin_public_base_', $_admin_public_base);
-            $this->assign('_admin_public_iframe_base_', $template_path_str.'apps/admin/view/public/iframe_base.html');  // 页面公共继承模版    
+            $this->assign('_admin_public_layerbase_', $template_path_str.'apps/admin/view/public/layerbase.html');
         } 
-
-    }
-
-    /**
-     * 获取侧边栏菜单
-     * @return [type] [description]
-     */
-    private function getSidebarMenu()
-    {
-        $uid = is_login();
-        $admin_sidebar_menus = Cache::get('admin_sidebar_menus_'.$uid,null);
-        if (!$admin_sidebar_menus) {
-            
-            if(!is_administrator() && !empty($this->currentUser['auth_group'])){//如果是非超级管理员则按存储显示
-                $rules= db('auth_group')->where(['id'=>['in',array_keys($this->currentUser['auth_group'])]])->value('rules');    
-                $map_rules['id']=['in',$rules];;
-            }
-            $map_rules['status']=1;
-            $map_rules['is_menu']=1;
-            //是否开发者模式
-            if (1!=config('develop_mode')) {
-                $map_rules['developer']=0;
-            }
-            $menu = db('auth_rule')->where($map_rules)->field(true)->order('sort asc')->select();
-            $admin_sidebar_menus = list_to_tree($menu);
-            Cache::set('admin_sidebar_menus_'.$uid,$admin_sidebar_menus);
-        }
-        return $admin_sidebar_menus;
+        
     }
 
     /**
@@ -191,10 +172,9 @@ class Admin extends Base
                 );
                 break;
             case 'delete'  :  // 删除条目
-                action_log(0, is_login(), ['param'=>$this->param],'删除操作');
+                //action_log(0, is_login(), ['param'=>$this->request->param()],'删除操作');
                 $result = model($model)->where($map)->delete();
                 if ($result) {
-
                     $this->success('删除成功，不可恢复！');
                 } else {
                     $this->error('删除失败');

@@ -11,7 +11,7 @@
 namespace app\admin\controller;
 
 use app\common\model\Config;
-use app\admin\builder\Builder;
+use app\common\builder\Builder;
 
 class Mailer extends Admin{
 
@@ -101,7 +101,7 @@ class Mailer extends Admin{
             
             $info['template_content'] = $template_content;
 
-            Builder::run('Form')
+            return builder('Form')
                     ->setMetaTitle('邮箱模板')  // 设置页面标题
             		->setTabNav($this->tabList, $template_type)  // 设置Tab按钮列表
                     ->addFormItem('active', 'radio', '邮箱激活', '',[1=>'开启',0=>'关闭'])

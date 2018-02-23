@@ -21,7 +21,7 @@ function friendly_date($sTime,$type = 'normal',$alt = 'false') {
         return '';
     //sTime=源时间，cTime=当前时间，dTime=时间差
     $cTime      =   time();
-    $dTime      =   $cTime - $sTime;
+    $dTime      =   $cTime-$sTime;
     $dDay       =   intval(date("z",$cTime)) - intval(date("z",$sTime));
     //$dDay     =   intval($dTime/3600/24);
     $dYear      =   intval(date("Y",$cTime)) - intval(date("Y",$sTime));

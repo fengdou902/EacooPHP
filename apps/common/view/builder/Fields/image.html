@@ -1,0 +1,85 @@
+{php}
+      $webuploader=1;
+      if (strpos($field['name'],'[')) {
+        $field['id']=str_replace(']','',str_replace('[','',$field['name']));
+      } else {
+        $field['id']=$field['name'];
+      }
+      $path_type=isset($field['options']['path_type'])? $field['options']['path_type']:'picture';
+      $is_sql=isset($field['options']['is_sql'])? $field['options']['is_sql']:'close';
+{/php}
+<div class="form-group controls item_{$field.id} {$field.extra_class|default=''}">
+    <label for="{$field.id}" class="col-md-2 control-label">{$field.title}</label>
+    <div class="col-md-6" style="padding-bottom: 5px;">
+        
+        <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field.value|default=''}"/>
+        <div>
+            <span id="upload_img_{$field.id}" class="btn btn-info btn-sm ml-10 mt-10"><i class="fa fa-cloud-upload"></i> 上传图片</span>
+        </div>
+        <div class="upload-img-box tc popup-gallery fl img-thumbnail pr">
+            <div class="each">
+             
+            {empty name="field.value"}
+                <img src="{php} echo get_image(0);{/php}">
+            {else /} 
+                <i onclick="admin_image.removeImage($(this),'{$field.value}')" class="fa fa-times-circle remove-attachment"></i>
+                <a href="{eq name="is_sql" value="on"}{$field.value|get_image}{else/}{$field.value}{/eq}" title="点击查看大图">
+                    <img src="{eq name="is_sql" value="on"}{$field.value|get_image}{else/}{$field.value}{/eq}">
+                </a>
+            {/empty}
+            </div>
+
+        </div>
+        {notempty name="field.description"}<div class="help-block col-md-6 pl-10 fn">{$field.description}</div>{/notempty}
+        
+    </div>
+
+</div>
+{present name="webuploader"}{if condition="$webuploader"}
+    <link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" charset="utf-8" src="__LIBS__/webuploader/js/webuploader.min.js"></script>
+{/if}{/present}
+<script>
+    //本地上传(分开写为了好控制)
+    $(function () {
+        var uploader_{$field.id}= WebUploader.create({
+            // 选完文件后，是否自动上传。
+            auto: true,
+            duplicate: true,// 同一文件是否可以重复上传
+            // swf文件路径
+            swf: '__PUBLIC__/libs/webuploader/Uploader.swf',
+            // 文件接收服务端。
+            server: "{:url('admin/Upload/upload',['path_type'=>$path_type,'type'=>'picture','is_sql'=>$is_sql])}",
+            //验证文件总数量, 超出则不允许加入队列
+            fileNumLimit: 5,
+            // 如果此选项为false, 则图片在上传前不进行压缩
+            compress: false, 
+            // 验证单个文件大小是否超出限制, 超出则不允许加入队列 
+            fileSingleSizeLimit:{php}echo intval(config('attachment_options.image_max_size')) ? : 2;{/php}*1024*1024,  
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+
+            //选择文件的按钮
+            pick: '#upload_img_{$field.id}',
+            // 只允许选择图片文件
+            accept:{title:'Images',extensions:'{:config("attachment_options.image_exts")}',mimeTypes:'image/*'}
+        });
+        uploader_{$field.id}.on('fileQueued', function (file) {
+            uploader_{$field.id}.upload();
+        });
+        /*上传成功**/
+        uploader_{$field.id}.on('uploadSuccess', function (file, data) {
+            if (data.code==1) {
+                data = data.data;
+                var append_string='<i onclick="admin_image.removeImage($(this),'+data.id+')" class="fa fa-times-circle remove-attachment"></i><a href="'+data.path+'" title="点击查看大图"><img src="'+data.path+'"></a>';
+                $("#{$field.id}").parent().find('.popup-gallery').html(append_string);
+                $("#{$field.id}").val({eq name="is_sql" value="on"}data.id{else/}data.path{/eq});
+                uploader_{$field.id}.reset();
+            } else {
+                updateAlert(data.msg);
+                // setTimeout(function () {
+                //     $(this).removeClass('disabled').prop('disabled', false);
+                // }, 1500);
+            }
+        });
+    })
+</script>

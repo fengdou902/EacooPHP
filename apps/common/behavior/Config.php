@@ -1,7 +1,7 @@
 <?php
 // 配置行为
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
+// | Copyright (c) 2017-2018 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 namespace app\common\behavior;
 use think\Config as thinkConfig;
-use app\common\model\Config as ConfigModel;
+use app\common\logic\Config as ConfigLogic;
 use think\Cache;
 use think\Request;
 
@@ -48,11 +48,11 @@ class Config {
             }
 
             $static_path = PUBLIC_RELATIVE_PATH.'/static/'.MODULE_NAME;
-            
-            $ec_config['view_replace_str']['__IMG__']    = $static_path.'/img';
-            $ec_config['view_replace_str']['__CSS__']    = $static_path.'/css';
-            $ec_config['view_replace_str']['__JS__']     = $static_path.'/js';
-            $ec_config['view_replace_str']['__LIBS__']   = $static_path.'/libs';
+            $ec_config['view_replace_str']['__MODULE__']    = $static_path;
+            $ec_config['view_replace_str']['__MODULE_IMG__']    = $static_path.'/img';
+            $ec_config['view_replace_str']['__MODULE_CSS__']    = $static_path.'/css';
+            $ec_config['view_replace_str']['__MODULE_JS__']     = $static_path.'/js';
+            $ec_config['view_replace_str']['__MODULE_LIBS__']   = $static_path.'/libs';
 
         } elseif (MODULE_MARK=='front' && is_file(APP_PATH . 'install.lock')){
             // 获取当前主题的名称
@@ -91,11 +91,11 @@ class Config {
                 $module_public_path = $current_theme_module_path.'public/';
                 if (is_dir($module_public_path) ) {
                     $module_public_url = PUBLIC_RELATIVE_PATH.'/themes/'.$current_theme.'/'.MODULE_NAME.'/'.'public';//资源路径url
-
-                    $ec_config['view_replace_str']['__IMG__']  = $module_public_url.'/img';
-                    $ec_config['view_replace_str']['__CSS__']  = $module_public_url.'/css';
-                    $ec_config['view_replace_str']['__JS__']   = $module_public_url.'/js';
-                    $ec_config['view_replace_str']['__LIBS__'] = $module_public_url.'/libs';
+                    $ec_config['view_replace_str']['__MODULE__'] = $module_public_url;
+                    $ec_config['view_replace_str']['__MODULE_IMG__']  = $module_public_url.'/img';
+                    $ec_config['view_replace_str']['__MODULE_CSS__']  = $module_public_url.'/css';
+                    $ec_config['view_replace_str']['__MODULE_JS__']   = $module_public_url.'/js';
+                    $ec_config['view_replace_str']['__MODULE_LIBS__'] = $module_public_url.'/libs';
                 }
             }
             
@@ -125,7 +125,7 @@ class Config {
        
         if (!$system_config && is_file(APP_PATH . 'install.lock')) {
             // 获取所有系统配置
-            $system_config = ConfigModel::lists();
+            $system_config = ConfigLogic::lists();
 
             // SESSION与COOKIE与前缀设置避免冲突
             //$system_config['SESSION_PREFIX'] = ENV_PRE.MODULE_MARK.'_';  // Session前缀

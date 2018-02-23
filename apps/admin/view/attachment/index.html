@@ -1,7 +1,7 @@
 {extend name="public/base"/}
   {block name="style"}
-    <link href="__STATIC__/libs/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
-    <link href="__STATIC__/libs/daterangepicker/daterangepicker-bs3.css" type="text/css" rel="stylesheet">
+    <link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+    <link href="__LIBS__/daterangepicker/daterangepicker-bs3.css" type="text/css" rel="stylesheet">
     <style type="text/css">
     #more-method{display: none;}
     .meta-ext{background-color: #55CCFF;color:#fff;font-size: 12px;font-weight:500;padding:0px 8px 2px;float: right;border-radius: 2px;}
@@ -11,11 +11,10 @@
   {/block}
 
   {block name="main"}
-
   <div class="attachment-wrap">
       <div class="h50">
         <ul class="nav nav-tabs">
-            <li class="active"><a href="{:url('index')}" data-pjax=false >媒体文件</a></li>
+            <li class="active"><a href="{:url('index')}" >媒体文件</a></li>
             <li class=""><a href="{:url('category')}">附件分类</a></li>
             <li class=""><a href="{:url('setting')}">设置</a></li>
         </ul>
@@ -114,7 +113,7 @@
       </div>
 
           <div class="modal-body bg-color-fff">
-             <form action="{:url('editAttachment')}" method="post" class="editAttachment form-horizontal">
+             <form action="{:url('Attachment/edit')}" method="post" class="editAttachment form-horizontal">
              <div class="row">
                   <input type="hidden" name="id" id="file-id" value="">
                     <div class="col-sm-6 oh tc media-modal-pic">                    
@@ -132,7 +131,7 @@
                           <li><strong>上&nbsp;&nbsp;传&nbsp;者：</strong><span id="file-author">未知</span></li>
                           <li><strong>URL：</strong><span id="file-url">无</span></li>
                         </ul>
-                        <a id="delAttachmentUrl" href="{:url('delAttachment')}" class="btn btn-danger btn-xs btn-flat confirm ajax-get" data-dismiss="modal">删除</a>
+                        <a id="delAttachmentUrl" href="{:url('Attachment/del')}" class="btn btn-danger btn-xs btn-flat confirm ajax-get" data-dismiss="modal">删除</a>
                         <span id="url-copy" class="btn btn-success btn-xs btn-flat copyurl" data-clipboard-target="#file-url">
                         复制URL</span>
                     </div>
@@ -200,10 +199,10 @@
 
 {block name="script"}
 <script type="text/javascript" src="__PUBLIC__/js/clipboard.min.js"></script>
-<script type="text/javascript" src="__STATIC_LIBS__/daterangepicker/moment.min.js"></script>
-<script type="text/javascript" src="__STATIC_LIBS__/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="__LIBS__/daterangepicker/moment.min.js"></script>
+<script type="text/javascript" src="__LIBS__/daterangepicker/daterangepicker.js"></script>
 
-<script type="text/javascript" src="__STATIC_LIBS__/webuploader/js/webuploader.min.js"></script>
+<script type="text/javascript" src="__LIBS__/webuploader/js/webuploader.min.js"></script>
 <script type="text/javascript">
     //Date range picker
     $('#reservation').daterangepicker();
@@ -231,9 +230,9 @@
             // 选完文件后，是否自动上传。
             auto: true,
             // swf文件路径
-            swf: '__STATIC_LIBS__/webuploader/Uploader.swf',
+            swf: '__LIBS__/webuploader/Uploader.swf',
             // 文件接收服务端。
-            server: "{:url('admin/attachment/upload',['path_type'=>$path_type,'type'=>'picture'])}",
+            server: "{:url('admin/Upload/upload',['path_type'=>$path_type,'type'=>'picture'])}",
             fileNumLimit: 10,
             // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
             compress: false, 
@@ -309,7 +308,13 @@
             $('#more-method').toggle();
         }); 
     });   
-    //设置附件信息
+    
+    /**
+     * 设置附件信息
+     * @param  {[type]} data [description]
+     * @date   2018-02-16
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
     function setAttachmentNodeInfo(data){
         $("#detail-file-id").text(data.id);   
         $("#file-name").text(data.name);
@@ -327,10 +332,16 @@
         var newDelUrl=$("#delAttachmentUrl").attr('href').replace(".html","/id/"+data.id+".html");
         $("#delAttachmentUrl").attr('href',newDelUrl);
     }
-    //更新模态框附件信息
+    
+    /**
+     * 更新模态框附件信息
+     * @param  {[type]} attachmentId [description]
+     * @date   2018-02-16
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
     function set_modal_attachmentInfo(attachmentId){
       $("#detail-file-id").text(attachmentId);
-      $.post("{:url('admin/attachment/attachmentInfo')}", {id:attachmentId}, function (res) {
+      $.post("{:url('admin/attachment/info')}", {id:attachmentId}, function (res) {
           setAttachmentNodeInfo(res);
         })
     }

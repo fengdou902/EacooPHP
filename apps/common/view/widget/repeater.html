@@ -40,8 +40,8 @@
 </div>
 {egt name="param.is_load_attachment_modal" value="1"}
     {php}if($param['is_load_WebUploader_script']>0){ {/php}
-<!--       <script type="text/javascript" charset="utf-8" src="__STATIC__/libs/webuploader/js/webuploader.js"></script>
-      <link href="__STATIC__/libs/webuploader/css/webuploader.css" type="text/css" rel="stylesheet"> -->
+<!--       <script type="text/javascript" charset="utf-8" src="__LIBS__/webuploader/js/webuploader.js"></script>
+      <link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet"> -->
     {php}}{/php}
     <script type="text/javascript">
         var EacooAttachmentOptions_{$id} = {
@@ -100,7 +100,7 @@ function newSetAttachmentInputVal(inputName,ids,srcs) {
 {/egt}
 
 {php}if(!$param['is_load_script']){{/php}
-    <script type="text/javascript" charset="utf-8" src="__STATIC__/libs/jquery-repeater/jquery.repeater.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="__LIBS__/jquery-repeater/jquery.repeater.min.js"></script>
 {php}}{/php}
 <script type="text/javascript">
   if ($.support.pjax) {

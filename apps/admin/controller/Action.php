@@ -11,26 +11,10 @@
 
 namespace app\admin\controller;
 
-use app\admin\model\Action as ActionModel;
-use app\common\model\ActionLog;
-
-use app\admin\builder\Builder;
 use think\Db;
 
 class Action extends Admin {
 
-	protected $actionModel;
-    protected $actionLogModel;
-
-    function _initialize()
-    {
-        parent::_initialize();
-
-		$this->actionModel     = new ActionModel();
-		$this->actionLogModel = new ActionLog();
-
-		
-    }
 	/**
 	 * 用户行为列表
 	 * @author 心云间、凝听 <981248356@qq.com>
@@ -39,50 +23,33 @@ class Action extends Admin {
 
 		//获取列表数据
 		$map['status']  = ['gt',-1];  // 禁用和正常状态
-		list($data_list,$page) = $this->actionModel->getListByPage($map,'id desc','*',15);
+		list($data_list,$total) 
+			= model('action')//
+			->search() //添加搜索查询
+			->getListByPage($map,'id,name,title,depend_type,depend_flag,log,remark,status','id desc');
 
-        Builder::run('List')
-        		->setMetaTitle('用户行为')  // 设置页面标题
-        		->addTopButton('addnew')    // 添加新增按钮
-                ->addTopButton('resume')  // 添加启用按钮
-                ->addTopButton('forbid')  // 添加禁用按钮
-                ->addTopButton('delete')  // 添加禁用按钮
-        		->keyListItem('id','编码')
-                ->keyListItem('name','标识')
-                ->keyListItem('title','行为名称')
-                ->keyListItem('action_type_text','行为类型')
-                ->keyListItem('depend_type','来源类型','array',[0=>'未知',1=>'模块',2=>'插件',3=>'主题'])
-                ->keyListItem('depend_flag','来源标识')
-                ->keyListItem('log','日志规则')
-                ->keyListItem('status', '状态', 'status')
-                ->keyListItem('right_button', '操作', 'btn')
-                ->setListData($data_list)     // 数据列表
-                ->setListPage($page)  // 数据列表分页
-                ->addRightButton('edit')->addRightButton('forbid')->addRightButton('delete')  // 添加删除按钮
-                ->fetch();
-	}
-
-	/**
-	 * 新建用户行为
-	 * @author 心云间、凝听 <981248356@qq.com>
-	 */
-	public function add() {
-		if (IS_POST) {
-			$data   = input('post.');
-			$result = $this->actionModel->save($data);
-			if (false != $result) {
-				return $this->success('添加成功！', url('index'));
-			} else {
-				return $this->error($this->actionModel->getError());
-			}
-		} else {
-			$data = [
-				'keyList' => $this->actionModel->fieldlist,
-			];
-			$this->assign($data);
-			$this->setMeta("添加行为");
-			return $this->fetch('public/edit');
-		}
+        return builder('list')
+    			->setMetaTitle('用户行为')  // 设置页面标题
+	    		->addTopButton('addnew')    // 添加新增按钮
+	            ->addTopButton('resume')  // 添加启用按钮
+	            ->addTopButton('forbid')  // 添加禁用按钮
+	            ->addTopButton('delete')  // 添加禁用按钮
+	            ->setSearch() //添加搜索框
+	    		->keyListItem('id','编码')
+	            ->keyListItem('name','标识')
+	            ->keyListItem('title','行为名称')
+	            //->keyListItem('action_type_text','行为类型')
+	            ->keyListItem('depend_type','来源类型','array',[0=>'未知',1=>'模块',2=>'插件',3=>'主题'])
+	            ->keyListItem('depend_flag','来源标识')
+	            ->keyListItem('log','日志规则')
+	            ->keyListItem('remark','描述')
+	            ->keyListItem('status', '状态', 'status')
+	            ->keyListItem('right_button', '操作', 'btn')
+	            ->setListData($data_list)     // 数据列表
+	            ->setListPage($total)  // 数据列表分页
+	            ->addRightButton('edit')
+	            ->addRightButton('delete')  // 添加删除按钮
+	            ->fetch();
 	}
 
 	/**
@@ -98,74 +65,37 @@ class Action extends Admin {
             $this->validateData($data,'Action');
 
             $id   =isset($data['id']) && $data['id']>0 ? $data['id'] : false;
-            if ($this->actionModel->editData($data,$id)) {
+            if (model('action')->editData($data,$id)) {
                 $this->success($title.'成功', url('index'));
             } else {
-                $this->error($this->actionModel->getError());
+                $this->error(model('action')->getError());
             }
 
 		} else {
 
-			$info = ['action_type'=>1];
+			$info = ['action_type'=>1,'status'=>1];
             if ($id>0) {
-                $info = $this->actionModel->find($id);
+                $info = model('action')->find($id);
             }
-
-            Builder::run('Form')
-            		->setMetaTitle($title.'行为')  // 设置页面标题
-                    ->addFormItem('id', 'hidden', 'ID', 'ID')
-                    ->addFormItem('name', 'text', '行为标识', '输入行为标识 英文字母')
-                    ->addFormItem('title', 'text', '行为名称', '输入行为名称')
-                    ->addFormItem('depend_type', 'select', '来源类型', '来源类型。分别是模块，插件，主题',[1=>'模块',2=>'插件',3=>'主题'])
-                    ->addFormItem('depend_flag', 'text', '来源标识', '如模块、插件、主题的标识名。')
-                    ->addFormItem('action_type', 'radio', '行为执行类型', '',[1=>'自定义操作',2=>'记录操作'])
-                    ->addFormItem('remark', 'text', '行为描述', '')
-                    ->addFormItem('rule', 'text', '行为规则', '输入行为规则，不写则只记录日志')
-                    ->addFormItem('log', 'text', '日志规则', '记录日志备注时按此规则来生成，支持[变量|函数]。目前变量有：user,time,model,record,data')
-                    ->setFormData($info)//->setAjaxSubmit(false)
-                    ->addButton('submit')->addButton('back')    // 设置表单按钮
-                    ->fetch();
+            
+            builder('Form')
+        		->setMetaTitle($title.'行为')  // 设置页面标题
+                ->addFormItem('id', 'hidden', 'ID', 'ID')
+                ->addFormItem('name', 'text', '行为标识', '输入行为标识 英文字母')
+                ->addFormItem('title', 'text', '行为名称', '输入行为名称')
+                ->addFormItem('depend_type', 'select', '来源类型', '来源类型。分别是模块，插件，主题',[1=>'模块',2=>'插件',3=>'主题'])
+                ->addFormItem('depend_flag', 'text', '来源标识', '如模块、插件、主题的标识名。')
+                ->addFormItem('action_type', 'radio', '行为执行类型', '',[1=>'自定义操作',2=>'记录操作'])
+                ->addFormItem('remark', 'text', '行为描述', '')
+                ->addFormItem('rule', 'text', '行为规则', '输入行为规则，不写则只记录日志')
+                ->addFormItem('log', 'text', '日志规则', '记录日志备注时按此规则来生成，支持[变量|函数]。目前变量有：user,time,model,record,data')
+                ->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'启用'])
+                ->setFormData($info)//->setAjaxSubmit(false)
+                ->addButton('submit')->addButton('back')    // 设置表单按钮
+                ->fetch();
 
 		}
 	}
-
-	/**
-	 * 删除用户行为状态
-	 * @author 心云间、凝听 <981248356@qq.com>
-	 */
-	public function del() {
-		$id = input('param.id');
-		if (empty($id)) {
-			return $this->error("非法操作！", '');
-		}
-		$map['id'] = array('IN', $id);
-		$result    = Action::where($map)->delete();
-		if ($result) {
-			return $this->success('删除成功！');
-		} else {
-			return $this->error('删除失败！');
-		}
-	}
-
-	// /**
-	//  * 修改用户行为状态
-	//  * @author colin <colin@tensent.cn>
-	//  */
-	// public function setstatus() {
-	// 	$id = $this->getArrayParam('id');
-	// 	if (empty($id)) {
-	// 		return $this->error("非法操作！", '');
-	// 	}
-	// 	$status    = input('get.status', '', 'trim,intval');
-	// 	$message   = !$status ? '禁用' : '启用';
-	// 	$map['id'] = array('IN', $id);
-	// 	$result    = db('Action')->where($map)->setField('status', $status);
-	// 	if ($result !== false) {
-	// 		return $this->success('设置' . $message . '状态成功！');
-	// 	} else {
-	// 		return $this->error('设置' . $message . '状态失败！');
-	// 	}
-	// }
 
 	/**
 	 * 行为日志列表
@@ -173,26 +103,30 @@ class Action extends Admin {
 	 */
 	public function log() {
 
-		//获取列表数据
-		$map['status']  = ['gt',-1];  // 禁用和正常状态
-		//list($data_list,$page) = $this->actionLogModel->getListByPage($map,'id desc','*',15);
-		$data_list = $this->actionLogModel->field(true)->order('create_time desc')->paginate(15);
-        Builder::run('List')
-        		->setMetaTitle('行为日志')  // 设置页面标题
-        		->addTopButton('self', ['title'=>'清空日志','href'=>url('clearLog'),'class'=>'btn btn-warning btn-sm ajax-post confirm','hide-data'=>'true']) //清空
-                ->addTopButton('delete',['href'=>url('admin/Action/dellog')])  // 添加禁用按钮
-        		->keyListItem('action_name','行为标识')
-                ->keyListItem('url','URL')
-                ->keyListItem('request_method','请求类型')
-                ->keyListItem('nickname','执行者')
-                ->keyListItem('remark','备注')
-                ->keyListItem('ip','IP')
-                ->keyListItem('create_time','执行时间')
-                ->keyListItem('right_button', '操作', 'btn')
-                ->setListData($data_list)     // 数据列表
-                ->setListPage($data_list->render())  // 数据列表分页
-                ->addRightButton('edit',['href'=>url('detail',['id'=>'__data_id__']),'title'=>'详情'])->addRightButton('delete')  // 添加删除按钮
-                ->fetch();
+		list($data_list,$total) = model('actionLog')->getListByPage([],true,'create_time desc');
+		if (!empty($data_list)) {
+			foreach ($data_list as $key => &$row) {
+				$row['action_name']=$row->action_name;
+			}
+		}
+        return builder('list')
+	        		->setMetaTitle('行为日志')  // 设置页面标题
+	        		->addTopButton('self', ['title'=>'清空日志','href'=>url('clearLog'),'class'=>'btn btn-warning btn-sm ajax-get confirm','icon'=>'fa fa-trash','hide-data'=>'true']) //清空
+	                ->addTopButton('delete',['href'=>url('admin/Action/dellog')])  // 添加禁用按钮
+	        		->keyListItem('action_name','行为标识')
+	                ->keyListItem('url','URL')
+	                ->keyListItem('request_method','请求类型')
+	                ->keyListItem('nickname','执行者')
+	                ->keyListItem('remark','备注')
+	                ->keyListItem('ip','IP')
+	                ->keyListItem('create_time','执行时间')
+	                ->keyListItem('right_button', '操作', 'btn')
+	                ->setListData($data_list)     // 数据列表
+	                ->setListPage($total)
+	                //->setListPage($data_list->render())  // 数据列表分页
+	                ->addRightButton('self',['href'=>url('detail',['id'=>'__data_id__']),'title'=>'详情','icon'=>'fa fa-view'])
+	                ->addRightButton('delete')  // 添加删除按钮
+	                ->fetch();
 
 	}
 
@@ -207,7 +141,7 @@ class Action extends Admin {
 			$this->error('参数错误！');
 		}
 
-		$info = $this->actionLogModel->alias('a')->where('a.id',$id)->join('__USERS__ b','a.uid = b.uid')->join('__ACTION__ c','a.action_id = c.id')->order('a.create_time desc')->field('a.*,b.nickname,c.name,c.title')->find();
+		$info = model('actionLog')->alias('a')->where('a.id',$id)->join('__USERS__ b','a.uid = b.uid')->join('__ACTION__ c','a.action_id = c.id')->order('a.create_time desc')->field('a.*,b.nickname,c.name,c.title')->find();
 		$info['nickname']= db('users')->where('uid',$info['uid'])->value('nickname');
 		//$info['action_ip']   = long2ip($info['action_ip']);
 		if ($info['ip']!='' && $info['ip']!='127.0.0.1') {
@@ -233,7 +167,7 @@ class Action extends Admin {
 			$this->error("非法操作！", '');
 		}
 		$map['id'] = array('IN', $ids);
-		$res       = ActionLog::where($map)->delete();
+		$res       = model('actionLog')->where($map)->delete();
 		if ($res !== false) {
 			$this->success('删除成功！');
 		} else {

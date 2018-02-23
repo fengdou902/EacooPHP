@@ -23,10 +23,11 @@ define('PUBLIC_PATH', __DIR__ . '/');
 
 //主题目录
 define('THEME_PATH',__DIR__ . '/themes/');
+// 检测是否安装
 /**
  * 定义标记
  */
-define('MODULE_MARK', 'front');
+is_file(APP_PATH . 'database.php') && is_file(APP_PATH . 'install.lock') ?  define('MODULE_MARK', 'front') : define('MODULE_MARK', 'install');
 
 /**
  * 项目定义
@@ -36,7 +37,7 @@ define('BASE_PATH', substr($_SERVER['SCRIPT_NAME'], 0, -10));
 
 if ($_SERVER['REQUEST_URI']==='/admin') {
 	//重定向到后台地址
-    header("Location:/admin.php?s=/admin/index/login"); 
+    header("Location:/admin.php?s=/admin/login/index"); 
     exit;
 }
 

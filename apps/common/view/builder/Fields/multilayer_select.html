@@ -1,0 +1,18 @@
+<div class="form-group item_{$field.name} {$field.extra_class|default=''}"> 
+    <label class="col-md-2 control-label">{$field.title}</label>
+    <div class="col-md-4">
+        <select name="{$field.name}" class="form-control" {$field.extra_attr|default=''}>
+            {foreach name="field.options" item="option" key="option_key"}
+            
+                {php}if(is_array($option)):{/php}
+                    <option value="{$option.id}" {present name="field.value"}{eq name="field.value" value="$option.id"} selected{/eq}{/present}>
+                        {$option.title_show}
+                    </option>
+                {php}else:{/php}
+                    <option value="{$option.id}" {present name="field.value"}{eq name="field.value" value="$option.id"} selected{/eq}{/present}>{$option}</option>
+                {php}endif;{/php}
+            {/foreach}
+        </select>
+
+    </div>
+</div>

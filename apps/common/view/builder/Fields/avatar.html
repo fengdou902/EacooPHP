@@ -1,0 +1,93 @@
+
+{php}
+    $webuploader=1;
+   if (strpos($field['name'],'[')) {
+    $field['id']=str_replace(']','',str_replace('[','',$field['name']));
+  }else{
+    $field['id']=$field['name'];
+  }
+{/php}
+<div class="row">
+    <div class="form-group controls item_{$field.name} {$field.extra_class|default=''}">
+    <label for="{$field.name}" class="col-md-2 control-label">{$field.title}</label>
+    <div class="col-md-6" style="padding-bottom: 5px;"><span class="btn btn-info ml-10 btn-sm" id="upload_avatar_{$field.name}"><i class="fa fa-upload"></i> 上传头像</span>{notempty name="field.description"}<span class="color-red f12 ml-10">{$field.description}</span>{/notempty}
+      
+        <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field.value}"/>
+
+        <div class="upload-avatar-box tc popup-avatar img-thumbnail pr">
+            <div class="each">
+            <i data-avatarid="{$field.name}" class="removeAvatar fa fa-times-circle remove-attachment"></i> 
+            {empty name="field.value"}
+                <img src="__PUBLIC__/img/default-avatar.jpeg">
+            {else /} 
+                <a href="{$field.value|cdn_img_url}" title="点击查看大图">
+                    <img src="{$field.value|cdn_img_url}">
+                </a>
+                 
+            {/empty}
+            </div>
+
+        </div>
+
+        </div>
+
+    </div>
+    {present name="webuploader"}{if condition="$webuploader"}
+        <link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+        <script type="text/javascript" charset="utf-8" src="__LIBS__/webuploader/js/webuploader.min.js"></script>
+    {/if}{/present}
+    
+    <script>
+        //本地上传(分开写为了好控制)
+        $(function () {
+            var uploader_{$field.name}= WebUploader.create({
+                // 选完文件后，是否自动上传。
+                auto: true,
+                duplicate: true,// 同一文件是否可以重复上传
+                // swf文件路径
+                swf: '__PUBLIC__/libs/webuploader/Uploader.swf',
+                // 文件接收服务端。
+                server: "{:url('admin/Upload/uploadAvatar',['uid'=>$field['options']['uid']])}",
+                //验证文件总数量, 超出则不允许加入队列
+                fileNumLimit: 5,
+                // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+                resize: false, 
+                // 验证单个文件大小是否超出限制, 超出则不允许加入队列 
+                fileSingleSizeLimit:{php}echo intval(config('attachment_options.image_max_size'))? : 2*1024*1024;{/php},  
+                // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+
+                //选择文件的按钮
+                pick: '#upload_avatar_{$field.name}',
+                // 只允许选择图片文件
+                accept:{title:'Images',extensions:'gif,jpg,jpeg,bmp,png',mimeTypes:'image/*'}
+            });
+            uploader_{$field.name}.on('fileQueued', function (file) {
+                uploader_{$field.name}.upload();
+            });
+            /*上传成功**/
+            uploader_{$field.name}.on('uploadSuccess', function (file, result) {
+                if (result.code==1) {
+                    var avatar=result.data;
+                    $("[name='{$field.id}']").val(avatar.path);
+                    $("[name='{$field.id}']").parent().find('.popup-avatar').html(
+                              '<div class="each"><i data-avatarid="{$field.name}" class="removeAvatar fa fa-times-circle remove-attachment"></i><a href="'+avatar.url+'" title="点击查看大图片"><img src="'+avatar.url+'"></a><div class="text-center opacity del_btn" ></div></div>'
+                        );
+
+                    uploader_{$field.name}.reset();
+                } else {
+                    updateAlert(result.msg);
+                    setTimeout(function () {
+                        $(this).removeClass('disabled').prop('disabled', false);
+                    }, 1500);
+                }
+            });
+            //移除头像
+            $('body').on('click','.removeAvatar', function() {
+                     var avatarid=$(this).attr('data-avatarid');
+                    $("#"+avatarid).val('');
+                    $('.popup-avatar').html('');
+                })
+        })
+
+        </script>
+    </div>

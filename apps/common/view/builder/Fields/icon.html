@@ -1,0 +1,31 @@
+{php}
+  $iconpicker=1;
+  $icon_id = $field['name'];
+{/php}
+<link type="text/css" rel="stylesheet" href="__LIBS__/fontawesome-iconpicker/css/fontawesome-iconpicker.min.css"/>
+<style type="text/css">
+  .iconpicker-popover.popover{width: 396px;}
+</style>
+<div class="form-group item_{$field.name} {$field.extra_class|default=''}">
+	<label for="{$field.name}" class="col-md-2 control-label">{$field.title}</label>
+	 <div class="col-md-4">
+	 			<div class="input-group input" id="{$field.name}-picker" >
+            
+            <input type="text" class="form-control iconpicker" name="{$field.name}" id="{$field.name}" value="{present name="field.value"}{$field.value}{/present}" {$field.extra_attr|default=''}>
+            <span class="input-group-btn">
+                <button class="btn btn-raised btn-default" type="button" ><i class="fa fa-info-circle"></i> </button>
+            </span>
+        </div>
+  </div>
+ <div class="col-md-5 help-block"><i class="fa fa-info-circle color-info1"></i> {$field.description|default='请选择一个图标'}</div>
+</div>
+
+<script type="text/javascript" src="__LIBS__/fontawesome-iconpicker/js/fontawesome-iconpicker.min.js?v=1.0.1"></script>
+
+<script type="text/javascript">
+  $('.iconpicker').iconpicker({
+    title: '请选择一个图标',
+    component: '.input-group-btn',
+    placement:'right',
+  });
+</script>

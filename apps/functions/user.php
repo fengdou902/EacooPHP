@@ -8,10 +8,9 @@
 // +----------------------------------------------------------------------
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
-use app\common\model\User;
-use app\admin\model\Action;
-use app\admin\model\AuthGroupAccess;
-use app\common\model\ActionLog;
+use app\common\logic\User as UserLogic;
+use app\admin\logic\AuthGroupAccess as AuthGroupAccessLogic;
+use app\common\logic\Action as ActionLogic;
 
 /**
  * 检测用户是否登录
@@ -19,7 +18,7 @@ use app\common\model\ActionLog;
  * @author 心云间、凝听 <981248356@qq.com>
  */
 function is_login() {
-	return User::isLogin();
+	return UserLogic::isLogin();
 }
 
 /**
@@ -47,7 +46,7 @@ function is_administrator($uid = null) {
  */
 function get_administrators()
 {
-    return AuthGroupAccess::groupUserUids(1);
+    return AuthGroupAccessLogic::groupUserUids(1);
 }
 
 /**
@@ -73,7 +72,7 @@ function get_user_groups($uid='')
  */
 function get_user_info($uid) {
     if ($uid>0) {
-        return User::info($uid);
+        return UserLogic::info($uid);
     }
     return false;
     
@@ -89,7 +88,7 @@ function get_user_info($uid) {
 function get_nickname($uid=0)
 {
     if ($uid>0) {
-        return User::where('uid',$uid)->value('nickname');
+        return UserLogic::where('uid',$uid)->value('nickname');
     }
     return false;
 }
@@ -124,11 +123,11 @@ function data_auth_sign($data)
 function action_log($action_id = 0, $uid = 0, $data = [], $remark = '')
 {
     if ($uid >0 ) {
-        $action_log_model = new ActionLog;
+        $action_log_model = new ActionLogic;
         if (is_array($data)) {
             $data = json_encode($data);
         }
         // 保存日志
-        return $res = $action_log_model->record($action_id ,$uid,$data,$remark);
+        return $res = $action_log_model->recordLog($action_id ,$uid,$data,$remark);
     }
 }

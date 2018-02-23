@@ -1,0 +1,116 @@
+{php}
+    $webuploader=1;
+    if (strpos($field['name'],'[')) {
+        $field['id']=str_replace(']','',str_replace('[','',$field['name']));
+      }else{
+        $field['id']=$field['name'];
+      }
+{/php}
+    <script type="text/javascript">
+        var ZjfAttachmentOptions_{$field.id} = {
+            ismore:'multiple',
+        };
+    </script>
+    <div class="form-group controls item_{$field.name} {$field.extra_class|default=''}">
+    <label for="{$field.name}" class="col-md-2 control-label">{$field.title|htmlspecialchars}</label>
+    <div class="col-md-6" style="padding-bottom: 5px;"><span class="btn btn-info ml-10 btn-sm" data-toggle="modal" data-target="#attachmentModal"><i class="fa fa-file"></i> 选择多文件</span>{notempty name="field.description"}<span class="color-red f12 ml-10">{$field.description}</span>{/notempty}
+    <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field['value']}"/>
+    </div>
+    <div id="{$field.name}-gallery-box" class="uploader-list col-md-12 col-md-offset-3 img-box {notempty name="field.value"}gallery-box-bg{/notempty}">
+        
+           {notempty name="field.value"}
+            {php}
+                if (is_array($field['value'])) {
+                    $images = $field['value'];
+                    $input_value = implode(',', $field['value']);
+                } else {
+                    $images = explode(',',$field['value']);
+                    $input_value = $field['value'];
+                }
+            {/php}
+            {foreach name="images" item="img"}
+                {notempty name="img"}
+                    <div class="col-md-3">
+                        <div class="thumbnail">
+                        <i class="fa fa-times-circle remove-attachment"></i>
+                        <img class="img" src="{$img|get_image=###}" data-id="{$img}">
+                        </div>
+                    </div>
+                {/notempty}
+            {/foreach}
+            {/notempty}
+        </div>
+            <!--附件列表模态框-->
+            <div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-labelledby="attachmentModalLabel">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title tc">图片选择器</h4>
+                      </div>
+                      <div class="modal-body">
+                        {:widget('common/attachment/lists',array($field,'file','multiple',array('meta_title'=>'文件选择器')))}
+                      </div>
+                    </div><!-- /.modal-content -->
+                  </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+        </div>
+        {present name="webuploader"}{if condition="$webuploader"}
+        <link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+        <script type="text/javascript" charset="utf-8" src="__LIBS__/webuploader/js/webuploader.min.js"></script>
+    {/if}{/present}
+        <script>
+        //本地上传(分开写为了好控制)
+        $(function () {
+                var uploader_{$field.name}= WebUploader.create({
+                    // 选完文件后，是否自动上传。
+                    auto: true,
+                    duplicate: true,// 同一文件是否可以重复上传
+                    // swf文件路径
+                    swf: '__PUBLIC__/lib/webuploader/Uploader.swf',
+                    // 文件接收服务端。
+                    server: "{:url('Admin/Upload/upload',['session_id'=>session_id(),'type'=>'file'])}",
+                    //验证文件总数量, 超出则不允许加入队列
+                    fileNumLimit: 5,
+                    // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+                    resize: false, 
+                    // 验证单个文件大小是否超出限制, 超出则不允许加入队列 
+                    fileSingleSizeLimit:{php}echo intval(config('attachment_options.file_max_size')) ? : 50*1024*1024;{/php},  
+                    // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+
+                    //选择文件的按钮
+                    pick: '#upload_media_attachment_{$field.name}',
+                    // 只允许选择图片文件
+                    accept:{title:'Files',extensions:'doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,bz2,7z'}
+                });
+                uploader_{$field.name}.on('fileQueued', function (file) {
+                    uploader_{$field.name}.upload();
+                });
+                /*上传成功**/
+                uploader_{$field.name}.on('uploadSuccess', function (file, data) {
+                    if (data.status) {
+                        var append_string='<li class="col-sm-6 col-md-3 col-lg-3 mb-10" data-id="'+data.id+'" data-src="'+ _ROOT_+data.path+'"><div class="box-style media-li"><div class="tc" style="height:100px;line-height:100px;"><img src="'+ _ROOT_+data.path+'" alt="" style="max-width:100%;max-height:100%;"></div><div class="f13 mt-5 showAttachmentInfo" data-id="'+data.id+'"><a href="" class="color-6" data-toggle="modal" data-target="#attachmentInfoModal"><span class="w80 disline oh nowarp">'+data.name+'</span><span data-toggle="tooltip" data-placement="bottom" data-original-title="新" class="right color-icon show-media-info"><i class="fa fa-info-circle color-success"></i></span></a></div></div><div class="cover cancelSelectImage" data-id="'+data.id+'" style="display: none;"></div></li>';
+                        $(".attachment-content").prepend(append_string);
+
+                        uploader_{$field.name}.reset();
+                    } else {
+                        updateAlert(data.info);
+                        setTimeout(function () {
+                            $(this).removeClass('disabled').prop('disabled', false);
+                        }, 1500);
+                    }
+                });
+
+                // 删除图片
+                $('body').on('click', '#{$field.name}-gallery-box .remove-attachment', function() {
+                    var ready_for_remove_id = $(this).closest('.thumbnail').find('img').attr('data-id'); //获取待删除的图片ID
+                    if (!ready_for_remove_id) {
+                        updateAlert('错误', 'danger');
+                    }
+                    var current_picture_ids = $('#{$field.name}').val().split(","); //获取当前图集以逗号分隔的ID并转换成数组
+                    current_picture_ids.splice($.inArray(ready_for_remove_id,current_picture_ids),1); //从数组中删除待删除的图片ID
+                    $('#{$field.name}').val(current_picture_ids.join(',')) //删除后覆盖原input的值
+                    $(this).closest('.col-md-3').remove(); //删除图片预览图
+                });
+            })
+        </script>

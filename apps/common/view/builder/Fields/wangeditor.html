@@ -1,0 +1,16 @@
+{php}
+      if (strpos($field['name'],'[')) {
+        $field['id']=str_replace(']','',str_replace('[','',$field['name']));
+      }else{
+      	$field['id']=$field['name'];
+      }
+      $field = array_merge($field,$field['options']);
+      unset($field['options']);
+{/php}
+<div class="form-group item_{$field.name} {$field.extra_class|default=''}">
+    <label for="{$field.name}" class="col-md-2 control-label">{$field.title}</label>
+    <div class="col-md-10">
+    	{:widget('common/editor/wangeditor',[$field])}
+      {notempty name="field.description"}<p class="help-block">{$field.description}</p>{/notempty}
+    </div>
+</div>

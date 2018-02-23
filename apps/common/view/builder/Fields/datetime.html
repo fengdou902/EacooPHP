@@ -1,0 +1,28 @@
+    {php}
+        $importDatetimePicker = 1;
+          if (strpos($field['name'],'[')) {
+            $field['id']=str_replace(']','',str_replace('[','',$field['name']));
+          }else{
+            $field['id']=$field['name'];
+          }
+    {/php}
+    <div class="form-group item_{$field.id} {$field.extra_class|default=''}">
+        <label for="{$field.id}"  class="col-md-2 control-label">{$field.title}</label>
+        <div class="col-md-4">
+            <input type="text" id="{$field.id}" class="form-control input time" name="{$field.name}" value="{notempty name='field.value'}{$field.value}{/notempty}" {$field.extra_attr|default=''}>
+            <script type="text/javascript">
+                $(function(){
+                    $('#{$field.id}').datetimepicker({
+                        format      : 'yyyy-mm-dd hh:ii:ss',
+                        autoclose   : true,
+                        todayBtn    : 'linked',
+                        language    : 'zh-CN',
+                        fontAwesome : true
+                    });
+                });
+            </script>
+        </div>
+        {notempty name="field.description"}<div class="col-md-5 help-block"><i class="fa fa-info-circle color-info1"></i> {$field.description}</div>{/notempty}
+    </div>
+    <link href="__LIBS__/datetimepicker/datetimepicker.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="__LIBS__/datetimepicker/datetimepicker.min.js"></script>

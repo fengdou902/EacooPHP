@@ -1,0 +1,38 @@
+
+    {php}
+          if (strpos($field['name'],'[')) {
+            $field['id']=str_replace(']','',str_replace('[','',$field['name']));
+          } else{
+            $field['id']=$field['name'];
+          }
+          $path_type = isset($field['options']['path_type'])? $field['options']['path_type']:'picture';
+    {/php}
+
+    <div class="form-group controls item_{$field.id} {$field.extra_class|default=''}">
+    <label for="{$field.id}" class="col-md-2 control-label">{$field.title}</label>
+        <div class="col-md-6" style="padding-bottom: 5px;padding-left: 5px;">
+            
+            <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field.value|default=''}"/>
+            <div>
+                <span class="btn btn-info ml-10 mt-10 btn-sm" data-url="{:url('admin/Upload/attachmentLayer',['input_id_name'=>$field['id'],'path_type'=>$path_type,'select_type'=>'single'])}" onclick="openAttachmentLayer(this);"><i class="fa fa-file-image-o"></i> 选择图片</span>
+            </div>
+            <div class="upload-img-box tc popup-gallery fl img-thumbnail pr ">
+                <div class="each">
+                 
+                {empty name="field.value"}
+                    <img src="{php} echo get_image(0);{/php}">
+                {else /} 
+                    <i onclick="admin_image.removeImage($(this),'{$field.value}')" class="fa fa-times-circle remove-attachment"></i>
+                    <a href="{$field.value|get_image}" title="点击查看大图">
+                        <img src="{$field.value|get_image}">
+                    </a>
+                     
+                {/empty}
+                </div>
+
+            </div>
+            {notempty name="field.description"}<div class="help-block col-md-6 pl-10 fn">{$field.description}</div>{/notempty}
+            
+        </div>
+
+    </div>

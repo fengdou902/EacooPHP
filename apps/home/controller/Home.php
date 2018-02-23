@@ -11,7 +11,6 @@
 namespace app\home\controller;
 use app\common\controller\Base;
 use think\Loader;
-use app\common\model\Nav as NavModel;
 class Home extends Base {
 
      function _initialize() {
@@ -23,7 +22,7 @@ class Home extends Base {
 
         $this->currentUser = session('user_login_auth');
         $this->assign('current_user', $this->currentUser);
-        $this->assign('header_menus',NavModel::getNavigationMenus('header'));
+        $this->assign('header_menus',logic('Nav')->getNavigationMenus('header'));
         $this->assign('_theme_public_', config('theme_public'));  // 页面公共继承模版
         $this->assign('_theme_public_layout', config('theme_public').'layout.html');  // 页面公共继承模版
     }

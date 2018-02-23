@@ -1,20 +1,16 @@
-{extend name="$_admin_public_iframe_base_"/}
+{extend name="$_admin_public_layerbase_"/}
 {block name="style"}
 
 {/block}
 {block name="main"}
  <div class="col-md-11" style="padding: 20px;border-radius:3px;">      
-    <form action="{$post_url}" method="post" class="uninstall-form form-horizontal">
+    <form action="{$post_url}" method="post" class="app-form form-horizontal">
           <fieldset>
+            <input type="hidden" id="action_url" name="action_url" value="{$post_url}">
         {volist name="fieldList" id="field" key="k"}
 
-         {:action('admin/AdminForm/fieldType',['field'=>$field],'builder')}
+         {:action('common/BuilderForm/fieldType',['field'=>$field],'builder')}
         {/volist}
-          <div class="form-group">
-              <div class="col-md-10 tc">
-                <button type="button" class="btn btn-success btn-sm btn-block" id="go-uninstall">提交</button>
-            </div>
-        </div>
          </fieldset>
     </form>
 
@@ -22,24 +18,5 @@
 {/block}
 
 {block name="script"}
-<script type="text/javascript">
-  $('body').on('click','#go-uninstall', function() {
-       $.ajax({
-          type: 'POST',
-          url: '{$post_url}',
-          data: $(".uninstall-form").serialize(),
-          beforeSend:function(){
-            //layer.load(2,{shade: [0.1,'#fff']});
-          },
-          success:function(result){
-            if(result.code==1){
-              javascript:window.parent.uninstallCallBack(result);
-            }else{
-              alert(result.msg);
-            }
 
-          }
-      });
-   });
-</script>
 {/block}

@@ -10,9 +10,6 @@
 // +----------------------------------------------------------------------
 namespace app\home\controller;
 
-use app\common\model\User;
-use app\common\controller\Upload as UploadService;
-
 class Upload extends Home {
 
     function _initialize()
@@ -23,10 +20,14 @@ class Upload extends Home {
         }
     }
 
-    /* 文件上传 */
+    /**
+     * 文件上传
+     * @return [type] [description]
+     * @date   2018-02-16
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
     public function upload() {
-        $uploadService = new UploadService;
-        $return = $uploadService->upload();
+        $return = logic('common/Upload')->upload();
         return json($return);
     }
     

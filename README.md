@@ -1,4 +1,4 @@
-EacooPHP v1.1.2
+EacooPHP v1.2.0
 ===============
 ### 介绍
 EacooPHP是基于ThinkPHP5.0.11开发的一套轻量级WEB产品开发框架，追求高效，简单，灵活。
@@ -24,19 +24,13 @@ EacooPHP是基于ThinkPHP5.0.11开发的一套轻量级WEB产品开发框架，�
 
 ### 前端组件
 artTemplate(JS模版引擎),artDialog(弹窗),datetimepicker(日期),echarts(图标),colorpicker(颜色选择器),fastclick,iCheck(复选框美化),ieonly,imgcutter,jquery-repeater,lazyload(延迟加载),select2,superslide,ueditor,wangeditor,webuploader,x-editable
-### 文档
 
-地址：[https://www.kancloud.cn/youpzt/eacoo](https://www.kancloud.cn/youpzt/eacoo)
-
+官网：[http://www.eacoo123.com](http://www.eacoo123.com)
+QQ群: 436491685
 ### 演示地址
 [http://demo1.eacoo123.com/admin](http://demo1.eacoo123.com/admin)  
 账号：admin  
 密码：123456 
-
-### 交流反馈
-官方QQ群: 436491685  
-交流社区：[http://forum.eacoo123.com](http://forum.eacoo123.com)  
-邮件: postmaster@eacoo123.com  
 
 ### 项目地址
 (记得给项目加个star哦)  
@@ -49,5 +43,5 @@ GitHub：[https://github.com/fengdou902/EacooPHP.git](https://github.com/fengdou
 ### 版权申明
 EacooPHP遵循Apache2开源协议发布，并提供免费使用。  
 本项目包含的第三方源码和二进制文件之版权信息另行标注。  
-版权所有Copyright © 2016-2017 by EacooPHP (http://www.eacoo123.com)  
+版权所有Copyright © 2017-2018 by EacooPHP (http://www.eacoo123.com)  
 All rights reserved。

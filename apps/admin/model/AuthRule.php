@@ -24,9 +24,17 @@ class AuthRule extends Base
     // protected $type       = [
     //     'birthday' => 'timestamp',
     // ];
+    
+    //获取显示位置
+    protected function getPositionTextAttr($value, $data){
+        $text = ['left'=>'侧边栏','top'=>'头部'];
+        return $text[$data['position']];
+    }
 
-    // 定义时间戳字段名
-    protected $createTime = '';
-    //protected $updateTime = '';
+    //获取父级菜单
+    protected function getParentMenuAttr($value, $data){
+        $parent_menu = $this->where(['id'=>$data['pid']])->value('title');
+        return $parent_menu;
+    }
 
 }

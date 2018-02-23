@@ -15,10 +15,6 @@ use eacoo\EacooAccredit;
 
 class Dashboard extends Admin
 {
-    function _initialize()
-    {
-        parent::_initialize();
-    }
 
     /**
      * 仪表盘
@@ -54,22 +50,6 @@ class Dashboard extends Admin
         ];
         $this->assign('server_info', $server_info);
 
-        $user_list = db('users')->where(['status'=>1])->field('uid,username,nickname,avatar,reg_time')->limit(12)->order('reg_time desc')->select();
-        $this->assign('user_list',$user_list);
-        //用户数据分析
-        $result = [
-            'data'=>[10,26,21,35,43,45,50],
-            'time'=>[
-                date("m-d",strtotime("-7 day")),
-                date("m-d",strtotime("-6 day")),
-                date("m-d",strtotime("-5 day")),
-                date("m-d",strtotime("-4 day")),
-                date("m-d",strtotime("-3 day")),
-                date("m-d",strtotime("-2 day")),
-                date("m-d",strtotime("-1 day")),
-                ]
-            ];
-        $this->assign('user_result',json_encode($result));
         $this->assign('eacoo_news_list',$this->getEacooNews());
         return $this->fetch();
     }
@@ -84,7 +64,7 @@ class Dashboard extends Admin
     public function getEacooNews()
     {
         $data = [
-            'access_token'=>input('param.access_token')
+            'access_token'=>$this->request->param('access_token')
         ];
         $result = EacooAccredit::getEacooNews($data);
         return $result;

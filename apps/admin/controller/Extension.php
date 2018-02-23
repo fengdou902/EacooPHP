@@ -369,7 +369,7 @@ class Extension extends Admin {
             $_static_path = PUBLIC_PATH.'static/'.$type_path.$name;
             $static_path = $this->appsPath.$name.'/static';
             if (is_dir($_static_path)) {
-                if(is_really_writable(PUBLIC_PATH.'static/'.$type_path) && is_really_writable($this->appsPath.$name)){
+                if(is_writable(PUBLIC_PATH.'static/'.$type_path) && is_writable($this->appsPath.$name)){
                     if (!rename($_static_path,$static_path)) {
                         setAppLog('静态资源移动失败：'.$static_path.'移动到'.$_static_path,'error');
                     } 
@@ -494,12 +494,12 @@ class Extension extends Admin {
             } elseif ($this->type=='module') {
                 $type_path = '';
             }
-            if(!is_really_writable(PUBLIC_PATH.'static'.$type_path) || !is_really_writable($static_path)){
+            if(!is_writable(PUBLIC_PATH.'static'.$type_path) || !is_writable($static_path)){
                 $error_msg = '';
-                if (!is_really_writable(PUBLIC_PATH.'static'.$type_path)) {
+                if (!is_writable(PUBLIC_PATH.'static'.$type_path)) {
                     $error_msg.='public/static'.$type_path;
                 }
-                if (!is_really_writable($static_path)) {
+                if (!is_writable($static_path)) {
                     $error_msg.=','.$static_path;
                 }
                 throw new \Exception($error_msg.'目录操作权限不足');
@@ -1042,7 +1042,7 @@ class Extension extends Admin {
                 $logo = 'static/'.$type_path.$name.'/logo.'.$ext;
                 $logo_file = PUBLIC_PATH.'static/'.$type_path.$name.'/logo.'.$ext;
                 if (is_file($logo)) {
-                    if (is_really_writable(PUBLIC_PATH.$logo)) {
+                    if (is_writable(PUBLIC_PATH.$logo)) {
                         if (copy($logo_file,PUBLIC_PATH.$tmp_logo)){
                             $logo = $tmp_logo;
                         }
@@ -1060,7 +1060,7 @@ class Extension extends Admin {
                         $original_logo_file = THEME_PATH.$name.'/cover.'.$ext;
                     }
                     if (is_file($original_logo_file)) {
-                        if (is_really_writable(PUBLIC_PATH.$tmp_logo_dir)) {
+                        if (is_writable(PUBLIC_PATH.$tmp_logo_dir)) {
                             if (copy($original_logo_file,PUBLIC_PATH.$tmp_logo)){
                                 return '/'.$tmp_logo;
                             }

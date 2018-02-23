@@ -1,0 +1,70 @@
+    {php}
+          $webuploader=1;
+          if (strpos($field['name'],'[')) {
+            $field['id']=str_replace(']','',str_replace('[','',$field['name']));
+          } else {
+            $field['id']=$field['name'];
+          }
+          $path_type = isset($field['options']['path_type'])? $field['options']['path_type'] : 'attachment';
+          $is_sql    = isset($field['options']['is_sql'])? $field['options']['is_sql'] : 'close';
+    {/php}
+    <div class="form-group item_{$field.id} {$field.extra_class|default=''}">
+        <label for="{$field.id}" class="col-md-2 control-label mr-15">{$field.title}</label>
+
+            <div class="input-group col-md-5">
+                <input class="attach form-control" type="text" id="{$field.id}" name="{$field.name}" value="{$field.value|default=''}"/>
+                <span class="input-group-btn">
+                    <button type="button" id="upload_file_{$field.id}" class="btn btn-info btn-sm"><i class="fa fa-upload"></i> 选择文件</button>
+                </span>
+
+            </div>
+            {notempty name="field.description"}<div class="help-block col-md-4 col-md-offset-2" style="padding-left: 20px;">{$field.description}</div>{/notempty}
+            
+
+    </div>
+    {present name="webuploader"}{if condition="$webuploader"}
+        <link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+        <script type="text/javascript" charset="utf-8" src="__LIBS__/webuploader/js/webuploader.min.js"></script>
+    {/if}{/present}
+    <script>
+    //本地上传(分开写为了好控制)
+    $(function () {
+        var uploader_{$field.id}= WebUploader.create({
+            // 选完文件后，是否自动上传。
+            auto: true,
+            duplicate: true,// 同一文件是否可以重复上传
+            // swf文件路径
+            swf: '__PUBLIC__/libs/webuploader/Uploader.swf',
+            // 文件接收服务端。
+            server: "{:url('admin/Upload/upload',['path_type'=>$path_type,'type'=>'file','is_sql'=>$is_sql])}",
+            //验证文件总数量, 超出则不允许加入队列
+            fileNumLimit: 5,
+            // 如果此选项为false, 则图片在上传前不进行压缩
+            compress: false, 
+            // 验证单个文件大小是否超出限制, 超出则不允许加入队列 
+            fileSingleSizeLimit:{php}echo intval(config('attachment_options.file_max_size')) ? : 50*1024*1024;{/php},  
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+
+            //选择文件的按钮
+            pick: '#upload_file_{$field.id}',
+            // 只允许选择图片文件
+            accept:{title:'File',extensions:'{:config("attachment_options.file_exts")}',mimeTypes:''}
+        });
+        uploader_{$field.id}.on('fileQueued', function (file) {
+            uploader_{$field.id}.upload();
+        });
+        /*上传成功**/
+        uploader_{$field.id}.on('uploadSuccess', function (file, data) {
+            if (data.code==1) {
+                data = data.data;
+                $("#{$field.id}").val({eq name="is_sql" value="on"}data.id{else/}data.path{/eq});
+                uploader_{$field.id}.reset();
+            } else {
+                updateAlert(data.msg);
+                // setTimeout(function () {
+                //     $(this).removeClass('disabled').prop('disabled', false);
+                // }, 1500);
+            }
+        });
+  })
+    </script>

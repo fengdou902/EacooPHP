@@ -1,0 +1,8 @@
+
+<div class="form-group item_{$field.name} {$field.extra_class|default=''}">
+<label for="{$field.name}" class="col-md-2 control-label">{$field.title}</label>
+<div class="col-md-6">
+	<textarea name="{$field.name}" class="form-control" length="120" rows='5' {$field.extra_attr|default=''}>{present name="field.value"}{$field.value|htmlspecialchars}{/present}</textarea>
+    {notempty name="field.description"}<p class="help-block"><i class="fa fa-info-circle color-info1"></i> {$field.description}</p>{/notempty}
+ </div>
+</div>

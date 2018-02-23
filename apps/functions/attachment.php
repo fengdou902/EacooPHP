@@ -9,7 +9,7 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 
-use app\common\model\Attachment;
+use app\common\logic\Attachment as AttachmentLogic;
 
 if (!function_exists('mkdirs'))
 {
@@ -94,53 +94,6 @@ if (!function_exists('copydirs'))
         }
     }
 
-}
-/**
- * 判断文件的真实可写性(文件/目录 是否可写（取代系统自带的 is_writeable 函数）)
- *
- * is_writable() returns TRUE on Windows servers when you really can't write to
- * the file, based on the read-only attribute.  is_writable() is also unreliable
- * on Unix servers if safe_mode is on.
- *
- * @access    private
- * @return    void
- */
-if ( ! function_exists('is_really_writable'))
-{
-    function is_really_writable($file)
-    {
-        return is_writable($file);//还得用这个
-
-        // If we're on a Unix server with safe_mode off we call is_writable
-        if (DIRECTORY_SEPARATOR == '/' AND @ini_get("safe_mode") == FALSE)
-        {
-            return is_writable($file);
-        }
- 
-        // For windows servers and safe_mode "on" installations we'll actually
-        // write a file then read it.  Bah...
-        if (is_dir($file))
-        {
-            $file = rtrim($file, '/').'/'.md5(mt_rand(1,100).mt_rand(1,100));
- 
-            if (($fp = @fopen($file, FOPEN_WRITE_CREATE)) === FALSE)
-            {
-                return FALSE;
-            }
- 
-            fclose($fp);
-            @chmod($file, DIR_WRITE_MODE);
-            @unlink($file);
-            return TRUE;
-        }
-        elseif ( ! is_file($file) OR ($fp = @fopen($file, FOPEN_WRITE_CREATE)) === FALSE)
-        {
-            return FALSE;
-        }
- 
-        fclose($fp);
-        return TRUE;
-    }
 }
 
 /**
@@ -353,7 +306,7 @@ function term_media_count($term_id,$path_type='picture'){
         $map['id']        = ['in',$object_ids];
         
         $map['path_type'] = ['in',$path_type];//过滤目录
-        $count            = Attachment::where($map)->count();
+        $count            = model('Attachment')->where($map)->count();
     }
     return isset($count) && $count ? $count:0;
 }
@@ -409,8 +362,8 @@ function get_thumb_image($path = '', $style='small')
  */
 function get_attachment_info($id) {
     if ((int)$id) {
-        $attachment_info = Attachment::info($id);
-        return $attachment_info;
+        $info = AttachmentLogic::info($id);
+        return $info;
     }
     return false;
 }

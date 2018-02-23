@@ -8,130 +8,75 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
-use app\common\controller\Base;
 
-use app\common\model\User;
-use think\captcha\Captcha;
-use think\Url;
-
-class Index extends Base
+class Index extends Admin
 {
-    public function _initialize() {
-        parent::_initialize();
-
-        if (SERVER_SOFTWARE_TYPE=='nginx') {
-            Url::root('/admin.php?s=');
-        } else{
-            Url::root('/admin.php');
-        }
-    }
 
     /**
-     * 后台登录
-     */
-    public function login(){ 
-
-        if(session('user_login_auth')) $this->redirect('admin/dashboard/index');
-
-        if (IS_POST) {
-          $data = input('post.');
-          $result = $this->validate($data,[
-                                        ['username','require|min:1','登录名不能为空|登录名格式不正确'],
-                                        ['password','require|length:6,32','请填写密码|密码格式不正确']
-                                    ]);
-          if(true !== $result){
-              // 验证失败 输出错误信息
-              $this->error($result);
-              exit;
-          }
-
-          $login = User::where(['username|email|mobile' => $data['username'],'status'=>1])->field('allow_admin')->find();
-
-          if (!empty($login)) {
-              if ($login['allow_admin']!=1) {
-                $this->error('该用户不允许登录后台');
-              }
-           } else{
-              $this->error('该用户不存在或禁用');
-           }
-
-           $captcha = new Captcha();
-            if(!$captcha->check($data['captcha'],1)){
-                $this->error('验证码错误');
-            }
-            $rememberme = $data['rememberme']==1 ? true : false;
-
-            $result = User::login($data['username'],$data['password'], $rememberme);
-            if ($result['code']==1) {
-                $uid = !empty($result['data']['uid']) ? $result['data']['uid']:0;
-                $this->success('登录成功！',url('admin/dashboard/index'));
-
-            } elseif ($result['code']==0) {
-                $this->error($result['msg']);
-            } else {
-                $this->logout();
-            }
-
-        } else{
-            return $this->fetch('public/login');
-        }
-    }
-
-    /**
-     * 退出登录
+     * 首页
      * @return [type] [description]
+     * @date   2018-02-05
+     * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function logout(){
-        session(null);
-        cookie(null,config('cookie.prefix'));
-        $this->redirect('admin/index/login');
+    public function index()
+    {
+        $this->assign('meta_title','首页');
+        $this->assign('current_message_count',0);//当前消息数量
+
+        return $this->fetch();
     }
-    
+
     /**
      * 清理缓存
      * @return [type] [description]
      */
-    public function delcache() { 
+    public function delCache() { 
+        //防止认证信息被清理
         $eacoo_identification = cache('eacoo_identification');
-         header("Content-type: text/html; charset=utf-8");
+        header("Content-type: text/html; charset=utf-8");
         //清文件缓存
         $dirs = [ROOT_PATH.'runtime/'];
         @mkdir('runtime',0777,true);
         //清理缓存
         foreach($dirs as $dir) {
-            $this->rmdirr($dir);
+            rmdirs($dir);
         }
         cache('admin_sidebar_menus_'.is_login(),null);//清空后台菜单缓存
         cache('DB_CONFIG_DATA',null);
         cache('eacoo_identification',$eacoo_identification);
         $this->success('清除缓存成功！');
-     } 
+    } 
 
-     //图片验证码
-    public function verify_img($id = 1){
-        $captcha = new Captcha((array)config('captcha'));
-        return $captcha->entry($id);
+    /**
+     * 获取侧边栏菜单
+     * @return [type] [description]
+     * @date   2018-02-12
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function getSidebarMenus()
+    {
+        try {
+            $result = logic('index')->getAdminSidebarMenu();
+            return json(['code'=>1,'msg'=>'获取侧边栏菜单成功','data'=>$result]);
+        } catch (\Exception $e) {
+            return json(['code'=>$e->getCode(),'msg'=>$e->getMessage(),'data'=>[]]);
+        }
     }
-    /////////////下面是处理方法
+
+    /**
+     * 获取顶部菜单
+     * @return [type] [description]
+     * @date   2018-02-15
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function getTopMenus()
+    {
+        try {
+            $result = logic('index')->getAdminTopMenu();
+            return json(['code'=>1,'msg'=>'获取顶部收藏菜单成功','data'=>$result]);
+        } catch (\Exception $e) {
+            return json(['code'=>$e->getCode(),'msg'=>$e->getMessage(),'data'=>[]]);
+        }
         
-     public function rmdirr($dirname) {
-          if (!file_exists($dirname)) {
-                return false;
-          }
-          if (is_file($dirname) || is_link($dirname)) {
-                return unlink($dirname);
-          }
-          $dir = dir($dirname);
-          if($dir){
-               while (false !== $entry = $dir->read()) {
-                if ($entry == '.' || $entry == '..') {
-                 continue;
-                }
-                //递归
-                $this->rmdirr($dirname . DIRECTORY_SEPARATOR . $entry);
-               }
-          }
-          $dir->close();
-          return rmdir($dirname);
     }
 }

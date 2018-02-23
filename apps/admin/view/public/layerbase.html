@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{$meta_title|default=''}|{:config('web_site_title')}后台管理</title>   
+    <link type="text/css" rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">-->
+   {load href="__ADMIN_CSS__/AdminLTE.min.css,__ADMIN_CSS__/_all-skins.min.css,__PUBLIC__/css/base.css,__LIBS__/iCheck/all.css" /}
+   <link type="text/css" href="__ADMIN_CSS__/style.css?v=1.0.0" rel="stylesheet" >
+   {block name="style"}{/block}
+    <script type="text/javascript" src="__PUBLIC__/js/jquery-1.12.4.min.js"></script>
+    <!-- <script type="text/javascript" src="__PUBLIC__/js/jquery-3.2.1.min.js"></script> -->  
+    <script type="text/javascript">
+        var EacooPHP = window.EacooPHP = {
+            "url_model":2,
+            "root":'__ROOT__',
+            "root_domain": "{$Request.domain}/admin.php", //当前网站地址
+            "static": "__STATIC__", //静态资源地址
+            "public": "__PUBLIC__", //项目公共目录地址
+            "uploads_url" :'/uploads/',
+            "upload_driver":"{:config('attachment_options.driver')}",
+            "cdn_domain":"{:get_cdn_domain()}",
+            "eacoo_api_url":"{:config('eacoo_api_url')}",
+        }
+    </script>
+
+     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body class="hold-transition skin-blue">
+<div class="layer-wrapper">
+  <section class="content" style="margin: 0 10px;">
+    <div class="row">
+    {block name="main"}{/block}
+    </div>
+  </section>
+</div>
+<!-- <script type="text/javascript" src="__PUBLIC__/js/bootstrap.min.js"></script> -->
+<script type="text/javascript" src="__LIBS__/iCheck/icheck.min.js"></script>
+<script type="text/javascript" src="__LIBS__/layer/layer.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.toaster.js"></script>
+<script type="text/javascript" src="__ADMIN_JS__/main.js" ></script>
+{block name="script"}{/block}
+<!-- <script type="text/javascript" src="__PUBLIC__/js/jquery.pjax.js" ></script> -->
+
+<script type="text/javascript">
+$(function(){
+  /*复选框操作*/
+   $('input').iCheck({
+      checkboxClass:'icheckbox_minimal-blue',
+      radioClass:'iradio_minimal-blue',
+      increaseArea:'20%' // optional
+    });
+    //Enable check and uncheck all functionality
+    $(".checkbox-toggle,.check-all").click(function () {
+      var clicks = $(this).data('clicks');
+      if (clicks) {
+        //Uncheck all checkboxes
+        $("input[type='checkbox']").iCheck("uncheck");
+        $(".fa", this).removeClass("fa-check-square-o").addClass('fa-square-o');
+      } else {
+        //Check all checkboxes
+        $("input[type='checkbox']").iCheck("check");
+        $(".fa", this).removeClass("fa-square-o").addClass('fa-check-square-o');
+      }
+      $(this).data("clicks", !clicks);
+    });
+    //复选框方式
+  $(".checkbox-toggle .iCheck-helper").click(function () {
+    var all_checked=$('.checkbox-toggle>div.icheckbox_minimal-blue').hasClass('checked');
+    if (!all_checked) {
+      $("input[type='checkbox']").iCheck("uncheck");
+    }else{
+      $("input[type='checkbox']").iCheck("check");
+    }
+  });
+  });
+</script>
+  </body>
+</html>

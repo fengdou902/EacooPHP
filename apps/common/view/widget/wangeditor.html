@@ -15,9 +15,9 @@
 
 {/php}
 {if condition="$is_load_script"}
-    <link rel="stylesheet" type="text/css" href="__STATIC__/libs/wangeditor/wangEditor-plugins.css">
-    <script type="text/javascript" src="__STATIC__/libs/wangeditor/wangEditor.min.js"></script>
-    <script type="text/javascript" src="__STATIC__/libs/wangeditor/wangEditor-plugins.js"></script>
+    <link rel="stylesheet" type="text/css" href="__LIBS__/wangeditor/wangEditor-plugins.css">
+    <script type="text/javascript" src="__LIBS__/wangeditor/wangEditor.min.js"></script>
+    <script type="text/javascript" src="__LIBS__/wangeditor/wangEditor-plugins.js"></script>
 {/if}
 <div id="{$id}_editor" style="{$style|default=''}">{$value|default=''}</div>
 <textarea id="{$id}" name="{$name}" style="display: none;width:{$width|default='100%'};height:{$height|default='300px'};"></textarea>
@@ -43,19 +43,19 @@
     //     'default': {
     //         title: '默认',  // 组名称
     //         type: 'image',
-    //         content: '__STATIC__/libs/wangeditor/emotions/default.data'
+    //         content: '__LIBS__/wangeditor/emotions/default.data'
     //     },
     //     // 第二组，id叫做'weibo'
     //     'weibo': {
     //         title: '微博表情',  // 组名称
     //         type: 'image',
-    //         content: '__STATIC__/libs/wangeditor/emotions/weibo.data'
+    //         content: '__LIBS__/wangeditor/emotions/weibo.data'
     //     }
     //     // 下面还可以继续，第三组、第四组、、、
     // };
     editor_{$id}.customConfig.zIndex = 10;
     editor_{$id}.customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
-    editor_{$id}.customConfig.uploadImgServer = "{:url('admin/Upload/upload')}";  // 上传图片到服务器
+    editor_{$id}.customConfig.uploadImgServer = "{$upload.upload_img_server}";  // 上传图片到服务器
     // 限制一次最多上传 5 张图片
     editor_{$id}.customConfig.uploadImgMaxLength = 5
     editor_{$id}.customConfig.uploadFileName = 'file'
@@ -113,7 +113,7 @@
     E.fullscreen.init('#{$id}_editor');
     //E.switchCode.init('#{$id}_editor');
     {eq name="picturesModal" value='1'}
-        E.picturesModal.init('#{$id}_editor',"{:url('admin/Upload/attachmentLayer',['input_id_name'=>$id,'path_type'=>$upload['path_type'],'select_type'=>'multiple','from'=>'wangeditor'])}");
+        E.picturesModal.init('#{$id}_editor',"{$pictures_dialog.url|default=''}");
         function setAttachmentWangeditorVal{$id}(data){
             editor_{$id}.txt.append(data);
             layer.closeAll('iframe');

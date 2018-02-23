@@ -1,0 +1,101 @@
+{extend name="$_admin_public_base_"/}
+{block name="style"}
+    {include file="$_builder_style_" /}
+{/block}
+{block name="main"}    
+    {notempty name="tab_nav"}
+        <div class="builder-tabs builder-form-tabs mb-10">
+            <ul class="nav nav-tabs">
+                {volist name="tab_nav.tab_list" id="tab"}
+                    <li class="{php}if($tab_nav['current_tab'] == $key) echo 'active';{/php}"><a href="{$tab.href}">{$tab.title}</a></li>
+                {/volist}
+            </ul>
+        </div>
+    {/notempty}
+
+    <div class="builder formbuilder-box">
+
+      <div class="row">    
+
+        {notempty name="page_tips"}
+            <div class="col-xs-11 col-sm-11 header-tip">
+                <p class="builder_sub_title color-palette">{$page_tips|default=""}</p>
+            </div>
+        {/notempty}
+
+        <div class="col-md-11" style="padding: 20px;margin-left:30px;border-radius:3px;">      
+            <form action="{$post_url|default=''}" method="post" class="form-builder form-horizontal" data-validator-option="{theme:'bootstrap', timely:2, stopOnError:true}">
+            <fieldset>
+                    {volist name="fieldList" id="field" key="k"}
+                        {:action('common/BuilderForm/fieldType',['field'=>$field],'builder')}
+                    {/volist}
+                    <hr/>
+                    <div class="form-group">
+                        <div class="col-md-10 col-xs-offset-2 mt-10 tc">
+                         {volist name="button_list" id="button"}
+                            <div class="col-md-3 col-xs-6">
+                                <button {$button.attr}>{$button.title}</button>
+                            </div>
+                         {/volist}
+
+                      </div>
+                  </div>
+
+                 </fieldset>
+            </form>
+
+        </div> 
+     </div>
+ </div>
+{// 额外功能代码 }
+{$extra_html}
+{/block}
+
+{block name="script"}    
+
+    {present name="colorPicker"}
+        {if condition="$colorPicker"}
+            <script type="text/javascript" src="__ADMIN_JS__/jquery.simple-color.js"></script>
+            <script>
+                $(function(){
+                    $('.simple_color_callback').simpleColor({
+                        boxWidth:20,
+                        cellWidth: 20,
+                        cellHeight: 20,
+                        chooserCSS:{ 'z-index': 500 },
+                        displayCSS: { 'border': 0 ,
+                            'width': '32px',
+                            'height': '32px',
+                            'margin-top': '-32px'
+                        },
+                        onSelect: function(hex, element) {
+                            $('#tw_color').val('#'+hex);
+                        }
+                    });
+                    $('.simple_color_callback').show();
+                    $('.simpleColorContainer').css('margin-left','105px');
+                    $('.simpleColorDisplay').css('border','1px solid #DFDFDF');
+                });
+                var setColorPicker=function(obj){
+                    var color=$(obj).val();
+                    $(obj).parents('.color-picker').find('.simpleColorDisplay').css('background',color);
+                }
+            </script>
+        {/if}
+    {/present}   
+    
+    {present name="load_select2"}
+        {if condition="$load_select2"}
+        <link rel="stylesheet" type="text/css" href="__LIBS__/select2/css/select2.min.css">
+        <link rel="stylesheet" type="text/css" href="__LIBS__/select2/css/select2-bootstrap.min.css">
+        <script type="text/javascript" src="__LIBS__/select2/js/select2.min.js" charset="utf-8"></script>
+        {/if}
+    {/present}
+    {present name="magnific_popup"}
+        {if condition="$magnific_popup"}
+            <link type="text/css" rel="stylesheet" href="__LIBS__/magnific/magnific-popup.css"/>
+            <script type="text/javascript" src="__LIBS__/magnific/jquery.magnific-popup.min.js"></script>
+        {/if}
+    {/present}
+    
+{/block}

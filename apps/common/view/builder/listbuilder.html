@@ -1,0 +1,174 @@
+{extend name="$_admin_public_base_"/}
+{block name="style"}
+    {include file="$_builder_style_" /}
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="__LIBS__/bootstrap-table/bootstrap-table.min.css">
+{/block}
+{block name="main"}        
+<div class="builder listbuilder-box">
+    <!-- Tab导航 -->
+    {notempty name="tab_nav"}
+        <div class="builder-tabs">
+            <div class="">
+                <ul class="nav nav-tabs">
+                    {volist name="tab_nav.tab_list" id="tab"}
+                        <li class="{php}if($tab_nav['current_tab'] == $key) echo 'active';{/php}"><a href="{$tab.href}" {$tab.extra_attr|default=''}>{$tab.title}</a></li>
+                    {/volist}
+                </ul>
+            </div>
+        </div>
+    {/notempty}
+    <!-- 顶部工具栏按钮 -->
+
+    <!-- 数据列表 -->
+    <div class="builder-container">
+        <div class="row">
+
+            <div class="builder-table col-sm-12">
+                <div id="builder-toolbar" class="toolbar">
+                   
+                    <!-- 工具栏按钮 -->
+                    {notempty name="top_button_list"}
+                        <!--<div class="form-group">-->
+                        {volist name="top_button_list" id="row"}
+                            <a {present name="row.attribute" }{$row.attribute}{/present}>{notempty name="row.icon"}<i class="{$row.icon|default=''}"></i>{/notempty} {$row.title}</a>&nbsp;
+                        {/volist}
+                       <!-- </div>-->
+                    {/notempty}
+                    {notempty name="selects"}
+                        <form id="selectForm" method="get" action="{$action_url|default=$default_url}" class="form-dont-clear-url-param form-inline ml-20">            
+                            {volist name="selects" id="select"}
+                            <div class="form-group">    
+                                {notempty name="select.title"}
+                                    <label for="{$select['name']}"  class=" pr-0">{$select.title}:</label>          
+                                {/notempty}
+
+                                <select name="{$select['name']}" data-role="select_text" class="form-control pl-20">
+                                    {php}$list_builder_selected = input('get.'.$select['name']);{/php}
+
+                                    {volist name="select['arrvalue']" id="svo"}
+                                        {php}if(is_array($svo)):{/php}
+                                            <option value="{$svo.id}" {eq name="svo.id" value="$list_builder_selected"}selected{/eq}>{$svo.value}</option>
+                                        {php}else:{/php}
+                                            <option value="{$key}" {eq name="key" value="$list_builder_selected"}selected{/eq}>{$svo}</option>
+                                        {php}endif;{/php}
+                                    {/volist}
+                                </select>
+                                </div>
+                            {/volist}
+                        </form>
+                    {/notempty}
+                                    
+                    {eq name="search.type" value="custom"}
+                    <!-- 搜索框 -->
+                        <div class="col-xs-12 col-sm-3 clearfix fr pr0">
+                            <form class="form form-inline" method="get" action="{$search.url}">
+                                <div class="form-group">
+                                    <div class="input-group search-form">
+                                        <input type="text" name="keyword" class="form-control search-input pull-right" value="{$Request.param.keyword|default=''}" placeholder="{$search.title}">
+                                        <span class="input-group-btn"><button type="button" class="btn btn-success search-btn"><i class="fa fa-search"></i></button></span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    {/eq}
+
+                    {notempty name="page_tips"}
+                        <div class="col-xs-11 col-sm-11 header-tip">
+                            <p class="builder_sub_title color-palette">{$page_tips|default=""}</p>
+                        </div>
+                    {/notempty}
+                </div>
+                <table id="builder-table" class="table table-responsive table-bordered table-hover dataTable" 
+                        data-pagination="true" 
+                        data-toolbar="#builder-toolbar"
+                        data-show-refresh="true"
+                        data-show-toggle="true"
+                        data-show-columns="true"
+                        width="100%">
+                       <thead>
+                        <tr>
+                            <th width="50" class="checkbox-toggle" 
+                                data-field="state" 
+                                data-checkbox="true">
+                            </th>
+                            {volist name="table_columns" id="column"}
+                                <th data-field="{$column.name}" >{$column.title}</th>
+                            {/volist}
+                        </tr>
+                    </thead>
+                </table>
+
+            </div>
+            </div>
+    </div>
+
+    <!-- 额外功能代码 -->
+    {$extra_html}
+</div>
+<!-- Latest compiled and minified JavaScript -->
+<script src="__LIBS__/bootstrap-table/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="__LIBS__/tableExport/libs/FileSaver/FileSaver.min.js"></script>
+<script type="text/javascript" src="__LIBS__/tableExport/libs/html2canvas/html2canvas.min.js"></script>
+<script src="__LIBS__/tableExport/tableExport.min.js"></script>
+<script src="__LIBS__/bootstrap-table/extensions/export/bootstrap-table-export.min.js"></script>
+<!-- Latest compiled and minified Locales -->
+<script src="__LIBS__/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script type="text/javascript">
+    var $table = $('#builder-table');
+    $table.bootstrapTable({
+        url:'{$action_url|default=''}',
+        //method: 'get',  //请求方式（*）
+        cache: false,  //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        striped: false,  //表格显示条纹  
+        showExport: true,     //是否显示导出
+        exportDataType: "basic", //basic', 'all', 'selected'.
+        exportTypes:[ 'json','xml','csv', 'txt', 'sql', 'doc', 'excel','png'],  //导出文件类型
+        selectItemName:'ids[]',
+        {eq name="search.type" value="basic"}
+            search: true,  //是否启用查询                 
+            searchOnEnterKey:true,
+        {/eq}
+        clickToSelect: true, //是否启用点击选中行
+        pagination: true, //启动分页
+        //dataType : "json",
+        pageSize: {$table_data_page.page_size|default='5'},  //每页显示的记录数  
+        pageNumber:1, //初始化加载第一页，默认第一页
+        pageList: [5, 10, 12, 20, 25,50],  //记录数可选列表  
+        sidePagination: "server", //表示服务端请求  
+        //showPaginationSwitch: true,       //是否显示选择分页数按钮
+        uniqueId:'id',
+        idField:'{$table_primary_key}',
+        //设置为undefined可以获取pageNumber，pageSize，searchText，sortName，sortOrder  
+        //设置为limit可以获取limit, offset, search, sort, order  
+        queryParamsType : "undefined",   
+        queryParams: function queryParams(params) {   //设置查询参数  
+          var param = {
+              keyword:params.searchText,
+              paged: params.pageNumber,    
+              page_size: params.pageSize,  
+              sort_name:params.sortName,
+              //orderNum : $("#orderNum").val()  
+          };
+          if (params.sortName!=undefined) {
+            param.order = params.sortName+" "+params.sortOrder;
+          }
+          //console.log(param);
+          //console.log(params);
+          return param;                   
+        },  
+        // onLoadSuccess: function(res){  //加载成功时执行  
+        //     console.log(res);
+        //   layer.msg("加载成功");  
+        // },  
+        onLoadError: function(res){  //加载失败时执行  
+          layer.msg("加载数据失败", {time : 1500, icon : 2});  
+        }  
+        
+    })
+</script>
+
+{/block}
+{block name="script"}
+    {include file="$_builder_javascript_" /}
+{/block}

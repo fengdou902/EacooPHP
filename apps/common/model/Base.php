@@ -32,10 +32,32 @@ class Base extends Model
 
         if($kv){//编辑
             $res=$this->save($data,[$key=>$kv]);
-        }else{
+        } else{
             $res=$this->data($data)->save();
         }
         return $res;
+    }
+
+    /**
+     * 设置搜索
+     * @param  [type] $fields 字段名（多个字段用|分开）
+     * @param  string $rule 匹配规则
+     * @return [type] [description]
+     * @date   2018-02-06
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function search($fields='title',$rule='%[KEYWORD]%')
+    {
+
+        if (strpos($rule, '[KEYWORD]')!==false) {
+            $keyword     = input('param.keyword',false);//关键字
+            if (!empty($keyword)) {
+                $rule = str_replace('[KEYWORD]', $keyword, $rule);
+                $this->where($fields,'like',$rule);
+            }
+        }
+        return $this;
+        
     }
 
     /**
@@ -43,14 +65,20 @@ class Base extends Model
      * @param  integer $page 分页值
      * @param  string $order 排序参数
      * @param  string $field 结果字段
-     * @param  integer $page_number 每页数量
+     * @param  integer $page_size 每页数量
      * @return 结果集
      */
-    public function getListByPage($map,$order='sort asc,update_time desc',$field=true,$page_number=20)
+    public function getListByPage($map,$field=true,$order='sort asc',$page_size=null)
     {
-        $list=$this->where($map)->order($order)->field($field)->paginate($page_number);
-        $page=$list->render();
-        return array($list,$page);
+        $paged     = input('param.paged',1);//分页值
+        if (!$page_size) {
+            $page_size = config('admin_page_size');
+        }
+        $page_size = input('param.page_size',$page_size);//每页数量
+        $order     = input('param.order',$order);
+        $list      = $this->where($map)->field($field)->order($order)->page($paged,$page_size)->select();
+        $total     = $this->where($map)->count();
+        return [$list,$total];
     }
 
     /**
@@ -64,32 +92,5 @@ class Base extends Model
         $lists = $this->where($map)->field($field)->order($order)->select();
         return $lists;
     }
-    
-    /**
-     * 通过$map获取列表
-     * @param array $map 查询条件
-     * @param $order 排序
-     * @param null $fields 查询字段，true表示全部字段
-     * @return mixed 结果列表
-     */
-    
-    public function selectByMap($map=[],$order=null,$fields=true){
-        $order = $order ? $order : "id asc";
-        $list=$this->where($map)->order($order)->field($fields)->select();
-        return $list;
-    }
 
-    /**
-     * * 通过$map获取单条值
-     * @param array $map 查询条件
-     * @param string $order 排序
-     * @param null $fields 查询字段，true表示全部字段
-     * @return mixed 结果
-     */
-    public function getByMap($map=[],$order,$fields=true){
-        $order=$order?$order:"id asc";
-        $data=$this->where($map)->order($order)->field($fields)->find();
-        
-        return $data;
-    }
 }

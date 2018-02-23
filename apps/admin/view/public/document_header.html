@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{$meta_title|default=''}|{:config('web_site_title')}后台管理</title>   
+    <link type="text/css" rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">-->
+   {load href="__ADMIN_CSS__/AdminLTE.min.css,__ADMIN_CSS__/_all-skins.min.css,__PUBLIC__/css/base.css,__LIBS__/iCheck/all.css" /}
+   <link type="text/css" href="__ADMIN_CSS__/style.css?v=1.0.0" rel="stylesheet" >
+    <link type="text/css" href="__LIBS__/datetimepicker/datetimepicker.css" rel="stylesheet" >
+    <script type="text/javascript" src="__PUBLIC__/js/jquery-1.12.4.min.js"></script>
+    <!-- <script type="text/javascript" src="__PUBLIC__/js/jquery-3.2.1.min.js"></script> -->  
+    <script type="text/javascript">
+        var EacooPHP = window.EacooPHP = {
+            "eacoophp_version":"{:EACOOPHP_V}",
+            "url_model":{$url_model|default='1'},//1重写模式，2兼容模式
+            "root":'__ROOT__',
+            "root_domain": "{$Request.domain}/admin.php", //当前网站地址
+            "static": "__STATIC__", //静态资源地址
+            "public": "__PUBLIC__", //项目公共目录地址
+            "uploads_url" :'/uploads/',
+            "upload_driver":"{:config('attachment_options.driver')}",
+            "cdn_domain":"{:get_cdn_domain()}",
+            "eacoo_api_url":"{:config('eacoo_api_url')}",
+        }
+    </script>
+
+     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>

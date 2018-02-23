@@ -12,7 +12,6 @@ namespace app\admin\controller;
 use eacoo\Sql;
 
 use app\admin\model\Modules as ModuleModel;
-use app\admin\builder\Builder;
 use app\admin\model\AuthRule;
 
 class Modules extends Admin {
@@ -91,64 +90,9 @@ class Modules extends Admin {
             $extensionObj->initInfo('module',$app['name']);
 
             $options   = $extensionObj->getOptionsByFile();
-
-            $this->meta_title = '设置-'.$app['title'];
-            if (!empty($options) && is_array($options)) {
-                if (!empty($db_config)) {
-                    $db_config = json_decode($db_config, true);//dump($db_config['sliders']);
-                    foreach ($options as $key => $value) {
-                        switch ($value['type']) {
-                            case 'group':
-                                foreach ($value['options'] as $okey => $option) {
-                                    $options[$key]['options'][$okey]['value'] = $db_config[$key][$okey]; 
-                                }
-                                break;
-                            case 'tab':
-                                foreach ($value['options'] as $okey => $option) {
-                                    foreach ($option['options'] as $gkey => $value) {
-                                        $options[$key]['options'][$okey][$gkey]['options']['value'] = $db_config[$gkey];
-                                    }
-                                    
-                                }
-                                break;
-                            default:
-                                if (isset($db_config[$key])) {
-                                    $options[$key]['value'] = $db_config[$key];
-                                }
-                                break;
-                        }
-
-                    }
-                }
-                // 构造表单名
-                foreach ($options as $key => $val) {
-                    switch ($val['type']) {
-                        case 'group':
-                            foreach ($val['options'] as $key2 => $val2) {
-                                $options[$key]['options'][$key2]['name'] = 'config['.$key.']['.$key2.']';
-                            }
-                            break;
-                        case 'tab':
-                            foreach ($val['options'] as $key2 => $val2) {
-                                foreach ($val2['options'] as $key3 => $val3) {
-                                    $options[$key]['options'][$key2]['options'][$key3]['name'] = 'config['.$key3.']';
-
-                                    $options[$key]['options'][$key2]['options'][$key3]['confirm'] = $options[$key]['options'][$key2]['options'][$key3]['extra_class'] = $options[$key]['options'][$key2]['options'][$key3]['extra_attr']='';
-                                }
-                                
-                            }
-                            break;
-                        default:
-                            $options[$key]['name'] = 'config['.$key.']';
-
-                            $options[$key]['confirm']     = isset($val['confirm']) ? $val['confirm']:'';
-                            $options[$key]['options']     = isset($val['options']) ? $val['options']:[];
-                            $options[$key]['extra_class'] = isset($val['extra_class']) ? $val['extra_class']:'';
-                            $options[$key]['extra_attr']  = isset($val['extra_attr']) ? $val['extra_attr']:'';
-                            break;
-                    }  
-                }
-            }
+            $db_config = json_decode($db_config, true);
+            
+            $options = logic('common/Config')->buildFormByFiled($options,$db_config,true);
     
             if (!empty($app['custom_config'])) {
                 $this->assign('data', $app);
@@ -156,8 +100,8 @@ class Modules extends Admin {
                 $this->assign('custom_config', $this->fetch($app['plugin_path'].$app['custom_config']));
                 return $this->fetch($app['plugin_path'].$app['custom_config']);
             } else {
-                Builder::run('Form')
-                        ->setMetaTitle($this->meta_title)  //设置页面标题
+                return builder('Form')
+                        ->setMetaTitle('设置-'.$app['title'])  //设置页面标题
                         ->setPostUrl(url('config')) //设置表单提交地址
                         ->addFormItem('id', 'hidden', 'ID', 'ID')
                         ->setExtraItems($options) //直接设置表单数据
@@ -204,7 +148,7 @@ class Modules extends Admin {
         $extensionObj->initInfo('module',$name);
         $result = $extensionObj->install($name,$clear);
         if ($result['code']==1) {
-        	$this->success('安装成功', url('index'));
+        	$this->success('安装成功', '');
         } else{
         	$this->error($result['msg'], '');
         }
@@ -212,8 +156,12 @@ class Modules extends Admin {
 	}
 
 	/**
-	 * 卸载模块之前
-	 */
+     * 卸载模块之前
+     * @param  [type] $id [description]
+     * @return [type] [description]
+     * @date   2018-02-07
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
 	public function uninstallBefore($id) {
 		$this->assign('meta_title','准备卸载模块');
         $info=['id'=>$id];
@@ -272,7 +220,7 @@ class Modules extends Admin {
 				
 	            $_static_path = PUBLIC_PATH.'static/'.$name;
 	            if (is_dir($_static_path)) {
-	                if(is_really_writable(PUBLIC_PATH.'static') && is_really_writable(APP_PATH.$name)){
+	                if(is_writable(PUBLIC_PATH.'static') && is_writable(APP_PATH.$name)){
 	                	$static_path = APP_PATH.$name.'/static';
 	                    if (!rename($_static_path,$static_path)) {
 	                        trace('模块静态资源移动失败：'.'public/static/'.$name.'->'.$static_path,'error');
@@ -282,12 +230,12 @@ class Modules extends Admin {
 	                    $this->error('卸载失败，原因：模块静态资源目录不可写');
 	                }
 	            }
-	            $this->success('卸载成功',url('index'));
+	            $this->success('卸载成功','');
 			} else {
-				$this->success('卸载成功，相关数据未卸载！', url('index'));
+				$this->success('卸载成功，相关数据未卸载！','');
 			}
 		} else {
-			$this->error('卸载失败', url('index'));
+			$this->error('卸载失败', '');
 		}
 	}
 
@@ -407,12 +355,12 @@ class Modules extends Admin {
      */
     public function sort($ids = null)
     {
-        $builder = Builder::run('Sort');
+        $builder = builder('Sort');
         if (IS_POST) {
             $builder->doSort('module', $ids);
         } else {
             $map['status'] = array('egt', 0);
-            $list = $this->moduleModel->selectByMap($map, 'sort asc', 'id,title,sort');
+            $list = $this->moduleModel->getList($map, 'sort asc', 'id,title,sort');
             foreach ($list as $key => $val) {
                 $list[$key]['title'] = $val['title'];
             }

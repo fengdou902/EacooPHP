@@ -11,7 +11,7 @@
 namespace app\admin\controller;
 
 use app\common\model\Nav as NavModel;
-use app\admin\builder\Builder;
+use app\common\builder\Builder;
 use eacoo\Tree;
 
 class Navigation extends Admin {
@@ -21,9 +21,7 @@ class Navigation extends Admin {
     function _initialize()
     {
         parent::_initialize();
-
         $this->navModel = new NavModel;
-
     }
     
     /**
@@ -31,46 +29,40 @@ class Navigation extends Admin {
      * @return [type] [description]
      */
     public function index(){
-        $page = null;
-        $menus = $this->navModel->field(true)->order('sort desc')->select();
-        if (!empty($menus)) {
-            $menus = collection($menus)->toArray();
-            $tree_obj = new Tree;
-            $menus = $tree_obj->toFormatTree($menus,'title');
-        }
 
         //移动上级按钮属性
-        $moveparent_attr['title'] = '<i class="fa fa-exchange"></i> 移动位置';
-        $moveparent_attr['class'] = 'btn btn-info btn-sm';
-        $moveparent_attr['onclick'] = 'move_menuparent()';
-        $extra_html = $this->moveMenuHtml();//添加移动按钮html
-
-        Builder::run('List')
-            ->setMetaTitle('前台导航管理')
-            ->addTopBtn('addnew')  // 添加新增按钮
-            ->addTopBtn('resume',['model'=>'auth_rule'])  // 添加启用按钮
-            ->addTopBtn('forbid',['model'=>'auth_rule'])  // 添加禁用按钮
-            ->addTopBtn('delete',['model'=>'auth_rule'])  // 添加删除按钮
-            ->addTopButton('self', $moveparent_attr) //移动菜单位置
-            ->addTopBtn('sort',['model'=>'auth_rule','href'=>url('sort')])  // 添加排序按钮
-            //->setSearch('', url('rule'))
-            ->keyListItem('id','ID')
-            ->keyListItem('title_show','名称')
-            ->keyListItem('value', 'URL（支持完整http地址和三段式式）')
-            ->keyListItem('icon', '图标','icon')
-            ->keyListItem('target','打开方式','array',['_blank'=>'新的窗口打开','_self'=>'本窗口打开'])
-            ->keyListItem('depend_type', '来源类型','array',[0=>'外部链接',1=>'模块',2=>'插件',3=>'主题'])
-            ->keyListItem('depend_flag', '来源标识')
-            ->keyListItem('sort', '排序')
-            ->keyListItem('status','状态','status')
-            ->keyListItem('right_button', '操作', 'btn')
-            ->setListDataKey('id')
-            ->setListData($menus)    // 数据列表
-            ->setListPage($page) // 数据列表分页
-            ->setExtraHtml($extra_html)
-            ->addRightButton('edit')      // 添加编辑按钮
-            ->addRightButton('forbid',['model'=>'auth_rule'])// 添加删除按钮
-            ->fetch();
+        $move_position_attr = [
+            'icon'    =>'fa fa-exchange',
+            'title'   =>'移动位置',
+            'class'   =>'btn btn-info btn-sm',
+            'onclick' =>'move_menu_position()'
+        ];
+        $total = $this->navModel->count();
+        return builder('List')
+                ->setMetaTitle('前台导航管理')
+                ->addTopBtn('addnew')  // 添加新增按钮
+                ->addTopBtn('resume',['model'=>'auth_rule'])  // 添加启用按钮
+                ->addTopBtn('forbid',['model'=>'auth_rule'])  // 添加禁用按钮
+                ->addTopBtn('delete',['model'=>'auth_rule'])  // 添加删除按钮
+                ->addTopButton('self', $move_position_attr) //移动菜单位置
+                ->addTopBtn('sort',['model'=>'auth_rule','href'=>url('sort')])  // 添加排序按钮
+                //->setSearch('', url('rule'))
+                ->keyListItem('id','ID')
+                ->keyListItem('title_show','名称')
+                ->keyListItem('value', 'URL（支持完整http地址和三段式式）')
+                ->keyListItem('icon', '图标','icon')
+                ->keyListItem('target','打开方式','array',['_blank'=>'新的窗口打开','_self'=>'本窗口打开'])
+                ->keyListItem('depend_type', '来源类型','array',[0=>'外部链接',1=>'模块',2=>'插件',3=>'主题'])
+                ->keyListItem('depend_flag', '来源标识')
+                ->keyListItem('sort', '排序')
+                ->keyListItem('status','状态','status')
+                ->keyListItem('right_button', '操作', 'btn')
+                ->setListPrimaryKey('id')
+                ->setListPage($total,false)
+                ->setListData(logic('Navigation')->getNavMenus())    // 从逻辑层获取数据
+                ->setExtraHtml(logic('Navigation')->moveMenuHtml())//添加移动按钮html
+                ->addRightButton('edit')      // 添加编辑按钮
+                ->fetch();
     }
 
     /**
@@ -107,7 +99,7 @@ class Navigation extends Admin {
             }   
 
         } else{
-            $info = ['target'=>'_self','sort'=>99];
+            $info = ['target'=>'_self','sort'=>99,'status'=>1];
             // 获取菜单数据
             if ($id>0) {
                 $info = NavModel::get($id);
@@ -119,10 +111,10 @@ class Navigation extends Admin {
                 $menus = $tree_obj->toFormatTree($menus,'title');
             }
             $menus = array_merge([0=>['id'=>0,'title_show'=>'顶级菜单']], $menus);
-            Builder::run('Form')
-                    ->setMetaTitle($title.'菜单')  // 设置页面标题
+            return builder('Form')
+                    ->setMetaTitle($title.'导航菜单')  // 设置页面标题
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
-                    ->addFormItem('title', 'text', '标题', '用于后台显示的配置标题')
+                    ->addFormItem('title', 'text', '标题', '用于前台显示的导航标题')
                     ->addFormItem('pid', 'multilayer_select', '上级菜单', '上级菜单',$menus)
                     ->addFormItem('value', 'text', 'URL', '导航地址。支持url生成规则，三段式')
                     ->addFormItem('position', 'select', '位置', '导航菜单显示位置，页面头部，登录个人中心',['header'=>'头部(Header)','my'=>'我的(My)'],'require')
@@ -131,6 +123,7 @@ class Navigation extends Admin {
                     ->addFormItem('depend_type', 'select', '来源类型', '来源类型。分别是模块，插件，主题',[0=>'外部链接',1=>'模块',2=>'插件',3=>'主题'])
                     ->addFormItem('depend_flag', 'text', '来源标识', '如模块、插件、主题的标识名。外部链接可不填写')
                     ->addFormItem('sort', 'number', '排序', '排序')
+                    ->addFormItem('status', 'radio', '状态', '状态，开启或关闭',[1=>'是',0=>'否'])
                     ->setFormData($info)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
@@ -139,66 +132,11 @@ class Navigation extends Admin {
     }
 
     /**
-     * 构建列表移动配置分组按钮
+     * 移动菜单位置
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    protected function moveMenuHtml(){
-
-            //移动菜单位置
-            $menus = $this->navModel->select();
-            $menus = collection($menus)->toArray();
-            $tree_obj = new Tree;
-            $menus = $tree_obj->toFormatTree($menus,'title');
-            $menu_options = [];
-            if (!empty($menus)) $menu_options = array_merge([0=>['id'=>0,'title_show'=>'顶级菜单']], $menus);
-            $menu_options_str='';
-            foreach ($menu_options as $key => $option) {
-                    if(is_array($option)){
-                        $menu_options_str.='<option value="'.$option['id'].'">'.$option['title_show'].'</option>';
-                    }else{
-                        $menu_options_str.='<option value="'.$option['id'].'">'.$option.'</option>';
-                    }
-            }
-            $move_menuparent_url = url('moveMenuParent');
-            return <<<EOF
-            <div class="modal fade mt100" id="movemenuParentModal">
-                <div class="modal-dialog modal-sm">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-                            <p class="modal-title">移动至</p>
-                        </div>
-                        <div class="modal-body">
-                            <form action="{$move_menuparent_url}" method="post" class="form-movemenu">
-                                <div class="form-group">
-                                    <select name="to_pid" class="form-control">{$menu_options_str}</select>
-                                </div>
-                                <div class="form-group">
-                                    <input type="hidden" name="ids">
-                                    <button class="btn btn-primary btn-block submit ajax-post" type="submit" target-form="form-movemenu">确 定</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <script type="text/javascript">
-                function move_menuparent(){
-                    var ids = '';
-                    $('input[name="ids[]"]:checked').each(function(){
-                       ids += ',' + $(this).val();
-                    });
-                    if(ids != ''){
-                        ids = ids.substr(1);
-                        $('input[name="ids"]').val(ids);
-                        $('.modal-title').html('移动选中的菜单至：');
-                        $('#movemenuParentModal').modal('show', 'fit')
-                    }else{
-                        updateAlert('请选择需要移动的菜单', 'warning');
-                    }
-                }
-            </script>
-EOF;
+    public function moveMenusPosition() {
+        logic('Navigation')->moveMenusPosition();
     }
 
     /**
@@ -207,7 +145,7 @@ EOF;
      */
     public function sort($ids = null)
     {
-        $builder    = Builder::run('Sort');
+        $builder= builder('Sort');
         $pid = input('param.pid',false);//是否存在父ID
         $map = [];
         if ($pid>0 || $pid===0) {
@@ -220,13 +158,14 @@ EOF;
             $builder->doSort('nav', $ids);
         } else {
             //$map['status'] = array('egt', 0);
-            $list = $this->navModel->selectByMap($map, 'sort asc', 'id,title,sort');
+            $list = $this->navModel->getList($map,'id,title,sort','sort asc');
             foreach ($list as $key => $val) {
                 $list[$key]['title'] = $val['title'];
             }
-            $builder->setMetaTitle('配置排序')
+            return $builder->setMetaTitle('配置排序')
                     ->setListData($list)
-                    ->addButton('submit')->addButton('back')
+                    ->addButton('submit')
+                    ->addButton('back')
                     ->fetch();
         }
     }
