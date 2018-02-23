@@ -276,7 +276,7 @@ $(function () {
             shadeClose: true,
             shade: 0.8,
             area: ['25%', '35%'],
-            content: url('admin/'+app_type+'/installBefore')+'?name='+app_name+'&load_type=iframe', 
+            content: url('admin/'+app_type+'/installBefore',['name='+app_name,'load_type=iframe']), 
             btn: ['提交'],
             yes: function(index, layero){
                 var action_url = p_layer.getChildFrame('#action_url', index).val();
@@ -296,7 +296,7 @@ $(function () {
               shadeClose: true,
               shade: 0.8,
               area: ['25%', '35%'],
-              content: url('admin/'+app_type+'/uninstallBefore')+'?id='+app_id+'&load_type=iframe', 
+              content: url('admin/'+app_type+'/uninstallBefore',['id='+app_id,'load_type=iframe']), 
               btn: ['提交'],
               yes: function(index, layero){
                   var action_url = p_layer.getChildFrame('#action_url', index).val();

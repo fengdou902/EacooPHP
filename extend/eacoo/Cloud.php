@@ -92,7 +92,7 @@ class Cloud {
                     }
                     throw new \Exception("没有权限写入临时文件",1); 
                     
-                }else{
+                } else{
                     throw new \Exception($result['msg'],$result['code']);  
                 }
             }

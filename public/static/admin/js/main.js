@@ -260,7 +260,8 @@ function batchUrl(url, is_pajx) {
  */
 function url(url, params, rewrite) {
     var website = EacooPHP.root_domain;
-    if (window.EacooPHP.url_model == 2) {
+    var url_model = window.EacooPHP.url_model;
+    if (url_model == 2) {
         website = website+'?s=';
     } 
     url = url.split('/');
@@ -283,7 +284,14 @@ function url(url, params, rewrite) {
     website = website+ '/'  + url;
     if (params) {
         params = params.join('&');
-        website = website + '?' + params;
+        //设置分割符，主要解决nginx兼容问题
+        if (url_model == 2) {
+            var delimiter = '&';
+        } else{
+            var delimiter = '?';
+        }
+        
+        website = website + delimiter + params;
     }
 
     if(typeof (window.EacooPHP.url_model)!='undefined'){
