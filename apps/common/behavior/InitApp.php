@@ -26,7 +26,7 @@ class InitApp {
         } else{
             define('SERVER_SOFTWARE_TYPE','no');
         }
-       	
+
         define('EACOOPHP_V','1.2.0');
 
         //加载模块全局函数

@@ -10,6 +10,7 @@
 // +----------------------------------------------------------------------
 namespace app\user\admin;
 use app\admin\controller\Admin;
+use app\common\model\User as UserModel;
 
 class User extends Admin {
 
@@ -30,29 +31,22 @@ class User extends Admin {
         // 获取所有用户
         $map['status'] = ['egt', '0']; // 禁用和正常状态
         list($data_list,$total) = $this->userModel->search('uid|username|nickname')->getListByPage($map,true,'reg_time desc');
-        
-        $send_message_attr['title']   = '<i class="fa fa-comment-o"></i> 发送消息';
-        $send_message_attr['class']   = 'btn btn-info btn-raised btn-sm';
-        $send_message_attr['onclick'] ='send_msg()';
-        $message_html                 = $this->sendMessageHtml();
 
-        //移动按钮属性
-        $move_role_attr = [
-            'icon'=>'fa fa-users',
-            'title'=>'变更角色',
-            'class'=>'btn btn-info btn-sm',
-            'onclick'=>'role_move()'
+        $reset_password = [
+            'icon'=> 'fa fa-recycle',
+            'title'=>'重置原始密码',
+            'class'=>'btn btn-default ajax-table-btn confirm btn-sm',
+            'confirm-info'=>'该操作会重置用户密码为123456，请谨慎操作',
+            'href'=>url('resetPassword')
         ];
-        $Role_html=$this->moveRoleHtml();//添加移动按钮html
-
-        $extra_html = $message_html.$Role_html;
 
         return builder('list')
                 ->setMetaTitle('用户列表') // 设置页面标题
                 ->addTopButton('addnew')  // 添加新增按钮
+                ->addTopButton('resume')  // 添加启用按钮
+                ->addTopButton('forbid')  // 添加禁用按钮
                 ->addTopButton('delete')  // 添加删除按钮
-                ->addTopButton('self', $send_message_attr) //发送消息按钮按钮
-                ->addTopButton('self', $move_role_attr)//添加移动角色按钮
+                ->addTopButton('self',$reset_password)  // 添加重置按钮
                 ->setSearch('basic','请输入ID/用户名/昵称')
                 ->keyListItem('uid', 'UID')
                 ->keyListItem('avatar', '头像', 'avatar')
@@ -65,7 +59,6 @@ class User extends Admin {
                 ->keyListItem('status', '状态', 'array',[0=>'禁用',1=>'正常',2=>'待验证'])
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListPrimaryKey('uid')
-                ->setExtraHtml($extra_html)
                 ->setListData($data_list)    // 数据列表
                 ->setListPage($total) // 数据列表分页
                 ->addRightButton('edit')//->addRightButton('forbid')
@@ -95,8 +88,8 @@ class User extends Admin {
             $result = $this->userModel->editData($data,$uid,'uid');
 
             if ($result) {
-                if ($uid>0) {//如果是编辑状态下
-                    $this->userModel->updateLoginSession($uid);
+                if ($uid==is_login()) {//如果是编辑状态下
+                    logic('common/User')->updateLoginSession($uid);
                 }
                 $this->success($title.'成功', url('index'));
             } else {
@@ -112,12 +105,9 @@ class User extends Admin {
             }
 
             $builder = builder('Form');
-            $builder->setMetaTitle($title.'用户');  // 设置页面标题
-            if ($uid!=0) {
-                $builder->addFormItem('uid', 'hidden', 'ID', '');
-            }
-
-            $builder->addFormItem('nickname', 'text', '昵称', '填写一个有个性的昵称吧','','require')
+            $builder->setMetaTitle($title.'用户')  // 设置页面标题
+                    ->addFormItem('uid', 'hidden', 'UID', '')
+                    ->addFormItem('nickname', 'text', '昵称', '填写一个有个性的昵称吧','','require')
                     ->addFormItem('username', 'text', '用户名', '登录账户所用名称','','require')
                     ->addFormItem('password', 'password', '密码', '','','','placeholder="留空则不修改密码"')
                     ->addFormItem('email', 'email', '邮箱', '','','data-rule="email" data-tip="请填写一个邮箱地址"')
@@ -128,134 +118,12 @@ class User extends Admin {
             if ($uid>0) {
                 $builder->addFormItem('avatar', 'avatar', '头像', '用户头像默认随机分配',['uid'=>$info['uid']],'require');
             }
-            return $builder->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'正常',2=>'待验证'])
+            return $builder
+                    ->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'正常',2=>'待验证'])
                     ->setFormData($info)//->setAjaxSubmit(false)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
         }
-    }
-    /**
-     * 构建列表发送消息按钮
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    protected function sendMessageHtml(){
-        //需要安装站内信插件才能使用
-        $sendmsg_url = plugin_url('message/Message/send_message',['from_uid'=>is_login()]);
-        return <<<EOF
-            <div class="modal fade mt100" id="sendmsgModal">
-                <div class="modal-dialog ">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-                            <p class="modal-title tc">发送站内信</p>
-                        </div>
-                        <div class="modal-body">
-                        <form action="{$sendmsg_url}" method="post" class="form-msg form-horizontal">
-                            <fieldset>
-                            <div class="form-group item_uids ">
-                                <label for="to_uids" class="col-md-3 control-label">发送对象：</label>
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" name="to_uids" value="" placeholder="留空则为群发所有用户">                          
-                                </div>
-                            </div>
-                            <div class="form-group item_title ">
-                                <label for="title" class="col-md-3 control-label">标题：</label>
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" name="title" value="" placeholder="必填">                          
-                                </div>
-                            </div>
-                            <div class="form-group item_content ">
-                                <label for="content" class="col-md-3 control-label">消息内容：</label>
-                                <div class="col-md-8">
-                                    <textarea name="content" class="form-control" length="120" rows="5" placeholder="填写消息内容"></textarea>
-                                
-                                </div>
-                            </div>
-                            <div class="form-group tc">
-                                <input type="hidden" name="ids">
-                                <button class="btn btn-primary submit ajax-post" type="submit" target-form="form-msg">发 送</button>
-
-                          </div>
-
-                         </fieldset>
-                    </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <script type="text/javascript">
-                function send_msg(){
-                    var ids = '';
-                    $('input[name="ids[]"]:checked').each(function(){
-                       ids += ',' + $(this).val();
-                    });
-                    if(ids != ''){
-                        ids = ids.substr(1);
-                        $('input[name="to_uids"]').val(ids);
-                        $('.modal-title').html('发送站内信');
-                        $('#sendmsgModal').modal('show', 'fit')
-                    }else{
-                        updateAlert('请选择要发送的用户', 'warning');
-                    }
-                }
-            </script>
-EOF;
-    }
-
-    /**
-     * 构建列表移动角色按钮
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    protected function moveRoleHtml(){
-            $auth_group = db('auth_group')->where(['status'=>1])->column('title','id');
-            //构造移动文档的目标分类列表
-            $options = '';
-            foreach ($auth_group as $key => $val) {
-                $options .= '<option value="'.$key.'">'.$val.'</option>';
-            }
-            //文档移动POST地址
-            $move_url = url('Auth/addToGroup');
-
-            return <<<EOF
-            <div class="modal fade mt100" id="moveroleModal">
-                <div class="modal-dialog modal-sm">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-                            <p class="modal-title">移动至</p>
-                        </div>
-                        <div class="modal-body">
-                            <form action="{$move_url}" method="post" class="form-move" enctype="application/x-www-form-urlencoded">
-                                <div class="form-group">
-                                    <select name="group_id" class="form-control">{$options}</select>
-                                </div>
-                                <div class="form-group">
-                                    <input type="hidden" name="uids">
-                                    <input type="hidden" name="batch">
-                                    <button class="btn btn-primary btn-block submit ajax-post" type="submit" target-form="form-move" data-dismiss="modal">确 定</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <script type="text/javascript">
-                function role_move(){
-                    var ids = '';
-                    $('input[name="ids[]"]:checked').each(function(){
-                       ids += ',' + $(this).val();
-                    });
-                    if(ids != ''){
-                        ids = ids.substr(1);
-                        $('input[name="uids"]').val(ids);
-                        $('.modal-title').html('移动选中的用户至：');
-                        $('#moveroleModal').modal('show', 'fit')
-                    }else{
-                        updateAlert('请选择需要修改角色的用户', 'warning');
-                    }
-                }
-            </script>
-EOF;
     }
     
     /**
@@ -277,7 +145,7 @@ EOF;
             // 提交数据
             $result = $this->userModel->editData($data,$uid,'uid');
             if ($result) {
-                if ($uid) {//如果是编辑状态下
+                if ($uid==is_login()) {//如果是编辑状态下
                     $this->userModel->updateLoginSession($uid);
                 }
 
@@ -302,29 +170,61 @@ EOF;
 
     /**
      * 个人资料修改密码
-     */  
+     * @return [type] [description]
+     * @date   2018-02-19
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
     public function resetPassword(){
         if (IS_POST) {
-            //$oldpassword=input('post.oldpassword',false);
-            $newpassword = input('post.newpassword',false);
-            $repassword  = input('post.repassword',false);
-            if ($newpassword == $repassword) {
-                $uid          =input('post.uid',is_login(),'intval');
-                $new_password =encrypt($newpassword);
-                $res= UserModel::where(['uid'=>$uid])->setField('password',$new_password);
-                if ($res) {
-                    session(null);
-                    $this->success('密码修改成功', url('admin/index/login'));
+            $params = $this->request->param();
+            $result = $this->validate($params,[
+                ['uid','number|>=:1','用户ID格式不正确|用户ID格式不正确'],
+                ['newpassword','min:6','重置密码长度不能少于6位'],
+                ['repassword','min:6|confirm:newpassword','重复密码不正确|重复密码不一致'],
+            ]);
+            if(true !== $result){
+                // 验证失败 输出错误信息
+                $this->error($result);
+            }
+            if (!isset($params['ids']) && !isset($params['uid'])) {
+                $this->error('操作用户不存在');
+            }
+            $map = [];
+            if (isset($params['ids'])) {
+                $map['uid'] = ['in',$params['ids']];
+                $newpassword = 123456;
+            } elseif (isset($params['uid'])) {
+                if (!isset($params['newpassword']) || !isset($params['repassword']) ||!$params['newpassword']) {
+                    $this->error('请填写一个合适的密码');
                 }
+                $map['uid'] = $params['uid'];
+                $newpassword = $params['newpassword'];
+                $repassword  = $params['repassword'];
+            }
+            //$oldpassword=input('param.oldpassword',false);
+            $new_password = encrypt($newpassword);
+            $res = UserModel::where($map)->setField('password',$new_password);
+            if ($res) {
+                if (isset($params['uid']) && $params['uid']==is_login()) {
+                    session(null);
+                    $this->success('已重置密码成功，新密码：'.$newpassword, url('admin/login/index'));
+                } else{
+                    $this->success('已重置密码成功，新密码：'.$newpassword);
+                }
+                
+            } else{
+                $this->error('密码重置失败');
             }
         } else {
             // 获取账号信息
-            $info = $this->userModel->find(is_login());
+            $info = $this->userModel->get(is_login());
 
-            return builder('form')->setMetaTitle('重置密码')  // 设置页面标题
+            return builder('form')
+                    ->setMetaTitle('重置密码') // 设置页面标题
+                    ->addFormItem('uid', 'hidden', 'UID', '')
                     //->addFormItem('oldpassword', 'password', '原密码', '','','','placeholder="填写旧密码"')
-                    ->addFormItem('newpassword', 'password', '新密码', '','','','placeholder="填写新密码"')
-                    ->addFormItem('repassword', 'password', '重复密码', '','','','placeholder="填写重复密码"')
+                    ->addFormItem('newpassword', 'password', '新密码', '','','placeholder="填写新密码"')
+                    ->addFormItem('repassword', 'password', '重复密码', '','','placeholder="填写重复密码"')
                     ->setFormData($info)
                     //->setAjaxSubmit(false)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮

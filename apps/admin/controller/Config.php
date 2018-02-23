@@ -127,7 +127,7 @@ class Config extends Admin {
                     ->addFormItem('options', 'textarea', '配置项', '如果是单选、多选、下拉等类型 需要配置该项')
                     //->addFormItem('function', 'text', '关联函数', '确保函数已创建，并且函数具有返回值')
                     ->addFormItem('remark', 'textarea', '配置说明', '配置说明')
-                    ->addFormItem('sort', 'number', '排序', '用于显示的顺序')
+                    ->addFormItem('sort', 'number', '排序', '按照数值大小的倒叙进行排序，数值越小越靠前')
                     ->addFormItem('status', 'radio', '状态', '状态，开启或关闭',[1=>'是',0=>'否'])
                     ->setExtraHtml($sub_group['html'])
                     ->setFormData($info)
@@ -147,17 +147,7 @@ class Config extends Admin {
         ];
         $data_list =$this->configModel->getList($map,true,'sort asc,id asc');
 
-        // 设置Tab导航数据列表
-        $config_group_list = config('config_group_list');  // 获取配置分组
-        unset($config_group_list[6]);//去除不显示的分组
-        //unset($config_group_list[7]);//用户
-        //unset($config_group_list[5]);
-        unset($config_group_list[8]);
-        foreach ($config_group_list as $key => $val) {
-            $tab_list[$key]['title'] = $val;
-            $tab_list[$key]['href']  = url('group', ['group' => $key]);
-        }
-        $tab_list['attachment_option']=['title'=>'上传','href'=>url('attachmentOption')];
+        $tab_list = logic('admin/Config')->getTabList();
         // 构造表单名、解析options
         foreach ($data_list as &$data) {
             $data['name']        = 'config['.$data['name'].']';
@@ -203,12 +193,155 @@ class Config extends Admin {
      * @date   2018-02-16
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function advancedConfig()
+    public function advanced()
     {
         if (IS_POST) {
-            # code...
+            $params = $this->request->param();
+
+            $res = $this->configModel->where('name','cache')->setField('value',json_encode($params['cache']));
+            $res = $this->configModel->where('name','session')->setField('value',json_encode($params['session']));
+            $res = $this->configModel->where('name','cookie')->setField('value',json_encode($params['cookie']));
+            cache('DB_CONFIG_DATA',null);
+            $this->success('提交成功');
         } else{
-            
+            $data = [
+                'cache'=>[
+                    'type'   => 'File',
+                    'path'   => CACHE_PATH,
+                    'expire' => 0
+                ],
+                'session'=>[
+                    'type'       =>'File',
+                    'prefix'     =>'eacoophp_',
+                    'auto_start' =>true
+                ],
+                'cookie'=>[
+                    'prefix'    =>'eacoophp_',
+                    'expire'    =>0,
+                    'path'      =>'/',
+                    'secure'    =>0,
+                    'setcookie' => 1,
+                ]
+            ];
+            $options = [
+                'cache'=>[
+                    'type'=>'group',
+                    'title'=>'缓存（Cache）<span class="f12 color-6">-全局</span>',
+                    'options'=>[
+                        'type'=>[
+                            'title'       =>'驱动方式:',
+                            'description' =>'支持的缓存类型包括file、memcache、wincache、sqlite、redis和xcache。',
+                            'type'        =>'select',
+                            'options'     => ['File'=>'文件','memcache'=>'Memcache','wincache'=>'wincache','sqlite'=>'Sqlite','redis'=>'redis','xcache'=>'xcache'],
+                            'value'       =>'', 
+                        ],
+                        'path'=>[
+                            'title'       =>'保存目录:',
+                            'description' =>'绝对路径',
+                            'type'        =>'text',
+                            'value'       =>'', 
+                        ],
+                        'prefix'=>[
+                            'title'       =>'前缀:',
+                            'description' =>'',
+                            'type'        =>'text',
+                            'value'       =>'', 
+                        ],
+                        'expire'=>[
+                            'title'       =>'有效期:',
+                            'description' =>'缓存有效期 0表示永久缓存',
+                            'type'        =>'text',
+                            'value'       =>'', 
+                        ]
+                    ],
+                ],
+                'session'=>[
+                    'type'=>'group',
+                    'title'=>'会话（Session）<span class="f12 color-6">-全局</span>',
+                    'options'=>[
+                        'type'=>[
+                            'title'       =>'驱动方式:',
+                            'description' =>'支持的类型包括file、memcache、wincache、sqlite、redis和xcache。',
+                            'type'        =>'select',
+                            'options'     => ['none'=>'默认','memcache'=>'Memcache','redis'=>'redis'],
+                            'value'       =>'', 
+                        ],
+                        'prefix'=>[
+                            'title'       =>'前缀:',
+                            'description' =>'',
+                            'type'        =>'text',
+                            'value'       =>'', 
+                        ],
+                        'auto_start'=>[
+                            'title'       =>'自动开启 SESSION:',
+                            'description' =>'是否自动开启SESSION',
+                            'type'        =>'radio',
+                            'options'    =>[0=>'关闭',1=>'开启'],
+                            'value'       =>'', 
+                        ]
+                    ],
+                ],
+                'cookie'=>[
+                    'type'=>'group',
+                    'title'=>'Cookie设置<span class="f12 color-6">-全局</span>',
+                    'options'=>[
+                        'path'=>[
+                            'title'       =>'保存路径:',
+                            'description' =>'',
+                            'type'        =>'text',
+                            'value'       =>'', 
+                        ],
+                        'prefix'=>[
+                            'title'       =>'前缀:',
+                            'description' =>'',
+                            'type'        =>'text',
+                            'value'       =>'', 
+                        ],
+                        'expire'=>[
+                            'title'       =>'有效期:',
+                            'description' =>'',
+                            'type'        =>'text',
+                            'value'       =>'', 
+                        ],
+                        'domain'=>[
+                            'title'       =>'有效域名:',
+                            'description' =>'',
+                            'type'        =>'text',
+                            'value'       =>'', 
+                        ],
+                        'secure'=>[
+                            'title'       =>'启用安全传输:',
+                            'description' =>'',
+                            'type'        =>'radio',
+                            'options'     =>[0=>'关闭',1=>'开启'],
+                            'value'       =>'', 
+                        ],
+                        'httponly'=>[
+                            'title'       =>'httponly:',
+                            'description' =>'',
+                            'type'        =>'text',
+                            'value'       =>'', 
+                        ],
+                        'setcookie'=>[
+                            'title'       =>'使用setcookie:',
+                            'description' =>'',
+                            'type'        =>'radio',
+                            'options'     =>[0=>'关闭',1=>'开启'],
+                            'value'       =>'', 
+                        ],
+                    ],
+                ],
+        ];
+        $options = logic('common/Config')->buildFormByFiled($options,$data);
+        $tab_list = logic('admin/Config')->getTabList();
+        return builder('Form')
+                ->setMetaTitle('高级设置')  //设置页面标题
+                ->setTabNav($tab_list,'advanced')  // 设置页面Tab导航
+                ->setExtraItems($options) //直接设置表单数据
+                ->setFormData($data)
+                //->setAjaxSubmit(false)
+                ->addButton('submit')->addButton('back')    // 设置表单按钮
+                ->fetch();
         }
     }
 
@@ -222,16 +355,7 @@ class Config extends Admin {
     {   
         if (empty($tab_list)) {
             // 设置Tab导航数据列表
-            $config_group_list = config('config_group_list');  // 获取配置分组
-            unset($config_group_list[6]);//去除不显示的分组
-            //unset($config_group_list[7]);//用户
-            //unset($config_group_list[5]);
-            unset($config_group_list[8]);
-            foreach ($config_group_list as $key => $val) {
-                $tab_list[$key]['title'] = $val;
-                $tab_list[$key]['href']  = url('group', ['group' => $key]);
-            }
-            $tab_list['attachment_option']=['title'=>'上传','href'=>url('attachmentOption')];
+            $tab_list = logic('admin/Config')->getTabList();
         }
         if (IS_POST) {
             // 提交数据

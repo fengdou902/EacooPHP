@@ -8,7 +8,7 @@ hr{margin-top: 0px;margin-bottom: 10px;}
 .col-md-offset-2{margin-left: 16.666666667%!important;}
 form .form-section, .portlet-form .form-section {
     font-size: 16px;padding: 10px;background: #f0f0f0;
-    margin: 20px 0;
+    margin: 0 0 20px 0;
     border-bottom: 1px solid #e7ecf1
 }
 form .form-section small{font-size: 12px;margin-left: 20px;}

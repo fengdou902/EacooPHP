@@ -90,7 +90,7 @@ class Link extends Admin{
                     ->addFormItem('target', 'select', '打开方式', '',['_blank'=>'新的窗口打开','_self'=>'本窗口打开'])
                     ->addFormItem('type', 'radio', '类型', '',$this->linkType)
                     ->addFormItem('rating', 'number', '级别', '用于评级别')
-                    ->addFormItem('sort', 'number', '排序', '用于显示的顺序')
+                    ->addFormItem('sort', 'number', '排序', '按照数值大小的倒叙进行排序，数值越小越靠前')
                     ->setFormData($info)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();

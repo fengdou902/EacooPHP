@@ -19,6 +19,7 @@
 
     //ajax get请求
     $('body').on('click','.ajax-get',function () {
+        event.preventDefault();
         var target;
         var $this = $(this);
         var need_confirm = false;
@@ -30,51 +31,24 @@
         if (need_confirm) {
             var confirm_info = $this.attr('confirm-info');
             confirm_info = confirm_info ? confirm_info : "确认要执行该操作吗?";
-            if (!updateConfirm(confirm_info)) {
-                return false;
+            parent.layer.confirm(confirm_info, {offset: 't',icon: 3, title:'询问',shadeClose: true,shade: 0.5,}, function(e){
+                parent.layer.close(e);
+                if ((target = $this.attr('href')) || (target = $this.attr('url'))) {
+                    $.get(target).success(function (result) {
+                        handleAjax(result,$this);
+                    });
+                }
+            }, function(e){
+                parent.layer.close(e);
+            });
+        } else{
+            if ((target = $this.attr('href')) || (target = $this.attr('url'))) {
+                $.get(target).success(function (result) {
+                    handleAjax(result,$this);
+                });
             }
         }
 
-        if ((target = $(this).attr('href')) || (target = $(this).attr('url'))) {
-            var is_pjax = $this.attr('data-pjax');
-            $.get(target).success(function (result) {
-                var is_redirect = false;//是否跳转
-                var is_remove_disabled = $(this).hasClass('no-refresh');
-
-                if (result.code == 1) {
-                    if (result.url) {
-                        is_redirect = true;
-                        updateAlert(result.msg + ' 正在自动跳转~', 'success');
-                    } else {
-                        updateAlert(result.msg, 'success');
-                    }
-                    
-                } else {
-                    if (result.url) {
-                        is_redirect = true;
-                        updateAlert(result.msg + ' 正在自动跳转~', 'warning');
-                    } else {
-                        updateAlert(result.msg, 'warning');
-                    }
-
-                }
-
-                if (is_redirect==true) {
-                    setTimeout(function () {
-                        redirect(result.url);
-                    }, 2000);
-                } else if (is_remove_disabled) {
-                    $(this).removeClass('disabled').prop('disabled', false);
-                } else {
-                    setTimeout(function () {
-                        location.reload();
-                    }, 2000);
-                }
-
-            });
-
-        }
-        return false;
     });
 
     //ajax post submit请求
@@ -115,51 +89,30 @@
             if (need_confirm) {
                 var confirm_info = $(this).attr('confirm-info');
                 confirm_info = confirm_info ? confirm_info : "确认要执行该操作吗?";
-                if (!updateConfirm(confirm_info)) {
+                parent.layer.confirm(confirm_info, {offset: 't',icon: 3, title:'询问',shadeClose: true,shade: 0.5,}, function(e){
+                    parent.layer.close(e);
+                    if(query=='' && $(this).attr('hide-data') != 'true'){
+                        updateAlert('请勾选操作对象。','danger','注意');
+                        return false;
+                    }
+                    $this.addClass('disabled').prop('disabled', true);
+                    $.post(target, query).success(function (result) {
+                        handleAjax(result,$this);
+                    });
+                }, function(e){
+                    parent.layer.close(e);
+                });
+            } else{
+                if(query=='' && $(this).attr('hide-data') != 'true'){
+                    updateAlert('请勾选操作对象。','danger','注意');
                     return false;
                 }
+                $this.addClass('disabled').prop('disabled', true);
+                $.post(target, query).success(function (result) {
+                    handleAjax(result,$this);
+                });
             }
-
-            if(query=='' && $(this).attr('hide-data') != 'true'){
-                updateAlert('请勾选操作对象。','danger','注意');
-                return false;
-            }
-            $this.addClass('disabled').prop('disabled', true);
-            $.post(target, query).success(function (result) {
-                var is_redirect = false;//是否跳转
-                var is_remove_disabled = $this.hasClass('no-refresh');
-                if (result.code == 1) {
-                    if (result.url) {
-                        is_redirect = true;
-                        updateAlert(result.msg + ' 正在自动跳转~', 'success');
-                    } else {
-                        updateAlert(result.msg, 'success');
-                    }
-                } else {
-                    if (result.url) {
-                        is_redirect = true;
-                        updateAlert(result.msg + ' 正在自动跳转~', 'warning');
-                    } else {
-                        is_remove_disabled = true;
-                        updateAlert(result.msg, 'warning');
-                    }
-                }
-
-                if (is_redirect==true) {
-                    setTimeout(function () {
-                        redirect(result.url);
-                    }, 2000);
-                    
-                } else if (is_remove_disabled) {
-                    $this.removeClass('disabled').prop('disabled', false);
-                } else {
-                    setTimeout(function () {
-                        location.reload();
-                    }, 2000);
-
-                }
-
-            });
+  
         }
         return false;
     });
@@ -169,136 +122,94 @@
         event.preventDefault();
         var $this = $(this);
         var need_confirm = false;
-        var target = $this.attr('href');
 
-        var getSelectRows = $table.bootstrapTable('getSelections');
-        var row_len = getSelectRows.length;
-        if (row_len<1) {
-            updateAlert('没有可操作数据。','danger');
-            return false;
-        }
-        var result=[];
-        var key = $this.data('primary-key');
-        for (var i = 0; i < getSelectRows.length; i++) {
-            result[i]=getSelectRows[i]['id'];
-        }
         if ($this.hasClass('confirm')) {
             need_confirm = true;
         }
-
         //验证
         if (need_confirm) {
-            var confirm_info = $(this).attr('confirm-info');
+            var confirm_info = $this.attr('confirm-info');
             confirm_info = confirm_info ? confirm_info : "确认要执行该操作吗?";
-            if (!updateConfirm(confirm_info)) {
-                return false;
-            }
+            parent.layer.confirm(confirm_info, {offset: 't',icon: 3, title:'询问',shadeClose: true,shade: 0.5,}, function(e){
+                parent.layer.close(e);
+                handleBuilderListAjaxEvent($this);
+            }, function(e){
+                parent.layer.close(e);
+            });
+        } else{
+            handleBuilderListAjaxEvent($this);
         }
-        $this.addClass('disabled').prop('disabled', true);
-        $.post(target, {ids:result}).success(function (result) {
-            var is_redirect = false;//是否跳转
-            var is_remove_disabled = $this.hasClass('no-refresh');
-            if (result.code == 1) {
-                if (result.url) {
-                    is_redirect = true;
-                    updateAlert(result.msg + ' 正在自动跳转~', 'success');
-                } else {
-                    updateAlert(result.msg, 'success');
-                }
-            } else {
-                if (result.url) {
-                    is_redirect = true;
-                    updateAlert(result.msg + ' 正在自动跳转~', 'warning');
-                } else {
-                    is_remove_disabled = true;
-                    updateAlert(result.msg, 'warning');
-                }
-            }
 
-            if (is_redirect==true) {
-                setTimeout(function () {
-                    redirect(result.url);
-                }, 2000);
-                
-            } else if (is_remove_disabled) {
-                $this.removeClass('disabled').prop('disabled', false);
-            } else {
-                setTimeout(function () {
-                    location.reload();
-                }, 2000);
-
-            }
-
-        });
+        
     })
 })(jQuery);
 
-//重置alert
-window.updateAlert = function (message,type,title) {
-    if (typeof title=='undefined') {
-        var title;
-        switch(type){
-            case 'success': title = "提示"; break;
-            case 'warning': title = "注意"; break;
-            case 'danger':  title = "错误"; break;
-            case 'error':   title = "错误"; break;
-            default:        title = "未知错误"; break;
-        }
-        
-    };
-    if(typeof type !='undefined')
-    {
-        $.toaster({ priority : type, title :title, message :message});
-    }else {
-        $.toaster({ priority : 'warning', title :title, message :message});
+/**
+ * 处理BuilderListAjax数据
+ * @param  {[type]} argument [description]
+ * @return {[type]} [description]
+ * @date   2018-02-19
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function handleBuilderListAjaxEvent(object) {
+    var $this = object;
+    var target = $this.attr('href');
+    var getSelectRows = $table.bootstrapTable('getSelections');
+    var row_len = getSelectRows.length;
+    if (row_len<1) {
+        updateAlert('没有可操作数据。','danger');
+        return false;
     }
-};   
-
-//重置confirm
-window.updateConfirm = function (confirm_info) {
-    //询问框
-    // layer.confirm(confirm_info, {icon: 3, title:'信息'}, function(confirm_layer){
-    //     layer.close(confirm_layer);
-    //     return true;
-    // }, function(confirm_layer){
-    //     layer.close(confirm_layer);
-    //     return false;
-    // });
-    var result = confirm(confirm_info);
-    return result;
-}
-
-//导航高亮
-function highlight_subnav(url) {
-    $('#sub_menu').find('a[href="' + url + '"]').closest('li').addClass('active');
+    var result=[];
+    var key = $this.attr('primary-key');//主键
+    for (var i = 0; i < getSelectRows.length; i++) {
+        result[i]=getSelectRows[i][key];
+    }
+    console.log(getSelectRows);
+    $this.addClass('disabled').prop('disabled', true);
+    $.post(target, {ids:result}).success(function (result) {
+        handleAjax(result,$this);
+    });
 }
 
 /**
  * 处理ajax返回结果
  */
-function handleAjax(result) {
-    //如果需要跳转的话，消息的末尾附上即将跳转字样
-    if (result.url) {
-        result.msg += '，页面即将跳转～';
-    }
-
-    //弹出提示消息
-    if (result.code) {
-        updateAlert(result.msg, 'success');
+function handleAjax(result,object) {
+    var $this = object;
+    var is_redirect = false;//是否跳转
+    var is_remove_disabled = $this.hasClass('no-refresh');
+    if (result.code == 1) {
+        if (result.url) {
+            is_redirect = true;
+            updateAlert(result.msg + ' 正在自动跳转~', 'success');
+        } else {
+            updateAlert(result.msg, 'success');
+        }
     } else {
-        updateAlert(result.msg, 'danger');
+        if (result.url) {
+            is_redirect = true;
+            updateAlert(result.msg + ' 正在自动跳转~', 'warning');
+        } else {
+            is_remove_disabled = true;
+            updateAlert(result.msg, 'warning');
+        }
     }
 
     //需要跳转的话就跳转
     var interval = 1500;
-    if (result.url == "refresh") {
+    if (is_redirect==true) {
         setTimeout(function () {
-            location.href = location.href;
+            redirect(result.url);
         }, interval);
-    } else if (result.url) {
+        
+    } else if (is_remove_disabled) {
+        $this.removeClass('disabled').prop('disabled', false);
+    } else {
         setTimeout(function () {
-            location.href = result.url;
+            location.reload();
         }, interval);
+
     }
 }
 
@@ -380,3 +291,39 @@ function url(url, params, rewrite) {
     }
     return website;
 }
+
+//重置alert
+window.updateAlert = function (message,type,title) {
+    if (typeof title=='undefined') {
+        var title;
+        switch(type){
+            case 'success': title = "提示"; break;
+            case 'warning': title = "注意"; break;
+            case 'danger':  title = "错误"; break;
+            case 'error':   title = "错误"; break;
+            default:        title = "未知错误"; break;
+        }
+        
+    };
+    if(typeof type !='undefined')
+    {
+        $.toaster({ priority : type, title :title, message :message});
+    }else {
+        $.toaster({ priority : 'warning', title :title, message :message});
+    }
+};   
+
+//重置confirm
+window.updateConfirm = function (confirm_info) {
+    //询问框
+    // var result = parent.layer.confirm(confirm_info, {offset: 't',icon: 3, title:'信息',shadeClose: true,shade: 0.5,}, function(e){
+    //     parent.layer.close(e);
+    //     return true;
+    // }, function(e){
+    //     parent.layer.close(e);
+    //     return false;
+    // });
+    var result = confirm(confirm_info);
+    return result;
+}
+

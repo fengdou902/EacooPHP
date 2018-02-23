@@ -12,6 +12,7 @@ namespace app\user\controller;
 use app\home\controller\Home;
 
 use app\common\model\User as UserModel;
+use app\common\logic\User as UserLogic;
 class Login extends Home{
     function _initialize()
     {
@@ -44,7 +45,7 @@ class Login extends Home{
                 $rememberme = false;
             }
 
-            $result = UserModel::login($data['username'],$data['password'], $rememberme);
+            $result = UserLogic::login($data['username'],$data['password'], $rememberme);
             //print_r($result);die;
 
             if ($result['code']==1) {

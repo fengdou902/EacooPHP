@@ -23,6 +23,7 @@ class Base extends Controller {
 	public function _initialize() {
 		//获取request信息
 		$this->requestInfo();
+		//halt(config());
 	}
 
 	/**

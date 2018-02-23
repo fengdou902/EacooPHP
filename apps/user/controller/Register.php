@@ -13,7 +13,7 @@ namespace app\user\controller;
 use app\home\controller\Home;
 
 use app\common\model\User as UserModel;
-
+use app\common\logic\User as UserLogic;
 class Register extends Home{
 
     function _initialize(){
@@ -21,14 +21,18 @@ class Register extends Home{
         $this->userModel = new UserModel;
     }
 
-
-
+    /**
+     * 注册入口
+     * @return [type] [description]
+     * @date   2018-02-22
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
     public function index(){
         if (IS_POST){
             $data = input('post.');
             //检测用户名或昵称是否被禁止注册
-            $check_username = UserModel::checkDenyUser($data['username']);
-            $check_nickname = UserModel::checkDenyUser($data['nickname']);
+            $check_username = UserLogic::checkDenyUser($data['username']);
+            $check_nickname = UserLogic::checkDenyUser($data['nickname']);
             if ($check_username || $check_nickname){
                 $this->error('用户名或昵称包含违规关键字，禁止注册');
             }

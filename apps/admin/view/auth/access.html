@@ -21,19 +21,20 @@
                 <form action="" method="post" class="form-builder form-horizontal responsive" >
                     <div class="form-group">
                         <div class="auth">
-                            {volist name="all_auth_rules" id="vo1"}
-                                {php} $module_name = $vo1['depend_flag']; {/php}
-                                <div class="{$module_name}">
+                            {volist name="auth_rules_list" id="vo"}
+                                {php} $depend_name = $vo['depend_flag']; {/php}
+                                <div class="{$depend_name}">
                                     <div class="ud-control ud-checkbox">
                                         <label class="checkbox-label checkbox-inline">
-                                            <input type="checkbox" name="menu_auth[]" data-module-name="{$module_name}" {php} if(in_array($vo1['id'], $menu_auth_rules)) echo "checked";{/php} value="{$vo1.id}">
+                                            <input type="checkbox" name="menu_auth[]" data-depend-name="{$depend_name}" {php} if(in_array($vo['id'], $menu_auth_rules)) echo "checked";{/php} value="{$vo.id}">
                                             <span class="ud-control-indicator"></span>
-                                            <span> {$vo1.title}</span>
+                                            <span> {$vo.title}</span>
                                         </label>
-                                        <div class="auth{$vo1.id}" style="padding-left: 25px;margin-top: 10px;">
-                                            {volist name="vo1._child" id="vo2"}
+                                        <div class="auth{$vo.id}" style="padding-left: 25px;margin-top: 10px;">
+                                            {notempty name="vo._child"}
+                                            {volist name="vo._child" id="vo2"}
                                                 <label class="checkbox-label checkbox-inline">
-                                                    <input type="checkbox" name="menu_auth[]" data-module-name="{$module_name}" {php}if(in_array($vo2['id'], $menu_auth_rules)) echo "checked";{/php} value="{$vo2.id}">
+                                                    <input type="checkbox" name="menu_auth[]" data-depend-name="{$depend_name}" {php}if(in_array($vo2['id'], $menu_auth_rules)) echo "checked";{/php} value="{$vo2.id}">
                                                     <span class="ud-control-indicator"></span>
                                                     <span> {$vo2.title}</span>
                                                 </label>
@@ -41,7 +42,7 @@
                                                 {notempty name="vo2._child"}
                                                     {foreach name="vo2._child" item="vo3"}
                                                         <label class="checkbox-label checkbox-inline">
-                                                            <input type="checkbox" name="menu_auth[]" data-module-name="{$module_name}" {php}if(in_array($vo3['id'], $menu_auth_rules)) echo "checked";{/php} value="{$vo3.id}">
+                                                            <input type="checkbox" name="menu_auth[]" data-depend-name="{$depend_name}" {php}if(in_array($vo3['id'], $menu_auth_rules)) echo "checked";{/php} value="{$vo3.id}">
                                                             <span class="ud-control-indicator"></span>
                                                             <span> {$vo3.title}</span>
                                                         </label>
@@ -50,28 +51,18 @@
                                                                 {volist name="vo3._child" id="vo4"}
                                                                     {notempty name="vo4._child"}
                                                                         <label class="checkbox-inline" style="display: block;margin-top: 10px;margin-left: 0px;">
-                                                                            <input type="checkbox" name="menu_auth[]" data-module-name="{$module_name}" {php}if(in_array($vo4['id'], $menu_auth_rules)) echo "checked";{/php} value="{$vo4.id}">
+                                                                            <input type="checkbox" name="menu_auth[]" data-depend-name="{$depend_name}" {php}if(in_array($vo4['id'], $menu_auth_rules)) echo "checked";{/php} value="{$vo4.id}">
                                                                             <span class="ud-control-indicator"></span>
                                                                             <span> {$vo4.title}</span>
                                                                         </label>
                                                                     {else /}
                                                                          <label class="checkbox-inline">
-                                                                            <input type="checkbox" name="menu_auth[]" data-module-name="{$module_name}" {php}if(in_array($vo4['id'], $menu_auth_rules)) echo "checked";{/php} value="{$vo4.id}">
+                                                                            <input type="checkbox" name="menu_auth[]" data-depend-name="{$depend_name}" {php}if(in_array($vo4['id'], $menu_auth_rules)) echo "checked";{/php} value="{$vo4.id}">
                                                                             <span class="ud-control-indicator"></span>
                                                                             <span> {$vo4.title}</span>
                                                                         </label>
                                                                     {/notempty}
-                                                                    {notempty name="vo4._child"}
-                                                                        <div class="auth{$vo4.id}" style="padding-left: 25px;margin-top: 10px;margin-bottom: 10px;">
-                                                                            {foreach name="vo4._child" item="vo5"}
-                                                                                <label class="checkbox-inline">
-                                                                                    <input type="checkbox" name="menu_auth[]" data-module-name="{$module_name}" {php}if(in_array($vo5['id'],$menu_auth_rules)) echo "checked";{/php} value="{$vo5.id}">
-                                                                                    <span class="ud-control-indicator"></span>
-                                                                                    <span> {$vo5.title}</span>
-                                                                                </label>
-                                                                            {/foreach}
-                                                                        </div>
-                                                                    {/notempty}
+                                                                    
                                                                 {/volist}
                                                             </div>
                                                         {/notempty}
@@ -79,11 +70,13 @@
                                                 {/notempty}
                                                 </div>
                                             {/volist}
+                                            {/notempty}
                                         </div>
                                     </div>
                                 </div>
                                 <hr>
                             {/volist}
+                            
                         </div>
                     </div>
                     <div class="form-group">
@@ -106,7 +99,7 @@
         $(function(){
             //遍历选中当前权限的子权限
             $('.auth input[type="checkbox"]').on('change',function(){
-                $('.'+$(this).attr('data-module-name')+' .auth'+$(this).val()).find('input').prop('checked',this.checked);
+                $('.'+$(this).attr('data-depend-name')+' .auth'+$(this).val()).find('input').prop('checked',this.checked);
             });
         });
     </script>

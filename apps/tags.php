@@ -16,7 +16,7 @@ $return = [
     // 应用初始化
     'app_init'     => [$behavior_path.'InitApp'],
     // 应用开始
-    'app_begin'    => [],
+    'app_begin'    => [$behavior_path.'Config'],
     // 模块初始化
     'module_init'  => [],
     // 操作开始执行

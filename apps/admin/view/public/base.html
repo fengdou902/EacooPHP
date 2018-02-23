@@ -14,6 +14,7 @@
             <li class="active">{$meta_title} <span class="color-warning eacoo-menu-collect" data-title="{$meta_title}" data-url="{$Request.url}" title="标记为收藏" style="cursor: pointer;font-size: 13px;"> <i class="fa {eq name="is_menu_collected" value="1"}fa-star{else/}fa-star-o{/eq}"></i></span></li>
           {/notempty}
           <div class="pull-right mr-10">
+            {present name="page_config.self"}{$page_config.self}{/present}
               {present name="page_config.help"}<a href="{$page_config.help|default=''}" class="color-6" title="帮助" target="_blank"><i class="fa fa-question-circle f15"></i></a>{/present}
               {present name="page_config.back"}<button type="button" class="btn btn-box-tool f16" onclick="javascript:history.go(-1);"><i class="fa fa-reply"></i></button>{/present}
               <button type="button" class="btn btn-box-tool f16" onclick="javascript:location.reload();"><i class="fa fa-refresh"></i></button>

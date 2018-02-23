@@ -58,4 +58,28 @@ EOF;
       
     return ['sub_group'=>$sub_group,'html'=>$html];
     }
+
+    /**
+     * 获取后台TabList
+     * @return [type] [description]
+     * @date   2018-02-22
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function getTabList()
+    {
+        // 设置Tab导航数据列表
+        $config_group_list = config('config_group_list');  // 获取配置分组
+        unset($config_group_list[6]);//去除不显示的分组
+        //unset($config_group_list[7]);//用户
+        unset($config_group_list[8]);
+        unset($config_group_list[9]);
+        foreach ($config_group_list as $key => $val) {
+            $tab_list[$key]['title'] = $val;
+            $tab_list[$key]['href']  = url('group', ['group' => $key]);
+        }
+        $tab_list['advanced']=['title'=>'高级','href'=>url('advanced')];
+        $tab_list['attachment_option']=['title'=>'上传','href'=>url('attachmentOption')];
+
+        return $tab_list;
+    }
 }

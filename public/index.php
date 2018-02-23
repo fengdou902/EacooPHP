@@ -37,7 +37,7 @@ define('BASE_PATH', substr($_SERVER['SCRIPT_NAME'], 0, -10));
 
 if ($_SERVER['REQUEST_URI']==='/admin') {
 	//重定向到后台地址
-    header("Location:/admin.php?s=/admin/index/login"); 
+    header("Location:/admin.php?s=/admin/login/index"); 
     exit;
 }
 

@@ -11,7 +11,7 @@
 namespace app\admin\controller;
 use app\common\controller\Base;
 
-use app\common\model\User as UserModel;
+use app\common\logic\User as UserLogic;
 use think\captcha\Captcha;
 use think\Url;
 
@@ -38,7 +38,8 @@ class Login extends Base
           $data = $this->request->param();
           $result = $this->validate($data,[
                                         ['username','require|min:1','登录名不能为空|登录名格式不正确'],
-                                        ['password','require|length:6,32','请填写密码|密码格式不正确']
+                                        ['password','require|length:6,32','请填写密码|密码格式不正确'],
+                                        ['captcha','require','请填写验证码']
                                     ]);
           if(true !== $result){
               // 验证失败 输出错误信息
@@ -62,7 +63,7 @@ class Login extends Base
             }
             $rememberme = $data['rememberme']==1 ? true : false;
 
-            $result = UserModel::login($data['username'],$data['password'], $rememberme);
+            $result = UserLogic::login($data['username'],$data['password'], $rememberme);
             if ($result['code']==1) {
                 $uid = !empty($result['data']['uid']) ? $result['data']['uid']:0;
                 $this->success('登录成功！',url('admin/index/index'));
@@ -85,7 +86,7 @@ class Login extends Base
     public function logout(){
         session(null);
         cookie(null,config('cookie.prefix'));
-        $this->redirect('admin/index/login');
+        $this->redirect('admin/login/index');
     }
 
      //图片验证码

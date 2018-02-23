@@ -14,7 +14,6 @@ use app\admin\model\Plugins as PluginsModel;
 use app\admin\model\Hooks;
 use app\admin\model\AuthRule;
 
-use app\common\builder\Builder;
 use eacoo\Sql;
 use eacoo\Cloud;
 
@@ -106,65 +105,11 @@ class Plugins extends Admin {
             $extensionObj->initInfo('plugin',$plugin['name']);
 
             $options   = $extensionObj->getOptionsByFile();
+            $db_config = json_decode($db_config, true);
+            
+            //构建表单配置信息
+            $options = logic('common/Config')->buildFormByFiled($options,$db_config,true);
 
-            $this->meta_title = '设置-'.$plugin['title'];
-            if (!empty($options) && is_array($options)) {
-                if (!empty($db_config)) {
-                    $db_config = json_decode($db_config, true);//dump($db_config['sliders']);
-                    foreach ($options as $key => $value) {
-                        switch ($value['type']) {
-                            case 'group':
-                                foreach ($value['options'] as $okey => $option) {
-                                    $options[$key]['options'][$okey]['value'] = $db_config[$key][$okey]; 
-                                }
-                                break;
-                            case 'tab':
-                                foreach ($value['options'] as $okey => $option) {
-                                    foreach ($option['options'] as $gkey => $value) {
-                                        $options[$key]['options'][$okey][$gkey]['options']['value'] = $db_config[$gkey];
-                                    }
-                                    
-                                }
-                                break;
-                            default:
-                                if (isset($db_config[$key])) {
-                                    $options[$key]['value'] = $db_config[$key];
-                                }
-                                break;
-                        }
-
-                    }
-                }
-                // 构造表单名
-                foreach ($options as $key => $val) {
-                    switch ($val['type']) {
-                        case 'group':
-                            foreach ($val['options'] as $key2 => $val2) {
-                                $options[$key]['options'][$key2]['name'] = 'config['.$key.']['.$key2.']';
-                            }
-                            break;
-                        case 'tab':
-                            foreach ($val['options'] as $key2 => $val2) {
-                                foreach ($val2['options'] as $key3 => $val3) {
-                                    $options[$key]['options'][$key2]['options'][$key3]['name'] = 'config['.$key3.']';
-
-                                    $options[$key]['options'][$key2]['options'][$key3]['confirm'] = $options[$key]['options'][$key2]['options'][$key3]['extra_class'] = $options[$key]['options'][$key2]['options'][$key3]['extra_attr']='';
-                                }
-                                
-                            }
-                            break;
-                        default:
-                            $options[$key]['name'] = 'config['.$key.']';
-
-                            $options[$key]['confirm']     = isset($val['confirm']) ? $val['confirm']:'';
-                            $options[$key]['options']     = isset($val['options']) ? $val['options']:[];
-                            $options[$key]['extra_class'] = isset($val['extra_class']) ? $val['extra_class']:'';
-                            $options[$key]['extra_attr']  = isset($val['extra_attr']) ? $val['extra_attr']:'';
-                            break;
-                    }  
-                }
-            }
-    
             if (!empty($plugin['custom_config'])) {
                 $this->assign('data', $plugin);
                 $this->assign('form_items', $options);
@@ -172,7 +117,7 @@ class Plugins extends Admin {
                 return $this->fetch($plugin['plugin_path'].$plugin['custom_config']);
             } else {
                 return builder('Form')
-                        ->setMetaTitle($this->meta_title)  //设置页面标题
+                        ->setMetaTitle('设置-'.$plugin['title'])  //设置页面标题
                         ->setPostUrl(url('config')) //设置表单提交地址
                         ->addFormItem('id', 'hidden', 'ID', 'ID')
                         ->setExtraItems($options) //直接设置表单数据

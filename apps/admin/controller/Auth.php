@@ -15,8 +15,6 @@ use app\admin\model\AuthGroup as AuthGroupModel;
 use app\admin\model\AuthGroupAccess as AuthGroupAccessModel;
 use app\common\model\User as UserModel;
 
-use eacoo\Tree;
-
 class Auth extends Admin {
 
     protected $authRuleModel;
@@ -136,7 +134,7 @@ class Auth extends Admin {
                     ->addFormItem('icon', 'icon', '字体图标', '字体图标')
                     ->addFormItem('name', 'text', '链接', '链接')
                     ->addFormItem('is_menu', 'radio', '后台菜单', '是否标记为后台菜单',[1=>'是',0=>'否'])
-                    ->addFormItem('sort', 'number', '排序', '排序')
+                    ->addFormItem('sort', 'number', '排序', '按照数值大小的倒叙进行排序，数值越小越靠前')
                     ->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'启用'])
                     ->setFormData($info)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
@@ -328,15 +326,11 @@ class Auth extends Admin {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function access($group_id=0){
-        if ($group_id!=0) {
-            $this->assign('group_id',$group_id);
-        }
-        $title='权限分配';
-        $this->assign('meta_title',$title);
-
-        if (IS_POST && $group_id!=0) {
+        
+        $title='权限分配'; 
+        if (IS_POST && $group_id>0) {
             $data['id']    = $group_id;
-            $menu_auth     = input('post.menu_auth/a','');//获取所有授权菜单
+            $menu_auth     = input('param.menu_auth/a','');//获取所有授权菜单
             $data['rules'] = implode(',',$menu_auth);
             $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
 
@@ -354,14 +348,19 @@ class Auth extends Admin {
             //}
 
         } else{
+            if ($group_id>0) {
+                $this->assign('group_id',$group_id);
+            }
+            $this->assign('meta_title',$title);
             $role_auth_rule = $this->authGroupModel->where(['id'=>intval($group_id)])->value('rules');
             $this->assign('menu_auth_rules',explode(',',$role_auth_rule));//获取指定获取到的权限
+            $rule = db('auth_rule')->select();
+            $tree_obj = new \eacoo\Tree;
+            $rule = $tree_obj->list_to_tree($rule);
+            $this->assign('auth_rules_list',$rule);//所以规则
         }
-        $menu = $this->authRuleModel->where(['pid'=>0,'status'=>1])->order('sort asc')->select();
-        foreach($menu as $k=>$v){
-            $menu[$k]['_child']=$this->authRuleModel->where(['pid'=>$v['id']])->order('sort asc')->select();
-        }
-        $this->assign('all_auth_rules',$menu);//所以规则
+        
+
         return $this->fetch();
     }
 
@@ -459,34 +458,39 @@ class Auth extends Admin {
      * @author 朱亚杰 <zhuyajie@topthink.net>
      */
     public function addToGroup(){
-        $uids = input('uids',false);//新增批量用户
-        if ($uids) {
-            $uid = explode(',',$uids);
-        }else{
-            $uid = input('uid');
-        }
-        
-        $gid = input('param.group_id');
-        if( empty($uid) ){
-            $this->error('参数有误');
-        }
-        if(is_numeric($uid)){
-            if ( is_administrator($uid) ) {
-                $this->error('该用户为超级管理员');
+        try {
+            $uids = input('uids',false);//新增批量用户
+            if ($uids) {
+                $uid = explode(',',$uids);
+            }else{
+                $uid = input('uid');
             }
-            if( !$this->userModel->where(['uid'=>$uid])->find() ){
-                $this->error('用户不存在');
+            
+            $gid = input('param.group_id');
+            if( empty($uid) ){
+                throw new \Exception("参数有误", 0);
+                
             }
-        }
+            if(is_numeric($uid)){
+                if ( is_administrator($uid) ) {
+                    throw new \Exception("该用户为超级管理员", 0);
+                }
+                if( !$this->userModel->where(['uid'=>$uid])->find() ){
+                    throw new \Exception("用户不存在", 0);
+                }
+            }
 
-        if( $gid && !$this->authGroupModel->checkGroupId($gid)){
-            $this->error($this->authGroupModel->error);
+            if( $gid && !$this->authGroupModel->checkGroupId($gid)){
+                $this->error($this->authGroupModel->error);
+            }
+            if ( !logic('AuthGroup')->addToGroup($uid,$gid) ){
+                $this->error($this->authGroupModel->getError());
+            }
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
         }
-        if ( $this->authGroupModel->addToGroup($uid,$gid) ){
-            $this->success('操作成功');
-        }else{
-            $this->error($this->authGroupModel->getError());
-        }
+        $this->success('操作成功');
+        
     }
 
     /**
@@ -496,7 +500,7 @@ class Auth extends Admin {
     public function removeFromGroup(){
         $uid = input('param.uid');
         $gid = input('param.group_id');
-        if( $uid==UID ){
+        if( $uid==is_login() ){
             $this->error('不允许解除自身授权');
         }
         if( empty($uid) || empty($gid) ){
@@ -505,7 +509,7 @@ class Auth extends Admin {
         if( !$this->authGroupModel->find($gid)){
             $this->error('用户组不存在');
         }
-        if ( $this->authGroupModel->removeFromGroup($uid,$gid) ){
+        if ( logic('AuthGroup')->removeFromGroup($uid,$gid) ){
             $this->success('操作成功');
         }else{
             $this->error('操作失败');

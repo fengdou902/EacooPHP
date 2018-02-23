@@ -22,7 +22,12 @@
             </select>
         </div>
         {notempty name="field.description"}<div class="col-md-6 help-block"><i class="fa fa-info-circle color-info1"></i> {$field.description}</div>{/notempty}
-
+        
+        {if condition="$load_select2"}
+            <link rel="stylesheet" type="text/css" href="__LIBS__/select2/css/select2.min.css">
+            <link rel="stylesheet" type="text/css" href="__LIBS__/select2/css/select2-bootstrap.min.css">
+            <script type="text/javascript" src="__LIBS__/select2/js/select2.min.js" charset="utf-8"></script>
+        {/if}
         <script type="text/javascript">
         $(document).ready(function() {
             if ($.support.pjax) {

@@ -106,6 +106,7 @@ class BuilderList extends Builder {
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['icon'] = 'fa fa-pause';
                 $my_attribute['class'] = 'btn btn-warning ajax-table-btn confirm btn-sm';
+                $my_attribute['confirm-info'] = '您确定要执行禁用操作吗？';
                 $my_attribute['model'] = !empty($attribute['model']) ? $attribute['model']: CONTROLLER_NAME;
                 $my_attribute['href']  = url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'forbid']).'?model='.$my_attribute['model'];
 
@@ -116,6 +117,7 @@ class BuilderList extends Builder {
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['icon'] = 'fa fa-recycle';
                 $my_attribute['class'] = 'btn btn-danger ajax-table-btn confirm btn-sm';
+                $my_attribute['confirm-info'] = '您确定要执行回收操作吗？';
                 $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;
                 $my_attribute['href']  = url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'recycle']).'?model='.$my_attribute['model'];
 
@@ -136,6 +138,7 @@ class BuilderList extends Builder {
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['icon'] = 'fa fa-trash';
                 $my_attribute['class'] = 'btn btn-danger ajax-table-btn confirm btn-sm';
+                $my_attribute['confirm-info'] = '您确定要执行删除操作吗？';
                 $my_attribute['model'] = isset($attribute['model']) && $attribute['model'] ? $attribute['model']: CONTROLLER_NAME;
                 $my_attribute['href']  = url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
@@ -344,6 +347,7 @@ class BuilderList extends Builder {
                 $my_attribute['title'] = '回收';
                 $my_attribute['icon'] = 'fa fa-recycle';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-danger btn-xs ajax-get confirm':'ajax-get confirm';
+                $my_attribute['confirm-info'] = '您确定要执行回收操作吗？';
                 $my_attribute['model'] = isset($attribute['model']) ? $attribute['model'] : CONTROLLER_NAME;
                 $my_attribute['href'] = url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
@@ -373,6 +377,7 @@ class BuilderList extends Builder {
                 $my_attribute['title'] = '删除';
                 $my_attribute['icon'] = 'fa fa-trash';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-danger btn-xs ajax-get confirm':'ajax-get confirm';
+                $my_attribute['confirm-info'] = '您确定要执行删除操作吗？';
                 $my_attribute['model'] = isset($attribute['model']) ? $attribute['model'] : CONTROLLER_NAME;
                 $my_attribute['href'] = url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
@@ -516,6 +521,7 @@ class BuilderList extends Builder {
             //编译top_button_list中的HTML属性
             if ($this->topButtonList) {
                 foreach ($this->topButtonList as &$button) {
+                    $button['primary-key'] = $this->tablePrimaryKey;
                     $button['attribute'] = $this->compileHtmlAttr($button);
                 }
             }

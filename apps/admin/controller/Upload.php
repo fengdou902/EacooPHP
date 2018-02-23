@@ -9,12 +9,10 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
-use app\admin\builder\Builder;
 
-use app\common\controller\Upload as UploadService;
+use app\common\logic\Upload as UploadLogic;
 use app\common\model\Attachment as AttachmentModel;
-use app\common\model\TermRelationships;
-use app\common\model\Config;
+use app\common\model\TermRelationships as TermRelationshipsModel;
 
 class Upload extends Admin {
 
@@ -28,7 +26,7 @@ class Upload extends Admin {
 
     /* 文件上传 */
     public function upload() {
-        $controller = new UploadService;
+        $controller = new UploadLogic;
         $return = $controller->upload();
         return json($return);
     }
@@ -40,7 +38,7 @@ class Upload extends Admin {
      * @return [type]                  [description]
      */
     public function uploadRemoteFile($url='',$download_local=false){
-        $controller = new UploadService;
+        $controller = new UploadLogic;
         $return = $controller->uploadRemoteFile();
         return json($return);
     }
@@ -53,7 +51,7 @@ class Upload extends Admin {
 
         $uid = input('param.uid',0,'intval');
 
-        $controller = new UploadService;
+        $controller = new UploadLogic;
         $return = $controller->uploadAvatar($uid);
 
         return json($return);
@@ -112,7 +110,7 @@ class Upload extends Admin {
         }
         //分类
         if (!empty($data['cat']) && $data['cat']>0) {
-            $media_ids = TermRelationships::where(['term_id'=>$data['cat'],'table'=>'attachment'])->select();
+            $media_ids = TermRelationshipsModel::where(['term_id'=>$data['cat'],'table'=>'attachment'])->select();
             if(count($media_ids)){
                 $media_ids = array_column($media_ids,'object_id');
                 //$post_ids=array_merge(array($post_ids),$post_ids);
@@ -149,7 +147,13 @@ class Upload extends Admin {
         return $this->fetch();
     }
 
-    /* 下载文件 */
+    /**
+     * 下载文件
+     * @param  [type] $id [description]
+     * @return [type] [description]
+     * @date   2018-02-18
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
     public function download($id = null){
         if(empty($id) || !is_numeric($id)){
             $this->error('参数错误');
@@ -160,6 +164,7 @@ class Upload extends Admin {
         }
 
     }
+
     // //实现php文件安全下载！
     // public function downloads($name){
     //     $name_tmp = explode("_",$name);

@@ -15,8 +15,6 @@ use app\admin\model\AuthGroup as AuthGroupModel;
 use app\admin\model\AuthGroupAccess as AuthGroupAccessModel;
 use app\common\model\User as UserModel;
 
-use eacoo\Tree;
-
 class Menu extends Admin {
 
     protected $authRuleModel;
@@ -90,7 +88,8 @@ class Menu extends Admin {
             ->setListPage($total,false)
             ->setListData($menus)    // 数据列表
             ->setExtraHtml($extra_html)
-            ->addRightButton('edit')      // 添加编辑按钮
+            ->addRightButton('edit') // 添加编辑按钮
+            ->addRightButton('forbid',['model'=>'auth_rule']) // 添加禁用按钮
             ->alterListData(
                 ['key' => 'pid', 'value' =>'0'],
                 ['p_menu' => '无'])
@@ -103,14 +102,13 @@ class Menu extends Admin {
      * @return [type]      [description]
      */
     public function edit($id=0){
-        $title=$id ? "编辑":"新增";
+        $title = $id ? "编辑":"新增";
         
         if(IS_POST){
             // 提交数据
             $data = $this->request->param();
             //验证数据
-            $this->validateData($data,'AuthRule');
-            $data['depend_type']=1;//后台添加默认依赖模块
+            $this->validateData($data,'AuthRule.edit');
             $id = isset($data['id']) && $data['id']>0 ? $data['id']:false;
 
             if ($this->authRuleModel->editData($data,$id)) {
@@ -126,29 +124,54 @@ class Menu extends Admin {
             if ($id>0) {
                 $info = $this->authRuleModel->get($id);
             } else{
-                $pid       = (int)input('param.pid');
-                $pid_data  = $this->authRuleModel->get($pid);
-                $info = ['depend_flag'=>$pid_data['depend_flag'],'pid'=>$pid,'is_menu'=>1,'sort'=>99,'status'=>1];
+                $pid       = (int)input('param.pid',false);
+                if ($pid>0) {
+                    $pid_data  = $this->authRuleModel->where('pid',$pid)->field('depend_type,depend_flag')->find();
+                    $info = ['depend_type'=>pid_data['depend_type'],'depend_flag'=>$pid_data['depend_flag'],'pid'=>$pid,'is_menu'=>1,'sort'=>99,'status'=>1];
+                } else{
+                    
+                    $info = ['depend_type'=>1,'is_menu'=>1,'sort'=>99,'status'=>1];
+                }
+                
             }
+            $depend_flag = logic('Auth')->getDependFlags($info['depend_type']);
+            //获取上级菜单
             $menus = logic('Auth')->getAdminMenu();
             $menus = array_merge([0=>['id'=>0,'title_show'=>'顶级菜单']], $menus);
+
+            $extra_html = logic('Auth')->getFormMenuHtml();//获取表单菜单html
+
             return builder('form')
                     ->setMetaTitle($title.'菜单')  // 设置页面标题
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
                     ->addFormItem('title', 'text', '标题', '用于后台显示的配置标题')
                     ->addFormItem('pid', 'multilayer_select', '上级菜单', '上级菜单',$menus)
                     ->addFormItem('depend_type', 'select', '来源类型', '来源类型。分别是模块，插件，主题',[1=>'模块',2=>'插件',3=>'主题'])
-                    ->addFormItem('depend_flag', 'text', '来源标识', '请选择标识名，模块、插件、主题的标识名')
+                    ->addFormItem('depend_flag', 'select', '来源标识', '请选择标识名，模块、插件、主题的标识名',$depend_flag)
                     ->addFormItem('icon', 'icon', '字体图标', '请选择一个图标')
-                    ->addFormItem('name', 'text', '链接', '链接')
+                    ->addFormItem('name', 'text', '链接/规则', '链接或者规则')
                     ->addFormItem('is_menu', 'radio', '后台菜单', '是否标记为后台菜单',[1=>'是',0=>'否'])
-                    ->addFormItem('sort', 'number', '排序', '排序')
+                    ->addFormItem('sort', 'number', '排序', '按照数值大小的倒叙进行排序，数值越小越靠前')
                     ->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'启用'])
                     ->setFormData($info)
+                    ->setExtraHtml($extra_html)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
         }   
         
+    }
+
+    /**
+     * 获取依赖标识组
+     * @param  integer $depend_type 依赖类型
+     * @return [type] [description]
+     * @date   2018-02-20
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function getSelectDependFlags($depend_type=0)
+    {
+        $data_list = logic('Auth')->getDependFlags($depend_type);
+        return json($data_list);
     }
 
     /**

@@ -62,6 +62,81 @@ class Auth extends Base {
     }
 
     /**
+     * 获取表单的菜单关联组
+     * @param  integer $depend_type [description]
+     * @return [type] [description]
+     * @date   2018-02-20
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function getDependFlags($depend_type=0)
+    {
+        if (!$depend_type) {
+            return false;       
+        }
+        switch ($depend_type) {
+            case 1://模块
+                $data_list = logic('Module')->getModules();
+                break;
+            case 2://插件
+                $data_list = model('admin/Plugins')->where('status',1)->column('title','name');
+                break;
+            case 3://主题
+                $data_list = model('admin/Theme')->where('status',1)->column('title','name');
+                break;
+            default:
+                # code...
+                break;
+        }
+        return $data_list;
+    }
+
+    /**
+     * 获取后台菜单表单的html
+     * @return [type] [description]
+     * @date   2018-02-20
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function getFormMenuHtml()
+    {
+        $html = <<<EOF
+<script type="text/javascript">
+ $(function () {
+    var depend_type = $('#depend_type').find("option:selected").val();
+    var depend_flag = $('#depend_flag').find("option:selected").val();
+    switch_select_dependflag_function(depend_type,depend_flag);
+    $('#depend_type').on('change',function(){
+        var depend_type = $('#depend_type').find("option:selected").val();
+        switch_select_dependflag_function(depend_type,0);
+    });
+})
+//事件方法
+function switch_select_dependflag_function(type,depend_flag){
+    $.get(url("admin/Menu/getSelectDependFlags"),{depend_type:type},function(result){
+        if(type == 1){//模块
+            var oname = '模块';
+        } else if(type == 2){//插件
+            var oname = '插件';
+        } else{//主题
+            var oname = '主题';
+        }
+        var append_html='<option value="0">请选择一个'+oname+'</option>';
+        $.each(result,function(name,value) {
+            var selected='';
+            if(depend_flag==name){
+                var selected = 'selected';
+            }
+            append_html+='<option value="'+name+'" '+selected+'>'+value+'（'+name+'）</option>';
+        });
+        $('#depend_flag').html(append_html);
+      });
+    
+}
+</script>
+EOF;
+    return $html;
+    }
+
+    /**
      * 对菜单进行排序
      * @author 心云间、凝听 <981248356@qq.com>
      */
@@ -471,7 +546,7 @@ EOF;
     public function removeFromGroup(){
         $uid = input('param.uid');
         $gid = input('param.group_id');
-        if( $uid==UID ){
+        if( $uid==is_login()){
             $this->error('不允许解除自身授权');
         }
         if( empty($uid) || empty($gid) ){
