@@ -47,7 +47,7 @@ class User extends Admin {
                 ->addTopButton('forbid')  // 添加禁用按钮
                 ->addTopButton('delete')  // 添加删除按钮
                 ->addTopButton('self',$reset_password)  // 添加重置按钮
-                ->setSearch('basic','请输入ID/用户名/昵称')
+                //->setSearch('custom','请输入ID/用户名/昵称')
                 ->keyListItem('uid', 'UID')
                 ->keyListItem('avatar', '头像', 'avatar')
                 ->keyListItem('nickname', '昵称')

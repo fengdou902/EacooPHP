@@ -4,7 +4,7 @@
 {/block}
 {block name="main"}    
     {notempty name="tab_nav"}
-        <div class="builder-tabs builder-form-tabs mb-10">
+        <div class="eacoo-tabs builder-form-tabs mb-10">
             <ul class="nav nav-tabs">
                 {volist name="tab_nav.tab_list" id="tab"}
                     <li class="{php}if($tab_nav['current_tab'] == $key) echo 'active';{/php}"><a href="{$tab.href}">{$tab.title}</a></li>

@@ -30,6 +30,7 @@ class Theme extends Admin {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function index($from_type = 'oneline') {
+        $this->assign('page_config',['self'=>logic('admin/index')->getAppsCenterTabList('theme')]);
         $tab_list = [
             'local'=>['title'=>'已安装','href'=>url('index',['from_type'=>'local'])],
             'oneline'=>['title'=>'主题市场','href'=>url('index',['from_type'=>'oneline'])],

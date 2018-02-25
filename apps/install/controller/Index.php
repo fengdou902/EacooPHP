@@ -1,4 +1,5 @@
 <?php
+// 安装
 // +----------------------------------------------------------------------
 // | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
@@ -26,7 +27,7 @@ class Index extends Controller {
 		];
 
 		if ($this->request->action() != 'complete' && is_file(APP_PATH . 'database.php') && is_file(APP_PATH . 'install.lock')) {
-			return $this->redirect('admin/index/login');
+			return $this->redirect('admin/login/index');
 		}
 		$this->assign('product_name',config('product_name'));//产品名
 	}
@@ -49,11 +50,14 @@ class Index extends Controller {
 	 */
 	public function check() {
 		if ($this->request->isPost()) {
-			if(session('error')){
-                $this->error('环境检测没有通过，请调整环境后重试！');
-            }else{
-                $this->success('恭喜您环境检测通过', url('config'));
-            }
+			try {
+				if (session('error')) {
+					throw new \Exception("环境检测没有通过，请调整环境后重试！", 0);
+				}
+			} catch (\Exception $e) {
+				$this->error($e->getMessage());
+			}
+			$this->success('恭喜您环境检测通过', url('config'));
 		} else{
 			session('error', false);
 			//环境检测

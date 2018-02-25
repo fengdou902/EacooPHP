@@ -63,14 +63,15 @@ skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar 
 .header-tip{background-color: #F4FAFF;padding: 10px;margin:0px 20px;border-radius:3px;font-weight: 500;}
 /*tab*/
 .nav-tabs-custom>.nav-tabs>li:first-of-type.active>a{border-left-color:#e0e0e0;}
-.builder-tabs .nav-tabs{background: none;border-bottom: 2px solid #eee;}
+.eacoo-tabs .nav-tabs{background: none;border-bottom: 2px solid #eee;}
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover{border:none;color:#5db2ff;}
 .nav-tabs>li>a, .nav-tabs>li>a:focus, .nav-tabs>li>a:hover{border:none;color: #666;}
-.nav-tabs>li.active{border-bottom: 2px solid #03a9f4;}
+.eacoo-tabs .nav-tabs>li.active{border-bottom: 2px solid #03a9f4;}
 .nav-tabs>li>a{font-weight: 500;}
 
 .search-form>.form-control, .search-form>.input-group-addon, .search-form>.input-group-btn>.btn{height: 32px;}
-
+/*应用中心标签页tab*/
+.appcenter-tabs{position: absolute;left: 39%;top:10px;}
 /*表格table*/
 .builder-toolbar .btn { padding: 5px 15px;font-weight: 500;}
 

@@ -33,52 +33,7 @@
   </style>
 {/block}
 {block name="main-top"}
-<div class="row extension-tab">
-    <div class="col-md-3 col-sm-6 col-xs-12">
-      <a href="{:url('admin/modules/index')}">
-      <div class="info-box">
-        <span class="info-box-icon bg-aqua"><img src="__ADMIN_IMG__/extension/module.svg" width="64"></span>
 
-        <div class="info-box-content color-5">
-          <span class="info-box-text fb">模块</span>
-          <span class="info-box-number"></span>
-        </div>
-        <!-- /.info-box-content -->
-      </div>
-      <!-- /.info-box -->
-      </a>
-    </div>
-    <!-- /.col -->
-    <div class="col-md-3 col-sm-6 col-xs-12">
-      <a href="{:url('admin/plugins/index')}" >
-        <div class="info-box">
-          <span class="info-box-icon bg-green"><img src="__ADMIN_IMG__/extension/plugin.svg" width="64"></span>
-          <div class="info-box-content color-5">
-            <span class="info-box-text fb">插件</span>
-            <span class="info-box-number"></span>
-          </div>
-          <!-- /.info-box-content -->
-        
-      </div></a>
-      <!-- /.info-box -->
-    </div>
-    <!-- /.col -->
-    <div class="col-md-3 col-sm-6 col-xs-12">
-      <a href="{:url('admin/theme/index')}" >
-      <div class="info-box">
-        <span class="info-box-icon bg-yellow color-palette"><img src="__ADMIN_IMG__/extension/theme.svg" width="64"></span>
-
-        <div class="info-box-content color-5">
-          <span class="info-box-text fb">主题</span>
-          <span class="info-box-number"></span>
-        </div>
-        <!-- /.info-box-content -->
-      </div>
-      <!-- /.info-box -->
-      </a>
-    </div>
-    <!-- /.col -->
-  </div>
   <!-- <div class="box box-solid">
     <div class="box-header with-border">
       <h3 class="box-title">温馨提示</h3>
@@ -96,7 +51,7 @@
   </div> -->
 {/block}
 {block name="main"} 
-    <div class="builder-tabs builder-form-tabs">
+    <div class="eacoo-tabs builder-form-tabs">
         <ul class="nav nav-tabs">
             {volist name="tab_list" id="tab"}
                 <li class="{php}if($from_type == $key) echo 'active';{/php}"><a href="{$tab.href}" {$tab.extra_attr|default=''}>{$tab.title}</a></li>
