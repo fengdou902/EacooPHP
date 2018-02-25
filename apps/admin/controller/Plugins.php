@@ -39,7 +39,9 @@ class Plugins extends Admin {
      */
     public function index($from_type = 'oneline') {
 
-        $this->assign('page_config',['self'=>'<a href="'.url('admin/Hook/index').'" class="btn btn-primary btn-sm mr-10">钩子管理</a>']);
+        $this->assign('page_config',['self'=>'<a href="'.url('admin/modules/index').'" class="opentab color-6 f15 mr-10" tab-title="应用中心-模块" data-iframe="true" tab-name="navtab-collapse-app-modules"><img src="/static/admin/img/extension/module.svg" width="16"> 模块</a>
+            <a href="'.url('admin/plugins/index').'" class="opentab color-6 f15 mr-10" tab-title="应用中心-插件" data-iframe="true" tab-name="navtab-collapse-app-plugins"><img src="/static/admin/img/extension/plugin.svg" width="16"> 插件</a>
+            <a href="'.url('admin/theme/index').'" class="opentab color-6 f15 mr-10" tab-title="应用中心-主题" data-iframe="true" tab-name="navtab-collapse-app-themes"><img src="/static/admin/img/extension/theme.svg" width="16"> 主题</a> <a href="'.url('admin/Hook/index').'" class="btn btn-primary btn-sm mr-10">钩子管理</a>']);
         $tab_list = [
             'local'=>['title'=>'已安装','href'=>url('index',['from_type'=>'local'])],
             'oneline'=>['title'=>'插件市场','href'=>url('index',['from_type'=>'oneline'])],

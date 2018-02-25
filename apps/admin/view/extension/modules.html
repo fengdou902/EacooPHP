@@ -1,6 +1,9 @@
 {extend name="$_admin_public_base_"/}
 {block name="style"}
   <style type="text/css">
+  .app-manage-nav{margin:10px;color: #666;font-size: 16px;border-right: 1px solid #ddd;}
+    .app-manage-nav a{color: #666;}
+
   .extension-item{margin-bottom: 20px;}
     .module-item{border: 1px solid #f0f0f0;padding: 10px 12px;border-radius: 3px;margin: 10px 0;height: 170px;}
   /*.plugin-item:hover { -webkit-box-shadow: 0px 10px 20px rgba(226,226,226,.8); box-shadow: 0px 10px 20px rgba(226,226,226,.8); -webkit-transform: translate3d(0,-10px,0); -moz-transform: translate3d(0,-10px,0); transform: translate3d(0,-1px,0); z-index: 4;}*/
@@ -14,52 +17,6 @@
   </style>
 {/block}
 {block name="main-top"}
-<div class="row extension-tab">
-    <div class="col-md-3 col-sm-6 col-xs-12">
-      <a href="{:url('admin/modules/index')}">
-      <div class="info-box">
-        <span class="info-box-icon bg-aqua"><img src="__ADMIN_IMG__/extension/module.svg" width="64"></span>
-
-        <div class="info-box-content color-5">
-          <span class="info-box-text fb">模块</span>
-          <span class="info-box-number"></span>
-        </div>
-        <!-- /.info-box-content -->
-      </div>
-      <!-- /.info-box -->
-      </a>
-    </div>
-    <!-- /.col -->
-    <div class="col-md-3 col-sm-6 col-xs-12">
-      <a href="{:url('admin/plugins/index')}" >
-        <div class="info-box">
-          <span class="info-box-icon bg-green"><img src="__ADMIN_IMG__/extension/plugin.svg" width="64"></span>
-          <div class="info-box-content color-5">
-            <span class="info-box-text fb">插件</span>
-            <span class="info-box-number"></span>
-          </div>
-          <!-- /.info-box-content -->
-        
-      </div></a>
-      <!-- /.info-box -->
-    </div>
-    <!-- /.col -->
-    <div class="col-md-3 col-sm-6 col-xs-12">
-      <a href="{:url('admin/theme/index')}" >
-      <div class="info-box">
-        <span class="info-box-icon bg-yellow color-palette"><img src="__ADMIN_IMG__/extension/theme.svg" width="64"></span>
-
-        <div class="info-box-content color-5">
-          <span class="info-box-text fb">主题</span>
-          <span class="info-box-number"></span>
-        </div>
-        <!-- /.info-box-content -->
-      </div>
-      <!-- /.info-box -->
-      </a>
-    </div>
-    <!-- /.col -->
-  </div>
   <div class="box box-solid">
     <div class="box-header with-border">
       <h3 class="box-title">温馨提示</h3>

@@ -174,7 +174,7 @@
             time: 1000,
             shade: [0.1,'#000'],
             end: function(){
-              window.location.href = url("admin/index/logout");
+              window.location.href = url("admin/login/logout");
             }
           });
       });
