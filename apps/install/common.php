@@ -176,16 +176,18 @@ function create_tables($db, $prefix = ''){
 
 		//替换表前缀
 		$orginal = 'eacoo_';
-		$sql = str_replace(" `{$orginal}", " `{$prefix}", $sql);
-
+		
 		//开始安装
 		show_msg('开始安装数据库...');
 		foreach ($sql as $value) {
+			//替换前缀
+			$value = str_replace(" `{$orginal}", " `{$prefix}", $value);
 			$value = trim($value);
 			if(empty($value)) continue;
-			if(substr($value, 0, 12) == 'CREATE TABLE') {
-				$name = preg_replace("/^CREATE TABLE `(\w+)` .*/s", "\\1", $value);
-				$msg  = "创建数据表{$name}";
+			if (strpos($value, 'CREATE TABLE')!==false) {
+				//$name = preg_replace("/^CREATE TABLE `(\w+)` .*/s", "\\1", $value);
+				preg_match("/CREATE TABLE `(\w+)` .*/i", $value,$result);
+				$msg  = "创建数据表{$result[1]}";
 				if(false !== $db->execute($value)){
 					show_msg($msg . '...成功');
 				} else {
@@ -198,7 +200,7 @@ function create_tables($db, $prefix = ''){
 
 		}
 	} catch (\Exception $e) {
-		show_msg($e);
+		show_msg($e, 'error');
 	}
 	
 }

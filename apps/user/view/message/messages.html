@@ -5,7 +5,7 @@
 
   {block name="main"}
     <div class="row">
-        <div class="builder-tabs builder-form-tabs col-md-12 msg-tab">
+        <div class="eacoo-tabs builder-form-tabs col-md-12 msg-tab">
               <ul class="nav nav-tabs">
                   <li class="{php}if($box_type=='inbox'){echo 'active';}{/php}"><a href="{:url('messages')}">收件箱<span class="msg-bage badge bg-teal">{$inboxMessageCount}</span></a></li>
                   <li class="{php}if($box_type=='outbox'){echo 'active';}{/php}"><a href="{:url('messages',array('box_type'=>'outbox'))}">发件箱<span class="msg-bage badge bg-purple" >{$outboxMessageCount}</span></a></li>

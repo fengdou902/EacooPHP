@@ -34,7 +34,7 @@
 {/block}
 
 {block name="main"} 
-    <div class="builder-tabs builder-form-tabs">
+    <div class="eacoo-tabs builder-form-tabs">
         <ul class="nav nav-tabs">
             {volist name="tab_list" id="tab"}
                 <li class="{php}if($from_type == $key) echo 'active';{/php}"><a href="{$tab.href}" {$tab.extra_attr|default=''}>{$tab.title}</a></li>

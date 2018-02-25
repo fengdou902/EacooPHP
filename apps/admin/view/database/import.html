@@ -1,7 +1,7 @@
-{extend name="public/base"/}
+{extend name="$_admin_public_base_"/}
 
 {block name="main"}
-    <div class="cf mb-20">
+    <div class="eacoo-tabs cf mb-20">
         <ul class="nav nav-tabs">
             <li class=""><a href="{:url('admin/Database/index',['type'=>'export'])}">数据备份</a></li>
              <li class="active"><a href="{:url('admin/Database/index',['type'=>'import'])}">数据恢复</a></li>
