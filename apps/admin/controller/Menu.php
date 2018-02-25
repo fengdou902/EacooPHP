@@ -191,8 +191,8 @@ class Menu extends Admin {
             cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);//清空后台菜单缓存
             $builder->doSort('auth_rule', $ids);
         } else {
-            //$map['status'] = array('egt', 0);
-            $list = $this->authRuleModel->getList($map,'id,title,sort','sort asc');
+            $map['status'] = array('egt', 0);
+            $list = $this->authRuleModel->getList($map,'id,title,sort','sort asc,id asc');
             foreach ($list as $key => $val) {
                 $list[$key]['title'] = $val['title'];
             }
