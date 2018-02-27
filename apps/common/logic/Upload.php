@@ -11,7 +11,8 @@
 
 namespace app\common\logic;
 
-use app\common\model\Attachment;
+use app\common\model\Attachment as AttachmentModel;
+use app\common\logic\Attachment as AttachmentLogic;
 use think\Request;
 use think\Hook;
 
@@ -31,35 +32,42 @@ class Upload {
             $request = Request::instance();
         }
         $this->request = $request;
-        $this->attachment_model = new Attachment();
+        $this->attachmentModel = new AttachmentModel();
     }
 
 	/**
 	 * 上传控制器
 	 */
 	public function upload() {
-		
-		$upload_type = $this->request->param('type', 'picture', 'trim');//上传类型包括picture,file,avatar
-		$config      = config('attachment_options');
-		$config['subName']=['date','Y-m-d'];
-		if ($upload_type=='picture') {
-			$config['maxSize']  = $config['image_max_size'];
-			$config['exts']     = $config['image_exts'];
-			$config['saveName'] = $config['image_save_name'];
-		} else{
-			$config['maxSize']  = $config['file_max_size'];
-			$config['exts']     = $config['file_exts'];
-			$config['saveName'] = $config['file_save_name'];
-		}
+		try {
+			$upload_type = $this->request->param('type', 'picture', 'trim');//上传类型包括picture,file,avatar
+			$config      = config('attachment_options');
+			$config['subName']=['date','Y-m-d'];
+			if ($upload_type=='picture') {
+				$config['maxSize']  = $config['image_max_size'];
+				$config['exts']     = $config['image_exts'];
+				$config['saveName'] = $config['image_save_name'];
+			} else{
+				$config['maxSize']  = $config['file_max_size'];
+				$config['exts']     = $config['file_exts'];
+				$config['saveName'] = $config['file_save_name'];
+			}
 
-        $this->path_type = $this->request->param('path_type', 'picture', 'trim');//路径类型
-        
-        $rootPath = $this->path_type!='picture' && $this->path_type ? './uploads/'.$this->path_type : './uploads/picture';
-		$upload_path = $rootPath.'/'.call_user_func_array($config['subName'][0],[$config['subName'][1],time()]);
-		// 获取表单上传文件 例如上传了001.jpg
-		$file = $this->request->file('file');
+	        $this->path_type = $this->request->param('path_type', 'picture', 'trim');//路径类型
+	        
+	        $rootPath = $this->path_type!='picture' && $this->path_type ? './uploads/'.$this->path_type : './uploads/picture';
+			$upload_path = $rootPath.'/'.call_user_func_array($config['subName'][0],[$config['subName'][1],time()]);
+			// 获取表单上传文件 例如上传了001.jpg
+			$file = $this->request->file('file');
+			if (!$file) {
+				throw new \Exception("file对象文件为空，或缺失环境组件。错误未知，请前往社区反馈",0);
+				
+			}
 
-		if ($file->validate(['size'=>$config['maxSize'],'ext'=>$config['exts']])) {//验证通过
+			if (!$file->validate(['size'=>$config['maxSize'],'ext'=>$config['exts']])) {//验证通过
+				throw new \Exception($file->getError(), 0);
+				
+			}
 			//进行图像处理
 			if ($upload_type == 'picture') {
 				
@@ -75,15 +83,18 @@ class Upload {
 				'msg' =>'上传成功',
 				'data'=> $is_sql=='on' ? $this->save($config, $upload_type,$upload_info) : $upload_info
 			];
-		} else {
-			$return = [
-				'code' =>0,
-				'msg'  =>$file->getError(),
-				'data' =>[],
-			];
-		}
 
-		return $return;
+			return $return;
+		} catch (\Exception $e) {
+			setAppLog($e->getMessage(),'Upload','error');
+			$return = [
+					'code' =>$e->getCode(),
+					'msg'  =>$e->getMessage(),
+					'data' =>[],
+				];
+			return $return;
+		}
+		
 	}
 
 	/**
@@ -119,7 +130,7 @@ class Upload {
 		$md5  = md5($base64_body);
 		$sha1 = sha1($base64_body);
 
-        $check = $this->attachment_model->where(['md5' => $md5, 'sha1' => $sha1])->find();
+        $check = $this->attachmentModel->where(['md5' => $md5, 'sha1' => $sha1])->find();
 
         if (!empty($check)) {//已存在则直接返回信息
         	$check['already']=1;
@@ -215,11 +226,11 @@ class Upload {
         if (!$data['ext']||!$data['name']) {
             return false;
         }
-        $this->attachment_model->allowField(true)->data($file)->save();
-		$id = $this->attachment_model->id;
+        $this->attachmentModel->allowField(true)->data($file)->save();
+		$id = $this->attachmentModel->id;
 
 		if ($id>0) {
-			$data = $this->attachment_model->info($id);
+			$data = logic('common/attachment')->info($id);
 			return $data;
 		} else {
 			return false;
@@ -369,29 +380,30 @@ class Upload {
 		$file['uid']      = is_login();
 		$file['location'] = $config['driver'];
 		$file['code']   = 1;
-		$file_exist = Attachment::where(['md5'=>$file['md5'],'sha1'=>$file['sha1']])->count();
+		$file_exist = AttachmentModel::where(['md5'=>$file['md5'],'sha1'=>$file['sha1']])->count();
 
 		if ($file_exist>0) {//已存在
 			unlink(PUBLIC_PATH.$file['path']);//删除存在的文件
 
-			$id = Attachment::where(['md5'=>$file['md5'],'sha1'=>$file['sha1']])->value('id');
-			$data            = Attachment::info($id);;
+			$id = AttachmentModel::where(['md5'=>$file['md5'],'sha1'=>$file['sha1']])->value('id');
+			$data            = AttachmentLogic::info($id);;
 			$data['already'] =1;
 			$data['msg']     ='文件已存在';
 			return $data;
 		} else {
         	// 上传文件钩子，用于阿里云oss、七牛云、又拍云等第三方文件上传的扩展
 	        if ($config['driver'] != 'local') {
-	            $hook_result = Hook::listen('UploadFile', $file, ['driver' => $config['driver']], true);
-	            if (false !== $hook_result) {
-	                return $hook_result;
-	            }
+	            // $hook_result = Hook::listen('UploadFile', $file, ['driver' => $config['driver']], true);
+	            // if (false !== $hook_result) {
+	            //     return $hook_result;
+	            // }
+	            hook('UploadFile', $file);
 	        }
-        	//hook('UploadFile', $file);
-			$this->attachment_model->allowField(true)->isUpdate(false)->data($file)->save();
-			$id  = $this->attachment_model->id;
+        	
+			$this->attachmentModel->allowField(true)->isUpdate(false)->data($file)->save();
+			$id  = $this->attachmentModel->id;
 			if ($id>0) {
-				$data = $this->attachment_model->info($id);
+				$data = AttachmentLogic::info($id);
 				return $data;
 			} else {
 				return false;

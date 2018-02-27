@@ -243,9 +243,10 @@ function showTabIframe(iframe,is_from_iframe=false) {
     windowObj.$('.eacoo-tab-content').append(tab_content);
     windowObj.$('.eacoo-tab a:last').tab('show');
     $("#"+tab_name+" iframe").load(function(){
+        var eacoo_tab_content_height = document.documentElement.clientHeight-120;
         //var eacoo_tab_content_height = $('.eacoo-tab-content').height();
         //var mainheight = $(this).contents().find("body").height()+30;
-        var mainheight = eacoo_tab_content_height+20;
+        var mainheight = eacoo_tab_content_height;
         $(this).height(mainheight);
     });
 }
