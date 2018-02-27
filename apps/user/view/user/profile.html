@@ -97,7 +97,7 @@
         
         <!-- /.tab-pane -->
         <div class="tab-pane active" id="settings">
-    <form action="{:url('admin/User/profile',['uid'=>$user_info['uid']])}" method="post" class="form-builder form-horizontal">
+    <form action="{:url('user/User/profile',['uid'=>$user_info['uid']])}" method="post" class="form-builder form-horizontal">
       <fieldset>
         <input type="hidden" id="uid" name="uid" value="1">
         <div class="form-group item_nickname ">
@@ -216,7 +216,7 @@ $(function () {
         // swf文件路径
         swf: '__LIBS__/webuploader/Uploader.swf',
         // 文件接收服务端。
-        server: "{:url('admin/attachment/uploadAvatar',['uid'=>$user_info['uid']])}",
+        server: "{:url('admin/Upload/uploadAvatar',['uid'=>$user_info['uid']])}",
         //验证文件总数量, 超出则不允许加入队列
         fileNumLimit: 5,
         // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！

@@ -212,7 +212,7 @@ function register_administrator($db, $prefix, $admin){
 	$password = encrypt($admin['password']);
 	
 	$sql = "INSERT INTO `[PREFIX]users` (`uid`,`username`,`password`,`nickname`,`email`, `avatar`,`sex`,`birthday`,`score`,`allow_admin`,`reg_time`,`last_login_ip`,`last_login_time`,`status`) VALUES ".
-		   "('1', '[NAME]', '[PASS]', '创始人', '[EMAIL]','http://img.eacoomall.com/images/static/assets/img/default-avatar.svg', '0', '0', '0', '1', '[TIME]', '[IP]','[TIME]', '1');";
+		   "('1', '[NAME]', '[PASS]', '创始人', '[EMAIL]','http://img.eacoomall.com/images/static/assets/img/default-avatar.png', '0', '0', '0', '1', '[TIME]', '[IP]','[TIME]', '1');";
 	$sql = str_replace(
 		['[PREFIX]', '[NAME]','[PASS]','[EMAIL]','[TIME]', '[IP]'],
 		[$prefix, $admin['username'],$password, $admin['email'], time(), get_client_ip(1)],

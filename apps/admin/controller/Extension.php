@@ -1017,7 +1017,7 @@ class Extension extends Admin {
      */
     public static function getLogo($name='', $type='')
     {
-        $file_ext = ['png','jpg','jpeg','svg'];
+        $file_ext = ['png','jpg','jpeg','svg','gif'];
         $logo = '';
         if ($type=='plugin') {
             $type_path = 'plugins/';

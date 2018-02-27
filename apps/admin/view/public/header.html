@@ -97,13 +97,13 @@
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="{$current_user.avatar|root_full_path|default='/static/assets/img/default-avatar.svg'}" class="user-image" alt="{$current_user.nickname}">
+              <img src="{$current_user.avatar|root_full_path|default='/static/assets/img/default-avatar.png'}" class="user-image" alt="{$current_user.nickname}">
               <span class="hidden-xs">{$current_user.nickname}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="{$current_user.avatar|root_full_path|default='/static/assets/img/default-avatar.svg'}" class="img-circle" alt="User Image">
+                <img src="{$current_user.avatar|root_full_path|default='/static/assets/img/default-avatar.png'}" class="img-circle" alt="User Image">
                 <p>
                   {$current_user.nickname} - {/*$current_user.role_name*/}
                   <small>注册时间：{$current_user.reg_time}</small>

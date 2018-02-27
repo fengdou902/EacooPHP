@@ -669,7 +669,7 @@ class BuilderList extends Builder {
                     break;
                 case 'avatar':
                     if (!$data[$column['name']] || empty($data[$column['name']])) {
-                        $data[$column['name']] = config('view_replace_str.__PUBLIC__').'/img/default-avatar.svg';
+                        $data[$column['name']] = config('view_replace_str.__PUBLIC__').'/img/default-avatar.png';
                     }
                     $data[$column['name']] = '<img style="width:40px;height:40px;" src="'.cdn_img_url($data[$column['name']]).'">';
                     break;
