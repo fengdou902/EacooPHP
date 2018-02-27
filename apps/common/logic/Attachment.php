@@ -69,7 +69,6 @@ class Attachment extends Base {
         if ($result['location']=='link') {
             $result['url']= $result['src'] = $result['path'];
         } else {
-
             $result['real_path']= PUBLIC_PATH.$result['path'];
             $result['src'] = getImgSrcByExt($result['ext'],$result['path'],true);
             $result['url'] = cdn_img_url($result['path']);

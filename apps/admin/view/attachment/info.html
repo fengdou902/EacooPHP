@@ -1,0 +1,63 @@
+{extend name="$_admin_public_layerbase_"/}
+{block name="style"}
+
+{/block}
+{block name="main"}
+ <div class="row">
+      <input type="hidden" name="id" id="file-id" value="">
+        <div class="col-xs-6 oh tc media-modal-pic">                    
+            <a href="{$info.src|default='/public/static/assets/img/noimage.gif'}" id="file-href" target="_blank">
+              <img src="{$info.src|default='/public/static/assets/img/noimage.gif'}" id="file-src" alt="{$info.alt|default=''}">
+            </a>
+        </div>
+        <div class="col-xs-6">
+            <ul class="f13 media-modal-ul">
+              <li><strong>文&nbsp;&nbsp;件&nbsp;名：</strong><span id="file-name">{$info.name|default='未知'}</span></li>
+              <li><strong>ID：</strong><span id="detail-file-id">{$info.id|default='0'}</span></li>
+              <li><strong>文件类型：</strong><span id="file-type">{$info.mime_type|default='未知'}</span></li>
+              <li><strong>文件大小：</strong><span id="file-size">{$info.size|default='未知'}</span></li>
+              <li><strong>上传时间：</strong><span id="file-uploadtime">{$info.uploadtime|default='未知'}</span></li>
+              <li><strong>上&nbsp;&nbsp;传&nbsp;者：</strong><span id="file-author">{$info.author|default='未知'}</span></li>
+              <li><strong>URL：</strong><span id="file-url">{$info.url|default='url'}</span></li>
+            </ul>
+            <a id="delAttachmentUrl" href="{:url('Attachment/del')}" class="btn btn-danger btn-xs btn-flat confirm ajax-get" data-dismiss="modal">删除</a>
+            <span id="url-copy" class="btn btn-success btn-xs btn-flat copyurl" data-clipboard-target="#file-url">
+            复制URL</span>
+        </div>
+
+    	<div class="col-xs-8 mt-20">
+
+           <div class="form-group">
+            <label for="alt" class="col-xs-3 control-label">替代文本:</label>
+            <div class="col-xs-9">
+              <input type="text" class="form-control input-sm" name="alt" id="alt" id="file-alt" value="{$info.alt|default='url'}" placeholder="alt文本">
+            </div>
+          </div>  
+        <div class="form-group">
+            <label for="file-category" class="col-xs-3 control-label">分类:</label>
+            <div class="col-xs-9 ">
+             <select name="term_id" id="file-termid" class="form-control input-sm">
+               <option value="0">选择分类</option>
+	              {volist name="media_cats" id="media_cat"}
+	                  <option value="{$media_cat.term_id}" {eq name="media_cat.term_id" value="$info.term_id"}selected{/eq}>{$media_cat.name}</option>
+	              {/volist}
+             </select>
+            </div>
+          </div>                   
+      </div>  
+          
+ </div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript" src="__PUBLIC__/js/clipboard.min.js"></script>
+<script type="text/javascript">
+	$(function () { 
+		/*复制URL*/
+        var clipboard = new Clipboard('.copyurl');
+        clipboard.on('success', function(e) {
+            alert('复制成功');
+        });
+	});
+</script>
+{/block}

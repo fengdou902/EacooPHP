@@ -170,47 +170,7 @@ span.show-media-info{width: 20px;text-align:center;}
 
   </div>
 </div><!--end tab-content-->
-  <!-- Modal Structure -->
-  <div class="modal attachment-detail-modal fade" id="attachmentInfoModal" tabindex="-1" role="dialog" aria-labelledby="attachmentInfoModalLabel">
-    <div class="modal-dialog modal-sm mt80" role="document">
-        <div class="modal-content">
 
-          <div class="modal-header">
-
-            <h4 class="modal-title tc color-26 f15">附件详情</h4>
-          </div>
-
-          <div class="modal-body pt-5">
-             <form action="{:url('Attachment/edit')}" method="post" class="editAttachment">
-             <div class="row">
-             <input type="hidden" name="id" id="file-id" value="">
-                <div class="row ml-0 mr-0">
-                    <div class="col-md-12 oh tc media-modal-pic">                    
-                        <a href="__PUBLIC__/img/noimage.gif" id="file-href" target="_blank">
-                          <img src="__PUBLIC__/img/noimage.gif" id="file-src" alt="">
-                        </a>
-                    </div>
-                    <div class="col-md-12">
-                        <ul class="f12 lh22">
-                          <li><strong>文&nbsp;&nbsp;件&nbsp;名：</strong><span id="file-name">未知</span></li>
-                          <li><strong>文件类型：</strong><span id="file-type">未知</span></li>
-                          <li><strong>文件大小：</strong><span id="file-size">未知</span></li>
-                          <li><strong>上传时间：</strong><span id="file-uploadtime">未知</span></li>
-                          <li><strong>上&nbsp;&nbsp;传&nbsp;者：</strong><span id="file-author">未知</span></li>
-                          <li><strong>URL：</strong><span id="file-url">无</span></li>
-                        </ul>
-                        <!--<a id="delAttachmentUrl" href="{:url('Admin/Attachment/delAttachment')}" class="btn btn-danger btn-xs confirm ajax-get">删除</a><span id="url-copy" class="btn btn-success ml-20 btn-xs copyurl">
-                        复制URL</span>-->
-                    </div>
-                </div>
-                      
-             </div>
-
-             </form>  
-          </div>
-        </div>
-     </div>
-   </div>
 </div>
 {/block}
 
@@ -251,23 +211,31 @@ span.show-media-info{width: 20px;text-align:center;}
     $(function () { 
 
       $('body').on('click','.showAttachmentInfo', function() {
-          var $this = $(this);
-          var attachmentId=$this.attr('data-id');
-          $.post("{:url('admin/Attachment/attachmentInfo')}", {id:attachmentId}, function (res) {
-                $("#file-name").text(res.name);
-                $("#file-type").text(res.mime_type);
-                $("#file-size").text(res.size);
-                $("#file-uploadtime").text(res.uploadtime);
-                $("#file-author").text(res.author);
-                $("#file-url").text(res.url);
-
-                $("#file-src").attr('src',res.url).attr('alt',res.alt);
-                $("#file-href").attr('href',res.url);
-                $("#file-alt").val(res.alt);
-                $("#file-id").val(res.id);
-               /* var newDelUrl=$("#delAttachmentUrl").attr('href').replace(".html","/id/"+res.id+".html");
-                $("#delAttachmentUrl").attr('href',newDelUrl);*/
-            })
+            var $this = $(this);
+            var attachmentId = $this.attr('data-id');
+            parent.layer.open({
+            type: 2,
+            title: '附件信息',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['620px','460px'],
+            content: url('admin/Attachment/info',['id='+attachmentId]), 
+            btn: ['提交','关闭'],
+            yes: function(index, layero){
+                var p_layer = parent.layer;
+                var alt = p_layer.getChildFrame('#alt', index).val();
+                  var term_id = p_layer.getChildFrame('#file-termid', index).val();
+                  $.post(url("admin/Attachment/edit"),{id:attachmentId,alt:alt,term_id:term_id},function(result){
+                      if (result.code==1) {
+                        parent.updateAlert(result.msg,'success');
+                        p_layer.closeAll();
+                      } else{
+                        parent.updateAlert(result.msg,'success');
+                        
+                      }
+                  });
+            }
+        });
         })
       
         //选中当前图片

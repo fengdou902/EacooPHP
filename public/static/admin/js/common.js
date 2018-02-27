@@ -117,46 +117,6 @@
         return false;
     });
 
-    //ajax table btn
-    $('body').on('click','.ajax-table-btn',function (event) {
-        event.preventDefault();
-        var $this = $(this);
-        var need_confirm = false;
-
-        if ($this.hasClass('confirm')) {
-            need_confirm = true;
-        }
-        //验证
-        if (need_confirm) {
-            var confirm_info = $this.attr('confirm-info');
-            confirm_info = confirm_info ? confirm_info : "确认要执行该操作吗?";
-            parent.layer.confirm(confirm_info, {offset: 't',icon: 3, title:'询问',shadeClose: true,shade: 0.5,}, function(e){
-                parent.layer.close(e);
-                handleBuilderListAjaxEvent($this);
-            }, function(e){
-                parent.layer.close(e);
-            });
-        } else{
-            handleBuilderListAjaxEvent($this);
-        }
-        
-    })
-
-     //列表全选的实现
-    $('body').on('click',".check-all",function () {
-        $(".ids").prop("checked", this.checked);
-    });
-    $('body').on('click',".ids",function () {
-        var option = $(".ids");
-        option.each(function (i) {
-            if (!this.checked) {
-                $(".check-all").prop("checked", false);
-                return false;
-            } else {
-                $(".check-all").prop("checked", true);
-            }
-        });
-    });
 })(jQuery);
 
 /**
@@ -350,3 +310,113 @@ window.updateConfirm = function (confirm_info) {
     return result;
 }
 
+
+/**************************附件选择器弹框 start*******************************/
+//打开图片选择器组件
+function openAttachmentLayer(obj) {
+    var $this = $(obj);
+    var layer_type = $this.data('type');if (!layer_type) layer_type = 2;
+    var layer_title = $this.data('title');if (!layer_title) layer_title = '图片选择器';
+    var layer_url = $this.data('url');if (!layer_url) layer_url = url('admin/upload/attachmentLayer');
+    
+    var win = window;
+    window.parent.layer.open({
+          type: layer_type,
+          title: layer_title,
+          shadeClose: true,
+          shade: 0.8,
+          area: ['62%', '82%'],
+          content:layer_url,
+          btn: ['确定','关闭'],
+            yes: function(index, layero){
+
+                var p_layer = parent.layer;
+                var id = p_layer.getChildFrame('#attachment_ok', index).data('id');
+                var ids = p_layer.getChildFrame('#attachment_ids', index).val();
+                var srcs = p_layer.getChildFrame('#attachment_srcs', index).val();
+                win.setAttachmentInputVal(id,ids,srcs);
+                p_layer.closeAll();
+                // $.post(url("admin/Attachment/edit"),{id:attachmentId,alt:alt,term_id:term_id},function(result){
+                //       if (result.code==1) {
+                //         parent.updateAlert(result.msg,'success');
+                //         p_layer.closeAll();
+                //       } else{
+                //         parent.updateAlert(result.msg,'success');
+                        
+                //       }
+                //   });
+            }
+      });
+}
+
+/**
+ * 设置附件输入框值
+ * @param {[type]} inputName 输入框名
+ * @param {[type]} ids       附件IDs
+ * @param {[type]} srcs      附件SRCs
+ */
+function setAttachmentInputVal(inputName,ids,srcs) {
+    if (ids.length>0 && srcs.length>0) {
+        if(window.newSetAttachmentInputVal) {
+            newSetAttachmentInputVal(inputName,ids,srcs);
+        } else{
+            $("#"+inputName).val(ids);
+            $("#"+inputName).parent().find('.popup-gallery').html(
+                  '<div class="each"><i onclick="admin_image.removeImage($(this),'+ids+')" class="fa fa-times-circle remove-attachment"></i><a href="'+ srcs+'" title="点击查看大图片"><img src="'+ srcs+'"></a><div class="text-center opacity del_btn" ></div></div>'
+            );
+        }
+        
+    }
+    
+    layer.closeAll('iframe');
+}
+
+//多图
+/**
+ * 设置附件多图值
+ * @param {[type]} inputName [description]
+ * @param {[type]} ids       [description]
+ * @param {[type]} srcs      [description]
+ */
+function setAttachmentMultipleVal(inputName,ids,data) {
+     //插入数据ids
+    var field_ids=$("#"+inputName).val();    
+    $("#"+inputName).val(field_ids+ids);
+
+    $('#'+inputName+'-gallery-box').append(data);
+    layer.closeAll('iframe');
+}
+/**************************附件选择器弹框 end*******************************/
+
+
+admin_image ={
+    /**
+     *
+     * @param obj
+     * @param attachId
+     */
+    removeImage: function (obj, attachId) {
+        // 移除附件ID数据
+        this.upAttachVal('del', attachId, obj);
+        obj.parents('.each').find('img').attr('src','/static/img/noimage.gif');
+        obj.parents('.each').find('.remove-attachment').remove();
+    },
+    /**
+     * 更新附件表单值
+     * @return void
+     */
+    upAttachVal: function (type, attachId,obj) {
+        var $attach_ids = obj.parents('.controls').find('.attach');
+        var attachVal = $attach_ids.val();
+        var attachArr = attachVal.split(',');
+        var newArr = [];
+        for (var i in attachArr) {
+            if (attachArr[i] !== '' && attachArr[i] !== attachId.toString()) {
+                newArr.push(attachArr[i]);
+            }
+        }
+        type === 'add' && newArr.push(attachId);
+        $attach_ids.val(newArr.join(','));
+        return newArr;
+    }
+}

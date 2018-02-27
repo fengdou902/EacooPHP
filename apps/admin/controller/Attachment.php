@@ -10,7 +10,6 @@
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
 
-use app\common\logic\Upload as UploadLogic;
 use app\common\model\Attachment as AttachmentModel;
 use app\common\model\TermRelationships as TermRelationshipsModel;
 
@@ -107,18 +106,18 @@ class Attachment extends Admin {
             $attachment_options['page_number'] = 1000;//防止分页
         }
         //筛选end
-
         $map['status'] = 1;
         $page_number = $attachment_options['page_number']? $attachment_options['page_number']:24;
         $file_list = $this->attachmentModel->where($map)->order('sort asc,create_time desc,update_time desc')->paginate($page_number);
 
         $this->assign('attachment_list_data',$file_list);//附件列表数据
-
-        $media_cats = model('terms')->getList(['taxonomy'=>'media_cat']);
-        $this->assign('media_cats',$media_cats);//获取分类数据
         $this->assign('table_data_page',$file_list->render());
-
         $this->assign('path_type',$path_type);
+
+        //获取分类数据
+        $media_cats = model('terms')->getList(['taxonomy'=>'media_cat']);
+        $this->assign('media_cats',$media_cats);
+
     	return $this->fetch();
     }
 
@@ -127,9 +126,24 @@ class Attachment extends Admin {
      * @param  int $id id
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function info($id){
-        $return = get_attachment_info($id);//附件信息 
-        return json($return);
+    public function info($id=0){
+        try {
+            if ($id>0) {
+                $info = get_attachment_info($id);//附件信息
+                $this->assign('info',$info);
+
+                //获取分类数据
+                $media_cats = model('terms')->getList(['taxonomy'=>'media_cat']);
+                $this->assign('media_cats',$media_cats);
+                return $this->fetch();
+            } else{
+                throw new \Exception("参数不合法", 0);
+                
+            }
+            
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+        }
     }
 
     /**
@@ -137,11 +151,13 @@ class Attachment extends Admin {
      * @param  int $id id
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function edit($data=[]){
+    public function edit(){
         if (IS_POST) {
             $id          = input('post.id',0,'intval');
-            $data['alt'] = input('post.alt','');
             $term_id     = input('post.term_id',false,'intval');
+            $data = [
+                'alt'=>input('post.alt','')
+            ];
             $result      = $this->attachmentModel->save($data,['id'=>$id]);
             if ($result) {
                 update_media_term($id,$term_id);
