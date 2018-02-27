@@ -139,9 +139,24 @@
         } else{
             handleBuilderListAjaxEvent($this);
         }
-
         
     })
+
+     //列表全选的实现
+    $('body').on('click',".check-all",function () {
+        $(".ids").prop("checked", this.checked);
+    });
+    $('body').on('click',".ids",function () {
+        var option = $(".ids");
+        option.each(function (i) {
+            if (!this.checked) {
+                $(".check-all").prop("checked", false);
+                return false;
+            } else {
+                $(".check-all").prop("checked", true);
+            }
+        });
+    });
 })(jQuery);
 
 /**

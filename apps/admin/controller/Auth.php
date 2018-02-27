@@ -272,6 +272,8 @@ class Auth extends Admin {
         return builder('List')        
                 ->setMetaTitle('角色管理') // 设置页面标题
                 ->addTopButton('addnew',array('href'=>url('roleEdit')))  // 添加新增按钮
+                ->addTopButton('resume',['model'=>'AuthGroup'])  // 添加启用按钮
+                ->addTopButton('forbid',['model'=>'AuthGroup'])  // 添加禁用按钮
                 ->addTopButton('delete',['model'=>'AuthGroup'])  // 添加删除按钮
                 ->setSearch()
                 ->keyListItem('id', 'ID')
@@ -358,10 +360,9 @@ class Auth extends Admin {
             $tree_obj = new \eacoo\Tree;
             $rule = $tree_obj->list_to_tree($rule);
             $this->assign('auth_rules_list',$rule);//所以规则
+            return $this->fetch();
         }
-        
-
-        return $this->fetch();
+    
     }
 
     /**

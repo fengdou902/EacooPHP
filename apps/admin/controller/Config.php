@@ -78,6 +78,10 @@ class Config extends Admin {
 
     /**
      * 编辑配置
+     * @param  integer $id [description]
+     * @return [type] [description]
+     * @date   2018-02-26
+     * @author 心云间、凝听 <981248356@qq.com>
      */
     public function edit($id=0){
         $title = $id>0 ? "编辑" : "新增";

@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017-2018 http://www.eacoo123.com, All rights reserved.         
+// | Copyright (c) 2017-2018 http://www.eacoo123.com, All rights reserved.
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -249,8 +249,10 @@ class BuilderForm extends Builder
         if ($this->formData) {
             foreach ($this->formItems as &$item) {
                 if ($item['type']!='group') {
-                    if (isset($this->formData[$item['name']])) {
-                        $item['value'] = $this->formData[$item['name']];
+                    if ($item['name']!='') {
+                        if (isset($this->formData[$item['name']])) {
+                            $item['value'] = $this->formData[$item['name']];
+                        }
                     }
                 } else{
                     foreach ($item['options'] as $gkey => $gvalue) {

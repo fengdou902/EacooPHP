@@ -56,6 +56,11 @@ class InitHook {
 			 	cache('hooks', Hook::get());
 			// }
 		} else {
+			unset($data['app_init']);
+			unset($data['app_begin']);
+			unset($data['module_init']);
+			unset($data['action_begin']);
+			unset($data['app_end']);
 			Hook::import($data, false);
 		}
 	}
