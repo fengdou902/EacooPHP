@@ -114,10 +114,7 @@
     //E.switchCode.init('#{$id}_editor');
     {eq name="picturesModal" value='1'}
         E.picturesModal.init('#{$id}_editor',"{$pictures_dialog.url|default=''}");
-        function setAttachmentWangeditorVal{$id}(data){
-            editor_{$id}.txt.append(data);
-            layer.closeAll('iframe');
-          } 
+        var EditorObj = editor_{$id};//定义wangeditor编辑器对象
     {/eq}
      
      

@@ -109,9 +109,9 @@ class Menu extends Admin {
             $data = $this->request->param();
             //验证数据
             $this->validateData($data,'AuthRule.edit');
-            $id = isset($data['id']) && $data['id']>0 ? $data['id']:false;
-
-            if ($this->authRuleModel->editData($data,$id)) {
+            
+            //$data里包含主键id，则editData就会更新数据，否则是新增数据
+            if ($this->authRuleModel->editData($data)) {
                 cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);//清空后台菜单缓存
                 $this->success($title.'菜单成功', url('index',['pid'=>input('param.pid')]));
             } else {
@@ -272,7 +272,21 @@ class Menu extends Admin {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function moveMenusPosition() {
-        logic('Auth')->moveMenusPosition();
+        if (IS_POST) {
+            $ids    = input('param.ids');
+            $to_pid = input('param.to_pid');
+            if ($to_pid || $to_pid==0) {
+                $result = logic('Auth')->moveMenusPosition($ids,$to_pid);
+                if ($result) {
+                    $this->success('移动成功',url('index'));
+                } else{
+                    $this->error('移动成功',url('index'));
+                }
+            } else{
+                $this->error('请选择目标菜单'.$to_pid);
+            }
+            
+        }
     }
 
     /**
@@ -305,142 +319,6 @@ class Menu extends Admin {
             return json(['code'=>0,'msg'=>$e->getMessage()]);
         }
         
-    }
-
-    /**
-     * 角色管理
-     * @return [type] [description]
-     * @date   2018-02-15
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public function role(){
-        // 搜索
-        $keyword = input('param.keyword');
-        if ($keyword) {
-            $this->authGroupModel->where('title','like','%'.$keyword.'%');
-        }
-        // 获取所有角色
-        $map['status'] = array('egt', '0'); // 禁用和正常状态
-        list($data_list,$page) = $this->authGroupModel->getListByPage($map,'id asc','*',20);
-        // 使用Builder快速建立列表页面。
-
-        return builder('List')        
-                ->setMetaTitle('角色管理') // 设置页面标题
-                ->addTopButton('addnew',array('href'=>url('roleEdit')))  // 添加新增按钮
-                ->addTopButton('delete',['model'=>'AuthGroup'])  // 添加删除按钮
-                ->setSearch('搜索角色','')
-                ->keyListItem('id', 'ID')
-                ->keyListItem('title', '角色名')
-                ->keyListItem('description', '描述')
-                ->keyListItem('status', '状态','status')
-                ->keyListItem('right_button', '操作', 'btn')
-                ->setListData($data_list)    // 数据列表
-                ->setListPage($page) // 数据列表分页
-                ->addRightButton('edit',['href'=>url('roleEdit',['group_id'=>'__data_id__']),'class'=>'btn btn-success btn-xs']) 
-                ->addRightButton('edit',['title'=>'权限分配','href'=>url('access',['group_id'=>'__data_id__']),'class'=>'btn btn-info btn-xs'])  
-                ->addRightButton('edit',array('title'=>'成员授权','href'=>url('accessUser',array('group_id'=>'__data_id__'))))    
-                ->fetch();
-    }
-    
-    //角色编辑
-    public function roleEdit($group_id=0){
-        $title = $group_id ? '编辑':'新增';
-    
-         $info =$this->authGroupModel->find($group_id);
-         if (IS_POST) {
-            $data = $this->request->param();
-            $this->validateData($data,  
-                                [
-                                    ['title','require|chsAlpha','用户组名称不能为空|用户组名称只能是汉字和字母'],
-                                    ['description','chsAlphaNum','描述只能是汉字字母数字']
-                                ]
-                            );
-            $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
-
-            if ($this->authGroupModel->editData($data,$id)) {
-                $this->success($title.'成功', url('role'));
-            } else {
-                $this->error($this->authGroupModel->getError());
-            }
-
-        } else {
-            if ($group_id!=0) {
-                $this->assign('group_id',$group_id);
-            }
-            $this->assign('meta_title',$title.'角色');
-            $this->assign('info',$info);
-            return $this->fetch();
-        }
-    }
-
-    /**
-     * 权限分配
-     * @param  integer $group_id 组ID
-     * @return [type] [description]
-     * @date   2017-08-27
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public function access($group_id=0){
-        if ($group_id!=0) {
-            $this->assign('group_id',$group_id);
-        }
-        $title='权限分配';
-        $this->assign('meta_title',$title);
-
-        if (IS_POST && $group_id!=0) {
-            $data['id']    = $group_id;
-            $menu_auth     = input('post.menu_auth/a','');//获取所有授权菜单
-            $data['rules'] = implode(',',$menu_auth);
-            $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
-
-            //开发过程中先关闭这个限制
-            //if($group_id==1){
-                //$this->error('不能修改超级管理员'.$title);
-           // }else{
-                if ($this->authGroupModel->editData($data,$id)) {
-                    cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);
-                    $this->success($title.'成功', url('role'));
-                }else{
-                    $this->error($this->authGroupModel->getError());
-                }
-                
-            //}
-
-        } else{
-            $role_auth_rule = $this->authGroupModel->where(['id'=>intval($group_id)])->value('rules');
-            $this->assign('menu_auth_rules',explode(',',$role_auth_rule));//获取指定获取到的权限
-        }
-        $menu = $this->authRuleModel->where(['pid'=>0,'status'=>1])->order('sort asc')->select();
-        foreach($menu as $k=>$v){
-            $menu[$k]['_child']=$this->authRuleModel->where(['pid'=>$v['id']])->order('sort asc')->select();
-        }
-        $this->assign('all_auth_rules',$menu);//所以规则
-        return $this->fetch();
-    }
-
-    /**
-     * 用户组授权用户列表
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public function accessUser($group_id=0)
-    {
-        if ($group_id!=0) {
-            $this->assign('group_id',$group_id);
-        }
-
-        $auth_group = $this->authGroupModel->where(['status'=>['egt','0']])->field('id,title,rules')->select();
-        foreach ($auth_group as $key => $row) {
-            $authGroup[$row['id']]=$row;
-        }
-        //$list = $this->lists($model,array('a.group_id'=>$group_id,'m.status'=>array('egt',0)),'m.uid asc',null,'m.uid,m.nickname,m.last_login_time,m.last_login_ip,m.status');
-        $list= $this->userModel->alias('m')->join ('__AUTH_GROUP_ACCESS__ a','m.uid=a.uid' )->where(['a.group_id'=>$group_id,'m.status'=>['egt',0]])->order('m.uid asc')->field('m.uid,m.nickname,m.last_login_time,m.last_login_ip,m.status')->paginate(20);
-
-        $this->assign( '_list',     $list );
-        $this->assign( 'page',     $list->render());
-        $this->assign('auth_group', $authGroup);
-        $this->assign('this_group', $authGroup[(int)$group_id]);
-        $this->assign('meta_title','成员授权');
-        return $this->fetch();
     }
 
     /**

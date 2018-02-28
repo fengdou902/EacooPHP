@@ -6,8 +6,8 @@
  <div class="row">
       <input type="hidden" name="id" id="file-id" value="">
         <div class="col-xs-6 oh tc media-modal-pic">                    
-            <a href="{$info.src|default='/public/static/assets/img/noimage.gif'}" id="file-href" target="_blank">
-              <img src="{$info.src|default='/public/static/assets/img/noimage.gif'}" id="file-src" alt="{$info.alt|default=''}">
+            <a href="{$info.src|default='/static/assets/img/noimage.gif'}" id="file-href" target="_blank">
+              <img src="{$info.src|default='/static/assets/img/noimage.gif'}" id="file-src" alt="{$info.alt|default=''}">
             </a>
         </div>
         <div class="col-xs-6">
@@ -20,7 +20,7 @@
               <li><strong>上&nbsp;&nbsp;传&nbsp;者：</strong><span id="file-author">{$info.author|default='未知'}</span></li>
               <li><strong>URL：</strong><span id="file-url">{$info.url|default='url'}</span></li>
             </ul>
-            <a id="delAttachmentUrl" href="{:url('Attachment/del')}" class="btn btn-danger btn-xs btn-flat confirm ajax-get" data-dismiss="modal">删除</a>
+            <a id="delAttachmentUrl" href="{:url('Attachment/del',['id'=>$info['id']])}" class="btn btn-danger btn-xs btn-flat confirm ajax-get close_layer_iframe is_iframe" >删除</a>
             <span id="url-copy" class="btn btn-success btn-xs btn-flat copyurl" data-clipboard-target="#file-url">
             复制URL</span>
         </div>

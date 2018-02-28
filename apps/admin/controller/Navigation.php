@@ -89,9 +89,9 @@ class Navigation extends Admin {
                                     ['position','require|in:header,my','请选择导航显示位置|请选择正确的导航显示位置'],
                                     ['depend_type','require|in:0,1,2,3','请设置来源类型|请设置正确来源类型'],
                                 ]);
-            $id   =isset($data['id']) && $data['id']>0 ? $data['id']:false;
-
-            if ($this->navModel->editData($data,$id)) {
+            
+            //$data里包含主键id，则editData就会更新数据，否则是新增数据
+            if ($this->navModel->editData($data)) {
                 cache('front_'.$data['position'].'_navs',null);//清空前台导航缓存
                 $this->success($title.'菜单成功', url('index',array('pid'=>input('param.pid'))));
             } else {
@@ -136,7 +136,22 @@ class Navigation extends Admin {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function moveMenusPosition() {
-        logic('Navigation')->moveMenusPosition();
+        if (IS_POST) {
+            $ids    = input('param.ids');
+            $to_pid = input('param.to_pid');
+            if ($to_pid || $to_pid==0) {
+                $result = logic('Navigation')->moveMenusPosition($ids,$to_pid);
+                if ($result) {
+                    $this->success('移动成功',url('index'));
+                } else{
+                    $this->error('移动成功',url('index'));
+                }
+            } else{
+                $this->error('请选择目标菜单'.$to_pid);
+            }
+            
+        }
+        
     }
 
     /**

@@ -30,7 +30,7 @@ class Theme extends Admin {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function index($from_type = 'oneline') {
-        $this->assign('page_config',['self'=>logic('admin/index')->getAppsCenterTabList('theme')]);
+        //$this->assign('page_config',['self'=>logic('admin/AppStore')->getAppsCenterTabList('theme')]);
         $tab_list = [
             'local'=>['title'=>'已安装','href'=>url('index',['from_type'=>'local'])],
             'oneline'=>['title'=>'主题市场','href'=>url('index',['from_type'=>'oneline'])],
@@ -110,8 +110,8 @@ class Theme extends Admin {
         $info['config'] = !empty($config) ? json_encode($config) : '';
 
         $info['id'] = $id;
-        
-        if ($this->themeModel->editData($info,$id)) {
+        //$data里包含主键id，则editData就会更新数据，否则是新增数据
+        if ($this->themeModel->editData($info)) {
             $this->success('更新成功', url('index'));
         } else {
             $this->error($this->themeModel->getError());

@@ -15,12 +15,11 @@ use think\Loader;
 use think\Hook;
 use think\Cookie;
 
-class Index extends Base {
+class Index extends AdminLogic {
 
-    protected function _initialize()
+    protected function initialize()
     {
-        parent::_initialize();
-        $this->currentUser = session('user_login_auth');
+        parent::initialize();
     }
 
     /**
@@ -89,35 +88,4 @@ class Index extends Base {
         }
     }
 
-    /**
-     * 获取应用中心Tab
-     * @param  string $type [description]
-     * @return [type] [description]
-     * @date   2018-02-25
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public function getAppsCenterTabList($type='')
-    {
-        $module_active_class = $plugin_active_class = $theme_active_class = '';
-        switch ($type) {
-            case 'module':
-                $module_active_class = 'active';
-                break;
-            case 'plugin':
-                $plugin_active_class = 'active';
-                break;
-            case 'theme':
-                $theme_active_class = 'active';
-                break;
-            default:
-                # code...
-                break;
-        }
-        $result = '<ul class="nav nav-tabs appcenter-tabs">
-            <li class="'.$module_active_class.'"><a href="'.url('admin/modules/index').'" class="opentab color-6 f15 mr-10" tab-title="应用中心-模块" data-iframe="true" tab-name="navtab-collapse-app-modules"><img src="/static/admin/img/extension/module.svg" width="16"> 模块</a></li>
-            <li class="'.$plugin_active_class.'"><a href="'.url('admin/plugins/index').'" class="opentab color-6 f15 mr-10" tab-title="应用中心-插件" data-iframe="true" tab-name="navtab-collapse-app-plugins"><img src="/static/admin/img/extension/plugin.svg" width="16"> 插件</a></li>
-            <li class="'.$theme_active_class.'"><a href="'.url('admin/theme/index').'" class="opentab color-6 f15 mr-10" tab-title="应用中心-主题" data-iframe="true" tab-name="navtab-collapse-app-themes"><img src="/static/admin/img/extension/theme.svg" width="16"> 主题</a></li>
-            </ul>';
-        return $result;
-    }
 }

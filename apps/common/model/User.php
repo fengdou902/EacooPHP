@@ -9,7 +9,6 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\common\model;
-use app\admin\model\AuthGroupAccess;
 
 class User extends Base
 {
@@ -17,7 +16,7 @@ class User extends Base
     protected $name = 'users';
 
     // 定义时间戳字段名
-    //protected $createTime = 'reg_time';
+    protected $createTime = 'reg_time';
     protected $updateTime = '';
     // 自动完成
     protected $auto       = ['last_login_ip'];
@@ -50,6 +49,25 @@ class User extends Base
     {
         $sex = [ 0 => '保密', 1 => '男', 2 => '女'];
         return isset($sex[$data['sex']]) ? $sex[$data['sex']] : '未知';
+    }
+
+    /**
+     * 获取注册的时间戳
+     * @param  [type] $value [description]
+     * @param  [type] $data [description]
+     * @return [type] [description]
+     * @date   2018-02-28
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function getRegTimestampAttr($value,$data)
+    {
+        $timestamp = $data['reg_time'];
+        //判断是否是时间戳
+        // if(strtotime(date('m-d-Y H:i:s',$timestamp)) != $timestamp) {
+        //     $timestamp = strtotime($timestamp);
+        // }
+        
+        return $timestamp;
     }
 
 }

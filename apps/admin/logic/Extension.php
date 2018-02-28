@@ -22,7 +22,7 @@ use app\admin\model\Plugins as PluginsModel;
 use app\admin\model\Modules as ModuleModel;
 use app\admin\model\Theme as ThemeModel;
 
-class Extension extends Base {
+class Extension extends AdminLogic {
 
     protected $type;//类型：plugin,module
     protected $appsPath;//应用目录

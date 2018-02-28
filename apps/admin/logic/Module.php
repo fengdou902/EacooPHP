@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 namespace app\admin\logic;
 
-class Module extends Base
+class Module extends AdminLogic
 {
     /**
      * 获取所有安装的模块
@@ -22,7 +22,7 @@ class Module extends Base
     {
         $default_module = [ 
                         'admin'   =>'后台模块',
-                        'home'    =>'前台模块',
+                        'home'    =>'Home模块',
                         ];
         $data_list = db('modules')->where('status',1)->column('title','name');                
         $data_list = $default_module+$data_list;

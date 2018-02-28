@@ -10,12 +10,30 @@
 // +----------------------------------------------------------------------
 namespace app\admin\logic;
 
-use think\Model;
+use app\common\logic\Base as BaseLogic;
 
-class Base extends Model {
+class AdminLogic extends BaseLogic {
 
-	protected function _initialize()
+	protected function initialize()
     {
-        parent::_initialize();
+        parent::initialize();
+        $this->currentUser = session('user_login_auth');
+    }
+
+    /**
+     * 校验当前用户是否允许同时登录
+     * @return [type] [description]
+     * @date   2018-02-28
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public static function checkAllowLoginByTime()
+    {
+    	if (session('activation_auth_sign') != model('User')->where('uid',is_login())->value('activation_auth_sign')) {
+    		if (config('admin_allow_login_many')==1) {
+    			return true;
+    		}
+    		
+    	}
+    	return false;
     }
 }

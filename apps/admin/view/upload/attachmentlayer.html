@@ -51,7 +51,8 @@ ul.media-cat-list li:hover,ul.media-cat-list li.active{background-color: #f0f0f0
 span.show-media-info{width: 20px;text-align:center;}
 
 .media-modal-foot{background-color:#f4f5f9;margin-bottom: -15px;margin-left: -15px;}
-.attachment-detail-modal{z-index: 10003;}
+
+.pagination{margin: 10px 0;}
 </style>
 {/block}
 {block name="main"}
@@ -62,22 +63,22 @@ span.show-media-info{width: 20px;text-align:center;}
           <li class=""><a href="#tab-media-url"  data-toggle="tab" aria-expanded="false">从URL插入</a></li>
           <li style="float: right!important;margin-right: 20px;"><span id="upload_attachment_btn" class="btn btn-info btn-sm"><i class="fa fa-cloud-upload"></i> 本地上传</span> </li>
         </ul>
-      </div>
+    </div>
     <!--此页面主体内容-->   
   <div class="tab-content">
     <div class="tab-pane active" id="tab-media-content">
     <div class="row pl-75 mt-20 ml0 mr0 pl0">
       <div class="col-md-2 col-sm-2 pd0 media-side">
         <ul class="media-cat-list">
-          <li {empty name="Request.param.cat" }class="active"{/empty}><a href="{:url('admin/Upload/attachmentLayer',['input_id_name'=>$input_id_name,'path_type'=>$path_type,'select_type'=>$select_type])}">全部<span class="color-8 f14"> ({$media_totalCount})</span></a></li>
+          <li {empty name="Request.param.cat" }class="active"{/empty}><a href="{:url('admin/Upload/attachmentLayer',['input_id_name'=>$input_id_name,'path_type'=>$path_type,'gettype'=>$gettype])}">全部<span class="color-8 f14"> ({$media_totalCount})</span></a></li>
           {volist name="media_cats" id="row"}
-            <li {eq name="Request.param.cat" value="$row['term_id']" }class="active"{/eq} ><a href="{:url('admin/Upload/attachmentLayer',['input_id_name'=>$input_id_name,'path_type'=>$path_type,'select_type'=>$select_type,'cat'=>$row['term_id']])}">{$row.name}<span class="color-8 f14"> ({$row.count})</span></a></li>
+            <li {eq name="Request.param.cat" value="$row['term_id']" }class="active"{/eq} ><a href="{:url('admin/Upload/attachmentLayer',['input_id_name'=>$input_id_name,'path_type'=>$path_type,'gettype'=>$gettype,'cat'=>$row['term_id']])}">{$row.name}<span class="color-8 f14"> ({$row.count})</span></a></li>
           {/volist}
         </ul>
       </div>
     <div class="col-md-10 col-sm-10 pd0">
-      <div class="row ml-10 mr0 mt-0 mb-10" >
-<!--         <div class="col-xs-10 col-sm-10 button-list clearfix pl0">  
+      <!-- <div class="row ml-10 mr0 mt-0 mb-10" >
+        <div class="col-xs-10 col-sm-10 button-list clearfix pl0">  
          <form id="selectForm" class="form" method="get" action="{:url('index')}">
             <div class="col-md-3 pl0">                                                
               <select class="form-control">
@@ -100,10 +101,10 @@ span.show-media-info{width: 20px;text-align:center;}
              <span class="btn btn-info btn-sm" id="choiceForm">筛选</span>
 
           </form>
-         </div> -->
+         </div>
         
          </div>
-<!--   <hr> -->
+        <hr> -->
         <div>
           <ul class="attachment-content">
           {empty name="data_list"}
@@ -135,18 +136,11 @@ span.show-media-info{width: 20px;text-align:center;}
   </div>
 
   <div class="oh media-modal-foot">
-      <div class="col-md-10 col-sm-10 tc">{$data_page}</div>
+      <div class="col-md-12 col-sm-12 tc">{$data_page}</div>
+        <input type="hidden" id="input_name" value="{$input_id_name}">
         <input type="hidden" id="attachment_ids" value="">
         <input type="hidden" id="attachment_srcs" value="">
-        <div class="col-md-2 col-sm-2 mt-20">
-        {eq name="select_type" value="single"}
-          <span class="btn btn-success btn-sm " id="attachment_ok" data-id="{$input_id_name}" data-dismiss="modal">确认</span> 
-        {else/}
-          <span class="btn btn-success btn-sm" id="attachment_ok" data-id="{$input_id_name}" data-dismiss="modal">添加</span>
-          <span class="btn btn-warning btn-sm" data-dismiss="modal">取消</span>
-        {/eq}
-          
-        </div>
+
     </div>
   </div>
 
@@ -175,6 +169,7 @@ span.show-media-info{width: 20px;text-align:center;}
 {/block}
 
 {block name="script"}
+<script type="text/javascript" src="__PUBLIC__/js/bootstrap.min.js"></script>
 <link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
 <!-- webuploader -->
 <script type="text/javascript" src="__LIBS__/webuploader/js/webuploader.min.js"></script>
@@ -202,7 +197,7 @@ span.show-media-info{width: 20px;text-align:center;}
       </script>
   {/if}
   <script type="text/javascript">
-  var select_type = "{$select_type|default="single"}";//选择类型
+  var gettype = "{$gettype|default="single"}";//选择类型
      //选择当前图片
     function cancelSelectImage(obj,img_id){
         obj.style.display="none";
@@ -224,16 +219,16 @@ span.show-media-info{width: 20px;text-align:center;}
             yes: function(index, layero){
                 var p_layer = parent.layer;
                 var alt = p_layer.getChildFrame('#alt', index).val();
-                  var term_id = p_layer.getChildFrame('#file-termid', index).val();
-                  $.post(url("admin/Attachment/edit"),{id:attachmentId,alt:alt,term_id:term_id},function(result){
-                      if (result.code==1) {
-                        parent.updateAlert(result.msg,'success');
-                        p_layer.closeAll();
-                      } else{
-                        parent.updateAlert(result.msg,'success');
-                        
-                      }
-                  });
+                var term_id = p_layer.getChildFrame('#file-termid', index).val();
+                $.post(url("admin/Attachment/edit"),{id:attachmentId,alt:alt,term_id:term_id},function(result){
+                  if (result.code==1) {
+                    parent.updateAlert(result.msg,'success');
+                    p_layer.closeAll();
+                  } else{
+                    parent.updateAlert(result.msg,'success');
+                    
+                  }
+              });
             }
         });
         })
@@ -246,12 +241,12 @@ span.show-media-info{width: 20px;text-align:center;}
             
             var id  = $this.attr('data-id');
             var src = $this.attr('data-src');
-            if (select_type=='single') {
-              $(".attachment-content").find('div.cover').hide();
-              attachment_ids_obj.val(id);
-              $("#attachment_srcs").val(src);
-            } else if(select_type=='multiple'){
-              attachment_ids_obj.val(attachment_ids_val+id+ ',');
+            if (gettype=='single') {
+                $(".attachment-content").find('div.cover').hide();
+                attachment_ids_obj.val(id);
+                $("#attachment_srcs").val(src);
+            } else if(gettype=='multiple'){
+                attachment_ids_obj.val(attachment_ids_val+id+ ',');
             }
             /*处理开关选中start*/
              var current_attachment_ids = attachment_ids_val.split(","); //获取当前图集以逗号分隔的ID并转换成数组
@@ -261,8 +256,8 @@ span.show-media-info{width: 20px;text-align:center;}
                 current_attachment_ids.splice(id_position,1); //从数组中删除待删除的图片ID
                 attachment_ids_obj.val(current_attachment_ids.join(',')) //删除后覆盖原input的值
                 $this.find('div.cover').hide();//同时选中取消
-                if (select_type=='single') {
-                  $("#attachment_srcs").val('');
+                if (gettype=='single') {
+                    $("#attachment_srcs").val('');
                 }
              } else{
                 $this.find('div.cover').show();
@@ -301,30 +296,6 @@ span.show-media-info{width: 20px;text-align:center;}
 
           //   })
           
-            //图片选择器列表确认按钮
-            $('#attachment_ok').click(function () {
-                var $this = $(this);
-                var ids  = $("#attachment_ids").val();
-                var srcs = $("#attachment_srcs").val();
-                //插入数据
-                if (select_type=='single') {
-
-                  javascript:window.parent.setAttachmentInputVal($this.data('id'),ids,srcs);
-
-                } else if(select_type=='multiple'){
-                  {empty name="from"}
-                    $.post("{:url('admin/Upload/getViewAttachmentList')}", {ids:ids}, function (data) {
-                        javascript:window.parent.setAttachmentMultipleVal($this.data('id'),ids,data);
-                    })
-                  {else/}
-                    $.post("{:url('admin/Upload/getViewAttachmentList')}", {ids:ids,nolayout:true}, function (data) {
-                        javascript:window.parent.setAttachmentWangeditorVal{$input_id_name}(data);
-                    })
-                  {/empty}
-                }
-
-                $(".attachment-content").find('div.cover').hide();
-            })
 
             //本地上传
             var uploader_attachment= WebUploader.create({

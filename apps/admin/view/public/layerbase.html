@@ -1,5 +1,9 @@
 {include file="$_admin_document_header_"/}
 {block name="style"}{/block}
+<style type="text/css">
+	/*解决单选框换行问题*/
+	.field-type-radio{float: none!important;display: block;}
+</style>
 <body class="hold-transition skin-blue">
 <div class="layer-wrapper">
   <section class="content" style="margin: 0 10px;">
@@ -16,6 +20,12 @@
 <script type="text/javascript" src="__ADMIN_JS__/common.js" ></script>
 <script type="text/javascript" src="__ADMIN_JS__/base.js" ></script>
 {block name="script"}{/block}
-<!-- <script type="text/javascript" src="__PUBLIC__/js/jquery.pjax.js" ></script> -->
+<script type="text/javascript">
+	$('input').iCheck({
+              checkboxClass:'icheckbox_minimal-blue',
+              radioClass:'iradio_minimal-blue',
+              increaseArea:'20%' // optional
+        });
+</script>
   </body>
 </html>

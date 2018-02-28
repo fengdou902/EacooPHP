@@ -88,7 +88,6 @@ class Config extends Admin {
         $group_id = input('param.group_id');
         if (IS_POST) {
             $data = $this->request->param();
-            $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
             $result = $this->validateData($data,
                                 [
                                     ['group','require|number|>=:0','请选择配置分组|分组必须为数字|分组格式不正确'],
@@ -96,10 +95,8 @@ class Config extends Admin {
                                     ['name','require|alphaDash','配置名称不能为空|配置名称只限字母、数字、下划线'],
                                     ['title','require|chsDash','标题不能为空|配置标题只限汉字、字母、数字和下划线_及破折号-'],
                                 ]);
-            if ($this->configModel->editData($data,$id)) {
-                if ($id != 0) {
-                    cache('DB_CONFIG_DATA',null);
-                }
+            if ($this->configModel->editData($data)) {
+                cache('DB_CONFIG_DATA',null);
                 $this->success($title.'成功',url('index',['group'=>$data['group']]));
             } else {
                 $this->error($this->configModel->getError());
@@ -124,7 +121,7 @@ class Config extends Admin {
             if (!empty($sub_group['sub_group'])) {
                 $builder->addFormItem('sub_group','select','配置子分组','先对大分组创建一个子分组，一般不填写',$sub_group['sub_group']);
             }
-            $builder->addFormItem('type', 'select', '配置类型', '配置类型的分组',config('form_item_type'))
+            return $builder->addFormItem('type', 'select', '配置类型', '配置类型的分组',config('form_item_type'))
                     ->addFormItem('name', 'text', '配置名称', '配置名称')
                     ->addFormItem('title', 'text', '配置标题', '配置标题')
                     ->addFormItem('value', 'textarea', '配置值', '配置值')

@@ -18,24 +18,62 @@ class Base extends Model
     /**
      * 新增或编辑数据
      * @param  array/object  $data 来源数据
-     * @param  boolean $kv   主键值
-     * @param  string  $key  主键名
+     * @param  string  $confirm  是否验证
      * @return [type]        执行结果
      */
-    public function editData($data,$kv=false,$key='id',$confirm=false)
+    public function editData($data, $confirm=false)
     {
         $this->allowField(true);
         
         if ($confirm) {//是否验证
             $this->validate($confirm); 
         }
-
-        if($kv){//编辑
-            $res=$this->save($data,[$key=>$kv]);
+        //获取主键
+        $pk = $this->getPk();
+        if (isset($data[$pk]) && $data[$pk]>0) {
+            //如果存在主键，则更新数据
+            $res = $this->save($data,[$pk=>$data[$pk]]);
         } else{
-            $res=$this->data($data)->save();
+            //如果不存在主键，则新增数据
+            $res = $this->isUpdate(false)->data($data)->save();
+        }
+        if (!$res) {
+            if (!$this->getError()) {
+                $this->error = '数据操作失败！';
+            }
         }
         return $res;
+    }
+
+    /**
+     * 编辑列
+     * @param  [type] $data [description]
+     * @param  [type] $map [description]
+     * @param  [type] $msg [description]
+     * @return [type] [description]
+     * @date   2018-02-28
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function editRow($data, $map) {
+        $ids = array_unique((array)input('param.ids'));
+        if ($ids) {
+            $ids = is_array($ids) ? implode(',',$ids) : $ids;
+            //如存在id字段，则加入该条件
+            $pk = $this->getPk();
+            if (!empty($ids)) {
+                $map = array_merge(
+                    [$pk => ['in', $ids]],
+                    (array)$map
+                );
+            }
+        }
+        $result = $this->where($map)->update($data);
+        if (!$result) {
+            if (!$this->getError()) {
+                $this->error = '数据操作失败！';
+            }
+        }
+        return $result;
     }
 
     /**
@@ -68,7 +106,7 @@ class Base extends Model
      * @param  integer $page_size 每页数量
      * @return 结果集
      */
-    public function getListByPage($map,$field=true,$order='sort asc',$page_size=null)
+    public function getListByPage($map,$field=true,$order='create_time desc',$page_size=null)
     {
         $paged     = input('param.paged',1);//分页值
         if (!$page_size) {
@@ -87,7 +125,7 @@ class Base extends Model
      * @param  string $order 排序
      * @return 结果集
      */
-    public function getList($map,$field=true,$order='sort asc')
+    public function getList($map,$field=true,$order='create_time desc')
     {
         $lists = $this->where($map)->field($field)->order($order)->select();
         return $lists;

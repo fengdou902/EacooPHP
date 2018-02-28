@@ -44,6 +44,7 @@ class User extends Validate
     ];
 
     protected $scene=[
-        'edit' => ['nickname','username'=>'require|length:1,32|regex:username','email','mobile'=>'regex:mobile|unique:users,mobile,,uid'],
+        'add' => ['nickname','username'=>'require|length:1,32|regex:username','email','mobile'=>'regex:mobile|unique:users,mobile,,uid'],
+        'edit' => ['nickname','username'=>'require|length:1,32|regex:username','email.email','mobile'=>'regex:mobile'],
     ];
 }

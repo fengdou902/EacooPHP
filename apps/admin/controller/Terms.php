@@ -97,15 +97,15 @@ class Terms extends Admin {
                 $data['seo_title']=$data['name'];
             }
             $data['taxonomy'] = $taxonomy;
-            $term_id          = isset($data['term_id']) && $data['term_id']>0 ? $data['term_id']:false;
+            
             //验证数据
             $this->validateData($data,
                                 [
                                     ['name','require|chsDash','分类名称不能为空|分类名称只能是汉字和字母'],
                                     ['taxonomy','require|alphaDash','描述只能是汉字字母数字|分类法名称只能是字母和数字，下划线符合']
                                 ]);
-
-            $result = $this->termsModel->editData($data,$term_id,'term_id');
+            //$data里包含主键term_id，则editData就会更新数据，否则是新增数据
+            $result = $this->termsModel->editData($data);
             if ($result) {
                 $this->success($title.'成功', url($tab_obj['current']));
             } else {

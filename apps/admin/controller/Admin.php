@@ -13,6 +13,7 @@ use app\common\controller\Base;
 
 use app\common\model\User as UserModel;
 use app\admin\model\AuthRule;
+use app\admin\logic\AdminLogic;
 
 use eacoo\EacooAccredit;
 
@@ -60,14 +61,14 @@ class Admin extends Base
             }
             
         }
-
-        if (session('activation_auth_sign') != UserModel::where('uid',$this->currentUser['uid'])->value('activation_auth_sign')) {
+        //校验是否同时后台在线多个用户
+        if (AdminLogic::checkAllowLoginByTime()) {
             $this->error('您的帐号正在别的地方登录!',url('admin/login/logout'));
         }
 
-        $this->assign('current_user',$this->currentUser);
-
         if(!IS_AJAX){
+            $this->assign('current_user',$this->currentUser);
+
             //是否菜单被收藏
             $collect_menus = config('admin_collect_menus');
             $this->assign('is_menu_collected',0);
@@ -200,30 +201,27 @@ class Admin extends Base
      *                       )
      */
     final protected function editRow($model, $data, $map, $msg) {
-        $id = array_unique((array)input('id',0));
-        $id = is_array($id) ? implode(',',$id) : $id;
-        //如存在id字段，则加入该条件
-        // $fields = model($model)->getDbFields();
-        // if (in_array('id', $fields) && !empty($id)) {
-        //     $where = array_merge(
-        //         array('id' => array('in', $id )),
-        //         (array)$where
-        //     );
-        // }
+        
         $msg = array_merge(
             array(
                 'success' => '操作成功！',
                 'error'   => '操作失败！',
-                'url'     => ' ',
+                'url'     => '',
                 'ajax'    => IS_AJAX
             ),
             (array)$msg
         );
-        $result = model($model)->where($map)->update($data);
+        $model = model($model);
+        if (method_exists($model,'editRow')) {//如果定义了该方法
+            $result = model($model)->editRow($data,$map);
+        } else{
+            $result = $this->where($map)->update($data);
+        }
+        
         if ($result != false) {
-            $this->success($msg['success']);
+            $this->success($msg['success'],$msg['url']);
         } else {
-            $this->error($msg['error']);
+            $this->error($msg['error'],$msg['url']);
         }
     }
 

@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 namespace app\admin\logic;
 
-class AuthGroup extends Base
+class AuthGroup extends AdminLogic
 {
     const TYPE_ADMIN                = 1;                   // 管理员用户组类型标识
     const MEMBER                    = 'users';

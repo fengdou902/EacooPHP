@@ -38,12 +38,11 @@ class Register extends Home{
             }
             //验证数据
             $this->validateData($data,'Register.register');
-            $uid = isset($data['uid']) && $data['uid']>0 ? intval($data['uid']) : false;
             // 提交数据
-            $result = $this->userModel->editData($data,$uid,'uid');
+            $result = $this->userModel->editData($data);
             if ($result) {
                 if ($uid>0) {//如果是编辑状态下
-                    $this->userModel->updateLoginSession($uid);
+                    logic('common/User')->updateLoginSession($uid);
                 }
                 $this->success('注册成功', url('index'));
             } else {

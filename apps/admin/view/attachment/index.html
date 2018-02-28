@@ -238,6 +238,49 @@
         $('#media_batch').click(function(){
             $('#more-method').toggle();
         }); 
+
+        //筛选
+      $(document).on('submit', '.form-choice-url-param', function(e){
+            //e.preventDefault();
+            var seperator = "&";
+            var form      = $(this).serialize();
+            var action    = $(this).attr('action');
+            if(action == ''){
+                action = location.href;
+            }
+            var new_location = action+'?' + seperator + form;
+            location.href = new_location;
+
+            return false;
+        });
+
+        //icheck
+        $('input').iCheck({
+              checkboxClass:'icheckbox_minimal-blue',
+              radioClass:'iradio_minimal-blue',
+              increaseArea:'20%' // optional
+        });
+        $(".checkbox-toggle,.check-all").click(function () {
+              var clicks = $(this).data('clicks');
+              if (clicks) {
+                //Uncheck all checkboxes
+                $("input[type='checkbox']").iCheck("uncheck");
+                $(".fa", this).removeClass("fa-check-square-o").addClass('fa-square-o');
+              } else {
+                //Check all checkboxes
+                $("input[type='checkbox']").iCheck("check");
+                $(".fa", this).removeClass("fa-square-o").addClass('fa-check-square-o');
+              }
+              $(this).data("clicks", !clicks);
+        });
+        $(".checkbox-toggle .iCheck-helper").click(function () {
+              var all_checked=$('.checkbox-toggle>div.icheckbox_minimal-blue').hasClass('checked');
+              if (!all_checked) {
+                $("input[type='checkbox']").iCheck("uncheck");
+              } else{
+                $("input[type='checkbox']").iCheck("check");
+              }
+          });
     });   
     
     /**
@@ -271,35 +314,22 @@
             }
         });
     }
-      //筛选
-      $(document).on('submit', '.form-choice-url-param', function(e){
-            //e.preventDefault();
-            var seperator = "&";
-            var form      = $(this).serialize();
-            var action    = $(this).attr('action');
-            if(action == ''){
-                action = location.href;
-            }
-            var new_location = action+'?' + seperator + form;
-            location.href = new_location;
-
-            return false;
-        });
+      
         //移动分类
         function move(){
-          var ids = '';
-          $('input[name="ids[]"]:checked').each(function(){
-             ids += ',' + $(this).val();
-          });
-          if(ids != ''){
-              ids = ids.substr(1);
-              $('input[name="ids"]').val(ids);
-              $('.modal-title').html('移动选中的的附件至：');
-              $('#moveModal').modal('show', 'fit')
-          }else{
-              updateAlert('请选择需要移动的附件', 'warning');
+              var ids = '';
+              $('input[name="ids[]"]:checked').each(function(){
+                 ids += ',' + $(this).val();
+              });
+              if(ids != ''){
+                  ids = ids.substr(1);
+                  $('input[name="ids"]').val(ids);
+                  $('.modal-title').html('移动选中的的附件至：');
+                  $('#moveModal').modal('show', 'fit')
+              }else{
+                  updateAlert('请选择需要移动的附件', 'warning');
+              }
           }
-      }
   </script>
 
   {/block}

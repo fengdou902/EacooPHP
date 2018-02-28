@@ -49,6 +49,7 @@
             }
         }
 
+
     });
 
     //ajax post submit请求
@@ -175,17 +176,35 @@ function handleAjax(result,object) {
     var interval = 1500;
     if (is_redirect==true) {
         setTimeout(function () {
-            redirect(result.url);
+            //是否关闭layer_iframe
+            if ($this.hasClass('close_layer_iframe')) {
+                parent.layer.closeAll('iframe');
+            }
+            if ($this.hasClass('is_iframe')) {
+                window.parent.redirect(result.url);
+            } else{
+                redirect(result.url);
+            }
+            
         }, interval);
         
     } else if (is_remove_disabled) {
+        //是否关闭layer_iframe
+        if ($this.hasClass('close_layer_iframe')) {
+            parent.layer.closeAll('iframe');
+        }
         $this.removeClass('disabled').prop('disabled', false);
     } else {
         setTimeout(function () {
+            //是否关闭layer_iframe
+            if ($this.hasClass('close_layer_iframe')) {
+                parent.layer.closeAll('iframe');
+            }
             location.reload();
         }, interval);
 
     }
+    
 }
 
 //重新刷新页面，使用location.reload()有可能导致重新提交
@@ -310,11 +329,12 @@ window.updateConfirm = function (confirm_info) {
     return result;
 }
 
-
 /**************************附件选择器弹框 start*******************************/
 //打开图片选择器组件
 function openAttachmentLayer(obj) {
     var $this = $(obj);
+    var gettype = $this.data('gettype');if (!gettype) gettype = 'single';//选取类型
+    var from = $this.data('from');//来源标识，如：wangeditor
     var layer_type = $this.data('type');if (!layer_type) layer_type = 2;
     var layer_title = $this.data('title');if (!layer_title) layer_title = '图片选择器';
     var layer_url = $this.data('url');if (!layer_url) layer_url = url('admin/upload/attachmentLayer');
@@ -330,21 +350,30 @@ function openAttachmentLayer(obj) {
           btn: ['确定','关闭'],
             yes: function(index, layero){
 
-                var p_layer = parent.layer;
-                var id = p_layer.getChildFrame('#attachment_ok', index).data('id');
-                var ids = p_layer.getChildFrame('#attachment_ids', index).val();
-                var srcs = p_layer.getChildFrame('#attachment_srcs', index).val();
-                win.setAttachmentInputVal(id,ids,srcs);
-                p_layer.closeAll();
-                // $.post(url("admin/Attachment/edit"),{id:attachmentId,alt:alt,term_id:term_id},function(result){
-                //       if (result.code==1) {
-                //         parent.updateAlert(result.msg,'success');
-                //         p_layer.closeAll();
-                //       } else{
-                //         parent.updateAlert(result.msg,'success');
+                var p_layer    = parent.layer;
+                var input_name = p_layer.getChildFrame('#input_name', index).val();//输入项
+                var ids        = p_layer.getChildFrame('#attachment_ids', index).val();
+                var srcs       = p_layer.getChildFrame('#attachment_srcs', index).val();
+                if (gettype=='single') {
+                    win.setAttachmentInputVal(input_name,ids,srcs);
+                } else if(gettype=='multiple'){
+                    if (from=='wangeditor') {
+                        var nolayout=1;
+                    } else{
+                        var nolayout=0;
+                    }
+                    $.get(url('admin/Upload/getViewAttachmentHtml'), {ids:ids,nolayout:nolayout}, function (content) {
+                        if (from=='wangeditor') {
+                            //EditorObj是定义在wangeditor定义的编辑器对象
+                            win.EditorObj.txt.append(content);
+                        } else{
+                            win.setAttachmentMultipleVal(input_name,ids,content);
+                        }
                         
-                //       }
-                //   });
+                    })
+                }
+                
+                p_layer.closeAll('iframe');
             }
       });
 }
@@ -367,8 +396,7 @@ function setAttachmentInputVal(inputName,ids,srcs) {
         }
         
     }
-    
-    layer.closeAll('iframe');
+
 }
 
 //多图
@@ -378,14 +406,14 @@ function setAttachmentInputVal(inputName,ids,srcs) {
  * @param {[type]} ids       [description]
  * @param {[type]} srcs      [description]
  */
-function setAttachmentMultipleVal(inputName,ids,data) {
+function setAttachmentMultipleVal(inputName,ids,content) {
      //插入数据ids
     var field_ids=$("#"+inputName).val();    
     $("#"+inputName).val(field_ids+ids);
 
-    $('#'+inputName+'-gallery-box').append(data);
-    layer.closeAll('iframe');
+    $('#'+inputName+'-gallery-box').append(content);
 }
+
 /**************************附件选择器弹框 end*******************************/
 
 

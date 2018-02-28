@@ -63,9 +63,8 @@ class Action extends Admin {
 			$data = $this->request->param();
             //验证数据
             $this->validateData($data,'Action');
-
-            $id   =isset($data['id']) && $data['id']>0 ? $data['id'] : false;
-            if (model('action')->editData($data,$id)) {
+            //$data里包含主键，则editData就会更新数据，否则是新增数据
+            if (model('action')->editData($data)) {
                 $this->success($title.'成功', url('index'));
             } else {
                 $this->error(model('action')->getError());

@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 namespace app\admin\logic;
 
-class Config extends Base
+class Config extends AdminLogic
 {
 
     /**

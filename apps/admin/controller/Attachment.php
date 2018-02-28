@@ -208,7 +208,7 @@ class Attachment extends Admin {
      * @param  int $id id
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function del($id = 0,$is_return=true){ 
+    public function del($id=0,$is_return=true){ 
         $return = get_attachment_info($id);//附件信息 
         cache('Attachment_'.$id,null);//删除缓存信息
         if ($return['location']=='local') {
@@ -257,7 +257,7 @@ class Attachment extends Admin {
                 'category' =>['title'=>'附件分类','href'=>url('category')],
                 'setting'  =>['title'=>'设置','href'=>url('setting')]
             ];
-        $builder = builder('List')
+        return builder('List')
                     ->setMetaTitle('分类管理')
                     ->setTabNav($tab_list,'category')  // 设置页面Tab导航
                     ->addTopButton('addnew',['href'=>url('categoryEdit')])  // 添加新增按钮

@@ -10,12 +10,18 @@
         var tab_name  = $(this).attr('tab-name');
         var tab_title = $(this).attr('tab-title');
         var is_iframe = $(this).data('iframe');//true|false
-        var tab_html = $(this).html();
+        var self_tab_html = $(this).data('selftabhtml');//自定义tab_html
+
+        if (self_tab_html) {
+            var tab_html = self_tab_html;
+        } else{
+            var tab_html = $(this).html();
+        }
+        tab_html+='<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
         //标题替换
         if (tab_title) {
             tab_html = tab_html.replace($(this).text(),tab_title);
         }
-        tab_html+='<button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
         
         //设置最新latest_iframe_tab存储
         var latest_iframe_tab = {tab_name:tab_name,tab_url:tab_url,tab_html:tab_html};

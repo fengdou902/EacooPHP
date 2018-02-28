@@ -97,9 +97,9 @@
         
         <!-- /.tab-pane -->
         <div class="tab-pane active" id="settings">
-    <form action="{:url('user/User/profile',['uid'=>$user_info['uid']])}" method="post" class="form-builder form-horizontal">
+    <form action="{:url('user/User/profile')}" method="post" class="form-builder form-horizontal">
       <fieldset>
-        <input type="hidden" id="uid" name="uid" value="1">
+        <input type="hidden" id="uid" name="uid" value="{$user_info.uid|default='0'}">
         <div class="form-group item_nickname ">
 	        <label for="nickname" class="col-md-3 control-label">昵称<sup>*</sup></label>
 	        <div class="col-md-4">
@@ -181,7 +181,7 @@
         <div class="form-group">
             <div class="col-md-10 col-md-offset-3 mt-10 tc">
                <div class="col-md-3">
-                    <button class="btn btn-block btn-primary submit ajax-post " type="submit" target-form="form-builder">确定</button>
+                    <button class="btn btn-block btn-primary submit ajax-post" type="submit" target-form="form-builder">确定</button>
                 </div>
                 <div class="col-md-3">
                     <button onclick="javascript:history.back(-1);return false;" class="btn btn-block btn-default return">返回</button>

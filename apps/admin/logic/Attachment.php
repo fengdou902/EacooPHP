@@ -11,7 +11,7 @@
 namespace app\admin\logic;
 
 use think\File;
-class Attachment extends Base {
+class Attachment extends AdminLogic {
 
 
 }

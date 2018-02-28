@@ -10,8 +10,7 @@
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
 
-use app\common\model\Config;
-use app\common\builder\Builder;
+use app\common\model\Config as ConfigModel;
 
 class Mailer extends Admin{
 
@@ -21,7 +20,7 @@ class Mailer extends Admin{
     function _initialize()
     {
         parent::_initialize();
-        $this->configModel = new Config();
+        $this->configModel = new ConfigModel();
         $this->tabList = [
             'register_active' =>['title'=>'注册激活模板','href'=>url('template',['template_type'=>'register_active'])],
             'captcha_active'  =>['title'=>'邮箱验证码模板','href'=>url('template',['template_type'=>'captcha_active'])]

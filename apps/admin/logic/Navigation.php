@@ -13,13 +13,13 @@ namespace app\admin\logic;
 use app\common\model\Nav as NavModel;
 use eacoo\Tree;
 
-class Navigation extends Base {
+class Navigation extends AdminLogic {
 
     protected $navModel;
 
-    function _initialize()
+    protected function initialize()
     {
-        parent::_initialize();
+        parent::initialize();
         $this->navModel = new NavModel;
     }
     
@@ -60,7 +60,7 @@ class Navigation extends Base {
                     $menu_options_str.='<option value="'.$option['id'].'">'.$option.'</option>';
                 }
         }
-        $move_url = url('moveMenuPosition');
+        $move_url = url('moveMenusPosition');
         return <<<EOF
         <div class="modal fade mt100" id="movemenuPositionModal">
             <div class="modal-dialog modal-sm">
@@ -106,21 +106,15 @@ EOF;
      * 移动菜单位置
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function moveMenusPosition() {
-        if (IS_POST) {
-            $ids    = input('param.ids');
-            $to_pid = input('param.to_pid');
-            if ($to_pid || $to_pid==0) {
-                cache('front_header_navs',null);//清空前台导航缓存
-                cache('front_my_navs',null);//清空前台我的缓存
-                $map['id'] = ['in',$ids];
-                $data = array('pid' => $to_pid);
-                $this->editRow('nav', $data, $map, ['success'=>'移动成功','error'=>'移动失败',url('index')]);
+    public function moveMenusPosition($ids,$to_pid) {
 
-            } else {
-                $this->error('请选择目标菜单'.$to_pid);
-            }
-        }
+        cache('front_header_navs',null);//清空前台导航缓存
+        cache('front_my_navs',null);//清空前台我的缓存
+        $map['id'] = ['in',$ids];
+        $data = array('pid' => $to_pid);
+        $result = model('nav')->editRow($data, $map);
+        return $result;
+
     }
 
 }

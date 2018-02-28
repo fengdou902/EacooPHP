@@ -77,11 +77,11 @@ class Index extends Home{
         if (IS_POST) {
           $data = input('post.');
           // 提交数据
-
-          $result = $this->userModel->editData($data,is_login(),'uid');
+          $data['uid']=is_login();
+          $result = $this->userModel->editData($data);
 
           if ($result) {
-            $this->userModel->updateLoginSession(is_login());
+            logic('common/User')->updateLoginSession(is_login());
             $this->success('提交成功', url('profile'));
           } else {
             $this->error($this->userModel->getError());

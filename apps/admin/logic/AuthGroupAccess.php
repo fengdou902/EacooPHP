@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 namespace app\admin\logic;
 
-class AuthGroupAccess extends Base
+class AuthGroupAccess extends AdminLogic
 {
     /**
      * 用户组信息

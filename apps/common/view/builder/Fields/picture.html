@@ -14,7 +14,7 @@
             
             <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field.value|default=''}"/>
             <div>
-                <span class="btn btn-info ml-10 mt-10 btn-sm" data-url="{:url('admin/Upload/attachmentLayer',['input_id_name'=>$field['id'],'path_type'=>$path_type,'select_type'=>'single'])}" onclick="openAttachmentLayer(this);"><i class="fa fa-file-image-o"></i> 选择图片</span>
+                <span class="btn btn-info ml-10 mt-10 btn-sm" data-url="{:url('admin/Upload/attachmentLayer',['input_id_name'=>$field['id'],'path_type'=>$path_type,'gettype'=>'single'])}" onclick="openAttachmentLayer(this);"><i class="fa fa-file-image-o"></i> 选择图片</span>
             </div>
             <div class="upload-img-box tc popup-gallery fl img-thumbnail pr ">
                 <div class="each">

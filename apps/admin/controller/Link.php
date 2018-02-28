@@ -68,8 +68,8 @@ class Link extends Admin{
             //验证数据
             $this->validateData($data,'admin/Link');
 
-            $id   =isset($data['id']) && $data['id']>0 ? $data['id']:false;
-            if ($this->linkModel->editData($data,$id)) {
+            //$data里包含主键id，则editData就会更新数据，否则是新增数据
+            if ($this->linkModel->editData($data)) {
                 $this->success($title.'成功', url('index'));
             } else {
                 $this->error($this->linkModel->getError());

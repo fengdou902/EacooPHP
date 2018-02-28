@@ -90,7 +90,7 @@ class Editor extends Base
         }
         //图片选择器弹窗地址
         if(!isset($attributes['pictures_dialog']['url'])){
-            $attributes['pictures_dialog']['url'] = url('admin/Upload/attachmentLayer',['input_id_name'=>$attributes['id'],'path_type'=>$attributes['upload']['path_type'],'select_type'=>'multiple','from'=>'wangeditor']);
+            $attributes['pictures_dialog']['url'] = url('admin/Upload/attachmentLayer',['input_id_name'=>$attributes['id'],'path_type'=>$attributes['upload']['path_type'],'gettype'=>'multiple','from'=>'wangeditor']);
         }
 
         /**

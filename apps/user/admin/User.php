@@ -31,13 +31,15 @@ class User extends Admin {
         // 获取所有用户
         $map['status'] = ['egt', '0']; // 禁用和正常状态
         list($data_list,$total) = $this->userModel->search('uid|username|nickname')->getListByPage($map,true,'reg_time desc');
-
+        foreach ($data_list as $key => &$row) {
+            $row['sex_text'] = $row['sex_text'];
+        }
         $reset_password = [
-            'icon'=> 'fa fa-recycle',
-            'title'=>'重置原始密码',
-            'class'=>'btn btn-default ajax-table-btn confirm btn-sm',
-            'confirm-info'=>'该操作会重置用户密码为123456，请谨慎操作',
-            'href'=>url('resetPassword')
+            'icon'         => 'fa fa-recycle',
+            'title'        => '重置原始密码',
+            'class'        => 'btn btn-default ajax-table-btn confirm btn-sm',
+            'confirm-info' => '该操作会重置用户密码为123456，请谨慎操作',
+            'href'         => url('resetPassword')
         ];
 
         return builder('list')
@@ -51,11 +53,12 @@ class User extends Admin {
                 ->keyListItem('uid', 'UID')
                 ->keyListItem('avatar', '头像', 'avatar')
                 ->keyListItem('nickname', '昵称')
+                ->keyListItem('sex_text', '性别')
                 ->keyListItem('username', '用户名')
                 ->keyListItem('email', '邮箱')
                 ->keyListItem('mobile', '手机号')
-                ->keyListItem('reg_time', '注册时间','time')
-                ->keyListItem('allow_admin', '允许进入后台','status')
+                ->keyListItem('reg_time', '注册时间')
+                ->keyListItem('allow_admin', '允许登录后台','status')
                 ->keyListItem('status', '状态', 'array',[0=>'禁用',1=>'正常',2=>'待验证'])
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListPrimaryKey('uid')
@@ -75,19 +78,22 @@ class User extends Admin {
             $data = input('param.');
             // 密码为空表示不修改密码
             if ($data['password'] === '') {
-                unset($data['password']);
+                $data['password']=123456;
             }
-
-            $this->validate($data,'User.edit');
-
             $uid  = isset($data['uid']) && $data['uid']>0 ? intval($data['uid']) : false;
-            if (!$uid) {
-                $data['reg_time'] = time();
+            if ($uid>0) {
+                $this->validateData($data,'User.edit');
+            } else{
+                $this->validateData($data,'User.add');
             }
+            
+            
             // 提交数据
-            $result = $this->userModel->editData($data,$uid,'uid');
+            //$data里包含主键id，则editData就会更新数据，否则是新增数据
+            $result = $this->userModel->editData($data);
 
             if ($result) {
+                
                 if ($uid==is_login()) {//如果是编辑状态下
                     logic('common/User')->updateLoginSession($uid);
                 }
@@ -109,9 +115,9 @@ class User extends Admin {
                     ->addFormItem('uid', 'hidden', 'UID', '')
                     ->addFormItem('nickname', 'text', '昵称', '填写一个有个性的昵称吧','','require')
                     ->addFormItem('username', 'text', '用户名', '登录账户所用名称','','require')
-                    ->addFormItem('password', 'password', '密码', '','','','placeholder="留空则不修改密码"')
+                    ->addFormItem('password', 'password', '密码', '新增默认密码123456','','placeholder="留空则不修改密码"')
                     ->addFormItem('email', 'email', '邮箱', '','','data-rule="email" data-tip="请填写一个邮箱地址"')
-                    ->addFormItem('mobile', 'left_icon_number', '手机号', '',['icon'=>'<i class="fa fa-phone"></i>'],'','placeholder="填写手机号"')
+                    ->addFormItem('mobile', 'left_icon_number', '手机号', '',['icon'=>'<i class="fa fa-phone"></i>'],'placeholder="填写手机号"')
                     ->addFormItem('sex', 'radio', '性别', '',[0=>'保密',1=>'男',2=>'女'])
                     ->addFormItem('allow_admin', 'select', '是否允许访问后台', '',[0=>'不允许',1=>'允许'])
                     ->addFormItem('description', 'textarea', '个人说明', '请填写个人说明');
@@ -136,23 +142,23 @@ class User extends Admin {
     public function profile($uid = 0) {
         
         if (IS_POST) {
-            // 密码为空表示不修改密码
-            // if ($_POST['password'] === '') {
-            //     unset($_POST['password']);
-            // }
+
             $data = $this->request->param();
-            
             // 提交数据
-            $result = $this->userModel->editData($data,$uid,'uid');
+            $result = $this->userModel->editData($data);
             if ($result) {
+                $uid = $data['uid'];
                 if ($uid==is_login()) {//如果是编辑状态下
-                    $this->userModel->updateLoginSession($uid);
+                    logic('common/User')->updateLoginSession($uid);
                 }
 
                 $this->success('提交成功', url('profile',['uid'=>$uid]));
             } else {
-
-                $this->error($this->userModel->getError());
+                $msg = $this->userModel->getError();
+                if (!$msg) {
+                    $msg = '操作失败';
+                }
+                $this->error($msg);
             }
         } else {
             $this->assign('meta_title','个人资料');
@@ -161,7 +167,7 @@ class User extends Admin {
             if ($uid>0) {
                 $user_info = get_user_info($uid);
                 unset($user_info['password']);
-                unset($user_info['auth_group']['max']);
+                //unset($user_info['auth_group']['max']);
             }
             $this->assign('user_info',$user_info);
             return $this->fetch();

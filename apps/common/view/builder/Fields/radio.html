@@ -1,4 +1,3 @@
-
     <!--
         如果选项的值是自定义数组(必须定义key为title的元素)需要解析，如果选项的值是常规字符串直接显示
         此处主要是用来给option定义更多的属性，比如data-ia=1，那么option应为
@@ -7,7 +6,7 @@
    <div class="form-group item_{$field.name} {$field.extra_class|default=''}">
    <label for="{$field.name}" class="col-md-2 control-label">{$field.title|htmlspecialchars}</label>
     <div class="col-md-8">
-          <div class="oh mb-10 pl-5">
+          <div class="field-type-radio oh mb-10 pl-5 pr-20 fl">
           {assign name="num" value="0" /}
             {foreach name="field.options" item="option" key="option_key"}
                 {php}$num++;if(is_array($option)):{/php}

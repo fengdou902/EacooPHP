@@ -90,21 +90,15 @@ class Auth extends Admin {
      */
     public function edit($id=0){
         $title=$id ? "编辑":"新增";
-        if ($id==0) {//新增
-            $pid       = (int)input('param.pid');
-            $pid_data  = $this->authRuleModel->get($pid);
-            $menu_data = array('depend_flag'=>$pid_data['depend_flag'],'pid'=>$pid);
-        }
         
         if(IS_POST){
             // 提交数据
             $data = $this->request->param();
             //验证数据
-            $this->validateData($data,'AuthRule');
-            $data['depend_type']=1;//后台添加默认依赖模块
-            $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
+            $this->validateData($data,'AuthRule.edit');
 
-            if ($this->authRuleModel->editData($data,$id)) {
+            //$data里包含主键，则editData就会更新数据，否则是新增数据
+            if ($this->authRuleModel->editData($data)) {
                 cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);//清空后台菜单缓存
                 $this->success($title.'菜单成功', url('index',['pid'=>input('param.pid')]));
             } else {
@@ -117,10 +111,16 @@ class Auth extends Admin {
                 $info = $this->authRuleModel->get($id);
             } else{
                 $pid       = (int)input('param.pid');
-                $pid_data  = $this->authRuleModel->get($pid);
-                $info = ['depend_flag'=>$pid_data['depend_flag'],'pid'=>$pid,'is_menu'=>1,'sort'=>99,'status'=>1];
+                if ($pid>0) {
+                    $pid_data  = $this->authRuleModel->where('pid',$pid)->field('depend_type,depend_flag')->find();
+                    $info = ['depend_type'=>pid_data['depend_type'],'depend_flag'=>$pid_data['depend_flag'],'pid'=>$pid,'is_menu'=>1,'sort'=>99,'status'=>1];
+                } else{
+                    
+                    $info = ['depend_type'=>1,'is_menu'=>1,'sort'=>99,'status'=>1];
+                }
             }
-
+            $depend_flag = logic('Auth')->getDependFlags($info['depend_type']);
+            //获取所有菜单
             $menus = logic('Auth')->getAdminMenu();
             $menus = array_merge([0=>['id'=>0,'title_show'=>'顶级菜单']], $menus);
 
@@ -130,7 +130,7 @@ class Auth extends Admin {
                     ->addFormItem('title', 'text', '标题', '用于后台显示的配置标题')
                     ->addFormItem('pid', 'multilayer_select', '上级菜单', '上级菜单',$menus)
                     ->addFormItem('depend_type', 'select', '来源类型', '来源类型。分别是模块，插件，主题',[1=>'模块',2=>'插件',3=>'主题'])
-                    ->addFormItem('depend_flag', 'text', '来源标识', '如模块、插件、主题的标识名')
+                    ->addFormItem('depend_flag', 'select', '来源标识', '请选择标识名，模块、插件、主题的标识名',$depend_flag)
                     ->addFormItem('icon', 'icon', '字体图标', '字体图标')
                     ->addFormItem('name', 'text', '链接', '链接')
                     ->addFormItem('is_menu', 'radio', '后台菜单', '是否标记为后台菜单',[1=>'是',0=>'否'])
@@ -265,9 +265,9 @@ class Auth extends Admin {
      */
     public function role(){
         // 获取所有角色
-        list($data_list,$page) = $this->authGroupModel
+        list($data_list,$total) = $this->authGroupModel
             ->search() //添加搜索框
-            ->getListByPage([],true,'id asc',20);
+            ->getListByPage([],true,'id asc');
 
         return builder('List')        
                 ->setMetaTitle('角色管理') // 设置页面标题
@@ -282,7 +282,7 @@ class Auth extends Admin {
                 ->keyListItem('status', '状态','status')
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListData($data_list)    // 数据列表
-                ->setListPage($page) // 数据列表分页
+                ->setListPage($total) // 数据列表分页
                 ->addRightButton('edit',['href'=>url('roleEdit',['group_id'=>'__data_id__']),'class'=>'btn btn-success btn-xs']) 
                 ->addRightButton('self',['title'=>'权限分配','href'=>url('access',['group_id'=>'__data_id__']),'class'=>'btn btn-info btn-xs'])  
                 ->addRightButton('self',array('title'=>'成员授权','href'=>url('accessUser',array('group_id'=>'__data_id__'))))    
@@ -302,9 +302,8 @@ class Auth extends Admin {
                                     ['description','chsAlphaNum','描述只能是汉字字母数字']
                                 ]
                             );
-            $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
-
-            if ($this->authGroupModel->editData($data,$id)) {
+            //$data里包含主键，则editData就会更新数据，否则是新增数据
+            if ($this->authGroupModel->editData($data)) {
                 $this->success($title.'成功', url('role'));
             } else {
                 $this->error($this->authGroupModel->getError());
@@ -334,13 +333,13 @@ class Auth extends Admin {
             $data['id']    = $group_id;
             $menu_auth     = input('param.menu_auth/a','');//获取所有授权菜单
             $data['rules'] = implode(',',$menu_auth);
-            $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
 
             //开发过程中先关闭这个限制
             //if($group_id==1){
                 //$this->error('不能修改超级管理员'.$title);
            // }else{
-                if ($this->authGroupModel->editData($data,$id)) {
+                //$data里包含主键id，则editData就会更新数据，否则是新增数据
+                if ($this->authGroupModel->editData($data)) {
                     cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);
                     $this->success($title.'成功', url('role'));
                 }else{
@@ -424,8 +423,8 @@ class Auth extends Admin {
     //         $data['rules']  = implode( ',' , array_unique($data['rules']));
     //     }
 
-    //     $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
-    //     if ($this->authGroupModel->editData($data,$id)) {
+    //     //$data里包含主键id，则editData就会更新数据，否则是新增数据
+    //     if ($this->authGroupModel->editData($data)) {
     //         $this->success('操作成功!',url('index'));
     //     } else {
     //         $this->error('操作失败'.$this->authGroupModel->getError());

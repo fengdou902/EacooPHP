@@ -17,15 +17,15 @@ use app\common\model\User as UserModel;
 
 use eacoo\Tree;
 
-class Auth extends Base {
+class Auth extends AdminLogic {
 
     protected $authRuleModel;
     protected $authGroupModel;
     protected $userModel;
 
-    protected function _initialize()
+    protected function initialize()
     {
-        parent::_initialize();
+        parent::initialize();
 
         $this->authRuleModel  = new AuthRuleModel;
         $this->authGroupModel = new AuthGroupModel;
@@ -234,20 +234,14 @@ EOF;
      * 移动菜单位置
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function moveMenusPosition() {
-        if (IS_POST) {
-            $ids    = input('param.ids');
-            $to_pid = input('param.to_pid');
-            if ($to_pid || $to_pid==0) {
-                cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);
-                $map['id'] = ['in',$ids];
-                $data = array('pid' => $to_pid);
-                $this->editRow('auth_rule', $data, $map, ['success'=>'移动成功','error'=>'移动失败',url('index')]);
+    public function moveMenusPosition($ids,$to_pid) {
 
-            } else {
-                $this->error('请选择目标菜单'.$to_pid);
-            }
-        }
+        cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);
+        $map['id'] = ['in',$ids];
+        $data = array('pid' => $to_pid);
+        $result = model('auth_rule')->editRow($data, $map);
+        return $result;
+
     }
 
     /**
@@ -354,9 +348,9 @@ EOF;
                                     ['description','chsAlphaNum','描述只能是汉字字母数字']
                                 ]
                             );
-            $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
-
-            if ($this->authGroupModel->editData($data,$id)) {
+            
+            //$data里包含主键id，则editData就会更新数据，否则是新增数据
+            if ($this->authGroupModel->editData($data)) {
                 $this->success($title.'成功', url('role'));
             } else {
                 $this->error($this->authGroupModel->getError());
@@ -390,13 +384,13 @@ EOF;
             $data['id']    = $group_id;
             $menu_auth     = input('post.menu_auth/a','');//获取所有授权菜单
             $data['rules'] = implode(',',$menu_auth);
-            $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
 
             //开发过程中先关闭这个限制
             //if($group_id==1){
                 //$this->error('不能修改超级管理员'.$title);
            // }else{
-                if ($this->authGroupModel->editData($data,$id)) {
+                //$data里包含主键id，则editData就会更新数据，否则是新增数据
+                if ($this->authGroupModel->editData($data)) {
                     cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);
                     $this->success($title.'成功', url('role'));
                 }else{
@@ -476,8 +470,7 @@ EOF;
             $data['rules']  = implode( ',' , array_unique($data['rules']));
         }
 
-        $id   = isset($data['id']) && $data['id']>0 ? $data['id']:false;
-        if ($this->authGroupModel->editData($data,$id)) {
+        if ($this->authGroupModel->editData($data)) {
             $this->success('操作成功!',url('index'));
         } else {
             $this->error('操作失败'.$this->authGroupModel->getError());

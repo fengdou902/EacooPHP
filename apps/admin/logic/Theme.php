@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 namespace app\admin\logic;
 
-class Theme extends Base
+class Theme extends AdminLogic
 {
     
 }

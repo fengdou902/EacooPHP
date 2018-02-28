@@ -72,6 +72,9 @@ skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar 
 .search-form>.form-control, .search-form>.input-group-addon, .search-form>.input-group-btn>.btn{height: 32px;}
 /*应用中心标签页tab*/
 .appcenter-tabs{position: absolute;left: 39%;top:10px;}
+
+.item-apptab{}
+.item-apptab.active .info-box{background: #f5f5f5;}
 /*表格table*/
 .builder-toolbar .btn { padding: 5px 15px;font-weight: 500;}
 
@@ -81,11 +84,10 @@ skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar 
 
 .fixed-table-container{border:none!important;}
 /*表单form*/
+label.radio-label1{padding-left: 0;}
 .help-block{font-size: 13px;line-height: 24px;color: #888;padding-left: 0;}
 .help-block:hover{color: #666;}
-/*widget*/
-.users-list>li{width: 16.66%;height: 106px;}
-.users-list-name{font-weight: normal;font-size: 12px;margin-top: 5px;}
+
 /* 导航条 */
 .main-header .navbar .nav > li:hover .dropdown-menu {display: block;}
 

@@ -66,8 +66,8 @@ class Hook extends Admin {
             //验证数据
             $this->validateData($data,'Hook');
 
-            $id = isset($data['id']) && $data['id']>0 ? $data['id']:false;
-            if ($this->hooksModel->editData($data,$id)) {
+            //$data里包含主键id，则editData就会更新数据，否则是新增数据
+            if ($this->hooksModel->editData($data)) {
                 $this->success($title.'成功', url('hooks'));
             } else {
                 $this->error($this->hooksModel->getError());

@@ -40,7 +40,7 @@ window.wangEditor.switchCode = {
 window.wangEditor.picturesModal = {
     // editor create之后调用
     init: function(editorSelector,url){
-        $(editorSelector + " .w-e-toolbar").append('<div class="w-e-menu"><i class="w-e-btn-picturesModal" data-url="'+url+'" onclick="openAttachmentLayer(this);" >多图</i></div>');
+        $(editorSelector + " .w-e-toolbar").append('<div class="w-e-menu"><i class="w-e-btn-picturesModal" data-url="'+url+'" data-gettype="multiple" data-from="wangeditor" onclick="openAttachmentLayer(this);" >多图</i></div>');
     },
 };
 

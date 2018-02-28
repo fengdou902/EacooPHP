@@ -76,16 +76,25 @@ class Upload extends Admin {
     public function attachmentWidgetList($from_type = null, $paged = 1, $cat = 0, $path_type = 'picture'){
         widget('common/Attachment/paged_list',[$from_type,$paged,$cat,$path_type]); 
     }   
-    //获取builder多图上传列表
-    public function getViewAttachmentList($ids,$nolayout=false,$path_type='picture'){
+    
+    /**
+     * 获取builder多图上传列表
+     * @param  [type] $ids [description]
+     * @param  boolean $nolayout [description]
+     * @param  string $path_type [description]
+     * @return [type] [description]
+     * @date   2018-02-28
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function getViewAttachmentHtml($ids,$nolayout=false,$path_type='picture'){
         $map['id']     = ['in',$ids];
         $map['status'] = 1;
         $file_list = $this->attachmentModel->getList($map);
         foreach ($file_list as $key => $data) {
             $data['url'] = cdn_img_url($data['path']);
-            if ($nolayout==true) {
+            if ($nolayout==1) {
                 echo '<img class="" src="'.$data['url'].'" data-id="'.$data['id'].'">';
-            }else{
+            } else{
                 echo '<div class="col-md-3"><div class="thumbnail"><i class="fa fa-times-circle remove-attachment"></i><img class="img" src="'.$data['url'].'" data-id="'.$data['id'].'"></div></div>';
             }
             
@@ -100,7 +109,6 @@ class Upload extends Admin {
     {
         $data = $this->request->param();
         $path_type = !empty($data['path_type']) ? $data['path_type'] : 'picture';
-        $from = !empty($data['from']) ? $data['from'] : '';
 
         $map['path_type'] = ['in',$path_type];
 
@@ -136,10 +144,9 @@ class Upload extends Admin {
         $this->assign('data_page',$data_list->render());//分页
 
         $this->assign('input_id_name',$data['input_id_name']);//输入框ID
-        $this->assign('select_type',$data['select_type']);//赋值参数
+        $this->assign('gettype',$data['gettype']);//赋值参数
         $this->assign('mediaTypeList',[1=>'图像',2=>'视频',3=>'音频',4=>'文件']);//媒体类型列表
         $this->assign('path_type',$path_type);
-        $this->assign('from',$from);
 
         $param['attachmentDaterangePicker']=1;
         $this->assign('attachmentDaterangePicker',$param['attachmentDaterangePicker']);//是否导入时间选择器
@@ -164,30 +171,6 @@ class Upload extends Admin {
         }
 
     }
-
-    // //实现php文件安全下载！
-    // public function downloads($name){
-    //     $name_tmp = explode("_",$name);
-    //     $type = $name_tmp[0];
-    //     $file_time = explode(".",$name_tmp[3]);
-    //     $file_time = $file_time[0];
-    //     $file_date = date("Y/md",$file_time);
-    //     $file_dir = SITE_PATH."/data/uploads/$type/$file_date/";    
-
-    //     if (!file_exists($file_dir.$name)){
-    //         header("Content-type: text/html; charset=utf-8");
-    //         echo "File not found!";
-    //         exit; 
-    //     } else {
-    //         $file = fopen($file_dir.$name,"r"); 
-    //         Header("Content-type: application/octet-stream");
-    //         Header("Accept-Ranges: bytes");
-    //         Header("Accept-Length: ".filesize($file_dir . $name));
-    //         Header("Content-Disposition: attachment; filename=".$name);
-    //         echo fread($file, filesize($file_dir.$name));
-    //         fclose($file);
-    //     }
-    // }
     
     
 }

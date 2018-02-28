@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 namespace app\admin\logic;
 
-class Plugin extends Base
+class Plugin extends AdminLogic
 {
     
 }
