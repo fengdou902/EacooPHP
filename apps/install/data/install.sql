@@ -3,18 +3,12 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 2018-02-22 14:28:51
+-- Generation Time: 2018-03-01 03:11:11
 -- 服务器版本： 5.7.15
 -- PHP Version: 7.0.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `eacoophp`
@@ -124,7 +118,6 @@ INSERT INTO `eacoo_attachment` (`id`, `uid`, `name`, `path`, `url`, `location`, 
 (13, 1, '7751775467283337', '/uploads/picture/2016-09-26/57e8dc9d29b01.jpg', '', 'local', 'picture', 'jpg', '', 70875, NULL, '3e3bfc950aa0b6ebb56654c15fe8e392', 'c75e70753eaf36aaee10efb3682fdbd8f766d32d', 0, 1474878621, 1474878621, 0, 1),
 (14, 1, '4366486814073822', '/uploads/picture/2016-09-26/57e8ddebaafff.jpg', '', 'local', 'picture', 'jpg', '', 302678, NULL, 'baf2dc5ea7b80a6d73b20a2c762aec1e', 'd73fe63f5c179135b2c2e7f174d6df36e05ab3d8', 0, 1474878955, 1474878955, 0, 1),
 (15, 1, 'wx1image_14751583274385', '/uploads/picture/2016-09-29/wx1image_14751583274385.jpg', '', 'local', 'picture', 'jpg', '', 311261, NULL, '', '', 0, 1475158327, 0, 0, 1),
-(16, 1, 'wx1image_14751583284125', '/uploads/picture/2016-09-29/wx1image_14751583284125.jpg', '', 'local', 'picture', 'jpg', '', 192559, NULL, '', '', 0, 1475158328, 0, 0, 1),
 (17, 1, 'wx1image_14751583287356', '/uploads/picture/2016-09-29/wx1image_14751583287356.jpg', '', 'local', 'picture', 'jpg', '', 43346, NULL, '', '', 0, 1475158328, 0, 0, 1),
 (18, 1, 'wx1image_14751583293547', '/uploads/picture/2016-09-29/wx1image_14751583293547.jpg', '', 'local', 'picture', 'jpg', '', 150688, NULL, '', '', 0, 1475158329, 0, 0, 1),
 (19, 1, 'wx1image_14751583298683', '/uploads/picture/2016-09-29/wx1image_14751583298683.jpg', '', 'local', 'picture', 'jpg', '', 79626, NULL, '', '', 0, 1475158329, 0, 0, 1),
@@ -148,7 +141,6 @@ INSERT INTO `eacoo_attachment` (`id`, `uid`, `name`, `path`, `url`, `location`, 
 (39, 1, 'wx1image_14751587997094.png', '/uploads/picture/2016-09-29/wx1image_14751587997094.png', '', 'local', 'picture', 'jpg', '', 26583, NULL, '', '', 0, 1475158799, 0, 0, 1),
 (40, 1, 'wx1image_14751587995130', '/uploads/picture/2016-09-29/wx1image_14751587995130.jpg', '', 'local', 'picture', 'jpg', '', 23625, NULL, '', '', 0, 1475158799, 0, 0, 1),
 (41, 1, 'wx1image_14751587995676', '/uploads/picture/2016-09-29/wx1image_14751587995676.jpg', '', 'local', 'picture', 'jpg', '', 67232, NULL, '', '', 0, 1475158799, 0, 0, 1),
-(42, 1, 'wx1image_14751587991897', '/uploads/picture/2016-09-29/wx1image_14751587991897.jpg', '', 'local', 'picture', 'jpg', '', 16604, NULL, '', '', 0, 1475158799, 0, 0, 1),
 (43, 1, 'wx1image_14751588004786', '/uploads/picture/2016-09-29/wx1image_14751588004786.jpg', '', 'local', 'picture', 'jpg', '', 26779, NULL, '', '', 0, 1475158800, 0, 0, 1),
 (44, 1, 'wx1image_14751588009825', '/uploads/picture/2016-09-29/wx1image_14751588009825.jpg', '', 'local', 'picture', 'jpg', '', 7546, NULL, '', '', 0, 1475158800, 0, 0, 1),
 (45, 1, 'wx1image_1475158800631', '/uploads/picture/2016-09-29/wx1image_1475158800631.jpg', '', 'local', 'picture', 'jpg', '', 10713, NULL, '', '', 0, 1475158800, 0, 0, 1),
@@ -176,13 +168,10 @@ INSERT INTO `eacoo_attachment` (`id`, `uid`, `name`, `path`, `url`, `location`, 
 (68, 1, 'wx1image_14751588235543.png', '/uploads/picture/2016-09-29/wx1image_14751588235543.png', '', 'local', 'picture', 'jpg', '', 32383, NULL, '', '', 0, 1475158823, 0, 0, 1),
 (69, 1, 'wx1image_14751588233114.png', '/uploads/picture/2016-09-29/wx1image_14751588233114.png', '', 'local', 'picture', 'jpg', '', 16871, NULL, '', '', 0, 1475158823, 0, 0, 1),
 (70, 1, 'wx1image_14751588247501.png', '/uploads/picture/2016-09-29/wx1image_14751588247501.png', '', 'local', 'picture', 'jpg', '', 48306, '', '', '', 0, 1475158824, 1506556705, 0, 1),
-(71, 1, 'wx1image_1475158825303.png', '/uploads/picture/2016-09-29/wx1image_1475158825303.png', '', 'local', 'picture', 'jpg', '', 65410, NULL, '', '', 0, 1475158825, 0, 0, 1),
-(72, 1, 'wx1image_14751588263856.png', '/uploads/picture/2016-09-29/wx1image_14751588263856.png', '', 'local', 'picture', 'jpg', '', 173478, NULL, '', '', 0, 1475158826, 0, 0, 1),
 (73, 1, 'wx1image_1475158835506', '/uploads/picture/2016-09-29/wx1image_1475158835506.jpg', '', 'local', 'picture', 'jpg', '', 12805, NULL, '', '', 0, 1475158835, 0, 0, 1),
 (74, 1, 'wx1image_14751588359605.png', '/uploads/picture/2016-09-29/wx1image_14751588359605.png', '', 'local', 'picture', 'jpg', '', 42306, NULL, '', '', 0, 1475158835, 0, 0, 1),
 (75, 1, 'wx1image_14751588351768.png', '/uploads/picture/2016-09-29/wx1image_14751588351768.png', '', 'local', 'picture', 'jpg', '', 13828, NULL, '', '', 0, 1475158835, 0, 0, 1),
 (76, 1, 'wx1image_14751588383783.png', '/uploads/picture/2016-09-29/wx1image_14751588383783.png', '', 'local', 'picture', 'jpg', '', 39390, NULL, '', '', 0, 1475158838, 0, 0, 1),
-(77, 1, 'wx1image_1475158839982.png', '/uploads/picture/2016-09-29/wx1image_1475158839982.png', '', 'local', 'picture', 'jpg', '', 41620, NULL, '', '', 0, 1475158839, 0, 0, 1),
 (78, 1, 'wx1image_14751588393130.png', '/uploads/picture/2016-09-29/wx1image_14751588393130.png', '', 'local', 'picture', 'jpg', '', 10686, NULL, '', '', 0, 1475158839, 0, 0, 1),
 (79, 1, 'wx1image_1475158843730.png', '/uploads/picture/2016-09-29/wx1image_1475158843730.png', '', 'local', 'picture', 'jpg', '', 77934, NULL, '', '', 0, 1475158843, 0, 0, 1),
 (80, 1, 'wx1image_14751588431771.png', '/uploads/picture/2016-09-29/wx1image_14751588431771.png', '', 'local', 'picture', 'jpg', '', 38682, NULL, '', '', 0, 1475158843, 0, 0, 1),
@@ -191,7 +180,6 @@ INSERT INTO `eacoo_attachment` (`id`, `uid`, `name`, `path`, `url`, `location`, 
 (83, 1, 'wx1image_14751588456818.png', '/uploads/picture/2016-09-29/wx1image_14751588456818.png', '', 'local', 'picture', 'jpg', '', 12567, NULL, '', '', 0, 1475158845, 0, 0, 1),
 (84, 1, 'wx1image_14751588548752.png', '/uploads/picture/2016-09-29/wx1image_14751588548752.png', '', 'local', 'picture', 'jpg', '', 86619, NULL, '', '', 0, 1475158854, 0, 0, 1),
 (85, 1, 'wx1image_14751588549711', '/uploads/picture/2016-09-29/wx1image_14751588549711.jpg', '', 'local', 'picture', 'jpg', '', 11863, NULL, '', '', 0, 1475158854, 0, 0, 1),
-(86, 1, 'wx1image_14751588628131', '/uploads/picture/2016-09-29/wx1image_14751588628131.jpg', '', 'local', 'picture', 'jpg', '', 35315, NULL, '', '', 0, 1475158862, 0, 0, 1),
 (87, 1, 'wx1image_14751588668519', '/uploads/picture/2016-09-29/wx1image_14751588668519.jpg', '', 'local', 'picture', 'jpg', '', 27712, NULL, '', '', 0, 1475158866, 0, 0, 1),
 (88, 1, 'wx1image_14751588684053', '/uploads/picture/2016-09-29/wx1image_14751588684053.jpg', '', 'local', 'picture', 'jpg', '', 101186, NULL, '', '', 0, 1475158868, 0, 0, 1),
 (89, 1, 'wx1image_14751588703441', '/uploads/picture/2016-09-29/wx1image_14751588703441.jpg', '', 'local', 'picture', 'jpg', '', 155125, NULL, '', '', 0, 1475158870, 0, 0, 1),
@@ -199,10 +187,10 @@ INSERT INTO `eacoo_attachment` (`id`, `uid`, `name`, `path`, `url`, `location`, 
 (91, 1, 'meinv_admin_avatar', '/uploads/picture/2016-09-30/57edd952ba0e0.jpg', '', 'local', 'picture', 'jpg', '', 7006, NULL, '89b678fa35106c7a0f7579cb8426bd7a', '7d10ddb80359255e58c04bd30412b00bba6938a5', 0, 1475205458, 1475205458, 0, 1),
 (92, 1, '57e0a9c03a61b', '/uploads/picture/2016-10-03/57f2076c4e997.jpg', '', 'local', 'picture', 'jpg', '', 110032, '', 'e3694c361707487802476e81709c863f', 'd5381f24235ee72d9fd8dfe2bb2e3d128217c8ce', 0, 1475479404, 1506556656, 0, 1),
 (93, 1, '9812496129086622', '/uploads/picture/2016-10-06/57f6136b5bd4e.jpg', '', 'local', 'picture', 'jpg', '', 164177, '9812496129086622', '983944832c987b160ae409f71acc7933', 'bce6147f4070989fc0349798acf6383938e5563a', 0, 1475744619, 1518769672, 0, 1),
-(94, 1, 'eacoophp-watermark-banner-1', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg', 'link', 'picture', 'jpg', 'image', 171045, 'eacoophp-watermark-banner-1', '', '', 0, 1506215777, 1506215780, 0, 1),
+(94, 1, 'eacoophp-watermark-banner-1', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg', 'link', 'picture', 'jpg', 'image', 171045, 'eacoophp-watermark-banner-1', '', '', 0, 1506215777, 1519746230, 0, 1),
 (95, 1, 'eacoophp-banner-3', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-banner-3.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-banner-3.jpg', 'link', 'picture', 'jpg', 'image', 356040, 'eacoophp-banner-3', '', '', 0, 1506215801, 1506554992, 0, 1),
-(96, 1, 'eacoophp-watermark-banner-2', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'link', 'picture', 'jpg', 'image', 356040, 'eacoophp-watermark-banner-2', '', '', 0, 1506215801, 1506215803, 0, 1),
-(98, 1, '150217753092666', '/uploads/picture/2018-01-17/5a5e2b89ae856.jpg', '/uploads/picture/2018-01-17/5a5e2b89ae856.jpg', 'local', 'picture', 'jpg', 'image', 67406, '150217753092666', '82a25ea71fd7db1a2180894086790ea9', '87a03fe9161c0d3b4b757e999160355f9ce0ee75', 0, 1516120969, 1516120969, 0, 1);
+(96, 1, 'eacoophp-watermark-banner-2', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'link', 'picture', 'jpg', 'image', 356040, 'eacoophp-watermark-banner-2', '', '', 0, 1506215801, 1519746161, 0, 1),
+(99, 1, '57e0a9c03a61b', '/uploads/picture/2018-02-27/5a951fe014abb.jpg', '/uploads/picture/2018-02-27/5a951fe014abb.jpg', 'local', 'picture', 'jpg', 'image', 57492, '57e0a9c03a61b', '1b5c9335968d56667e9ded412e34fb8d', '700a20f7eb47c1a9d74e75258a706bf35434fee3', 0, 1519722464, 1519722464, 99, 1);
 
 -- --------------------------------------------------------
 
@@ -290,7 +278,7 @@ CREATE TABLE `eacoo_auth_rule` (
 --
 
 INSERT INTO `eacoo_auth_rule` (`id`, `name`, `title`, `depend_type`, `depend_flag`, `type`, `pid`, `icon`, `condition`, `is_menu`, `position`, `developer`, `sort`, `update_time`, `create_time`, `status`) VALUES
-(1, 'admin/dashboard/index', '仪表盘', 1, 'admin', 1, 0, 'fa fa-tachometer', NULL, 1, 'left', 0, 1, 1507798445, 1507798445, 1),
+(1, 'admin/dashboard/index', '仪表盘', 1, 'admin', 1, 0, 'fa fa-tachometer', NULL, 1, 'left', 0, 1, 1519827783, 1507798445, 1),
 (2, 'admin', '系统设置', 1, 'admin', 1, 0, 'fa fa-cog', NULL, 1, 'left', 0, 2, 1507604200, 1518796830, 1),
 (3, 'user/user/', '用户管理', 1, 'user', 1, 0, 'fa fa-users', NULL, 1, 'left', 0, 5, 1505816276, 1518796830, 1),
 (4, 'admin/attachment/index', '附件空间', 1, 'admin', 1, 0, 'fa fa-picture-o', NULL, 1, 'left', 0, 7, 1505816276, 1518796830, 1),
@@ -350,14 +338,14 @@ CREATE TABLE `eacoo_config` (
   `update_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   `sort` tinyint(3) UNSIGNED NOT NULL DEFAULT '99' COMMENT '排序',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='配置表';
 
 --
 -- 转存表中的数据 `eacoo_config`
 --
 
 INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `group`, `sub_group`, `type`, `remark`, `create_time`, `update_time`, `sort`, `status`) VALUES
-(1, 'toggle_web_site', '站点开关', '1', '0:关闭\r\n1:开启', 1, 0, 'select', '站点关闭后将提示网站已关闭，不能正常访问', 1378898976, 1406992386, 1, 1),
+(1, 'toggle_web_site', '站点开关', '1', '0:关闭\r\n1:开启', 1, 0, 'select', '站点关闭后将提示网站已关闭，不能正常访问', 1378898976, 1519825876, 1, 1),
 (2, 'web_site_title', '网站标题', 'EacooPHP', '', 6, 0, 'text', '网站标题前台显示标题', 1378898976, 1507036190, 2, 1),
 (4, 'web_site_logo', '网站LOGO', '250', '', 6, 0, 'picture', '网站LOGO', 1407003397, 1507036190, 4, 1),
 (5, 'web_site_description', 'SEO描述', 'EacooPHP框架基于统一核心的通用互联网+信息化服务解决方案，追求简单、高效、卓越。可轻松实现支持多终端的WEB产品快速搭建、部署、上线。系统功能采用模块化、组件化、插件化等开放化低耦合设计，应用商城拥有丰富的功能模块、插件、主题，便于用户灵活扩展和二次开发。', '', 6, 1, 'textarea', '网站搜索引擎描述', 1378898976, 1506257875, 6, 1),
@@ -365,8 +353,8 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `group`, 
 (7, 'web_site_copyright', '版权信息', 'Copyright © ******有限公司 All rights reserved.', '', 1, 0, 'text', '设置在网站底部显示的版权信息', 1406991855, 1468493911, 7, 1),
 (8, 'web_site_icp', '网站备案号', '豫ICP备14003306号', '', 6, 0, 'text', '设置在网站底部显示的备案号，如“苏ICP备1502009-2号"', 1378900335, 1507036190, 8, 1),
 (9, 'web_site_statistics', '站点统计', '', '', 1, 0, 'textarea', '支持百度、Google、cnzz等所有Javascript的统计代码', 1378900335, 1415983236, 9, 1),
-(10, 'index_url', '首页地址', 'http://www.eacoo123.com', '', 2, 0, 'text', '可以通过配置此项自定义系统首页的地址，比如：http://www.xxx.com', 1471579753, 1506099586, 0, 1),
-(13, 'admin_tags', '后台多标签', '1', '0:关闭\r\n1:开启', 2, 0, 'radio', '', 1453445526, 1506099586, 3, 1),
+(10, 'index_url', '首页地址', 'http://www.eacoo123.com', '', 2, 0, 'text', '可以通过配置此项自定义系统首页的地址，比如：http://www.xxx.com', 1471579753, 1519825834, 0, 1),
+(13, 'admin_tags', '后台多标签', '1', '0:关闭\r\n1:开启', 2, 0, 'radio', '', 1453445526, 1519825844, 3, 1),
 (14, 'admin_page_size', '后台分页数量', '12', '', 2, 0, 'number', '后台列表分页时每页的记录数', 1434019462, 1518942039, 4, 1),
 (15, 'admin_theme', '后台主题', 'default', 'default:默认主题\r\nblue:蓝色理想\r\ngreen:绿色生活', 2, 0, 'select', '后台界面主题', 1436678171, 1506099586, 5, 1),
 (16, 'develop_mode', '开发模式', '1', '1:开启\r\n0:关闭', 3, 0, 'select', '开发模式下会显示菜单管理、配置管理、数据字典等开发者工具', 1432393583, 1507724972, 1, 1),
@@ -388,7 +376,7 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `group`, 
 (37, 'mail_captcha_template', '验证码邮件模板', '{"active":"0","subject":"\\u90ae\\u7bb1\\u9a8c\\u8bc1\\u7801\\u901a\\u77e5"}', '', 8, 0, 'json', 'JSON格式保存除了模板内容的属性', 1467519582, 1467818456, 0, 1),
 (38, 'mail_reg_active_template_content', '注册激活邮件模板内容', '<p><span style="font-family: 微软雅黑; font-size: 14px;"></span><span style="font-family: 微软雅黑; font-size: 14px;">您在{$title}的激活链接为</span><a href="{$url}" target="_blank" style="font-family: 微软雅黑; font-size: 14px; white-space: normal;">激活</a><span style="font-family: 微软雅黑; font-size: 14px;">，或者请复制链接：{$url}到浏览器打开。</span></p>', '', 8, 0, 'textarea', '注册激活模板邮件内容部分，模板内容单独存放', 1467818340, 1467818340, 0, 1),
 (39, 'mail_captcha_template_content', '验证码邮件模板内容', '<p><span style="font-family: 微软雅黑; font-size: 14px;">您的验证码为{$verify}验证码，账号为{$account}。</span></p>', '', 8, 0, 'textarea', '验证码邮件模板内容部分', 1467818435, 1467818435, 0, 1),
-(40, 'attachment_options', '附件配置选项', '{"driver":"local","file_max_size":"2097152","file_exts":"doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,bz2,7z","file_save_name":"uniqid","image_max_size":"2097152","image_exts":"gif,jpg,jpeg,bmp,png","image_save_name":"uniqid","page_number":"30","widget_show_type":"0","cut":"1","small_size":{"width":"150","height":"150"},"medium_size":{"width":"320","height":"280"},"large_size":{"width":"560","height":"430"},"watermark_scene":"2","watermark_type":"1","water_position":"9","water_img":"\\/logo.png","water_opacity":"80"}', '', 9, 0, 'json', '以JSON格式保存', 1467858734, 1510997298, 0, 1),
+(40, 'attachment_options', '附件配置选项', '{"driver":"local","file_max_size":"2097152","file_exts":"doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,bz2,7z","file_save_name":"uniqid","image_max_size":"2097152","image_exts":"gif,jpg,jpeg,bmp,png","image_save_name":"uniqid","page_number":"24","widget_show_type":"0","cut":"1","small_size":{"width":"150","height":"150"},"medium_size":{"width":"320","height":"280"},"large_size":{"width":"560","height":"430"},"watermark_scene":"2","watermark_type":"1","water_position":"9","water_img":"\\/logo.png","water_opacity":"80"}', '', 9, 0, 'json', '以JSON格式保存', 1467858734, 1519804860, 0, 1),
 (42, 'user_deny_username', '保留用户名和昵称', '管理员,测试,admin,垃圾', '', 7, 0, 'textarea', '禁止注册用户名和昵称，包含这些即无法注册,用&quot; , &quot;号隔开，用户只能是英文，下划线_，数字等', 1468493201, 1468493201, 0, 1),
 (43, 'verify_open', '验证码配置', 'reg,login,reset', 'reg:注册显示\r\nlogin:登陆显示\r\nreset:密码重置', 4, 0, 'checkbox', '验证码开启配置', 1468494419, 1506099586, 0, 1),
 (44, 'verify_type', '验证码类型', '2', '1:中文\r\n2:英文\r\n3:数字\r\n4:英文+数字', 4, 0, 'select', '验证码类型', 1468494591, 1506099586, 0, 1),
@@ -399,8 +387,10 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `group`, 
 (49, 'reg_default_roleid', '注册默认角色', '4', '', 7, 0, 'select', '', 1471681620, 1471689765, 0, 1),
 (50, 'open_register', '开放注册', '0', '1:是\r\n0:否', 7, 0, 'radio', '', 1471681674, 1471681674, 0, 1),
 (56, 'meanwhile_user_online', '允许同时登录', '1', '1:是\r\n0:否', 7, 0, 'radio', '是否允许同一帐号在不同地方同时登录', 1473437355, 1473437355, 0, 1),
-(57, 'admin_collect_menus', '后台收藏菜单', '{"\\/admin.php\\/admin\\/navigation\\/index.html":{"title":"\\u524d\\u53f0\\u5bfc\\u822a\\u7ba1\\u7406"},"\\/admin.php\\/admin\\/attachment\\/setting.html":{"title":"\\u591a\\u5a92\\u4f53\\u8bbe\\u7f6e"},"\\/admin.php\\/user\\/user\\/index.html":{"title":"\\u7528\\u6237\\u5217\\u8868"}}', '', 2, 0, 'json', '在后台顶部菜单栏展示，可以方便快速菜单入口', 1518629152, 1518629152, 99, 1),
-(58, 'minify_status', '开启minify', '1', '1:开启\r\n0:关闭', 2, 0, 'radio', '开启minify会压缩合并js、css文件，可以减少资源请求次数，如果不支持minify，可关闭', 1518716395, 1518716395, 99, 1);
+(57, 'admin_collect_menus', '后台收藏菜单', '{"\\/admin.php\\/admin\\/navigation\\/index.html":{"title":"\\u524d\\u53f0\\u5bfc\\u822a\\u7ba1\\u7406"},"\\/admin.php\\/admin\\/attachment\\/setting.html":{"title":"\\u591a\\u5a92\\u4f53\\u8bbe\\u7f6e"},"\\/admin.php\\/user\\/user\\/index.html":{"title":"\\u7528\\u6237\\u5217\\u8868"},"\\/admin.php\\/admin\\/auth\\/index.html":{"title":"\\u89c4\\u5219\\u7ba1\\u7406"}}', '', 2, 0, 'json', '在后台顶部菜单栏展示，可以方便快速菜单入口', 1518629152, 1518629152, 99, 1),
+(58, 'minify_status', '开启minify', '1', '1:开启\r\n0:关闭', 2, 0, 'radio', '开启minify会压缩合并js、css文件，可以减少资源请求次数，如果不支持minify，可关闭', 1518716395, 1518716395, 99, 1),
+(59, 'admin_allow_login_many', '同账号多人登录后台', '0', '0:不允许\r\n1:允许', 2, 0, 'radio', '允许多个人使用同一个账号登录后台。默认：不允许', 1519785747, 1519785747, 99, 1),
+(60, 'admin_allow_ip', '仅限登录后台IP', '', '', 4, 0, 'textarea', '填写IP地址，多个IP用英文逗号隔开。默认为空，允许所有IP', 1519828685, 1519828685, 99, 1);
 
 -- --------------------------------------------------------
 
@@ -433,12 +423,11 @@ INSERT INTO `eacoo_hooks` (`id`, `name`, `description`, `plugins`, `type`, `crea
 (7, 'SendMessage', '发送消息钩子，用于消息发送途径的扩展', '', 2, 1467423450, 1467423450, 1),
 (8, 'sms', '短信插件钩子', '', 2, 1467424112, 1467424112, 1),
 (10, 'ImageGallery', '图片轮播钩子', '', 1, 1467424242, 1467424242, 1),
-(11, 'J_China_City', '每个系统都需要的一个中国省市区三级联动插件。', '', 1, 1467424257, 1467424257, 1),
+(11, 'JChinaCity', '每个系统都需要的一个中国省市区三级联动插件。', '', 1, 1467424257, 1467424257, 1),
 (12, 'checkIn', '签到', '', 1, 1467424298, 1467424298, 1),
-(13, 'app_begin', '应用开始', '', 2, 1467424315, 1467424315, 1),
 (14, 'adminEditor', '后台内容编辑页编辑器', '', 1, 1467424354, 1467424354, 1),
 (15, 'ThirdLogin', '集成第三方授权登录，包括微博、QQ、微信、码云', '', 1, 1507627833, 1507627833, 1),
-(16, 'topicComment', '评论提交方式扩展钩子。', '', 1, 0, 0, 1);
+(16, 'submitComment', '评论提交方式扩展钩子。', '', 1, 1507627833, 1507627833, 1);
 
 -- --------------------------------------------------------
 
@@ -600,12 +589,12 @@ INSERT INTO `eacoo_terms` (`term_id`, `name`, `slug`, `taxonomy`, `pid`, `seo_ti
 (5, '技术类', 'technology', 'post_category', 0, '技术类', '关键词', '自定义分类描述', 1465570866, 1516430690, 99, 1),
 (6, '大数据', 'cat_dashuju', 'post_category', 0, '大数据', '大数据', '这是描述内容', 1465576314, 1466607965, 99, 1),
 (7, '运营', 'yunying', 'post_tag', 0, '运营', '关键字', '自定义标签描述', 1466612937, 1516432746, 99, 1),
-(8, '案例展示', 'cases', 'post_category', 0, '案例展示', 'fs', 'fsa', 1466613025, 1516436487, 99, 0),
+(8, '案例展示', 'cases', 'post_category', 0, '案例展示', 'case', 'case', 1466613025, 1519315296, 99, 0),
 (9, '人物', 'renwu', 'media_cat', 0, '人物', '', '聚集多为人物显示的分类', 1466613381, 1466613381, 99, 1),
 (10, '美食', 'meishi', 'media_cat', 0, '美食', '', '', 1466613499, 1466613499, 99, 1),
 (11, '图标素材', 'icons', 'media_cat', 0, '图标素材', '', '', 1466613803, 1466613803, 99, 1),
 (12, '风景', 'fengjin', 'media_cat', 0, '风景', '风景', '', 1466614026, 1506557501, 99, 1),
-(13, '其它', 'others', 'media_cat', 0, '其它', '', '', 1467689719, 1467689719, 99, 1);
+(13, '其它', 'others', 'media_cat', 0, '其它', '', '', 1467689719, 1519814576, 99, 1);
 
 -- --------------------------------------------------------
 
@@ -629,11 +618,12 @@ CREATE TABLE `eacoo_term_relationships` (
 
 INSERT INTO `eacoo_term_relationships` (`id`, `object_id`, `term_id`, `table`, `uid`, `sort`, `status`) VALUES
 (1, 95, 9, 'attachment', 0, 99, 1),
-(2, 94, 11, 'attachment', 0, 99, 1),
+(2, 94, 13, 'attachment', 0, 99, 1),
 (3, 116, 12, 'attachment', 0, 99, 1),
 (4, 92, 12, 'attachment', 0, 99, 1),
 (5, 70, 12, 'attachment', 0, 9, 1),
-(6, 93, 11, 'attachment', 0, 99, 1);
+(6, 93, 11, 'attachment', 0, 99, 1),
+(7, 96, 12, 'attachment', 0, 99, 1);
 
 -- --------------------------------------------------------
 
@@ -706,19 +696,19 @@ CREATE TABLE `eacoo_users` (
 --
 
 INSERT INTO `eacoo_users` (`uid`, `username`, `number`, `password`, `nickname`, `email`, `mobile`, `avatar`, `sex`, `birthday`, `description`, `register_ip`, `login_num`, `last_login_ip`, `last_login_time`, `activation_auth_sign`, `url`, `score`, `money`, `freeze_money`, `pay_pwd`, `reg_from`, `reg_method`, `level`, `p_uid`, `allow_admin`, `reg_time`, `status`) VALUES
-(3, 'U1471610993', NULL, '031c9ffc4b280d3e78c750163d07d275', '陈婧', '', NULL, 'http://wx.qlogo.cn/mmopen/fWJhv9xMFTvh8TOSlQkjjkuaj4sIhBpHDRO9romGQ3TFTv3LA6wNqq0fCR7AtT7KCLIctaKq7hd2wkbBveCkia57p7D6lqMTe/0', 2, NULL, NULL, NULL, 0, '2937347650', 1473755335, 'a525c9259ff2e51af1b6e629dd47766f99f26c69', NULL, 0, '2.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
-(4, 'U1472438063', NULL, '031c9ffc4b280d3e78c750163d07d275', '妍冰', '', NULL, 'http://wx.qlogo.cn/mmopen/eCXtiatJG2qA7d9wjNKktQUMjaiajx4SCoL5Phc5NqRKg4bltVHI94hpZl7x1R2E14Xbb5x7wDJkiaMrYgJx0Nb8nGuvicWcEymc/0', 2, NULL, '承接大型商业演出和传统文化学习班', NULL, 0, '2073504306', 1472438634, 'ed587cf103c3f100be20f7b8fdc7b5a8e2fda264', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
-(5, 'U1472522409', NULL, '031c9ffc4b280d3e78c750163d07d275', '久柳', '', NULL, 'http://wx.qlogo.cn/mmopen/RLZcTUr4lyhBYRz8vKMAVicmHdShyTG9DA1jEg9PMkBKy8M2KwAX9mOHD3TudcoL8Ph8gXwSlaBRW6MpsqKibd8Y8oXETIsUsic/0', 1, NULL, NULL, NULL, 0, '1872836895', 1472522621, '5e542dc0c77b3749f2270cb3ec1d91acc895edc8', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 0),
+(3, 'U1471610993', NULL, '031c9ffc4b280d3e78c750163d07d275', '陈婧', '', NULL, '/static/assets/img/avatar-woman.png', 2, NULL, NULL, NULL, 0, '2937347650', 1473755335, 'a525c9259ff2e51af1b6e629dd47766f99f26c69', NULL, 0, '2.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
+(4, 'U1472438063', NULL, '031c9ffc4b280d3e78c750163d07d275', '妍冰', '', NULL, '/static/assets/img/avatar-woman.png', 2, NULL, '承接大型商业演出和传统文化学习班', NULL, 0, '2073504306', 1472438634, 'ed587cf103c3f100be20f7b8fdc7b5a8e2fda264', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
+(5, 'U1472522409', NULL, '031c9ffc4b280d3e78c750163d07d275', '久柳', '', NULL, '/static/assets/img/avatar-man.png', 1, NULL, NULL, NULL, 0, '1872836895', 1472522621, '5e542dc0c77b3749f2270cb3ec1d91acc895edc8', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 0),
 (6, 'U1472739566', NULL, '031c9ffc4b280d3e78c750163d07d275', 'Ray', '', '', '/uploads/avatar/6/5a8ada8f72ac0.jpg', 1, NULL, '', NULL, 0, NULL, 1472739567, '6321b4d8ecb1ce1049eab2be70c44335856c840d', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 1, 1518696015, 1),
-(8, 'U1472877421', NULL, '65b5fea1e22ae9a8863b18d45f8a2e9b', '印文博律师', '', NULL, 'http://wx.qlogo.cn/mmopen/ajNVdqHZLLA7FINjLK0kxvyX9BhicrMF31ldiaiagMZhv8crokiavvNuLC1od9K8lGluATGZhFdA1eCeIllqXGO1Sw/0', 1, NULL, NULL, NULL, 0, '2073529233', 1473494692, 'e99521af40a282e84718f759ab6b1b4a989d8eb1', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
-(9, 'U1472966655', NULL, '3356a455c1f1503f70f7649fc0869fdd', '嘉伟', '', '', 'http://wx.qlogo.cn/mmopen/nyPpZGsicVpC68EYXh6m41AicibcMIZa5VA04sIt8LWBFbS7sn9tGibkKPQ3ibPOAic3urGomGn4rvc4ITdia9ssZ0uibzk27L6zoh9P/0', 1, NULL, '', NULL, 0, NULL, 1473397571, 'f1075223be5f53b9c2c1abea8288258545365d96', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
-(10, 'U1473304718', NULL, '031c9ffc4b280d3e78c750163d07d275', '鬼谷学猛虎流', '', '15801182191', 'http://wx.qlogo.cn/mmopen/PiajxSqBRaELGyaDWOrqGfF7JibvU3hbuA7yYHJne8fw68wFQHjZTibcMxoR4keH7DSia4QuREIskmpe3mdxiaGwfJw/0', 1, NULL, '', NULL, 0, NULL, 1473399843, '039fc7a3f9366adf55ee9e707c371a2459c17bd7', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
-(11, 'U1473391063', NULL, '', '@Gyb.', '', '', '/uploads/avatar/11/59e32aa3a75a2.jpg', 1, NULL, '', NULL, 0, NULL, 1473391063, '70d80a9f7599c81270a986abaea73e63101b3ecb', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
-(12, 'U1473396778', NULL, '4028d6d5a4cf4c3e75fc12f7d1749456', '董超楠', '', NULL, 'http://wx.qlogo.cn/mmopen/LIQXXYlOuN2jy45Uy8FrA1XpHMaUGvtGYrC9XIcgI2MKvzlPsb4uISBUpLxOXZ6nlqXpCvMoEicDM4HSltm9O4nGyvU11Lzib1/0', 2, NULL, NULL, NULL, 0, '1911132108', 1473396778, '8bbf5242300e5e8e4917b287a31efcb0c9feedfd', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
-(14, 'U1473396839', NULL, '3928540f538d3da96aee311b9a7dc4b3', '求真实者', '', NULL, 'http://wx.qlogo.cn/mmopen/9UjCmequjUib5ywquUZY1ibYhLogodtGeVc7E7jTG9XyrLn4BwPB7MicQ58KIOkJrxbTqk5snhXOlTYoglSm1HIXcGzAAo251so/0', 0, NULL, NULL, NULL, 0, '2004314620', 1473396839, '8f7579a85981e1c1f726704b0865320dfadbef2e', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
-(15, 'U1473397391', NULL, '031c9ffc4b280d3e78c750163d07d275', 'peter', '', '', 'http://wx.qlogo.cn/mmopen/PwJLJ0FGzVTsG2K1CtNGibzTSGD1788aslVUUSPBDq5Jpv8JxCzmCSbdRgW3wUJYCJTU8kgshcNn7g8Ox6LmscmM8YuicrgwNf/0', 1, NULL, '', NULL, 0, NULL, 1473397391, 'c66d3a0e16a81a13173756a2832ba424b34a095c', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
-(16, 'U1473397426', NULL, '7338af27b306b26d00adf2a006693d8c', '随风而去的心情', '', '15801182190', 'http://wx.qlogo.cn/mmopen/9UjCmequjUib5ywquUZY1ibbK663y8qiaGXlcxQ4Hgjem9Hp2tVsnMbwErjuMuerBQMnrrK8NlmmeiaHT58ic9rG4SXI0l05IYQq1/0', 1, NULL, '大师傅', NULL, 0, NULL, 1473397426, '14855b00775de46b451c8255e6a73a5c044fc188', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
-(17, 'U1474181145', NULL, '965c4aab5c6c73930930ef1cfc6f8802', '班鱼先生', '', NULL, 'http://wx.qlogo.cn/mmopen/PiajxSqBRaELgx8NFX4Nz0FtAPkwlouDOErFLmsbvXeJlwzYeMJDoSw5X59FuE86uRh49777cYCVyw2KNQWc6Bw/0', 1, NULL, NULL, NULL, 0, '2938851779', 1474181146, '86d19a7b1f15db4fd25e0b64bfc17870a70f67e2', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1);
+(8, 'U1472877421', NULL, '65b5fea1e22ae9a8863b18d45f8a2e9b', '印文博律师', '', NULL, '/static/assets/img/avatar-man.png', 1, NULL, NULL, NULL, 0, '2073529233', 1473494692, 'e99521af40a282e84718f759ab6b1b4a989d8eb1', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
+(9, 'U1472966655', NULL, '031c9ffc4b280d3e78c750163d07d275', '嘉伟', '', '', '/static/assets/img/avatar-man.png', 1, NULL, '', NULL, 0, NULL, 1473397571, 'f1075223be5f53b9c2c1abea8288258545365d96', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
+(10, 'U1473304718', NULL, '031c9ffc4b280d3e78c750163d07d275', '鬼谷学猛虎流', '', '15801182191', '/static/assets/img/avatar-man.png', 1, NULL, '', NULL, 0, NULL, 1473399843, '039fc7a3f9366adf55ee9e707c371a2459c17bd7', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
+(11, 'U1473391063', NULL, '031c9ffc4b280d3e78c750163d07d275', '@Gyb.', '', '', '/uploads/avatar/11/59e32aa3a75a2.jpg', 1, NULL, '', NULL, 0, NULL, 1473391063, '70d80a9f7599c81270a986abaea73e63101b3ecb', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
+(12, 'U1473396778', NULL, '4028d6d5a4cf4c3e75fc12f7d1749456', '董超楠', '', NULL, '/static/assets/img/avatar-woman.png', 2, NULL, NULL, NULL, 0, '1911132108', 1473396778, '8bbf5242300e5e8e4917b287a31efcb0c9feedfd', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
+(14, 'U1473396839', NULL, '3928540f538d3da96aee311b9a7dc4b3', '求真实者', '', NULL, '/static/assets/img/default-avatar.png', 0, NULL, NULL, NULL, 0, '2004314620', 1473396839, '8f7579a85981e1c1f726704b0865320dfadbef2e', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
+(15, 'U1473397391', NULL, '031c9ffc4b280d3e78c750163d07d275', 'peter', '', '', '/static/assets/img/avatar-man.png', 1, NULL, '', NULL, 0, NULL, 1473397391, 'c66d3a0e16a81a13173756a2832ba424b34a095c', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
+(16, 'U1473397426', NULL, '7338af27b306b26d00adf2a006693d8c', '随风而去的心情', '', '15801182190', '/static/assets/img/avatar-man.png', 1, NULL, '大师傅', NULL, 0, NULL, 1473397426, '14855b00775de46b451c8255e6a73a5c044fc188', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
+(17, 'U1474181145', NULL, '965c4aab5c6c73930930ef1cfc6f8802', '班鱼先生', '', NULL, '/static/assets/img/avatar-man.png', 1, NULL, NULL, NULL, 0, '2938851779', 1474181146, '86d19a7b1f15db4fd25e0b64bfc17870a70f67e2', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1);
 
 --
 -- Indexes for dumped tables
@@ -847,17 +837,17 @@ ALTER TABLE `eacoo_users`
 -- 使用表AUTO_INCREMENT `eacoo_action`
 --
 ALTER TABLE `eacoo_action`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=22;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=16;
 --
 -- 使用表AUTO_INCREMENT `eacoo_action_log`
 --
 ALTER TABLE `eacoo_action_log`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=6;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=11;
 --
 -- 使用表AUTO_INCREMENT `eacoo_attachment`
 --
 ALTER TABLE `eacoo_attachment`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=99;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=100;
 --
 -- 使用表AUTO_INCREMENT `eacoo_auth_group`
 --
@@ -872,7 +862,7 @@ ALTER TABLE `eacoo_auth_rule`
 -- 使用表AUTO_INCREMENT `eacoo_config`
 --
 ALTER TABLE `eacoo_config`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '配置ID', AUTO_INCREMENT=59;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '配置ID', AUTO_INCREMENT=61;
 --
 -- 使用表AUTO_INCREMENT `eacoo_hooks`
 --
@@ -912,7 +902,7 @@ ALTER TABLE `eacoo_terms`
 -- 使用表AUTO_INCREMENT `eacoo_term_relationships`
 --
 ALTER TABLE `eacoo_term_relationships`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- 使用表AUTO_INCREMENT `eacoo_themes`
 --
@@ -923,6 +913,3 @@ ALTER TABLE `eacoo_themes`
 --
 ALTER TABLE `eacoo_users`
   MODIFY `uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

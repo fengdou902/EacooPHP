@@ -315,21 +315,21 @@
         });
     }
       
-        //移动分类
-        function move(){
-              var ids = '';
-              $('input[name="ids[]"]:checked').each(function(){
-                 ids += ',' + $(this).val();
-              });
-              if(ids != ''){
-                  ids = ids.substr(1);
-                  $('input[name="ids"]').val(ids);
-                  $('.modal-title').html('移动选中的的附件至：');
-                  $('#moveModal').modal('show', 'fit')
-              }else{
-                  updateAlert('请选择需要移动的附件', 'warning');
-              }
+    //移动分类
+    function move(){
+          var ids = '';
+          $('input[name="ids[]"]:checked').each(function(){
+             ids += ',' + $(this).val();
+          });
+          if(ids != ''){
+              ids = ids.substr(1);
+              $('input[name="ids"]').val(ids);
+              $('.modal-title').html('移动选中的的附件至：');
+              $('#moveModal').modal('show', 'fit')
+          }else{
+              updateAlert('请选择需要移动的附件', 'warning');
           }
+      }
   </script>
 
   {/block}

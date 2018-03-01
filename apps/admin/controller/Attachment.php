@@ -333,7 +333,7 @@ class Attachment extends Admin {
         switch ($status) {
             case 'delete' :  // 删除条目
                     foreach ($ids as $key => $id) {
-                        $this->delAttachment($id,false);
+                        $this->del($id,false);
                     }       
                     $this->success('删除成功，不可恢复');
                 break;
