@@ -62,7 +62,7 @@ class Admin extends Base
             
         }
         //校验是否同时后台在线多个用户
-        if (AdminLogic::checkAllowLoginByTime()) {
+        if (!AdminLogic::checkAllowLoginByTime()) {
             $this->error('您的帐号正在别的地方登录!',url('admin/login/logout'));
         }
 

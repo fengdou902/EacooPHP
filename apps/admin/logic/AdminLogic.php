@@ -28,12 +28,11 @@ class AdminLogic extends BaseLogic {
      */
     public static function checkAllowLoginByTime()
     {
-    	if (session('activation_auth_sign') != model('User')->where('uid',is_login())->value('activation_auth_sign')) {
-    		if (config('admin_allow_login_many')==1) {
-    			return true;
-    		}
-    		
-    	}
-    	return false;
+        if (config('admin_allow_login_many')==1) {
+            return true;
+        } elseif (session('activation_auth_sign') == model('User')->where('uid',is_login())->value('activation_auth_sign')) {
+            return true;
+        }
+        return false;
     }
 }
