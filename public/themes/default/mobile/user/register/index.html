@@ -1,0 +1,86 @@
+{extend name="$_theme_public_layout"/}
+{block name="style"}
+
+{/block}
+
+{block name="main"}
+
+<div class="content-wrapper">
+    <div class="container">
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="login">
+                    <form action="{:url('user/register/index')}" method="post" class="container offset1 loginform">
+                        <div id="owl-login">
+                            <div class="hand"></div>
+                            <div class="hand hand-r"></div>
+                            <div class="arms">
+                                <div class="arm"></div>
+                                <div class="arm arm-r"></div>
+                            </div>
+                        </div>
+                        <div class="pad">
+                            <div class="control-group">
+                                <div class="controls">
+                                    <label for="username" class="control-label fa fa-user"></label>
+                                    <input id="username" type="username" name="username" placeholder="账号" tabindex="1" autofocus="autofocus" class="form-control input-medium">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="controls">
+                                    <label for="nickname" class="control-label fa fa-user"></label>
+                                    <input id="nickname" type="nickname" name="nickname" placeholder="昵称" tabindex="1" autofocus="autofocus" class="form-control input-medium">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="controls">
+                                    <label for="email" class="control-label fa fa-envelope"></label>
+                                    <input id="email" type="email" name="email" placeholder="邮箱" tabindex="1" autofocus="autofocus" class="form-control input-medium">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="controls">
+                                    <label for="password" class="control-label fa fa-asterisk"></label>
+                                    <input id="password" type="password" name="password" placeholder="密码" tabindex="2" class="form-control input-medium">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="controls">
+                                    <label for="password_confirm" class="control-label fa fa-asterisk"></label>
+                                    <input id="password_confirm" type="password" name="password_confirm" placeholder="确认密码" tabindex="2" class="form-control input-medium">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <a href="{:url('user/login/login')}" tabindex="5" class="btn pull-left btn-link text-muted">返回登录</a>
+                            <button type="submit" tabindex="4" class="btn btn-primary">立即注册</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<!-- /.content-wrapper -->
+
+{/block}
+
+{block name="script"}
+<script type="application/javascript">
+  $(function() {
+    $('.login #password').focus(function() {
+      $('#owl-login').addClass('password');
+    }).blur(function() {
+      $('#owl-login').removeClass('password');
+    });
+    $('.login #password_confirm').focus(function() {
+      $('#owl-login').addClass('password');
+    }).blur(function() {
+      $('#owl-login').removeClass('password');
+    });
+  });
+</script>
+
+{/block}

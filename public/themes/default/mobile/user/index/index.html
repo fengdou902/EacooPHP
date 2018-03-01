@@ -1,0 +1,49 @@
+{extend name="$_theme_public_layout"/}
+{block name="style"}
+
+{/block}
+
+{block name="main"}
+
+<div class="content-wrapper">
+    <div class="container">
+        <section class="content-header">
+        <ol class="breadcrumb">
+          {$page_config.breadcrumbs|default=''}
+        </ol>
+      </section>
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                {notempty name="user_list"}
+                {volist name="user_list" id="data"}
+                    <div class="col-xs-6 col-sm-3 col-md-3 homebox">
+                        <div class="card">
+                            <a class="img-circlea" href="{:URL('user/index/home',['uid'=>$data['uid']])}">
+                                <img src="{$data.avatar}" alt="{$data.nickname}" class="avatar">
+                            </a>
+                            <div class="card-heading">
+                                <a href="{:URL('/user/index/home',['uid'=>$data['uid']])}">
+                                    {$data.nickname}</strong>
+                                </a>
+                            </div>
+                            <div class="card-actions">
+                                <span class="text-muted">加入时间：{$data.reg_timestamp|friendly_date=###,'mohu'}</span>
+                            </div>
+                        </div>
+                    </div>
+                {/volist}
+                {else/}
+                <p class="tc">暂无内容</p>
+                {/notempty}
+            </div>
+        </section>
+    </div>
+</div>
+<!-- /.content-wrapper -->
+
+{/block}
+
+{block name="script"}
+
+{/block}

@@ -1,0 +1,38 @@
+<div class="box box-warning">
+  <div class="box-header with-border">
+    <h3 class="box-title">分类</h3>
+
+    <div class="box-tools pull-right">
+      
+    </div>
+    <!-- /.box-tools -->
+  </div>
+  <!-- /.box-header -->
+  <div class="box-body">
+    <div class="list-group">
+        <a href="{:url('cms/index/index')}" class="list-group-item">所有分类</a>
+        {volist name="category_list" id="category"}
+          <a href="{:url('cms/index/index',['cat_id'=>$category['term_id']])}" class="list-group-item">{$category.name}</a>
+        {/volist}
+    </div>
+  </div>
+<!-- /.box-body -->
+</div>
+
+<div class="box box-warning">
+  <div class="box-header with-border">
+    <h3 class="box-title">标签</h3>
+
+    <div class="box-tools pull-right">
+      
+    </div>
+    <!-- /.box-tools -->
+  </div>
+  <!-- /.box-header -->
+  <div class="box-body">
+    {volist name="tag_list" id="tag"}
+        <a href="{:url('cms/index/index',['tag_id'=>$tag['term_id']])}" class="btn btn-sm bg-orange margin">{$tag.name}</a>
+    {/volist}
+  </div>
+<!-- /.box-body -->
+</div>

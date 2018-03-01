@@ -1,0 +1,56 @@
+{extend name="$_theme_public_layout"/}
+{block name="style"}
+
+{/block}
+
+{block name="main"}
+
+<div class="content-wrapper">
+    <div class="container">
+        <!--__THEME_IMG__/style.css-->
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="p-box">
+                    <div class="p-cutis">
+                        <img src="__THEME_IMG__/bg1.jpg">
+                    </div>
+                    <div class="p-onesinfo">
+                        <div class="p-avatar">
+                            <img src="{$info.avatar}">
+                        </div>
+                        <div class="p-username">
+                            <a href=""><strong>{$info.nickname}</strong></a>
+                            {:hook('attention',['type'=>'attadd','uid'=>$info['uid']])}
+                        </div>
+                        <div class="p-exchange">
+                            <span class="pipe"></span>
+                            <i class="fa fa-leaf" style="margin-right: 5px;"></i>
+                            年龄：0岁
+                            <span class="pipe"></span>
+                            <i class="fa fa-leaf" style="margin-right: 5px;"></i>
+                            生日：{$info.birthday}
+                            <span class="pipe"></span>
+                            <i class="fa fa-leaf" style="margin-right: 5px;"></i>
+                            最后登录：{$info.last_login_time,'ymd'|friendly_date}
+                        </div>
+
+                        <div class="alert alert-warning" style="width: 50%;margin: 20px auto;">签名：{$info.description}</div>
+                    </div>
+                    <div class="p-navs">
+                        <ul>
+                            <li><span class="shortnums"></span>留言</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<!-- /.content-wrapper -->
+
+{/block}
+
+{block name="script"}
+
+{/block}

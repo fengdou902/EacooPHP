@@ -3,14 +3,20 @@
 <style type="text/css">
 .feature-content{background-color: #fff;}
 .box-title{line-height: 36px;margin-bottom: 30px;}
-.flexslider,ul.slides li a img{height: auto!important;}
+</style>
+<style>
+.pro_name a{color: #4183c4;}
+.osc_git_title{background-color: #fff;}
+.osc_git_box{background-color: #f9f9fc;}
+.osc_git_box{border-color: #E3E9ED;}
+.osc_git_info{color: #666;}
+.osc_git_main a{color: #9B9B9B;}
 </style>
 {/block}
 
 {block name="main"}
  
   {:hook('ImageGallery')}
-
   <div class="content-wrapper bg-color-fff">
        <!-- Full Width Column -->
         <section class="feature-content pt-20">
@@ -21,7 +27,7 @@
               </div>
               <div class="row">
 
-                  <div class="col-md-4 fadeInDown text-center animated">
+                  <div class="col-sm-4 fadeInDown text-center animated">
                       <img class="rotate" src="__THEME_IMG__/149074.svg" width="100" alt="Generic placeholder image">
                           <h4>权限管理</h4>
                           <p class="">基于完善的Auth权限控制管理、无限父子级权限分组、可自由分配子级权限、一个管理员可同时属于多个组别</p>
@@ -71,7 +77,8 @@
       <section class="demo-content">
         <div class="container">
             <div class="row">
-              <div class="oh">
+              <script src='//gitee.com/ZhaoJunfeng/EacooPHP/widget_preview'></script>
+              <div class="oh hide">
                   <div class="col-md-6 text-center">
                     <img src="http://eacoo123.oss-cn-beijing.aliyuncs.com/static/demo-eacoophp/eacoophp-demo-attachment.png" width="80%">
                   </div>
@@ -96,7 +103,6 @@
               <h3 class="box-title">快速开始</h3>
             </div>
             <div class="box-body">
-               <p >EacooPHP是基于ThinkPHP5开发的一套轻量级WEB产品开发框架，追求高效，简单，灵活。具有灵活的应用和插件机制，模块式开发，大大降低开发成本。</p>
               <p>使用EacooPHP框架开发定制您的系统前，建议熟悉官方的tp5.0完全开发手册。</p>
 
               <div>
@@ -104,7 +110,7 @@
                 <p>
                   GitHub仓库：<a href="https://github.com/fengdou902/EacooPHP.git">https://github.com/fengdou902/EacooPHP.git</a> 
                   <br>
-  码云仓库：<a href="https://git.oschina.net/ZhaoJunfeng/EacooPHP.git">https://git.oschina.net/ZhaoJunfeng/EacooPHP.git</a> </p>
+  码云仓库：<a href="https://gitee.com/ZhaoJunfeng/EacooPHP.git">https://gitee.com/ZhaoJunfeng/EacooPHP.git</a> </p>
               </div>
 
               <div>
@@ -133,7 +139,12 @@
 
       </section>
       <!-- /.content -->
-
+      <div class="show text-center">
+          <hr>
+        <div class="pb-20">
+          <a href="__ROOT__/admin.php?s=/admin/index/login" class="btn btn-primary">登录后台</a>
+        </div>
+      </div>
   </div>
   <!-- /.content-wrapper -->
 

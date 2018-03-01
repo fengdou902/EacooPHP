@@ -1,0 +1,47 @@
+<div class="col-xs-12 col-sm-3">
+  <div class="panel panel-default avatar-box">
+    <div class="panel-heading text-center">
+      <h3 class="panel-title">
+        <a href="{:URL('user/index/home',['uid'=>$current_user['uid']])}">
+          <img class="img-circle" src="{$current_user.avatar}" style="width:120px;height:120px;">
+        </a>
+      </h3>
+    </div>
+    <div class="panel-body">
+      <table class="info">
+        <tbody>
+        <tr>
+          <td class="border-none">关注：0</td>
+          <td class="border-none">粉丝：0</td>
+        </tr>
+        <tr>
+          <td class="border-none">积分：0</td>
+          <td class="border-none">余额：¥0.00</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <nav class="menu menu-corethink" data-toggle="menu">
+    <!-- 侧边导航 -->
+    <div class="panel-group" role="tablist">
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab">
+          <h4 class="panel-title">
+            <a class="" data-toggle="collapse" href="#list1"><i class="fa fa-folder-open-o"></i> 个人中心</a>
+          </h4>
+        </div>
+        <div id="list1" class="panel-collapse collapse in" role="tabpanel">
+          <div class="list-group">
+            <a class="list-group-item" href="{:url('user/index/profile')}"><i class="fa fa-edit"></i> 修改信息</a>
+            <!--
+            <a class="list-group-item" href="/index.php?s=/user_message/index.html"><i class="fa fa-envelope-o"></i> 消息中心</a>
+            <a class="list-group-item" href="/index.php?s=/document/mydoc.html"><i class="fa fa-file-word-o"></i> 我的文档</a>
+          -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>
