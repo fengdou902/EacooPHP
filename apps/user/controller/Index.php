@@ -12,6 +12,7 @@ namespace app\user\controller;
 use app\home\controller\Home;
 
 use app\common\model\User as UserModel;
+use app\common\logic\User as UserLogic;
 class Index extends Home{
     function _initialize()
     {
@@ -27,7 +28,7 @@ class Index extends Home{
     public function index(){
 
         $map['status'] = 1; // 禁用和正常状态
-        list($user_list,$page) = $this->userModel->getListByPage($map,'reg_time desc','uid,username,nickname,avatar,reg_time',20);
+        list($user_list,$total) = $this->userModel->getListByPage($map,'uid,username,nickname,avatar,reg_time','reg_time desc',20);
         $this->assign('user_list',$user_list);
         
         $this->pageInfo('会员列表','users');
@@ -43,7 +44,7 @@ class Index extends Home{
     public function home($uid = 0){
         try {
             if ($uid>0) {
-                $info = userModel::info($uid);
+                $info = UserLogic::info($uid);
                 $this->assign('info',$info);
                 return $this->fetch();
             }
@@ -73,7 +74,9 @@ class Index extends Home{
      *  Time: 2017-12-28 14:28:21
      * */
     public function profile() {
-      if(is_login()){
+          if(!is_login()){
+                $this->error('未登录');
+          }
         if (IS_POST) {
           $data = input('post.');
           // 提交数据
@@ -94,7 +97,6 @@ class Index extends Home{
           $this->assign('user_info',$user_info);
           return $this->fetch();
         }
-      }
-      $this->error('未登录');
+      
     }
 }
