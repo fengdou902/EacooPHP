@@ -67,18 +67,18 @@
             uploader_{$field.id}.upload();
         });
         /*上传成功**/
-        uploader_{$field.id}.on('uploadSuccess', function (file, data) {
-            if (data.code==1) {
-                data = data.data;
+        uploader_{$field.id}.on('uploadSuccess', function (file, result) {
+            if (result.code==1) {
+                data = result.data;
                 var append_string='<i onclick="admin_image.removeImage($(this),'+data.id+')" class="fa fa-times-circle remove-attachment"></i><a href="'+data.path+'" title="点击查看大图"><img src="'+data.path+'"></a>';
                 $("#{$field.id}").parent().find('.popup-gallery').html(append_string);
                 $("#{$field.id}").val({eq name="is_sql" value="on"}data.id{else/}data.path{/eq});
                 uploader_{$field.id}.reset();
             } else {
-                updateAlert(data.msg);
-                // setTimeout(function () {
-                //     $(this).removeClass('disabled').prop('disabled', false);
-                // }, 1500);
+                updateAlert(result.msg);
+                setTimeout(function () { 
+                    $(this).removeClass('disabled').prop('disabled', false);
+                }, 1500);
             }
         });
     })

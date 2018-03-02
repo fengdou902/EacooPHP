@@ -330,7 +330,13 @@ window.updateConfirm = function (confirm_info) {
 }
 
 /**************************附件选择器弹框 start*******************************/
-//打开图片选择器组件
+/**
+ * 打开图片选择器组件
+ * @param  {[type]} obj [description]
+ * @return {[type]} [description]
+ * @date   2018-03-02
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
 function openAttachmentLayer(obj) {
     var $this = $(obj);
     var gettype = $this.data('gettype');if (!gettype) gettype = 'single';//选取类型
@@ -411,7 +417,7 @@ function setAttachmentMultipleVal(inputName,ids,content) {
     var field_ids=$("#"+inputName).val();    
     $("#"+inputName).val(field_ids+ids);
 
-    $('#'+inputName+'-gallery-box').append(content);
+    $('#'+inputName+'-gallery-box').addClass('gallery-box-bg').append(content);
 }
 
 /**************************附件选择器弹框 end*******************************/

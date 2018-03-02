@@ -1,16 +1,14 @@
 {php} if(\Think\Hook::get('adminEditor') && MODULE_NAME == 'admin'){{/php}
     <label class="textarea">
-        <textarea name="{$name}" id="{$id}">{$default}</textarea>
-        {:hook('adminEditor', array('id'=>$id,'value'=>$default))}
+        <textarea name="{$name}" id="{$id}">{$value|default=''}</textarea>
+        {:hook('adminEditor', array('id'=>$id,'value'=>$value))}
     </label>
 
 {php}}elseif(\think\Hook::get('editor')){{/php}
-
-<label class="textarea">
-    <textarea name="{$name}" id="{$id}">{$default}</textarea>
-    {:hook('editor', array('id'=>$id,'value'=>$default))}
-</label>
-
+    <label class="textarea">
+        <textarea name="{$name}" id="{$id}">{$value|default=''}</textarea>
+        {:hook('editor', array('id'=>$id,'value'=>$value))}
+    </label>
 {php}}else{
 
 {/php}
@@ -19,7 +17,7 @@
     <script type="text/javascript" src="__LIBS__/wangeditor/wangEditor.min.js"></script>
     <script type="text/javascript" src="__LIBS__/wangeditor/wangEditor-plugins.js?v=0.0.1"></script>
 {/if}
-<div id="{$id}_editor" style="{$style|default=''}">{$value|default=''}</div>
+<div id="{$id}_editor" style="{$style|default=''}">{notempty name="value"}<p>{$value|default=''}</p>{/notempty}</div>
 <textarea id="{$id}" name="{$name}" style="display: none;width:{$width|default='100%'};height:{$height|default='300px'};"></textarea>
 
 <!--这里引用jquery和wangEditor.js-->

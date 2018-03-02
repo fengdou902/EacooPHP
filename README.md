@@ -77,7 +77,7 @@ return builder('List')
 ![效果图](https://github.com/fengdou902/EacooPHP/blob/dev/builder-list-user-demo1.jpg)
 
 ### 前端组件
-artTemplate(JS模版引擎),artDialog(弹窗),datetimepicker(日期),echarts(图标),colorpicker(颜色选择器),fastclick,iCheck(复选框美化),ieonly,imgcutter,jquery-repeater,lazyload(延迟加载),select2,superslide,ueditor,wangeditor,webuploader,x-editable
+artTemplate(JS模版引擎),artDialog(弹窗),datetimepicker(日期),echarts(图表),colorpicker(颜色选择器),fastclick,iCheck(复选框美化),ieonly,imgcutter,jquery-repeater,lazyload(延迟加载),select2,superslide,ueditor,wangeditor,webuploader,x-editable
 
 官网：[http://www.eacoo123.com](http://www.eacoo123.com)
 QQ群: 436491685

@@ -1,18 +1,22 @@
 {php} if(\think\Hook::get('adminEditor') && MODULE_NAME == 'admin'){{/php}
-<label class="textarea">
-    <textarea name="{$name}" id="{$id}">{$default}</textarea>
-    {:hook('adminEditor', array('id'=>$id,'value'=>$default))}
-</label>
+    <label class="textarea">
+        <textarea name="{$name}" id="{$id}">{$value|default=''}</textarea>
+        {:hook('adminEditor', array('id'=>$id,'value'=>$value))}
+    </label>
 
 {php}}elseif(\think\Hook::get('editor')){{/php}
-
-<label class="textarea">
-    <textarea name="{$name}" id="{$id}">{$default}</textarea>
-    {:hook('editor', array('id'=>$id,'value'=>$default))}
-</label>
+    <label class="textarea">
+        <textarea name="{$name}" id="{$id}">{$value|default=''}</textarea>
+        {:hook('editor', array('id'=>$id,'value'=>$value))}
+    </label>
 
 {php}}else{{/php}
+    {if condition="$is_load_script"}
+        <script type="text/javascript" charset="utf-8" src="__LIBS__/ueditor/ueditor.config.js"></script>
+        <script type="text/javascript" charset="utf-8" src="__LIBS__/ueditor/ueditor.all.min.js"></script>
+    {/if}
     <script type="text/plain" name="{$name}" id="{$id}" style="width:{$width|default='100%'};height:{$height|default='300px'};{$style|default=''}">{$value|default=''}</script>
+
     <script>
         var  ue_{$id};
         $(function () {
@@ -21,9 +25,4 @@
         })
 
     </script>
-
-    {if condition="$is_load_script"}
-    	<script type="text/javascript" charset="utf-8" src="__LIBS__/ueditor/ueditor.config.js"></script>
-    	<script type="text/javascript" charset="utf-8" src="__LIBS__/ueditor/ueditor.all.min.js"></script>
-    {/if}
 {php}}{/php}

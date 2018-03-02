@@ -211,19 +211,19 @@ function refreshIframe(param) {
 /**
  * 置iframe
  * @param  {Boolean} is_from_iframe 是否来源框架的链接
- * @param  {[type]} iframe 对象
+ * @param  {[type]} iframeObj 对象
  * @date   2018-02-08
  * @author 心云间、凝听 <981248356@qq.com>
  */
-function showTabIframe(iframe,is_from_iframe=false) {
+function showTabIframe(iframeObj,is_from_iframe) {
     //设置打开对象
     var windowObj = window;
     if (is_from_iframe==true) {
         windowObj = windowObj.parent;
     }
-    var tab_name = iframe.tab_name;
-    var tab_url = iframe.tab_url;
-    var tab_html = iframe.tab_html;
+    var tab_name = iframeObj.tab_name;
+    var tab_url = iframeObj.tab_url;
+    var tab_html = iframeObj.tab_html;
 
     var is_open   = windowObj.$('.eacoo-tab-content #' + tab_name).length;
     if(is_open !== 0){

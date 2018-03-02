@@ -30,7 +30,7 @@ class Editor extends Base
         $height = $attributes['height'];
         $zIndex  = isset($attributes['zIndex'])||!empty($attributes['zIndex']) ? $attributes['zIndex'] : '977';
         
-        $config.=(empty($menus) ? '' : ',').'zIndex:'.$zIndex;
+        //$config.=(empty($menus) ? '' : ',').'zIndex:'.$zIndex;
         is_bool(strpos($width,'%')) && $menus.=',initialFrameWidth:'.str_replace('px','',$width);
         is_bool(strpos($height,'%')) && $menus.=',initialFrameHeight:'.str_replace('px','',$height);
         $menus.=',autoHeightEnabled: false';
@@ -60,7 +60,7 @@ class Editor extends Base
         if (!isset($attributes['picturesModal'])) $attributes['picturesModal']=1;//是否显示多图按钮
 
         if (!isset($attributes['menus'])) {
-            $attributes['menus']="'head',  // 标题
+            $attributes['menus']="'head', // 标题
                     'bold',  // 粗体
                     'italic',  // 斜体
                     'underline',  // 下划线

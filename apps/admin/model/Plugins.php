@@ -18,7 +18,7 @@ use app\admin\controller\Extension;
  */
 class Plugins extends Model {
 
-    protected $insert = ['sort'=>0,'status'=>1];
+    protected $insert = ['sort'=>99,'status'=>1];
     
     static public $pluginName;
 

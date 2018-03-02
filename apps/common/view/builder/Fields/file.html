@@ -20,7 +20,6 @@
             </div>
             {notempty name="field.description"}<div class="help-block col-md-4 col-md-offset-2" style="padding-left: 20px;">{$field.description}</div>{/notempty}
             
-
     </div>
     {present name="webuploader"}{if condition="$webuploader"}
         <link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
@@ -54,16 +53,16 @@
             uploader_{$field.id}.upload();
         });
         /*上传成功**/
-        uploader_{$field.id}.on('uploadSuccess', function (file, data) {
-            if (data.code==1) {
-                data = data.data;
+        uploader_{$field.id}.on('uploadSuccess', function (file, result) {
+            if (result.code==1) {
+                data = result.data;
                 $("#{$field.id}").val({eq name="is_sql" value="on"}data.id{else/}data.path{/eq});
                 uploader_{$field.id}.reset();
             } else {
-                updateAlert(data.msg);
-                // setTimeout(function () {
-                //     $(this).removeClass('disabled').prop('disabled', false);
-                // }, 1500);
+                updateAlert(result.msg);
+                setTimeout(function () {
+                    $(this).removeClass('disabled').prop('disabled', false);
+                }, 1500);
             }
         });
   })

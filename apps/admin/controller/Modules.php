@@ -12,6 +12,7 @@ namespace app\admin\controller;
 use eacoo\Sql;
 
 use app\admin\model\Modules as ModuleModel;
+use app\admin\logic\Module as ModuleLogic;
 use app\admin\model\AuthRule;
 
 class Modules extends Admin {
@@ -44,7 +45,7 @@ class Modules extends Admin {
         $this->assign('from_type',$this->request->param('from_type','oneline'));
 
         if ($from_type == 'local') {
-        	$data_list = $this->moduleModel->getAll();
+        	$data_list = ModuleLogic::getAll();
         	$meta_title = '本地模块';
 
         } elseif ($from_type == 'oneline') {
