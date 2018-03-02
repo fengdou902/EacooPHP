@@ -49,7 +49,8 @@ skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar 
 .logo .logo-img{width: 80%;margin-top: -3px;}
 /*box*/
 .box{box-shadow:none;}
-.box-header .box-title{font-size: 15px;}
+.box-header{background: #e3e8eb;}
+.box-header .box-title{font-size: 14px;color:#666;}
 .box.box-solid.box-info,.box.box-info{border-color: #5db2ff;}
 .box.box-solid.box-info{border:none;}
 .box.box-solid.box-info>.box-header{background:#5db2ff!important;background-color: #5db2ff; }
@@ -59,8 +60,6 @@ skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar 
 .bxshadow { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.06) !important }
 .radius3-0 { border-radius: 3px 0 0 3px; }
 
-/*header*/
-.header-tip{background-color: #F4FAFF;padding: 10px;margin:0px 20px;border-radius:3px;font-weight: 500;}
 /*tab*/
 .nav-tabs-custom>.nav-tabs>li:first-of-type.active>a{border-left-color:#e0e0e0;}
 .eacoo-tabs .nav-tabs{background: none;border-bottom: 2px solid #eee;}
@@ -129,12 +128,30 @@ label.radio-label1{padding-left: 0;}
 /*弹框附件widget*/
 #attachmentInfoModal{}
 .color-icon{margin-right: 2px;}
+
 /*应用扩展*/
 .extension-tab{}
 .extension-tab .info-box-number{font-weight: normal;font-size: 14px;}
+.extension-item{margin-bottom: 20px;}
+.extension-item .app-meta-mark{left: 8px;top: 3px;z-index: 999;}
+
+.app-manage-nav{margin:10px;color: #666;font-size: 16px;border-right: 1px solid #ddd;}
+.app-manage-nav a{color: #666;}
+
+.no-found{height: 200px;line-height: 200px;}
+
+.app-item{border: 1px solid #f0f0f0;padding: 10px 12px;border-radius: 3px;margin: 10px 0;}
+/*.app-item:hover { -webkit-box-shadow: 0px 10px 20px rgba(226,226,226,.8); box-shadow: 0px 10px 20px rgba(226,226,226,.8); -webkit-transform: translate3d(0,-10px,0); -moz-transform: translate3d(0,-10px,0); transform: translate3d(0,-1px,0); z-index: 4;}*/
+.app-item:hover h4{ color: #0db252; }
+.app-item h4{font-size: 15px;color: #666;}
+.app-item .item-desc{font-size: 13px;color: #777;height: 40px;}
+.app-item label.label{display: block;font-size: 12px;color: #808080;height: 26px;line-height: 26px;padding: 0 10px;background: #f4f4f4;border-radius: 4px;float: left;margin-right: 12px;}
+.app-item .item-logo{padding-left: 0;padding-right: 0;line-height: 80px;overflow: hidden;margin-top: 10px;}
 /*设置插件样式*/
 .plugin-logo{width: 96%;height: auto;border-radius: 3px;}
 .plugin-avatar-tx{background-color: rgb(160, 205, 229);font-size: 26px;line-height: 64px;padding: 20px 22px;color: #fff;}
+.app-item .plugin-logo,.app-item .module-logo{max-width:100%;max-height: 85px;}
+.app-item .plugin-avatar-tx,.app-item .module-avatar-tx{background-color: rgb(160, 205, 229);font-size: 26px;line-height: 64px;padding: 20px 25px;color: #fff;border-radius: 3px;}
 /*new add*/
 .common_footer {
     color: #eee;

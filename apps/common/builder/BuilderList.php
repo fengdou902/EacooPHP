@@ -535,7 +535,8 @@ class BuilderList extends Builder {
 
             $template_val = [
                 'meta_title'          => $this->metaTitle,// 页面标题
-                'page_tips'           => $this->tips,// 页面提示说明
+                'tips'                => $this->tips,// 页面提示说明
+                'show_box_header'     => 1,//是否显示box_header
                 'top_button_list'     => $this->topButtonList,// 顶部工具栏按钮
                 'action_url'          => $this->request->url(),
                 'search'              => $this->search,// 搜索配置

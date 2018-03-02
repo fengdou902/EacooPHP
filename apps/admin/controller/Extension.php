@@ -223,6 +223,8 @@ class Extension extends Admin {
                     $call_url = url('admin/Plugins/index',['from_type'=>'local']);
                 } elseif ($this->type=='module') {
                     $call_url = url('admin/Modules/index',['from_type'=>'local']);
+                } elseif ($this->type=='theme') {
+                    $call_url = url('admin/Theme/index',['from_type'=>'local']);
                 }
                 
                 $return['url']=$call_url;
@@ -258,6 +260,7 @@ class Extension extends Admin {
             $this->appName = $name;
         }
 		try {
+            //安装前检测
 	        $this->checkInstall();
 	        $info = $this->info;
 
@@ -282,7 +285,7 @@ class Extension extends Admin {
                     }
                 }
             }
-
+            //获取默认配置
 	        $config = $this->getDefaultConfig($name);
 	        $info['config'] = !empty($config) ? json_encode($config) : '';
             if ($this->appExtensionModel->where('name',$info['name'])->find()) {
@@ -318,6 +321,8 @@ class Extension extends Admin {
                         $type_path = '/plugins';
                     } elseif ($this->type=='module') {
                         $type_path = '';
+                    } elseif ($this->type=='theme') {
+                        $type_path = '/themes';
                     }
                     if (!rename($static_path,PUBLIC_PATH.'static'.$type_path.'/'.$name)) {
                         setAppLog('应用静态资源移动失败'.PUBLIC_PATH.'static'.$type_path.'/'.$name,'Extension','error');
@@ -365,6 +370,8 @@ class Extension extends Admin {
                 $type_path = 'plugins/';
             } elseif ($this->type=='module') {
                 $type_path = '';
+            } elseif ($this->type=='theme') {
+                $type_path = '/themes';
             }
             $_static_path = PUBLIC_PATH.'static/'.$type_path.$name;
             $static_path = $this->appsPath.$name.'/static';
@@ -493,6 +500,8 @@ class Extension extends Admin {
                 $type_path = '/plugins';
             } elseif ($this->type=='module') {
                 $type_path = '';
+            } elseif ($this->type=='theme') {
+                $type_path = '/themes';
             }
             if(!is_writable(PUBLIC_PATH.'static'.$type_path) || !is_writable($static_path)){
                 $error_msg = '';

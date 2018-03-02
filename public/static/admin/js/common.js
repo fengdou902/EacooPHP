@@ -350,7 +350,7 @@ function openAttachmentLayer(obj) {
           type: layer_type,
           title: layer_title,
           shadeClose: true,
-          shade: 0.8,
+          shade: 0.6,
           area: ['62%', '82%'],
           content:layer_url,
           btn: ['确定','关闭'],

@@ -4,6 +4,9 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="__LIBS__/bootstrap-table/bootstrap-table.min.css">
 {/block}
+{block name="main-top"}
+        
+{/block}
 {block name="main"}        
 <div class="builder listbuilder-box">
     <!-- Tab导航 -->
@@ -72,12 +75,6 @@
                             </form>
                         </div>
                     {/eq}
-
-                    {notempty name="page_tips"}
-                        <div class="col-xs-11 col-sm-11 header-tip">
-                            <p class="builder_sub_title color-palette">{$page_tips|default=""}</p>
-                        </div>
-                    {/notempty}
                 </div>
                 <table id="builder-table" class="table table-responsive table-bordered table-hover dataTable" 
                         data-pagination="true" 

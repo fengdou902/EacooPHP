@@ -34,7 +34,8 @@ class Action extends Admin {
 	            ->addTopButton('resume')  // 添加启用按钮
 	            ->addTopButton('forbid')  // 添加禁用按钮
 	            ->addTopButton('delete')  // 添加禁用按钮
-	            ->setSearch() //添加搜索框
+	            //->setSearch() //添加搜索框
+	            ->setPageTips('定义用户的操作行为，定义后的行为系统会根据行为规则进行处理。')
 	    		->keyListItem('id','编码')
 	            ->keyListItem('name','标识')
 	            ->keyListItem('title','行为名称')
@@ -72,24 +73,27 @@ class Action extends Admin {
 
 		} else {
 
-			$info = ['action_type'=>1,'status'=>1];
+			$info = ['action_type'=>1,'depend_type'=>1,'status'=>1];
             if ($id>0) {
                 $info = model('action')->find($id);
             }
-            
-            builder('Form')
+            $depend_flag = logic('Auth')->getDependFlags($info['depend_type']);
+            $extra_html = logic('Auth')->getFormMenuHtml();//获取表单菜单html
+
+            return builder('Form')
         		->setMetaTitle($title.'行为')  // 设置页面标题
                 ->addFormItem('id', 'hidden', 'ID', 'ID')
                 ->addFormItem('name', 'text', '行为标识', '输入行为标识 英文字母')
                 ->addFormItem('title', 'text', '行为名称', '输入行为名称')
                 ->addFormItem('depend_type', 'select', '来源类型', '来源类型。分别是模块，插件，主题',[1=>'模块',2=>'插件',3=>'主题'])
-                ->addFormItem('depend_flag', 'text', '来源标识', '如模块、插件、主题的标识名。')
+                    ->addFormItem('depend_flag', 'select', '来源标识', '请选择标识名，模块、插件、主题的标识名',$depend_flag)
                 ->addFormItem('action_type', 'radio', '行为执行类型', '',[1=>'自定义操作',2=>'记录操作'])
                 ->addFormItem('remark', 'text', '行为描述', '')
                 ->addFormItem('rule', 'text', '行为规则', '输入行为规则，不写则只记录日志')
                 ->addFormItem('log', 'text', '日志规则', '记录日志备注时按此规则来生成，支持[变量|函数]。目前变量有：user,time,model,record,data')
                 ->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'启用'])
                 ->setFormData($info)//->setAjaxSubmit(false)
+                ->setExtraHtml($extra_html)
                 ->addButton('submit')->addButton('back')    // 设置表单按钮
                 ->fetch();
 

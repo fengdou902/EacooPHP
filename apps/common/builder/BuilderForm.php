@@ -277,14 +277,15 @@ class BuilderForm extends Builder
         }
 
         $template_val = [
-            'meta_title'     => $this->metaTitle,//页面标题
-            'page_tips'      => $this->tips,//页面提示说明
-            'tab_nav'        => $this->tabNav,// 页面Tab导航
-            'grouptabNav'  => $this->groupTabNav,//页面Tab分组
-            'post_url'       => $this->postUrl,//表单提交地址
-            'fieldList'      => $this->formItems,//表单项目
-            'button_list'    => $this->buttonList,//按钮组
-            'extra_html'     => $this->extraHtml//额外HTML代码 
+            'meta_title'      => $this->metaTitle,//页面标题
+            'show_box_header' => 1,//是否显示box_header
+            'tips'            => $this->tips,//页面提示说明
+            'tab_nav'         => $this->tabNav,// 页面Tab导航
+            'grouptabNav'     => $this->groupTabNav,//页面Tab分组
+            'post_url'        => $this->postUrl,//表单提交地址
+            'fieldList'       => $this->formItems,//表单项目
+            'button_list'     => $this->buttonList,//按钮组
+            'extra_html'      => $this->extraHtml//额外HTML代码 
         ];
         $this->assign($template_val);
 

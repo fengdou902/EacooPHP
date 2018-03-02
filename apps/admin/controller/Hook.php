@@ -85,7 +85,7 @@ class Hook extends Admin {
                 }
             return $builder->addFormItem('name', 'text', '名称', '需要在程序中先添加钩子，否则无效')
                     ->addFormItem('description', 'textarea', '描述', '钩子的描述信息')
-                    ->addFormItem('type', 'radio', '类型', '链接类型',config('hooks_type'))
+                    ->addFormItem('type', 'radio', '类型', '钩子类型',config('hooks_type'))
                     ->setFormData($info)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
