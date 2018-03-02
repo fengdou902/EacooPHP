@@ -54,22 +54,22 @@
           <!--顶部导航 start-->
           <ul class="nav navbar-nav">
             {notempty name="header_menus"}
-                {volist name="header_menus" id="row"}
-                  <li class="{notempty name="row._child"}dropdown{/notempty}">
-                    {empty name="row._child"}
-                      <a href="{$row.value|eacoo_url=###,[],$row.depend_type|default=''}" target="{$row.target|default=''}" title="{$row.title|default=''}">{notempty name="row.icon"}<i class="{$row.icon}"></i>{/notempty} {$row.title|default='未知'}</a>
-                    {else/}
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">{notempty name="row.icon"}<i class="{$row.icon}"></i>{/notempty} {$row.title|default='未知'}<span class="caret"></span></a>
-                    {/empty}
-                    {notempty name="row._child"}
-                    <ul class="dropdown-menu" role="menu">
-                      <li><a href="{:url('cms/index/index')}">文章列表</a></li>
-                      <li><a href="{:url('cms/page/index')}">页面列表</a></li>
-                    </ul>
-                    {/notempty}
-                  </li>
-                   
-                {/volist}
+              {volist name="header_menus" id="row"}
+                <li class="{notempty name="row._child"}dropdown{/notempty}">
+              {empty name="row._child"}
+                <a href="{$row.value|eacoo_url=###,[],$row.depend_type|default=''}" target="{$row.target|default=''}" title="{$row.title|default=''}">{notempty name="row.icon"}<i class="{$row.icon}"></i>{/notempty} {$row.title|default='未知'}</a>
+              {else/}
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{notempty name="row.icon"}<i class="{$row.icon}"></i>{/notempty} {$row.title|default='未知'}<span class="caret"></span></a>
+              {/empty}
+              {notempty name="row._child"}
+                <ul class="dropdown-menu" role="menu">
+                  {volist name="row._child" id="child"}
+                    <li><a href="{:url($child.value)}">{$child.title}</a></li>
+                  {/volist}
+                </ul>
+              {/notempty}
+              </li>
+              {/volist}
             {else/}
                 <li class="active"><a href="/">主页 <span class="sr-only">(current)</span></a></li>
                 <li><a href="{:url('user/index/index')}">会员<span class="sr-only">会员</span></a></li>
