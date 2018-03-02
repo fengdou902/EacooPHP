@@ -17,7 +17,7 @@
 {if condition="$is_load_script"}
     <link rel="stylesheet" type="text/css" href="__LIBS__/wangeditor/wangEditor-plugins.css">
     <script type="text/javascript" src="__LIBS__/wangeditor/wangEditor.min.js"></script>
-    <script type="text/javascript" src="__LIBS__/wangeditor/wangEditor-plugins.js"></script>
+    <script type="text/javascript" src="__LIBS__/wangeditor/wangEditor-plugins.js?v=0.0.1"></script>
 {/if}
 <div id="{$id}_editor" style="{$style|default=''}">{$value|default=''}</div>
 <textarea id="{$id}" name="{$name}" style="display: none;width:{$width|default='100%'};height:{$height|default='300px'};"></textarea>

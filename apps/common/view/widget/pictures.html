@@ -11,7 +11,7 @@
 </style>
 <div class="controls pictures">
     <div class="" style="padding-bottom: 5px;">
-        <span class="btn btn-info ml-10 btn-sm" data-url="{:url('admin/Upload/attachmentLayer',['input_id_name'=>$field['id'],'path_type'=>$path_type,'gettype'=>'multiple'])}" onclick="openAttachmentLayer(this);"><i class="fa fa-photo"></i> 选择多图</span>
+        <span class="btn btn-info ml-10 btn-sm" data-url="{:url('admin/Upload/attachmentLayer',['input_id_name'=>$field['id'],'path_type'=>$path_type,'gettype'=>'multiple'])}" data-gettype="multiple" onclick="openAttachmentLayer(this);"><i class="fa fa-photo"></i> 选择多图</span>
         <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field.value|default=''}"/>
     </div>
     {notempty name="field.tip"}<div class="help-block col-md-10 fn" style="color:#E74C3C;padding-left: 20px;">{$field.tip}</div>{/notempty}

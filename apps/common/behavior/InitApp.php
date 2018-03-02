@@ -28,6 +28,7 @@ class InitApp {
         }
 
         define('EACOOPHP_V','1.2.1');
+        define('BUILD_VERSION','201803011713');//编译版本
 
         //加载模块全局函数
         // $module_names = db('modules')->where(['status' =>1])->column('name');

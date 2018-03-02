@@ -30,6 +30,7 @@ class EacooAccredit {
             [
                 'product_name'   => 'eacoophp',
                 'product_verion' => EACOOPHP_V,
+                'build_verion'   => BUILD_VERSION,//编译版本
                 'domain'         => request()->domain(),
             ],
             $data);
