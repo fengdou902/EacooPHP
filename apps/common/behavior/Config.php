@@ -43,17 +43,19 @@ class Config {
 
         if (MODULE_MARK === 'admin') {
             // 如果是后台并且不是Admin模块则设置默认控制器层为Admin
-            if (MODULE_NAME!=='admin' && MODULE_NAME!=='api') {
+            if (MODULE_NAME!=='admin' && MODULE_NAME!=='api' && MODULE_NAME!=='install') {
                 $ec_config['url_controller_layer'] = 'admin';
+                //定义后台模版view路径
+                $ec_config['template']['view_path']   = APP_PATH.MODULE_NAME.'/view/admin/';
             }
-
+            //后台资源目录
             $static_path = PUBLIC_RELATIVE_PATH.'/static/'.MODULE_NAME;
             $ec_config['view_replace_str']['__MODULE__']    = $static_path;
             $ec_config['view_replace_str']['__MODULE_IMG__']    = $static_path.'/img';
             $ec_config['view_replace_str']['__MODULE_CSS__']    = $static_path.'/css';
             $ec_config['view_replace_str']['__MODULE_JS__']     = $static_path.'/js';
             $ec_config['view_replace_str']['__MODULE_LIBS__']   = $static_path.'/libs';
-
+            
         } elseif (MODULE_MARK=='front' && is_file(APP_PATH . 'install.lock')){
             // 获取当前主题的名称
             $current_theme = db('themes')->where('current',1)->value('name');

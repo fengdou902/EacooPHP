@@ -21,7 +21,7 @@ class Dashboard extends controller
         $totalCount  = model('user/User')->where($map)->limit(10)->count();
         $this->assign('member_list', $member_list);
         $this->assign('latestmember_total', $totalCount);    
-        return $this->fetch('user@adminWidget/LatestMembers');
+        return $this->fetch('user@widget/LatestMembers');
     }
     
     /**
@@ -35,6 +35,6 @@ class Dashboard extends controller
         $map['type']   ='post';
         list($post_list,$totalCount) = model('cms/posts')->getListByPage($map,'create_time desc','id,title,create_time',5);
         $this->assign('post_list', $post_list);    
-        return $this->fetch('user@adminWidget/RecentMembersLineChart');
+        return $this->fetch('user@widget/RecentMembersLineChart');
     }
 }
