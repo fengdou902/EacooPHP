@@ -213,7 +213,7 @@ class Admin extends Base
         );
         $model = model($model);
         if (method_exists($model,'editRow')) {//如果定义了该方法
-            $result = model($model)->editRow($data,$map);
+            $result = $model->editRow($data,$map);
         } else{
             $result = $this->where($map)->update($data);
         }

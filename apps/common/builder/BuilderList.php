@@ -286,7 +286,7 @@ class BuilderList extends Builder {
             case 'edit':  // 编辑按钮
                 // 预定义按钮属性以简化使用
                 $my_attribute['title'] = '编辑';
-                $my_attribute['icon'] = 'fa fa-pencil';
+                $my_attribute['icon'] = 'fa fa-edit';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-primary btn-xs':'';
                 $my_attribute['href']  = url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/edit',
