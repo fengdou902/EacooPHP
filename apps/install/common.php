@@ -22,6 +22,7 @@ function check_env(){
 		'php'     => ['PHP版本', '5.6.0', '5.6+', PHP_VERSION, 'bg-green'],
 		'upload'  => ['附件上传', '不限制', '2M+', '未知', 'bg-green'],
 		'gd'      => ['GD库', '2.0', '2.0+', '未知', 'bg-green'],
+		'fileinfo'=> ['fileinfo扩展', '1.0.5', '1.0+', '未知', 'bg-green'],
 		'disk'    => ['磁盘空间', '50M', '不限制', '未知', 'bg-green'],
 	];
 
@@ -45,6 +46,13 @@ function check_env(){
 		$items['gd'][3] = $tmp['GD Version'];
 	}
 	unset($tmp);
+
+	//fileinfo扩展检测
+	if(!extension_loaded('fileinfo')){
+		$items['fileinfo'][3] = '未安装';
+		$items['fileinfo'][4] = 'bg-yellow';
+		session('error', true);
+	}
 
 	//磁盘空间检测
 	if(function_exists('disk_free_space')) {

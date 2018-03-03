@@ -49,7 +49,7 @@ skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar 
 .logo .logo-img{width: 80%;margin-top: -3px;}
 /*box*/
 .box{box-shadow:none;}
-.box-header{background: #e3e8eb;}
+.eacoo-box .box-header{background: #e3e8eb;}
 .box-header .box-title{font-size: 14px;color:#666;}
 .box.box-solid.box-info,.box.box-info{border-color: #5db2ff;}
 .box.box-solid.box-info{border:none;}

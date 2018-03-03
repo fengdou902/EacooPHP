@@ -32,7 +32,7 @@ class Attachment extends Admin {
      */
     public function index($term_id=0){
 
-        $this->assign('meta_title','附件管理');
+        $this->assign(['meta_title'=>'附件管理','show_box_header'=>1]);
         $this->assign('page_config',['self'=>'来源：<div class="btn-group mr-20">
                   <button type="button" onclick="javascript:location.href=\''.url('admin/Attachment/index').'\'" class="btn btn-default btn-flat">默认</button>
                   <button type="button" class="btn btn-default btn-flat dropdown-toggle" data-toggle="dropdown">
@@ -253,12 +253,12 @@ class Attachment extends Admin {
             }
         }
         $tab_list = [
-                'index'    =>['title'=>'媒体文件','href'=>url('index')],
+                'index'    =>['title'=>'附件管理','href'=>url('index')],
                 'category' =>['title'=>'附件分类','href'=>url('category')],
                 'setting'  =>['title'=>'设置','href'=>url('setting')]
             ];
         return builder('List')
-                    ->setMetaTitle('分类管理')
+                    ->setMetaTitle('附件分类')
                     ->setTabNav($tab_list,'category')  // 设置页面Tab导航
                     ->addTopButton('addnew',['href'=>url('categoryEdit')])  // 添加新增按钮
                     ->addTopButton('resume')  // 添加启用按钮
@@ -310,7 +310,7 @@ class Attachment extends Admin {
     public function setting(){
         
         $tab_list=[
-            'index'=>['title'=>'媒体文件','href'=>url('index'),'extra_attr'=>'data-pjax=false'],
+            'index'=>['title'=>'附件管理','href'=>url('index'),'extra_attr'=>'data-pjax=false'],
             'category'=>['title'=>'附件分类','href'=>url('category')],
             'attachment_option'=>['title'=>'设置','href'=>url('setting')]
         ];
