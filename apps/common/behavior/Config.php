@@ -49,13 +49,6 @@ class Config {
                 //定义后台模版view路径
                 $ec_config['template']['view_path']   = APP_PATH.MODULE_NAME.'/view/admin/';
             }
-            //后台资源目录
-            $static_path = PUBLIC_RELATIVE_PATH.'/static/'.MODULE_NAME;
-            $ec_config['view_replace_str']['__MODULE__']    = $static_path;
-            $ec_config['view_replace_str']['__MODULE_IMG__']    = $static_path.'/img';
-            $ec_config['view_replace_str']['__MODULE_CSS__']    = $static_path.'/css';
-            $ec_config['view_replace_str']['__MODULE_JS__']     = $static_path.'/js';
-            $ec_config['view_replace_str']['__MODULE_LIBS__']   = $static_path.'/libs';
             
         } elseif (MODULE_MARK=='front' && is_file(APP_PATH . 'install.lock')){
             //主题区分pc和移动端
@@ -88,16 +81,6 @@ class Config {
                 $ec_config['template'] = thinkConfig::get('template');
                 $ec_config['template']['view_path'] = $current_theme_module_path;
                 
-                // 各模块自带静态资源路径
-                $module_public_path = $current_theme_module_path.'public/';
-                if (is_dir($module_public_path) ) {
-                    $module_public_url = PUBLIC_RELATIVE_PATH.'/themes/'.$current_theme.'/'.MODULE_NAME.'/'.'public';//资源路径url
-                    $ec_config['view_replace_str']['__MODULE__'] = $module_public_url;
-                    $ec_config['view_replace_str']['__MODULE_IMG__']  = $module_public_url.'/img';
-                    $ec_config['view_replace_str']['__MODULE_CSS__']  = $module_public_url.'/css';
-                    $ec_config['view_replace_str']['__MODULE_JS__']   = $module_public_url.'/js';
-                    $ec_config['view_replace_str']['__MODULE_LIBS__'] = $module_public_url.'/libs';
-                }
             }
             
             //插件主题化
@@ -119,6 +102,14 @@ class Config {
             }
 
         }
+
+        //各模块静态资源路径
+        $static_path = PUBLIC_RELATIVE_PATH.'/static/'.MODULE_NAME;
+        $ec_config['view_replace_str']['__MODULE_STATIC__']    = $static_path;
+        $ec_config['view_replace_str']['__MODULE_IMG__']    = $static_path.'/img';
+        $ec_config['view_replace_str']['__MODULE_CSS__']    = $static_path.'/css';
+        $ec_config['view_replace_str']['__MODULE_JS__']     = $static_path.'/js';
+        $ec_config['view_replace_str']['__MODULE_LIBS__']   = $static_path.'/libs';
 
         thinkConfig::set($ec_config);// 添加配置
         // 读取数据库中的配置
