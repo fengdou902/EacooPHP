@@ -12,6 +12,7 @@ namespace app\common\behavior;
 use think\Config as thinkConfig;
 use app\common\logic\Config as ConfigLogic;
 use think\Cache;
+use think\Db;
 use think\Request;
 
 /**
@@ -57,13 +58,11 @@ class Config {
             $ec_config['view_replace_str']['__MODULE_LIBS__']   = $static_path.'/libs';
             
         } elseif (MODULE_MARK=='front' && is_file(APP_PATH . 'install.lock')){
-            // 获取当前主题的名称
-            $current_theme = db('themes')->where('current',1)->value('name');
-            //主题区分pc和移动端路径
+            //主题区分pc和移动端
             if (IS_MOBILE==true) {
-                $current_theme = $current_theme."/mobile";
+                $current_theme = Db::name('themes')->where('current',2)->value('name');
             } else {
-                $current_theme = $current_theme.'/pc';
+                $current_theme = Db::name('themes')->where('current',1)->value('name');
             }
 
             $current_theme_path = THEME_PATH.$current_theme.'/'; //默认主题设为当前主题

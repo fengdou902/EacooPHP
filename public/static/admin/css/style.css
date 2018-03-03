@@ -55,6 +55,8 @@ skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar 
 .box.box-solid.box-info{border:none;}
 .box.box-solid.box-info>.box-header{background:#5db2ff!important;background-color: #5db2ff; }
 
+.eacoo-box {background: none!important;}
+.eacoo-box .box-body{background: #fff!important;}
 .box.box-solid.direct-chat{border: 1px solid #5db2ff;}/*聊天框*/
 /* 阴影，圆角 */
 .bxshadow { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.06) !important }

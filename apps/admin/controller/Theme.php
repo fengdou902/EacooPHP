@@ -11,6 +11,7 @@
 namespace app\admin\controller;
 
 use app\admin\model\Theme as ThemeModel;
+use app\admin\logic\Theme as ThemeLogic;
 
 class Theme extends Admin {
     
@@ -32,7 +33,7 @@ class Theme extends Admin {
     public function index($from_type = 'oneline') {
         //$this->assign('page_config',['self'=>logic('admin/AppStore')->getAppsCenterTabList('theme')]);
         $tab_list = [
-            'local'=>['title'=>'已安装','href'=>url('index',['from_type'=>'local'])],
+            'local'=>['title'=>'本地主题','href'=>url('index',['from_type'=>'local'])],
             'oneline'=>['title'=>'主题市场','href'=>url('index',['from_type'=>'oneline'])],
         ];
 
@@ -41,7 +42,7 @@ class Theme extends Admin {
 
 
         if ($from_type == 'local') {
-            $data_list = $this->themeModel->getAll();
+            $data_list = ThemeLogic::getAll();
             $meta_title = '本地主题';
 
         } elseif ($from_type == 'oneline') {
@@ -57,14 +58,18 @@ class Theme extends Admin {
 
     /**
      * 安装主题
+     * @param  [type] $name [description]
+     * @return [type] [description]
+     * @date   2018-03-03
+     * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function install($name){
+    public function install($name=''){
         // 获取当前主题信息
-        $info = ThemeModel::getInfoByFile($name);
-        if (!$info) {
-            $this->error('安装失败');
-        }
-        $config = ThemeModel::getDefaultConfig($name);//获取文件中的默认配置值
+        $extensionObj = new Extension;
+        $extensionObj->initInfo('theme',$name);
+        $info = $extensionObj->getInfoByFile();//从文件获取
+
+        $config = ThemeLogic::getDefaultConfig($name);//获取文件中的默认配置值
         $info['config'] = !empty($config) ? json_encode($config) : '';
 
         // 写入数据库记录
@@ -102,17 +107,17 @@ class Theme extends Admin {
     public function updateInfo($id) {
         $name = ThemeModel::where('id',$id)->value('name');
         // 获取当前主题信息
-        $info = ThemeModel::getInfoByFile($name);
-        if (!$info) {
-            $this->error('安装失败');
-        }
-        $config = ThemeModel::getDefaultConfig($name);//获取文件中的默认配置值
+        $extensionObj = new Extension;
+        $extensionObj->initInfo('theme',$name);
+        $info = $extensionObj->getInfoByFile();//从文件获取
+
+        $config = ThemeLogic::getDefaultConfig($name);//获取文件中的默认配置值
         $info['config'] = !empty($config) ? json_encode($config) : '';
 
         $info['id'] = $id;
         //$data里包含主键id，则editData就会更新数据，否则是新增数据
         if ($this->themeModel->editData($info)) {
-            $this->success('更新成功', url('index'));
+            $this->success('更新成功');
         } else {
             $this->error($this->themeModel->getError());
         }
@@ -120,49 +125,60 @@ class Theme extends Admin {
     }
 
     /**
-     * 切换主题
+     * 切换主题(设置电脑和移动端)
+     * @param  integer $id 主题ID
+     * @param  integer $type 当前主题类型，1PC端，2手机端。默认0
+     * @date   2018-03-03
+     * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function setCurrent($id) {
-        $is_res = $this->themeModel->where('id',$id)->count();
-        if ($is_res) {
+    public function setCurrent($id=0,$type=0) {
+        try {
+            $res_count = $this->themeModel->where('id',$id)->count();
+            if (!$res_count) {
+                throw new \Exception("主题不存在", 0);
+                
+            }
             // 当前主题current字段置为1
             $map = [
                 'id'=>$id
             ];
-            $result1 = $this->themeModel->where($map)->update(['current'=>1]);
-            if ($result1) {
-                // 其它主题current字段置为0
-                $map = [];
-                $map['id'] = ['neq', $id];
-                if ($this->themeModel->where($map)->count() == 0) {
-                    $this->success('前台主题设置成功！');
-                }
-                $con['id'] = ['neq', $id];
-                $result2 = $this->themeModel->where($con)->update(['current'=>0]);
-                if ($result2) {
-                    $this->success('前台主题设置成功！');
-                } else {
-                    $this->error('设置当前主题失败', $this->themeModel->getError());
-                }
-            } else {
+            $res = $this->themeModel->where($map)->update(['current'=>$type]);
+            if (!$res) {
                 $this->error('设置当前主题失败',$this->themeModel->getError());
             }
-        } else {
-            $this->error('主题不存在');
+            // 其它主题current字段置为0
+            $map = [
+                'id'      =>['neq', $id],
+                'current' =>$type
+            ];
+            if ($this->themeModel->where($map)->count() > 0) {
+                $res = $this->themeModel->where($map)->update(['current'=>0]);
+                if (!$res) {
+                    throw new \Exception("设置当前主题失败".$this->themeModel->getError(), 0);
+                    
+                } 
+            }
+            
+        } catch (\Exception $e) {
+            $this->error($e);
         }
+
+        $this->success('前台主题设置成功！');
+        
     }
 
     /**
      * 取消主题
      */
     public function cancel() {
-        $this->themeModel->where(true)->update(['current'=>0]);
-        $map = [];
-        $map['current'] = ['eq', 1];
+        $map = [
+            'current' => ['in', '1,2']
+        ];
+        $this->themeModel->where($map)->update(['current'=>0]);
         if ($this->themeModel->where($map)->count() == 0) {
-            $this->success('取消主题成功！');
+            $this->success('重置主题成功！');
         } else {
-            $this->error('取消主题失败', $this->themeModel->getError());
+            $this->error('重置主题失败', $this->themeModel->getError());
         }
     }
 

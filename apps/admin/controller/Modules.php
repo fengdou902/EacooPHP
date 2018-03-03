@@ -37,7 +37,7 @@ class Modules extends Admin {
         //$this->assign('page_config',['self'=>logic('admin/AppStore')->getAppsCenterTabList('module')]);
 
 		$tab_list = [
-            'local'=>['title'=>'已安装','href'=>url('index',['from_type'=>'local'])],
+            'local'=>['title'=>'本地模块','href'=>url('index',['from_type'=>'local'])],
             'oneline'=>['title'=>'模块市场','href'=>url('index',['from_type'=>'oneline'])],
         ];
 
