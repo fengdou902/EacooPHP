@@ -30,15 +30,10 @@ class Dashboard extends Admin
         $mysql   = Db::query("select VERSION() as version");
         $mysql_v = $mysql[0]['version'];
         $mysql_v = empty($mysql_v) ? '未知' : $mysql_v;
-
-        $install_lock = json_decode(file_get_contents(APP_PATH . 'install.lock'),true);
-        if (!isset($install_lock['status_show_text']) || !isset($install_lock['accredit_status'])) {
-            EacooAccredit::execute();
-            $install_lock = json_decode(file_get_contents(APP_PATH . 'install.lock'),true);
-        }
-        $product_info = $install_lock['status_show_text'];
+        //获取安装信息
+        $product_info = logic('index')->getInstallAccreditInfo();
         $server_info = [
-                '产品型号'    =>$product_info,
+                '产品型号'    =>$product_info.'<a class="btn btn-xs btn-default ajax-get f15 ml-10" href="'.url('admin/index/refreshAccreditInfo').'"><i class="fa fa-refresh"></i></a>',
                 '操作系统'    => PHP_OS,
                 '运行环境'    => $_SERVER["SERVER_SOFTWARE"],
                 'PHP运行方式' => php_sapi_name(),
@@ -49,7 +44,7 @@ class Dashboard extends Admin
                 '剩余空间'    => format_file_size(@disk_free_space("."))//round((@disk_free_space(".") / (1024 * 1024)), 2) . 'M',
         ];
         $this->assign('server_info', $server_info);
-
+        //获取官网新闻
         $this->assign('eacoo_news_list',$this->getEacooNews());
         return $this->fetch();
     }

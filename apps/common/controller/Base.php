@@ -11,6 +11,7 @@
 namespace app\common\controller;
 use think\Controller;
 use think\Cookie;
+use eacoo\EacooAccredit;
 
 class Base extends Controller {
 
@@ -21,6 +22,7 @@ class Base extends Controller {
 	protected $action;
 
 	public function _initialize() {
+		defined('ACCREDIT_TOKEN') or define('ACCREDIT_TOKEN',EacooAccredit::getAccreditToken());//获取本地授权token
 		//获取request信息
 		$this->requestInfo();
 		//halt(config());

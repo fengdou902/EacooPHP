@@ -24,7 +24,7 @@ class EacooAccredit {
      * @date   2017-09-05
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public static function execute($data = [])
+    public static function runAccredit($data = [])
     {
         $data = array_merge(
             [
@@ -35,16 +35,35 @@ class EacooAccredit {
             ],
             $data);
         $data['agent'] = $_SERVER['HTTP_USER_AGENT'];
-        $result = curl_post(self::EACOO_ACCREDIT_URL,$data);
-        $result = json_decode($result,true);
-        $install_lock = $result['data'];
-        
+        $result        = curl_post(self::EACOO_ACCREDIT_URL,$data);
+        $result        = json_decode($result,true);
+        $install_lock  = $result['data'];
+
         file_put_contents(APP_PATH . 'install.lock', json_encode($install_lock));
         return $install_lock;
     }
 
     /**
-     * 检测版本
+     * 获取产品授权token
+     * @return [type] [description]
+     * @date   2018-03-04
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public static function getAccreditToken()
+    {
+        $token = Cache::get('accredit_token');
+        if (!$token) {
+            $install_lock = json_decode(file_get_contents(APP_PATH . 'install.lock'),true);
+            if ($install_lock) {
+                $token = $install_lock['access_token'];
+            }
+            Cache::set('accredit_token',$token,3600*3);
+        }
+        return $token;
+    }
+
+    /**
+     * 检测版本，获取云端版本
      * @return [type] [description]
      * @date   2017-09-09
      * @author 心云间、凝听 <981248356@qq.com>
