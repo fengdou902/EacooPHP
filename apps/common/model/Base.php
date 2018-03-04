@@ -55,7 +55,7 @@ class Base extends Model
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function editRow($data, $map) {
-        $ids = array_unique((array)input('param.ids'));
+        $ids = array_unique((array)input('param.ids/a'));
         if ($ids) {
             $ids = is_array($ids) ? implode(',',$ids) : $ids;
             //如存在id字段，则加入该条件
