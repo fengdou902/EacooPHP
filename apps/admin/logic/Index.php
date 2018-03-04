@@ -10,10 +10,9 @@
 // +----------------------------------------------------------------------
 namespace app\admin\logic;
 
+use eacoo\EacooAccredit;
+
 use think\Cache;
-use think\Loader;
-use think\Hook;
-use think\Cookie;
 
 class Index extends AdminLogic {
 
@@ -87,5 +86,38 @@ class Index extends AdminLogic {
             throw new \Exception($e->getMessage(), $e->getCode());
         }
     }
+
+    /**
+     * 清理缓存
+     * @return [type] [description]
+     * @date   2018-03-04
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public static function clearCache()
+    {
+        
+        cache('admin_sidebar_menus_'.is_login(),null);//清空后台菜单缓存
+        cache('DB_CONFIG_DATA',null);
+        
+    }
+
+    /**
+     * 获取eacoophp安装信息
+     * @return [type] [description]
+     * @date   2018-03-04
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function getInstallAccreditInfo()
+    {
+        $install_lock = json_decode(file_get_contents(APP_PATH . 'install.lock'),true);
+        if (!isset($install_lock['status_show_text']) || !isset($install_lock['accredit_status']) ||$install_lock['product_verion']!=EACOOPHP_V) {
+            EacooAccredit::runAccredit(['access_token'=>ACCREDIT_TOKEN]);
+            $install_lock = json_decode(file_get_contents(APP_PATH . 'install.lock'),true);
+        }
+
+        $product_info = $install_lock['status_show_text'];
+        return $product_info;
+    }
+
 
 }

@@ -8,6 +8,7 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
+use eacoo\EacooAccredit;
 
 class Index extends Admin
 {
@@ -41,11 +42,24 @@ class Index extends Admin
         foreach($dirs as $dir) {
             rmdirs($dir);
         }
-        cache('admin_sidebar_menus_'.is_login(),null);//清空后台菜单缓存
-        cache('DB_CONFIG_DATA',null);
+        //清理缓存
+        logic('index')->clearCache();
+        //防止认证信息被清理
         cache('eacoo_identification',$eacoo_identification);
         $this->success('清除缓存成功！');
     } 
+
+    /**
+     * 刷新授权信息
+     * @return [type] [description]
+     * @date   2018-03-04
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function refreshAccreditInfo()
+    {
+        $install_lock = EacooAccredit::runAccredit(['access_token'=>ACCREDIT_TOKEN]);
+        $this->success('刷新成功');
+    }
 
     /**
      * 获取侧边栏菜单

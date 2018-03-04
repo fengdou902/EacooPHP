@@ -12,14 +12,10 @@ namespace app\admin\controller;
 use app\common\controller\Base;
 
 use app\common\model\User as UserModel;
-use app\admin\model\AuthRule;
 use app\admin\logic\AdminLogic;
 
 use eacoo\EacooAccredit;
 
-use think\Cache;
-use think\Loader;
-use think\Hook;
 use think\Cookie;
 
 class Admin extends Base
@@ -215,7 +211,7 @@ class Admin extends Base
         if (method_exists($model,'editRow')) {//如果定义了该方法
             $result = $model->editRow($data,$map);
         } else{
-            $result = $this->where($map)->update($data);
+            $result = $model->where($map)->update($data);
         }
         
         if ($result != false) {

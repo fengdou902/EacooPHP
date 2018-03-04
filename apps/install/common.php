@@ -153,7 +153,7 @@ function write_config($config){
 			$conf = str_replace("[{$name}]", $value, $conf);
 		}
 		//安装信息
-        EacooAccredit::execute();
+        EacooAccredit::runAccredit();
 		//file_put_contents(APP_PATH . 'install.lock', 'ok');
 
 		//写入应用配置文件

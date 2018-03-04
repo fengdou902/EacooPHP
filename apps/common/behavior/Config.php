@@ -34,6 +34,7 @@ class Config {
             }
             
         }
+        
         //关于请求
         $request = Request::instance();
         defined('IS_MOBILE') or define('IS_MOBILE', $request->isMobile());
