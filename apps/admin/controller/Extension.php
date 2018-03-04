@@ -157,7 +157,7 @@ class Extension extends Admin {
     }
 
     /**
-     * 在线安装
+     * 在线安装，包含在线升级
      * @return [type] [description]
      * @date   2017-10-27
      * @author 心云间、凝听 <981248356@qq.com>
@@ -234,7 +234,7 @@ class Extension extends Admin {
             }
         } catch (\Exception $e) {
             @unlink($tmp_app_file);
-            @rmdirs($tmpAppDir);
+            @rmdirs($tmpAppDir);//清理缓存目录
             return json([
                     'code'=>$e->getCode(),
                     'msg'=>$e->getMessage(),
@@ -358,40 +358,39 @@ class Extension extends Admin {
      */
     public function upgradeAction($name='')
     {
-        $install_method = $this->request->param('install_method','install');
         if($name==''){
             $name = $this->appName;
         } else{
             $this->appName = $name;
         }
 
-        if ($install_method=='upgrade') {//如果是升级，先备份
-            if ($this->type=='plugin') {
-                $type_path = 'plugins/';
-            } elseif ($this->type=='module') {
-                $type_path = '';
-            } elseif ($this->type=='theme') {
-                $type_path = '/themes';
-            }
-            $_static_path = PUBLIC_PATH.'static/'.$type_path.$name;
-            $static_path = $this->appsPath.$name.'/static';
-            if (is_dir($_static_path)) {
-                if(is_writable(PUBLIC_PATH.'static/'.$type_path) && is_writable($this->appsPath.$name)){
-                    if (!rename($_static_path,$static_path)) {
-                        setAppLog('静态资源移动失败：'.$static_path.'移动到'.$_static_path,'error');
-                    } 
-                }
-            }
-            
-            $newAppDir = $this->appsPath . $name . DS;
-            //备份路径
-            $backup_path = ROOT_PATH.'data/backups/'.$this->type.'s/'. $name.'-'.date('YmdHis') . DS;
-            mkdirs($backup_path);
-            if(rename($newAppDir, $backup_path)){
-                @unlink($newAppDir);
-            }
-            
+        //如果是升级，先备份
+        if ($this->type=='plugin') {
+            $type_path = 'plugins/';
+        } elseif ($this->type=='module') {
+            $type_path = '';
+        } elseif ($this->type=='theme') {
+            $type_path = '/themes';
         }
+        $_static_path = PUBLIC_PATH.'static/'.$type_path.$name;
+        @rmdirs($_static_path);//升级前先清理静态资源目录
+        $static_path = $this->appsPath.$name.'/static';
+        if (is_dir($_static_path)) {
+            if(is_writable(PUBLIC_PATH.'static/'.$type_path) && is_writable($this->appsPath.$name)){
+                if (!rename($_static_path,$static_path)) {
+                    setAppLog('静态资源移动失败：'.$static_path.'移动到'.$_static_path,'error');
+                } 
+            }
+        }
+        
+        $newAppDir = $this->appsPath . $name . DS;
+        //备份路径
+        $backup_path = ROOT_PATH.'data/backups/'.$this->type.'s/'. $name.'-'.date('YmdHis') . DS;
+        mkdirs($backup_path);
+        if(rename($newAppDir, $backup_path)){
+            @unlink($newAppDir);
+        }
+            
         return true;
     }
 

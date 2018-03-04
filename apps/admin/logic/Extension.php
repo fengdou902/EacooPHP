@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
-namespace app\admin\controller;
+namespace app\admin\logic;
 
 use eacoo\Cloud;
 use eacoo\Sql;
@@ -33,9 +33,9 @@ class Extension extends AdminLogic {
     protected $appExtensionModel;
     protected $uid;
 
-	function _initialize()
+	function initialize()
 	{
-		parent::_initialize();
+		parent::initialize();
 		$this->type = $this->request->param('apptype');
 		$this->initInfo($this->type);
 		$option = [
