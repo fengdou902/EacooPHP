@@ -24,6 +24,8 @@ class Index extends Admin
         $this->assign('meta_title','首页');
         $this->assign('current_message_count',0);//当前消息数量
 
+        $install_lock = json_decode(file_get_contents(APP_PATH . 'install.lock'),true);
+        $this->assign('accredit_status',$install_lock['accredit_status']);
         return $this->fetch();
     }
 
