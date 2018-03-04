@@ -108,6 +108,7 @@ class Attachment extends Admin {
         //筛选end
         $map['status'] = 1;
         $page_number = $attachment_options['page_number']? $attachment_options['page_number']:24;
+
         $file_list = $this->attachmentModel->where($map)->order('sort asc,create_time desc,update_time desc')->paginate($page_number);
 
         $this->assign('attachment_list_data',$file_list);//附件列表数据

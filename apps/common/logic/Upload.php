@@ -340,7 +340,7 @@ class Upload {
 			}
 
 			// 上传文件钩子，用于阿里云oss、七牛云、又拍云等第三方文件上传的扩展
-			$upload_info['uploadtype'] = $driver;
+			$upload_info['driver'] = $driver;
         	hook('UploadFile', $upload_info);
         	return $return;
 		} catch (\Exception $e) {
@@ -397,6 +397,7 @@ class Upload {
 	            // if (false !== $hook_result) {
 	            //     return $hook_result;
 	            // }
+	            $file['driver'] = $config['driver'];
 	            hook('UploadFile', $file);
 	        }
         	

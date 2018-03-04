@@ -63,10 +63,15 @@ class Plugin extends Base {
         	$template = 'admin/'.$template;
         }
         if (!is_file($template)) {
-        	// 获取当前主题的名称
-            $current_theme_path = THEME_PATH.CURRENT_THEME.'/'; //默认主题设为当前主题
-        	$theme_plugin_path = $current_theme_path.'plugins/'.$plugin.'/'; //当前主题插件文件夹路径
-        	$theme_template = $theme_plugin_path.$template . '.' .config('template.view_suffix');
+        	if (MODULE_MARK != 'admin') {
+        		// 获取当前主题的名称
+	            $current_theme_path = THEME_PATH.CURRENT_THEME.'/'; //默认主题设为当前主题
+	        	$theme_plugin_path = $current_theme_path.'plugins/'.$plugin.'/'; //当前主题插件文件夹路径
+	        	$theme_template = $theme_plugin_path.$template . '.' .config('template.view_suffix');
+        	} else{
+        		$theme_template = $template;
+        	}
+        	
         	if (!is_file($theme_template)) {
         		$template = $this->pluginPath. 'view/'. $template . '.' .config('template.view_suffix');
 	            if (!is_file($template)) {
