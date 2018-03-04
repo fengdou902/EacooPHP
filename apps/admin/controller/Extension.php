@@ -324,7 +324,12 @@ class Extension extends Admin {
                     } elseif ($this->type=='theme') {
                         $type_path = '/themes';
                     }
-                    if (!rename($static_path,PUBLIC_PATH.'static'.$type_path.'/'.$name)) {
+                    $_static_path = PUBLIC_PATH.'static'.$type_path.'/'.$name;
+                    if (is_dir($_static_path)) {
+                        @rmdirs($_static_path);//防止路径报错，前先清理静态资源目录
+                    }
+                    
+                    if (!rename($static_path,$_static_path)) {
                         setAppLog('应用静态资源移动失败'.PUBLIC_PATH.'static'.$type_path.'/'.$name,'Extension','error');
                     } 
                 }
@@ -373,9 +378,10 @@ class Extension extends Admin {
             $type_path = '/themes';
         }
         $_static_path = PUBLIC_PATH.'static/'.$type_path.$name;
-        @rmdirs($_static_path);//升级前先清理静态资源目录
+        
         $static_path = $this->appsPath.$name.'/static';
         if (is_dir($_static_path)) {
+            @rmdirs($_static_path);//升级前先清理静态资源目录
             if(is_writable(PUBLIC_PATH.'static/'.$type_path) && is_writable($this->appsPath.$name)){
                 if (!rename($_static_path,$static_path)) {
                     setAppLog('静态资源移动失败：'.$static_path.'移动到'.$_static_path,'error');

@@ -1,4 +1,5 @@
 <?php 
+// 分类函数
 // +----------------------------------------------------------------------
 // | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
@@ -14,7 +15,7 @@
  * @return array 返回结果数组
  * @author 
  */
-function get_terms($taxonomies,$field='*'){
+function get_terms($taxonomies,$field=true){
 
 }
 
@@ -26,9 +27,9 @@ function get_terms($taxonomies,$field='*'){
  * @return array/string
  * @author 心云间、凝听 <981248356@qq.com>
  */
-function get_the_category($object_id){
+function get_the_category($object_id,$table='posts'){
     $map['object_id'] = $object_id;
-    $map['table']     = 'posts';
+    $map['table']     = $table;
 	return db('term_relationships')->where($map)->value('term_id');
 }
 
@@ -40,7 +41,7 @@ function get_the_category($object_id){
  * @return array/string
  * @author 心云间、凝听 <981248356@qq.com>
  */
-function get_term_info($object_id,$field='*',$table='posts'){
+function get_term_info($object_id,$field=true,$table='posts'){
     $rela_map['object_id'] = $object_id;
     $rela_map['table']     = $table;
     $term_id               = db('term_relationships')->where($rela_map)->value('term_id');
