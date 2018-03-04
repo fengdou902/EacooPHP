@@ -58,6 +58,8 @@ class Config {
             } else {
                 $current_theme = Db::name('themes')->where('current',1)->value('name');
             }
+            //定义当前主题
+            defined('CURRENT_THEME') or define('CURRENT_THEME', $current_theme);
 
             $current_theme_path = THEME_PATH.$current_theme.'/'; //默认主题设为当前主题
             //主题的公共资源目录
@@ -98,9 +100,10 @@ class Config {
                     $ec_config['template']['view_path'] = ROOT_PATH.'plugins/'.$plugin_name.'/view/';
                 }
                 
-                //插件静态资源路径
-                $ec_config['view_replace_str']['__PLUGIN_STATIC__'] = $ec_config['view_replace_str']['__STATIC__'].'/plugins/'.$plugin_name;
+                
             }
+            //插件静态资源路径
+            $ec_config['view_replace_str']['__PLUGIN_STATIC__'] = $ec_config['view_replace_str']['__STATIC__'].'/plugins';
 
         }
 

@@ -55,7 +55,7 @@ class Plugin extends Base {
             $plugin = $plugin_name;
             $action = 'index';
         } else {
-            $plugin = input('param._plugin');
+            $plugin = input('param._plugin',$this->name);
             $action = input('param._action');
         }
         $template = $template == '' ? $action : $template;
@@ -63,10 +63,20 @@ class Plugin extends Base {
         	$template = 'admin/'.$template;
         }
         if (!is_file($template)) {
-            $template = $this->pluginPath. 'view/'. $template . '.' .config('template.view_suffix');
-            if (!is_file($template)) {
-                throw new \Exception('模板不存在：'.$template, 5001);
-            }
+        	// 获取当前主题的名称
+            $current_theme_path = THEME_PATH.CURRENT_THEME.'/'; //默认主题设为当前主题
+        	$theme_plugin_path = $current_theme_path.'plugins/'.$plugin.'/'; //当前主题插件文件夹路径
+        	$theme_template = $theme_plugin_path.$template . '.' .config('template.view_suffix');
+        	if (!is_file($theme_template)) {
+        		$template = $this->pluginPath. 'view/'. $template . '.' .config('template.view_suffix');
+	            if (!is_file($template)) {
+	                throw new \Exception('模板不存在：'.$template, 5001);
+	            }
+        	} else{
+        		$template = $theme_template;
+        	}
+            
+            
         }
 
         echo $this->view->fetch($template, $vars, $replace, $config, $render);
