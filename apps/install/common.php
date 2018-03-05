@@ -52,6 +52,8 @@ function check_env(){
 		$items['fileinfo'][3] = '未安装';
 		$items['fileinfo'][4] = 'bg-yellow';
 		session('error', true);
+	} else{
+		$items['fileinfo'][3] = '已开启';
 	}
 
 	//磁盘空间检测

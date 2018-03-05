@@ -8,11 +8,12 @@
 // +----------------------------------------------------------------------
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
-error_reporting(0);
 
 namespace app\install\controller;
 use think\Controller;
 use think\Db;
+
+error_reporting(0);
 
 class Index extends Controller {
 

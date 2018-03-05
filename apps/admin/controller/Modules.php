@@ -35,7 +35,7 @@ class Modules extends Admin {
 	 */
 	public function index($from_type = 'oneline') {
         //$this->assign('page_config',['self'=>logic('admin/AppStore')->getAppsCenterTabList('module')]);
-
+        
 		$tab_list = [
             'local'=>['title'=>'本地模块','href'=>url('index',['from_type'=>'local'])],
             'oneline'=>['title'=>'模块市场','href'=>url('index',['from_type'=>'oneline'])],
@@ -338,9 +338,9 @@ class Modules extends Admin {
      * @date   2017-11-07
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function del($name='')
+    public function delapp($name='')
     {
-        if ($name) {
+        if ($name!='') {
             @rmdirs(APP_PATH.$name);
             Extension::refresh('module');
             $this->success('删除模块成功');

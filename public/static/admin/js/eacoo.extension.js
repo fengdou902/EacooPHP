@@ -40,12 +40,7 @@ function appLocalInstall(apptype) {
         if (result.code==1) {
             updateAlert(result.msg,'success');
             setTimeout(function () {
-                if ($.support.pjax) {
-                    //重新当前页面容器的内容
-                    $.pjax.reload('#pjax-container');
-                } else{
-                    location.reload();
-                }
+                location.reload();
             }, 1000);
             
             uploader_localinstall.reset();

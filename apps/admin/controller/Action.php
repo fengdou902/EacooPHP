@@ -30,12 +30,12 @@ class Action extends Admin {
 
         return builder('list')
     			->setMetaTitle('用户行为')  // 设置页面标题
+    			->setPageTips('定义用户的操作行为，定义后的行为系统会根据行为规则进行处理。建议将敏感的操作设置行为，方便记录。')
 	    		->addTopButton('addnew')    // 添加新增按钮
 	            ->addTopButton('resume')  // 添加启用按钮
 	            ->addTopButton('forbid')  // 添加禁用按钮
 	            ->addTopButton('delete')  // 添加禁用按钮
 	            //->setSearch() //添加搜索框
-	            ->setPageTips('定义用户的操作行为，定义后的行为系统会根据行为规则进行处理。')
 	    		->keyListItem('id','编码')
 	            ->keyListItem('name','标识')
 	            ->keyListItem('title','行为名称')
@@ -114,6 +114,7 @@ class Action extends Admin {
 		}
         return builder('list')
 	        		->setMetaTitle('行为日志')  // 设置页面标题
+	        		->setPageTips('根据用户行为，自动记录后台日志记录')  // 设置页面标题
 	        		->addTopButton('self', ['title'=>'清空日志','href'=>url('clearLog'),'class'=>'btn btn-warning btn-sm ajax-get confirm','icon'=>'fa fa-trash','hide-data'=>'true']) //清空
 	                ->addTopButton('delete',['href'=>url('admin/Action/dellog')])  // 添加禁用按钮
 	        		->keyListItem('action_name','行为标识')

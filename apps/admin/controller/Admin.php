@@ -159,8 +159,8 @@ class Admin extends Base
                 );
                 break;
             case 'restore' :  // 从回收站还原
-                $data = array('status' => 1);
-                $map  = array_merge(array('status' => -1), $map);
+                $data = ['status' => 1];
+                $map  = array_merge(['status' => -1], $map);
                 $this->editRow(
                     $model,
                     $data,

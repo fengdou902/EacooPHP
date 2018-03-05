@@ -216,7 +216,8 @@ class Extension extends Admin {
                 if($only_download!=1){
                   $return = $this->install();  
                 } else{
-                    $return = ['code'=>1,'msg'=>'安装成功','data'=>[]];
+                    //仅仅下载
+                    $return = ['code'=>1,'msg'=>'下载完成','data'=>[]];
                 } 
                 $call_url = '';
                 if ($this->type=='plugin') {
@@ -227,7 +228,7 @@ class Extension extends Admin {
                     $call_url = url('admin/Theme/index',['from_type'=>'local']);
                 }
                 
-                $return['url']=$call_url;
+                $return['url'] = $call_url;
                 $this->refresh($this->type);
                 return json($return);
                 
@@ -325,6 +326,7 @@ class Extension extends Admin {
                         $type_path = '/themes';
                     }
                     $_static_path = PUBLIC_PATH.'static'.$type_path.'/'.$name;
+
                     if (is_dir($_static_path)) {
                         @rmdirs($_static_path);//防止路径报错，前先清理静态资源目录
                     }
@@ -1016,6 +1018,13 @@ class Extension extends Admin {
         return $list;
     }
 
+    /**
+     * 刷新缓存
+     * @param  string $type [description]
+     * @return [type] [description]
+     * @date   2018-03-05
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
     public static function refresh($type='')
     {
         cache('eacoo_appstore_'.$type.'s_1',null);

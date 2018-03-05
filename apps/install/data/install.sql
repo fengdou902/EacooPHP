@@ -3,12 +3,18 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 2018-03-01 03:11:11
+-- Generation Time: 2018-03-05 04:48:27
 -- 服务器版本： 5.7.15
 -- PHP Version: 7.0.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `eacoophp`
@@ -54,7 +60,8 @@ INSERT INTO `eacoo_action` (`id`, `name`, `depend_type`, `depend_flag`, `title`,
 (12, 'action_add', 1, 'admin', '添加行为', '', '', '', 1, 0, 0, 1),
 (13, 'action_edit', 1, 'admin', '编辑用户行为', '', '', '', 1, 0, 0, 1),
 (14, 'action_dellog', 1, 'admin', '清空日志', '清空所有行为日志', '', '', 1, 0, 1518006312, 1),
-(15, 'setstatus', 1, 'admin', '改变数据状态', '通过列表改变了数据的status状态值', '', '', 1, 0, 1518004873, 1);
+(15, 'setstatus', 1, 'admin', '改变数据状态', '通过列表改变了数据的status状态值', '', '', 1, 0, 1518004873, 1),
+(16, 'modules_delapp', 1, 'admin', '删除模块', '删除整个模块的时候记录', '', '', 2, 1520222797, 1520225057, 1);
 
 -- --------------------------------------------------------
 
@@ -108,90 +115,89 @@ CREATE TABLE `eacoo_attachment` (
 --
 
 INSERT INTO `eacoo_attachment` (`id`, `uid`, `name`, `path`, `url`, `location`, `path_type`, `ext`, `mime_type`, `size`, `alt`, `md5`, `sha1`, `download`, `create_time`, `update_time`, `sort`, `status`) VALUES
-(1, 1, 'preg_match_imgs.jpeg', '/uploads/Editor/Picture/2016-06-12/575d4bd8d0351.jpeg', '', 'local', 'editor', 'jpeg', '', 19513, '', '4cf157e42b44c95d579ee39b0a1a48a4', 'dee76e7b39f1afaad14c1e03cfac5f6031c3c511', 0, 1465732056, 1465732056, 0, 1),
-(2, 1, 'gerxiangimg200x200.jpg', '/uploads/Editor/Picture/2016-06-12/575d4bfb09961.jpg', '', 'local', 'editor', 'jpg', '', 5291, 'gerxiangimg200x200', '4db879c357c4ab80c77fce8055a0785f', '480eb2e097397856b99b373214fb28c2f717dacf', 0, 1465732090, 1465732090, 0, 1),
-(3, 1, 'oraclmysqlzjfblhere.jpg', '/uploads/Editor/Picture/2016-06-12/575d4c691e976.jpg', '', 'local', 'editor', 'jpg', '', 23866, 'mysql', '5a3a5a781a6d9b5f0089f6058572f850', 'a17bfe395b29ba06ae5784486bcf288b3b0adfdb', 0, 1465732201, 1465732201, 0, 1),
-(4, 1, 'logo.png', '/logo.png', '', 'local', 'picture', 'jpg', '', 40000, 'eacoophp-logo', '', '', 0, 1465732201, 1465732201, 0, 1),
-(6, 1, '功能表格', '/uploads/attachment/2016-07-13/5785daaa2f2e6.xlsx', '', 'local', 'file', 'xlsx', '', 11399, NULL, '5fd89f172ca8a95fa13b55ccb24d5971', 'b8706af3fa59ef0fc65675e40131f25e12f94664', 0, 1468390058, 1468390058, 0, 1),
-(8, 1, '会员数据2016-06-30 18_44_14', '/uploads/attachment/2016-07-13/5785dce2e15c1.xls', '', 'local', 'file', 'xls', '', 173387, NULL, '9ff55acddd75366d20dcb931eb1d87ea', 'acf5daf769e6ba06854002104bfb8c2886da97af', 0, 1468390626, 1468390626, 0, 1),
-(10, 1, '苹果短信-三全音 - 铃声', '/uploads/attachment/2016-07-27/579857b5aca95.mp3', '', 'local', 'file', 'mp3', '', 19916, NULL, 'bab00edb8d6a5cf4de5444a2e5c05009', '73cda0fb4f947dcb496153d8b896478af1247935', 0, 1469601717, 1469601717, 0, 1),
-(12, 1, 'music', '/uploads/attachment/2016-07-28/57995fe9bf0da.mp3', '', 'local', 'file', 'mp3', '', 160545, NULL, '935cd1b8950f1fdcd23d47cf791831cf', '73c318221faa081544db321bb555148f04b61f00', 0, 1469669353, 1469669353, 0, 1),
-(13, 1, '7751775467283337', '/uploads/picture/2016-09-26/57e8dc9d29b01.jpg', '', 'local', 'picture', 'jpg', '', 70875, NULL, '3e3bfc950aa0b6ebb56654c15fe8e392', 'c75e70753eaf36aaee10efb3682fdbd8f766d32d', 0, 1474878621, 1474878621, 0, 1),
-(14, 1, '4366486814073822', '/uploads/picture/2016-09-26/57e8ddebaafff.jpg', '', 'local', 'picture', 'jpg', '', 302678, NULL, 'baf2dc5ea7b80a6d73b20a2c762aec1e', 'd73fe63f5c179135b2c2e7f174d6df36e05ab3d8', 0, 1474878955, 1474878955, 0, 1),
-(15, 1, 'wx1image_14751583274385', '/uploads/picture/2016-09-29/wx1image_14751583274385.jpg', '', 'local', 'picture', 'jpg', '', 311261, NULL, '', '', 0, 1475158327, 0, 0, 1),
-(17, 1, 'wx1image_14751583287356', '/uploads/picture/2016-09-29/wx1image_14751583287356.jpg', '', 'local', 'picture', 'jpg', '', 43346, NULL, '', '', 0, 1475158328, 0, 0, 1),
-(18, 1, 'wx1image_14751583293547', '/uploads/picture/2016-09-29/wx1image_14751583293547.jpg', '', 'local', 'picture', 'jpg', '', 150688, NULL, '', '', 0, 1475158329, 0, 0, 1),
-(19, 1, 'wx1image_14751583298683', '/uploads/picture/2016-09-29/wx1image_14751583298683.jpg', '', 'local', 'picture', 'jpg', '', 79626, NULL, '', '', 0, 1475158329, 0, 0, 1),
-(20, 1, 'wx1image_14751583294128', '/uploads/picture/2016-09-29/wx1image_14751583294128.jpg', '', 'local', 'picture', 'jpg', '', 61008, NULL, '', '', 0, 1475158329, 0, 0, 1),
-(21, 1, 'wx1image_14751583302886', '/uploads/picture/2016-09-29/wx1image_14751583302886.jpg', '', 'local', 'picture', 'jpg', '', 20849, NULL, '', '', 0, 1475158330, 0, 0, 1),
-(22, 1, 'wx1image_1475158330831', '/uploads/picture/2016-09-29/wx1image_1475158330831.jpg', '', 'local', 'picture', 'jpg', '', 56265, NULL, '', '', 0, 1475158330, 0, 0, 1),
-(23, 1, 'wx1image_1475158330180', '/uploads/picture/2016-09-29/wx1image_1475158330180.jpg', '', 'local', 'picture', 'jpg', '', 121610, NULL, '', '', 0, 1475158330, 0, 0, 1),
-(24, 1, 'wx1image_14751583318180', '/uploads/picture/2016-09-29/wx1image_14751583318180.jpg', '', 'local', 'picture', 'jpg', '', 35555, NULL, '', '', 0, 1475158331, 0, 0, 1),
-(25, 1, 'wx1image_1475158332231', '/uploads/picture/2016-09-29/wx1image_1475158332231.jpg', '', 'local', 'picture', 'jpg', '', 32095, NULL, '', '', 0, 1475158332, 0, 0, 1),
-(26, 1, 'wx1image_14751583325255', '/uploads/picture/2016-09-29/wx1image_14751583325255.jpg', '', 'local', 'picture', 'jpg', '', 70088, NULL, '', '', 0, 1475158332, 0, 0, 1),
-(27, 1, 'wx1image_14751583331037', '/uploads/picture/2016-09-29/wx1image_14751583331037.jpg', '', 'local', 'picture', 'jpg', '', 37085, NULL, '', '', 0, 1475158333, 0, 0, 1),
-(28, 1, 'wx1image_14751583343169', '/uploads/picture/2016-09-29/wx1image_14751583343169.jpg', '', 'local', 'picture', 'jpg', '', 65279, NULL, '', '', 0, 1475158334, 0, 0, 1),
-(29, 1, 'wx1image_14751583344810', '/uploads/picture/2016-09-29/wx1image_14751583344810.jpg', '', 'local', 'picture', 'jpg', '', 83936, NULL, '', '', 0, 1475158334, 0, 0, 1),
-(30, 1, 'wx1image_14751583356369', '/uploads/picture/2016-09-29/wx1image_14751583356369.jpg', '', 'local', 'picture', 'jpg', '', 20032, NULL, '', '', 0, 1475158335, 0, 0, 1),
-(31, 1, 'wx1image_14751583359328', '/uploads/picture/2016-09-29/wx1image_14751583359328.jpg', '', 'local', 'picture', 'jpg', '', 53984, NULL, '', '', 0, 1475158335, 0, 0, 1),
-(32, 1, 'wx1image_1475158335689', '/uploads/picture/2016-09-29/wx1image_1475158335689.jpg', '', 'local', 'picture', 'jpg', '', 50399, NULL, '', '', 0, 1475158335, 0, 0, 1),
-(33, 1, 'wx1image_14751583361694', '/uploads/picture/2016-09-29/wx1image_14751583361694.jpg', '', 'local', 'picture', 'jpg', '', 128125, NULL, '', '', 0, 1475158336, 0, 0, 1),
-(34, 1, 'wx1image_14751583371210', '/uploads/picture/2016-09-29/wx1image_14751583371210.jpg', '', 'local', 'picture', 'jpg', '', 35090, NULL, '', '', 0, 1475158337, 0, 0, 1),
-(36, 1, 'wx1image_14751583393940', '/uploads/picture/2016-09-29/wx1image_14751583393940.jpg', '', 'local', 'picture', 'jpg', '', 74827, NULL, '', '', 0, 1475158339, 0, 0, 1),
-(38, 1, 'wx1image_14751587991531', '/uploads/picture/2016-09-29/wx1image_14751587991531.jpg', '', 'local', 'picture', 'jpg', '', 154175, NULL, '', '', 0, 1475158799, 0, 0, 1),
-(39, 1, 'wx1image_14751587997094.png', '/uploads/picture/2016-09-29/wx1image_14751587997094.png', '', 'local', 'picture', 'jpg', '', 26583, NULL, '', '', 0, 1475158799, 0, 0, 1),
-(40, 1, 'wx1image_14751587995130', '/uploads/picture/2016-09-29/wx1image_14751587995130.jpg', '', 'local', 'picture', 'jpg', '', 23625, NULL, '', '', 0, 1475158799, 0, 0, 1),
-(41, 1, 'wx1image_14751587995676', '/uploads/picture/2016-09-29/wx1image_14751587995676.jpg', '', 'local', 'picture', 'jpg', '', 67232, NULL, '', '', 0, 1475158799, 0, 0, 1),
-(43, 1, 'wx1image_14751588004786', '/uploads/picture/2016-09-29/wx1image_14751588004786.jpg', '', 'local', 'picture', 'jpg', '', 26779, NULL, '', '', 0, 1475158800, 0, 0, 1),
-(44, 1, 'wx1image_14751588009825', '/uploads/picture/2016-09-29/wx1image_14751588009825.jpg', '', 'local', 'picture', 'jpg', '', 7546, NULL, '', '', 0, 1475158800, 0, 0, 1),
-(45, 1, 'wx1image_1475158800631', '/uploads/picture/2016-09-29/wx1image_1475158800631.jpg', '', 'local', 'picture', 'jpg', '', 10713, NULL, '', '', 0, 1475158800, 0, 0, 1),
-(46, 1, 'wx1image_14751588008193', '/uploads/picture/2016-09-29/wx1image_14751588008193.jpg', '', 'local', 'picture', 'jpg', '', 94825, NULL, '', '', 0, 1475158800, 0, 0, 1),
-(47, 1, 'wx1image_14751588004666', '/uploads/picture/2016-09-29/wx1image_14751588004666.jpg', '', 'local', 'picture', 'jpg', '', 39592, NULL, '', '', 0, 1475158800, 0, 0, 1),
-(48, 1, 'wx1image_14751588008768.png', '/uploads/picture/2016-09-29/wx1image_14751588008768.png', '', 'local', 'picture', 'jpg', '', 50732, NULL, '', '', 0, 1475158800, 0, 0, 1),
-(49, 1, 'wx1image_1475158800354.png', '/uploads/picture/2016-09-29/wx1image_1475158800354.png', '', 'local', 'picture', 'jpg', '', 21937, NULL, '', '', 0, 1475158800, 0, 0, 1),
-(50, 1, 'wx1image_1475158801542.png', '/uploads/picture/2016-09-29/wx1image_1475158801542.png', '', 'local', 'picture', 'jpg', '', 19383, NULL, '', '', 0, 1475158801, 0, 0, 1),
-(51, 1, 'wx1image_14751588012312.png', '/uploads/picture/2016-09-29/wx1image_14751588012312.png', '', 'local', 'picture', 'jpg', '', 45798, NULL, '', '', 0, 1475158801, 0, 0, 1),
-(52, 1, 'wx1image_14751588058806', '/uploads/picture/2016-09-29/wx1image_14751588058806.jpg', '', 'local', 'picture', 'jpg', '', 24855, NULL, '', '', 0, 1475158805, 0, 0, 1),
-(53, 1, 'wx1image_14751588067284', '/uploads/picture/2016-09-29/wx1image_14751588067284.jpg', '', 'local', 'picture', 'jpg', '', 14851, NULL, '', '', 0, 1475158806, 0, 0, 1),
-(54, 1, 'wx1image_14751588091783.png', '/uploads/picture/2016-09-29/wx1image_14751588091783.png', '', 'local', 'picture', 'jpg', '', 68781, NULL, '', '', 0, 1475158809, 0, 0, 1),
-(55, 1, 'wx1image_14751588108673.png', '/uploads/picture/2016-09-29/wx1image_14751588108673.png', '', 'local', 'picture', 'jpg', '', 13649, NULL, '', '', 0, 1475158810, 0, 0, 1),
-(56, 1, 'wx1image_14751588114626.png', '/uploads/picture/2016-09-29/wx1image_14751588114626.png', '', 'local', 'picture', 'jpg', '', 10724, NULL, '', '', 0, 1475158811, 0, 0, 1),
-(57, 1, 'wx1image_14751588116216.png', '/uploads/picture/2016-09-29/wx1image_14751588116216.png', '', 'local', 'picture', 'jpg', '', 18955, NULL, '', '', 0, 1475158811, 0, 0, 1),
-(58, 1, 'wx1image_14751588117971', '/uploads/picture/2016-09-29/wx1image_14751588117971.jpg', '', 'local', 'picture', 'jpg', '', 34171, NULL, '', '', 0, 1475158811, 0, 0, 1),
-(59, 1, 'wx1image_14751588113400', '/uploads/picture/2016-09-29/wx1image_14751588113400.jpg', '', 'local', 'picture', 'jpg', '', 16445, NULL, '', '', 0, 1475158811, 0, 0, 1),
-(60, 1, 'wx1image_14751588113547', '/uploads/picture/2016-09-29/wx1image_14751588113547.jpg', '', 'local', 'picture', 'jpg', '', 7062, NULL, '', '', 0, 1475158811, 0, 0, 1),
-(61, 1, 'wx1image_14751588111003', '/uploads/picture/2016-09-29/wx1image_14751588111003.jpg', '', 'local', 'picture', 'jpg', '', 7982, NULL, '', '', 0, 1475158811, 0, 0, 1),
-(62, 1, 'wx1image_14751588185564.png', '/uploads/picture/2016-09-29/wx1image_14751588185564.png', '', 'local', 'picture', 'jpg', '', 163203, NULL, '', '', 0, 1475158818, 0, 0, 1),
-(63, 1, 'wx1image_14751588213497.png', '/uploads/picture/2016-09-29/wx1image_14751588213497.png', '', 'local', 'picture', 'jpg', '', 14153, NULL, '', '', 0, 1475158821, 0, 0, 1),
-(64, 1, 'wx1image_14751588212612.png', '/uploads/picture/2016-09-29/wx1image_14751588212612.png', '', 'local', 'picture', 'jpg', '', 15962, NULL, '', '', 0, 1475158821, 0, 0, 1),
-(65, 1, 'wx1image_14751588215121.png', '/uploads/picture/2016-09-29/wx1image_14751588215121.png', '', 'local', 'picture', 'jpg', '', 22820, NULL, '', '', 0, 1475158821, 0, 0, 1),
-(67, 1, 'wx1image_14751588223870', '/uploads/picture/2016-09-29/wx1image_14751588223870.jpg', '', 'local', 'picture', 'jpg', '', 31690, NULL, '', '', 0, 1475158822, 0, 0, 1),
-(68, 1, 'wx1image_14751588235543.png', '/uploads/picture/2016-09-29/wx1image_14751588235543.png', '', 'local', 'picture', 'jpg', '', 32383, NULL, '', '', 0, 1475158823, 0, 0, 1),
-(69, 1, 'wx1image_14751588233114.png', '/uploads/picture/2016-09-29/wx1image_14751588233114.png', '', 'local', 'picture', 'jpg', '', 16871, NULL, '', '', 0, 1475158823, 0, 0, 1),
-(70, 1, 'wx1image_14751588247501.png', '/uploads/picture/2016-09-29/wx1image_14751588247501.png', '', 'local', 'picture', 'jpg', '', 48306, '', '', '', 0, 1475158824, 1506556705, 0, 1),
-(73, 1, 'wx1image_1475158835506', '/uploads/picture/2016-09-29/wx1image_1475158835506.jpg', '', 'local', 'picture', 'jpg', '', 12805, NULL, '', '', 0, 1475158835, 0, 0, 1),
-(74, 1, 'wx1image_14751588359605.png', '/uploads/picture/2016-09-29/wx1image_14751588359605.png', '', 'local', 'picture', 'jpg', '', 42306, NULL, '', '', 0, 1475158835, 0, 0, 1),
-(75, 1, 'wx1image_14751588351768.png', '/uploads/picture/2016-09-29/wx1image_14751588351768.png', '', 'local', 'picture', 'jpg', '', 13828, NULL, '', '', 0, 1475158835, 0, 0, 1),
-(76, 1, 'wx1image_14751588383783.png', '/uploads/picture/2016-09-29/wx1image_14751588383783.png', '', 'local', 'picture', 'jpg', '', 39390, NULL, '', '', 0, 1475158838, 0, 0, 1),
-(78, 1, 'wx1image_14751588393130.png', '/uploads/picture/2016-09-29/wx1image_14751588393130.png', '', 'local', 'picture', 'jpg', '', 10686, NULL, '', '', 0, 1475158839, 0, 0, 1),
-(79, 1, 'wx1image_1475158843730.png', '/uploads/picture/2016-09-29/wx1image_1475158843730.png', '', 'local', 'picture', 'jpg', '', 77934, NULL, '', '', 0, 1475158843, 0, 0, 1),
-(80, 1, 'wx1image_14751588431771.png', '/uploads/picture/2016-09-29/wx1image_14751588431771.png', '', 'local', 'picture', 'jpg', '', 38682, NULL, '', '', 0, 1475158843, 0, 0, 1),
-(81, 1, 'wx1image_14751588432055.png', '/uploads/picture/2016-09-29/wx1image_14751588432055.png', '', 'local', 'picture', 'jpg', '', 54928, NULL, '', '', 0, 1475158843, 0, 0, 1),
-(82, 1, 'wx1image_14751588441630.png', '/uploads/picture/2016-09-29/wx1image_14751588441630.png', '', 'local', 'picture', 'jpg', '', 22413, NULL, '', '', 0, 1475158844, 0, 0, 1),
-(83, 1, 'wx1image_14751588456818.png', '/uploads/picture/2016-09-29/wx1image_14751588456818.png', '', 'local', 'picture', 'jpg', '', 12567, NULL, '', '', 0, 1475158845, 0, 0, 1),
-(84, 1, 'wx1image_14751588548752.png', '/uploads/picture/2016-09-29/wx1image_14751588548752.png', '', 'local', 'picture', 'jpg', '', 86619, NULL, '', '', 0, 1475158854, 0, 0, 1),
-(85, 1, 'wx1image_14751588549711', '/uploads/picture/2016-09-29/wx1image_14751588549711.jpg', '', 'local', 'picture', 'jpg', '', 11863, NULL, '', '', 0, 1475158854, 0, 0, 1),
-(87, 1, 'wx1image_14751588668519', '/uploads/picture/2016-09-29/wx1image_14751588668519.jpg', '', 'local', 'picture', 'jpg', '', 27712, NULL, '', '', 0, 1475158866, 0, 0, 1),
-(88, 1, 'wx1image_14751588684053', '/uploads/picture/2016-09-29/wx1image_14751588684053.jpg', '', 'local', 'picture', 'jpg', '', 101186, NULL, '', '', 0, 1475158868, 0, 0, 1),
-(89, 1, 'wx1image_14751588703441', '/uploads/picture/2016-09-29/wx1image_14751588703441.jpg', '', 'local', 'picture', 'jpg', '', 155125, NULL, '', '', 0, 1475158870, 0, 0, 1),
-(90, 1, 'wx1image_14751588708117', '/uploads/picture/2016-09-29/wx1image_14751588708117.jpg', '', 'local', 'picture', 'jpg', '', 24226, NULL, '', '', 0, 1475158870, 0, 0, 1),
-(91, 1, 'meinv_admin_avatar', '/uploads/picture/2016-09-30/57edd952ba0e0.jpg', '', 'local', 'picture', 'jpg', '', 7006, NULL, '89b678fa35106c7a0f7579cb8426bd7a', '7d10ddb80359255e58c04bd30412b00bba6938a5', 0, 1475205458, 1475205458, 0, 1),
-(92, 1, '57e0a9c03a61b', '/uploads/picture/2016-10-03/57f2076c4e997.jpg', '', 'local', 'picture', 'jpg', '', 110032, '', 'e3694c361707487802476e81709c863f', 'd5381f24235ee72d9fd8dfe2bb2e3d128217c8ce', 0, 1475479404, 1506556656, 0, 1),
-(93, 1, '9812496129086622', '/uploads/picture/2016-10-06/57f6136b5bd4e.jpg', '', 'local', 'picture', 'jpg', '', 164177, '9812496129086622', '983944832c987b160ae409f71acc7933', 'bce6147f4070989fc0349798acf6383938e5563a', 0, 1475744619, 1518769672, 0, 1),
-(94, 1, 'eacoophp-watermark-banner-1', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg', 'link', 'picture', 'jpg', 'image', 171045, 'eacoophp-watermark-banner-1', '', '', 0, 1506215777, 1519746230, 0, 1),
-(95, 1, 'eacoophp-banner-3', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-banner-3.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-banner-3.jpg', 'link', 'picture', 'jpg', 'image', 356040, 'eacoophp-banner-3', '', '', 0, 1506215801, 1506554992, 0, 1),
-(96, 1, 'eacoophp-watermark-banner-2', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'link', 'picture', 'jpg', 'image', 356040, 'eacoophp-watermark-banner-2', '', '', 0, 1506215801, 1519746161, 0, 1),
-(99, 1, '57e0a9c03a61b', '/uploads/picture/2018-02-27/5a951fe014abb.jpg', '/uploads/picture/2018-02-27/5a951fe014abb.jpg', 'local', 'picture', 'jpg', 'image', 57492, '57e0a9c03a61b', '1b5c9335968d56667e9ded412e34fb8d', '700a20f7eb47c1a9d74e75258a706bf35434fee3', 0, 1519722464, 1519722464, 99, 1);
+(1, 1, 'preg_match_imgs.jpeg', '/uploads/Editor/Picture/2016-06-12/575d4bd8d0351.jpeg', '', 'local', 'editor', 'jpeg', '', 19513, '', '4cf157e42b44c95d579ee39b0a1a48a4', 'dee76e7b39f1afaad14c1e03cfac5f6031c3c511', 0, 1465732056, 1465732056, 99, 1),
+(2, 1, 'gerxiangimg200x200.jpg', '/uploads/Editor/Picture/2016-06-12/575d4bfb09961.jpg', '', 'local', 'editor', 'jpg', '', 5291, 'gerxiangimg200x200', '4db879c357c4ab80c77fce8055a0785f', '480eb2e097397856b99b373214fb28c2f717dacf', 0, 1465732090, 1465732090, 99, 1),
+(3, 1, 'oraclmysqlzjfblhere.jpg', '/uploads/Editor/Picture/2016-06-12/575d4c691e976.jpg', '', 'local', 'editor', 'jpg', '', 23866, 'mysql', '5a3a5a781a6d9b5f0089f6058572f850', 'a17bfe395b29ba06ae5784486bcf288b3b0adfdb', 0, 1465732201, 1465732201, 99, 1),
+(4, 1, 'logo.png', '/logo.png', '', 'local', 'picture', 'jpg', '', 40000, 'eacoophp-logo', '', '', 0, 1465732201, 1465732201, 99, 1),
+(6, 1, '功能表格', '/uploads/attachment/2016-07-13/5785daaa2f2e6.xlsx', '', 'local', 'file', 'xlsx', '', 11399, NULL, '5fd89f172ca8a95fa13b55ccb24d5971', 'b8706af3fa59ef0fc65675e40131f25e12f94664', 0, 1468390058, 1468390058, 99, 1),
+(8, 1, '会员数据2016-06-30 18_44_14', '/uploads/attachment/2016-07-13/5785dce2e15c1.xls', '', 'local', 'file', 'xls', '', 173387, NULL, '9ff55acddd75366d20dcb931eb1d87ea', 'acf5daf769e6ba06854002104bfb8c2886da97af', 0, 1468390626, 1468390626, 99, 1),
+(10, 1, '苹果短信-三全音 - 铃声', '/uploads/attachment/2016-07-27/579857b5aca95.mp3', '', 'local', 'file', 'mp3', '', 19916, NULL, 'bab00edb8d6a5cf4de5444a2e5c05009', '73cda0fb4f947dcb496153d8b896478af1247935', 0, 1469601717, 1469601717, 99, 1),
+(12, 1, 'music', '/uploads/attachment/2016-07-28/57995fe9bf0da.mp3', '', 'local', 'file', 'mp3', '', 160545, NULL, '935cd1b8950f1fdcd23d47cf791831cf', '73c318221faa081544db321bb555148f04b61f00', 0, 1469669353, 1469669353, 99, 1),
+(13, 1, '7751775467283337', '/uploads/picture/2016-09-26/57e8dc9d29b01.jpg', '', 'local', 'picture', 'jpg', '', 70875, NULL, '3e3bfc950aa0b6ebb56654c15fe8e392', 'c75e70753eaf36aaee10efb3682fdbd8f766d32d', 0, 1474878621, 1474878621, 99, 1),
+(14, 1, '4366486814073822', '/uploads/picture/2016-09-26/57e8ddebaafff.jpg', '', 'local', 'picture', 'jpg', '', 302678, NULL, 'baf2dc5ea7b80a6d73b20a2c762aec1e', 'd73fe63f5c179135b2c2e7f174d6df36e05ab3d8', 0, 1474878955, 1474878955, 99, 1),
+(15, 1, 'wx1image_14751583274385', '/uploads/picture/2016-09-29/wx1image_14751583274385.jpg', '', 'local', 'picture', 'jpg', '', 311261, NULL, '', '', 0, 1475158327, 1475158327, 99, 1),
+(17, 1, 'wx1image_14751583287356', '/uploads/picture/2016-09-29/wx1image_14751583287356.jpg', '', 'local', 'picture', 'jpg', '', 43346, NULL, '', '', 0, 1475158328, 1475158328, 99, 1),
+(18, 1, 'wx1image_14751583293547', '/uploads/picture/2016-09-29/wx1image_14751583293547.jpg', '', 'local', 'picture', 'jpg', '', 150688, NULL, '', '', 0, 1475158329, 1475158329, 99, 1),
+(19, 1, 'wx1image_14751583298683', '/uploads/picture/2016-09-29/wx1image_14751583298683.jpg', '', 'local', 'picture', 'jpg', '', 79626, NULL, '', '', 0, 1475158329, 1475158329, 99, 1),
+(20, 1, 'wx1image_14751583294128', '/uploads/picture/2016-09-29/wx1image_14751583294128.jpg', '', 'local', 'picture', 'jpg', '', 61008, NULL, '', '', 0, 1475158329, 1475158329, 99, 1),
+(21, 1, 'wx1image_14751583302886', '/uploads/picture/2016-09-29/wx1image_14751583302886.jpg', '', 'local', 'picture', 'jpg', '', 20849, NULL, '', '', 0, 1475158330, 1475158330, 99, 1),
+(22, 1, 'wx1image_1475158330831', '/uploads/picture/2016-09-29/wx1image_1475158330831.jpg', '', 'local', 'picture', 'jpg', '', 56265, NULL, '', '', 0, 1475158330, 1475158330, 99, 1),
+(23, 1, 'wx1image_1475158330180', '/uploads/picture/2016-09-29/wx1image_1475158330180.jpg', '', 'local', 'picture', 'jpg', '', 121610, NULL, '', '', 0, 1475158330, 1475158330, 99, 1),
+(24, 1, 'wx1image_14751583318180', '/uploads/picture/2016-09-29/wx1image_14751583318180.jpg', '', 'local', 'picture', 'jpg', '', 35555, NULL, '', '', 0, 1475158331, 1475158331, 99, 1),
+(25, 1, 'wx1image_1475158332231', '/uploads/picture/2016-09-29/wx1image_1475158332231.jpg', '', 'local', 'picture', 'jpg', '', 32095, NULL, '', '', 0, 1475158332, 1475158332, 99, 1),
+(26, 1, 'wx1image_14751583325255', '/uploads/picture/2016-09-29/wx1image_14751583325255.jpg', '', 'local', 'picture', 'jpg', '', 70088, NULL, '', '', 0, 1475158332, 1475158332, 99, 1),
+(27, 1, 'wx1image_14751583331037', '/uploads/picture/2016-09-29/wx1image_14751583331037.jpg', '', 'local', 'picture', 'jpg', '', 37085, NULL, '', '', 0, 1475158333, 1475158333, 99, 1),
+(28, 1, 'wx1image_14751583343169', '/uploads/picture/2016-09-29/wx1image_14751583343169.jpg', '', 'local', 'picture', 'jpg', '', 65279, NULL, '', '', 0, 1475158334, 1475158334, 99, 1),
+(29, 1, 'wx1image_14751583344810', '/uploads/picture/2016-09-29/wx1image_14751583344810.jpg', '', 'local', 'picture', 'jpg', '', 83936, NULL, '', '', 0, 1475158334, 1475158334, 99, 1),
+(30, 1, 'wx1image_14751583356369', '/uploads/picture/2016-09-29/wx1image_14751583356369.jpg', '', 'local', 'picture', 'jpg', '', 20032, NULL, '', '', 0, 1475158335, 1475158335, 99, 1),
+(31, 1, 'wx1image_14751583359328', '/uploads/picture/2016-09-29/wx1image_14751583359328.jpg', '', 'local', 'picture', 'jpg', '', 53984, NULL, '', '', 0, 1475158335, 1475158335, 99, 1),
+(32, 1, 'wx1image_1475158335689', '/uploads/picture/2016-09-29/wx1image_1475158335689.jpg', '', 'local', 'picture', 'jpg', '', 50399, NULL, '', '', 0, 1475158335, 1475158335, 99, 1),
+(33, 1, 'wx1image_14751583361694', '/uploads/picture/2016-09-29/wx1image_14751583361694.jpg', '', 'local', 'picture', 'jpg', '', 128125, NULL, '', '', 0, 1475158336, 1475158336, 99, 1),
+(34, 1, 'wx1image_14751583371210', '/uploads/picture/2016-09-29/wx1image_14751583371210.jpg', '', 'local', 'picture', 'jpg', '', 35090, NULL, '', '', 0, 1475158337, 1475158337, 99, 1),
+(36, 1, 'wx1image_14751583393940', '/uploads/picture/2016-09-29/wx1image_14751583393940.jpg', '', 'local', 'picture', 'jpg', '', 74827, NULL, '', '', 0, 1475158339, 1475158339, 99, 1),
+(38, 1, 'wx1image_14751587991531', '/uploads/picture/2016-09-29/wx1image_14751587991531.jpg', '', 'local', 'picture', 'jpg', '', 154175, NULL, '', '', 0, 1475158799, 1475158799, 99, 1),
+(39, 1, 'wx1image_14751587997094.png', '/uploads/picture/2016-09-29/wx1image_14751587997094.png', '', 'local', 'picture', 'jpg', '', 26583, NULL, '', '', 0, 1475158799, 1475158799, 99, 1),
+(40, 1, 'wx1image_14751587995130', '/uploads/picture/2016-09-29/wx1image_14751587995130.jpg', '', 'local', 'picture', 'jpg', '', 23625, NULL, '', '', 0, 1475158799, 1475158799, 99, 1),
+(41, 1, 'wx1image_14751587995676', '/uploads/picture/2016-09-29/wx1image_14751587995676.jpg', '', 'local', 'picture', 'jpg', '', 67232, NULL, '', '', 0, 1475158799, 1475158799, 99, 1),
+(43, 1, 'wx1image_14751588004786', '/uploads/picture/2016-09-29/wx1image_14751588004786.jpg', '', 'local', 'picture', 'jpg', '', 26779, NULL, '', '', 0, 1475158800, 1475158800, 99, 1),
+(44, 1, 'wx1image_14751588009825', '/uploads/picture/2016-09-29/wx1image_14751588009825.jpg', '', 'local', 'picture', 'jpg', '', 7546, NULL, '', '', 0, 1475158800, 1475158800, 99, 1),
+(45, 1, 'wx1image_1475158800631', '/uploads/picture/2016-09-29/wx1image_1475158800631.jpg', '', 'local', 'picture', 'jpg', '', 10713, NULL, '', '', 0, 1475158800, 1475158800, 99, 1),
+(46, 1, 'wx1image_14751588008193', '/uploads/picture/2016-09-29/wx1image_14751588008193.jpg', '', 'local', 'picture', 'jpg', '', 94825, NULL, '', '', 0, 1475158800, 1475158800, 99, 1),
+(47, 1, 'wx1image_14751588004666', '/uploads/picture/2016-09-29/wx1image_14751588004666.jpg', '', 'local', 'picture', 'jpg', '', 39592, NULL, '', '', 0, 1475158800, 1475158800, 99, 1),
+(48, 1, 'wx1image_14751588008768.png', '/uploads/picture/2016-09-29/wx1image_14751588008768.png', '', 'local', 'picture', 'jpg', '', 50732, NULL, '', '', 0, 1475158800, 1475158800, 99, 1),
+(49, 1, 'wx1image_1475158800354.png', '/uploads/picture/2016-09-29/wx1image_1475158800354.png', '', 'local', 'picture', 'jpg', '', 21937, NULL, '', '', 0, 1475158800, 1475158800, 99, 1),
+(50, 1, 'wx1image_1475158801542.png', '/uploads/picture/2016-09-29/wx1image_1475158801542.png', '', 'local', 'picture', 'jpg', '', 19383, NULL, '', '', 0, 1475158801, 1475158801, 99, 1),
+(51, 1, 'wx1image_14751588012312.png', '/uploads/picture/2016-09-29/wx1image_14751588012312.png', '', 'local', 'picture', 'jpg', '', 45798, NULL, '', '', 0, 1475158801, 1475158801, 99, 1),
+(52, 1, 'wx1image_14751588058806', '/uploads/picture/2016-09-29/wx1image_14751588058806.jpg', '', 'local', 'picture', 'jpg', '', 24855, NULL, '', '', 0, 1475158805, 1475158805, 99, 1),
+(53, 1, 'wx1image_14751588067284', '/uploads/picture/2016-09-29/wx1image_14751588067284.jpg', '', 'local', 'picture', 'jpg', '', 14851, NULL, '', '', 0, 1475158806, 1475158806, 99, 1),
+(54, 1, 'wx1image_14751588091783.png', '/uploads/picture/2016-09-29/wx1image_14751588091783.png', '', 'local', 'picture', 'jpg', '', 68781, NULL, '', '', 0, 1475158809, 1475158809, 99, 1),
+(55, 1, 'wx1image_14751588108673.png', '/uploads/picture/2016-09-29/wx1image_14751588108673.png', '', 'local', 'picture', 'jpg', '', 13649, NULL, '', '', 0, 1475158810, 1475158810, 99, 1),
+(56, 1, 'wx1image_14751588114626.png', '/uploads/picture/2016-09-29/wx1image_14751588114626.png', '', 'local', 'picture', 'jpg', '', 10724, NULL, '', '', 0, 1475158811, 1475158811, 99, 1),
+(57, 1, 'wx1image_14751588116216.png', '/uploads/picture/2016-09-29/wx1image_14751588116216.png', '', 'local', 'picture', 'jpg', '', 18955, NULL, '', '', 0, 1475158811, 1475158811, 99, 1),
+(58, 1, 'wx1image_14751588117971', '/uploads/picture/2016-09-29/wx1image_14751588117971.jpg', '', 'local', 'picture', 'jpg', '', 34171, NULL, '', '', 0, 1475158811, 1475158811, 99, 1),
+(59, 1, 'wx1image_14751588113400', '/uploads/picture/2016-09-29/wx1image_14751588113400.jpg', '', 'local', 'picture', 'jpg', '', 16445, NULL, '', '', 0, 1475158811, 1475158811, 99, 1),
+(60, 1, 'wx1image_14751588113547', '/uploads/picture/2016-09-29/wx1image_14751588113547.jpg', '', 'local', 'picture', 'jpg', '', 7062, NULL, '', '', 0, 1475158811, 1475158811, 99, 1),
+(61, 1, 'wx1image_14751588111003', '/uploads/picture/2016-09-29/wx1image_14751588111003.jpg', '', 'local', 'picture', 'jpg', '', 7982, NULL, '', '', 0, 1475158811, 1475158811, 99, 1),
+(62, 1, 'wx1image_14751588185564.png', '/uploads/picture/2016-09-29/wx1image_14751588185564.png', '', 'local', 'picture', 'jpg', '', 163203, NULL, '', '', 0, 1475158818, 1475158818, 99, 1),
+(63, 1, 'wx1image_14751588213497.png', '/uploads/picture/2016-09-29/wx1image_14751588213497.png', '', 'local', 'picture', 'jpg', '', 14153, NULL, '', '', 0, 1475158821, 1475158821, 99, 1),
+(64, 1, 'wx1image_14751588212612.png', '/uploads/picture/2016-09-29/wx1image_14751588212612.png', '', 'local', 'picture', 'jpg', '', 15962, NULL, '', '', 0, 1475158821, 1475158821, 99, 1),
+(65, 1, 'wx1image_14751588215121.png', '/uploads/picture/2016-09-29/wx1image_14751588215121.png', '', 'local', 'picture', 'jpg', '', 22820, NULL, '', '', 0, 1475158821, 1475158821, 99, 1),
+(67, 1, 'wx1image_14751588223870', '/uploads/picture/2016-09-29/wx1image_14751588223870.jpg', '', 'local', 'picture', 'jpg', '', 31690, NULL, '', '', 0, 1475158822, 1475158822, 99, 1),
+(68, 1, 'wx1image_14751588235543.png', '/uploads/picture/2016-09-29/wx1image_14751588235543.png', '', 'local', 'picture', 'jpg', '', 32383, NULL, '', '', 0, 1475158823, 1475158823, 99, 1),
+(69, 1, 'wx1image_14751588233114.png', '/uploads/picture/2016-09-29/wx1image_14751588233114.png', '', 'local', 'picture', 'jpg', '', 16871, NULL, '', '', 0, 1475158823, 1475158823, 99, 1),
+(70, 1, 'wx1image_14751588247501.png', '/uploads/picture/2016-09-29/wx1image_14751588247501.png', '', 'local', 'picture', 'jpg', '', 48306, '', '', '', 0, 1475158824, 1475158824, 99, 1),
+(73, 1, 'wx1image_1475158835506', '/uploads/picture/2016-09-29/wx1image_1475158835506.jpg', '', 'local', 'picture', 'jpg', '', 12805, NULL, '', '', 0, 1475158835, 1475158835, 99, 1),
+(74, 1, 'wx1image_14751588359605.png', '/uploads/picture/2016-09-29/wx1image_14751588359605.png', '', 'local', 'picture', 'jpg', '', 42306, NULL, '', '', 0, 1475158835, 1475158835, 99, 1),
+(75, 1, 'wx1image_14751588351768.png', '/uploads/picture/2016-09-29/wx1image_14751588351768.png', '', 'local', 'picture', 'jpg', '', 13828, NULL, '', '', 0, 1475158835, 1475158835, 99, 1),
+(76, 1, 'wx1image_14751588383783.png', '/uploads/picture/2016-09-29/wx1image_14751588383783.png', '', 'local', 'picture', 'jpg', '', 39390, NULL, '', '', 0, 1475158838, 1475158838, 99, 1),
+(78, 1, 'wx1image_14751588393130.png', '/uploads/picture/2016-09-29/wx1image_14751588393130.png', '', 'local', 'picture', 'jpg', '', 10686, NULL, '', '', 0, 1475158839, 1475158839, 99, 1),
+(79, 1, 'wx1image_1475158843730.png', '/uploads/picture/2016-09-29/wx1image_1475158843730.png', '', 'local', 'picture', 'jpg', '', 77934, NULL, '', '', 0, 1475158843, 1475158843, 99, 1),
+(80, 1, 'wx1image_14751588431771.png', '/uploads/picture/2016-09-29/wx1image_14751588431771.png', '', 'local', 'picture', 'jpg', '', 38682, NULL, '', '', 0, 1475158843, 1475158843, 99, 1),
+(81, 1, 'wx1image_14751588432055.png', '/uploads/picture/2016-09-29/wx1image_14751588432055.png', '', 'local', 'picture', 'jpg', '', 54928, NULL, '', '', 0, 1475158843, 1475158843, 99, 1),
+(82, 1, 'wx1image_14751588441630.png', '/uploads/picture/2016-09-29/wx1image_14751588441630.png', '', 'local', 'picture', 'jpg', '', 22413, NULL, '', '', 0, 1475158844, 1475158844, 99, 1),
+(83, 1, 'wx1image_14751588456818.png', '/uploads/picture/2016-09-29/wx1image_14751588456818.png', '', 'local', 'picture', 'jpg', '', 12567, NULL, '', '', 0, 1475158845, 1475158845, 99, 1),
+(84, 1, 'wx1image_14751588548752.png', '/uploads/picture/2016-09-29/wx1image_14751588548752.png', '', 'local', 'picture', 'jpg', '', 86619, NULL, '', '', 0, 1475158854, 1475158854, 99, 1),
+(85, 1, 'wx1image_14751588549711', '/uploads/picture/2016-09-29/wx1image_14751588549711.jpg', '', 'local', 'picture', 'jpg', '', 11863, NULL, '', '', 0, 1475158854, 1475158854, 99, 1),
+(87, 1, 'wx1image_14751588668519', '/uploads/picture/2016-09-29/wx1image_14751588668519.jpg', '', 'local', 'picture', 'jpg', '', 27712, NULL, '', '', 0, 1475158866, 1475158866, 99, 1),
+(88, 1, 'wx1image_14751588684053', '/uploads/picture/2016-09-29/wx1image_14751588684053.jpg', '', 'local', 'picture', 'jpg', '', 101186, NULL, '', '', 0, 1475158868, 1475158868, 99, 1),
+(89, 1, 'wx1image_14751588703441', '/uploads/picture/2016-09-29/wx1image_14751588703441.jpg', '', 'local', 'picture', 'jpg', '', 155125, NULL, '', '', 0, 1475158870, 1475158870, 99, 1),
+(90, 1, 'wx1image_14751588708117', '/uploads/picture/2016-09-29/wx1image_14751588708117.jpg', '', 'local', 'picture', 'jpg', '', 24226, NULL, '', '', 0, 1475158870, 1475158870, 99, 1),
+(91, 1, 'meinv_admin_avatar', '/uploads/picture/2016-09-30/57edd952ba0e0.jpg', '', 'local', 'picture', 'jpg', '', 7006, NULL, '89b678fa35106c7a0f7579cb8426bd7a', '7d10ddb80359255e58c04bd30412b00bba6938a5', 0, 1475205458, 1475205458, 99, 1),
+(92, 1, '57e0a9c03a61b', '/uploads/picture/2016-10-03/57f2076c4e997.jpg', '', 'local', 'picture', 'jpg', '', 110032, '', 'e3694c361707487802476e81709c863f', 'd5381f24235ee72d9fd8dfe2bb2e3d128217c8ce', 0, 1475479404, 1475479404, 99, 1),
+(93, 1, '9812496129086622', '/uploads/picture/2016-10-06/57f6136b5bd4e.jpg', '', 'local', 'picture', 'jpg', '', 164177, '9812496129086622', '983944832c987b160ae409f71acc7933', 'bce6147f4070989fc0349798acf6383938e5563a', 0, 1475744619, 1475744619, 99, 1),
+(94, 1, 'eacoophp-watermark-banner-1', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg', 'link', 'picture', 'jpg', 'image', 171045, 'eacoophp-watermark-banner-1', '', '', 0, 1506215777, 1506215777, 99, 1),
+(95, 1, 'eacoophp-banner-3', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-banner-3.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-banner-3.jpg', 'link', 'picture', 'jpg', 'image', 356040, 'eacoophp-banner-3', '', '', 0, 1506215801, 1506215801, 99, 1),
+(96, 1, 'eacoophp-watermark-banner-2', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'link', 'picture', 'jpg', 'image', 356040, 'eacoophp-watermark-banner-2', '', '', 0, 1506215801, 1506215801, 99, 1);
 
 -- --------------------------------------------------------
 
@@ -294,7 +300,7 @@ INSERT INTO `eacoo_auth_rule` (`id`, `name`, `title`, `depend_type`, `depend_fla
 (13, 'admin/link/index', '友情链接', 1, 'admin', 1, 10, '', NULL, 1, 'left', 0, 6, 1505816276, 1518796830, 1),
 (14, 'admin/link/edit', '链接编辑', 1, 'admin', 1, 13, '', NULL, 0, 'left', 0, 1, 1519307879, 1518796830, 1),
 (15, 'user/auth', '权限管理', 1, 'user', 1, 0, 'fa fa-sun-o', NULL, 1, 'left', 0, 4, 1505816276, 1518796830, 1),
-(16, 'admin/auth/index', '节点管理', 1, 'admin', 1, 15, '', NULL, 1, 'left', 0, 2, 1505816276, 1518796830, 1),
+(16, 'admin/auth/index', '规则管理', 1, 'admin', 1, 15, 'fa fa-500px', NULL, 1, 'left', 0, 2, 1520003985, 1518796830, 1),
 (17, 'admin/config/edit', '配置编辑或添加', 1, 'admin', 1, 2, '', NULL, 0, 'left', 0, 6, 1505816276, 1518796830, 1),
 (18, 'admin/navigation/edit', '导航编辑或添加', 1, 'admin', 1, 6, '', NULL, 0, 'left', 0, 1, 1505816276, 1518796830, 1),
 (19, 'admin/config/website', '网站设置', 1, 'admin', 1, 2, '', NULL, 1, 'left', 0, 4, 1505816276, 1518796830, 1),
@@ -388,7 +394,7 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `group`, 
 (49, 'reg_default_roleid', '注册默认角色', '4', '', 7, 0, 'select', '', 1471681620, 1471689765, 0, 1),
 (50, 'open_register', '开放注册', '0', '1:是\r\n0:否', 7, 0, 'radio', '', 1471681674, 1471681674, 0, 1),
 (56, 'meanwhile_user_online', '允许同时登录', '1', '1:是\r\n0:否', 7, 0, 'radio', '是否允许同一帐号在不同地方同时登录', 1473437355, 1473437355, 0, 1),
-(57, 'admin_collect_menus', '后台收藏菜单', '{"\\/admin.php\\/admin\\/navigation\\/index.html":{"title":"\\u524d\\u53f0\\u5bfc\\u822a\\u7ba1\\u7406"},"\\/admin.php\\/admin\\/attachment\\/setting.html":{"title":"\\u591a\\u5a92\\u4f53\\u8bbe\\u7f6e"},"\\/admin.php\\/user\\/user\\/index.html":{"title":"\\u7528\\u6237\\u5217\\u8868"},"\\/admin.php\\/admin\\/auth\\/index.html":{"title":"\\u89c4\\u5219\\u7ba1\\u7406"}}', '', 2, 0, 'json', '在后台顶部菜单栏展示，可以方便快速菜单入口', 1518629152, 1518629152, 99, 1),
+(57, 'admin_collect_menus', '后台收藏菜单', '{"\\/admin.php\\/admin\\/navigation\\/index.html":{"title":"\\u524d\\u53f0\\u5bfc\\u822a\\u7ba1\\u7406"},"\\/admin.php\\/admin\\/attachment\\/setting.html":{"title":"\\u591a\\u5a92\\u4f53\\u8bbe\\u7f6e"},"\\/admin.php\\/user\\/user\\/index.html":{"title":"\\u7528\\u6237\\u5217\\u8868"},"\\/admin.php\\/admin\\/auth\\/index.html":{"title":"\\u89c4\\u5219\\u7ba1\\u7406"},"\\/admin.php\\/admin\\/modules\\/index.html":{"title":"\\u6a21\\u5757\\u5e02\\u573a"},"\\/admin.php\\/admin\\/dashboard\\/index.html":{"title":"\\u4eea\\u8868\\u76d8"}}', '', 2, 0, 'json', '在后台顶部菜单栏展示，可以方便快速菜单入口', 1518629152, 1518629152, 99, 1),
 (58, 'minify_status', '开启minify', '1', '1:开启\r\n0:关闭', 2, 0, 'radio', '开启minify会压缩合并js、css文件，可以减少资源请求次数，如果不支持minify，可关闭', 1518716395, 1518716395, 99, 1),
 (59, 'admin_allow_login_many', '同账号多人登录后台', '0', '0:不允许\r\n1:允许', 2, 0, 'radio', '允许多个人使用同一个账号登录后台。默认：不允许', 1519785747, 1519785747, 99, 1),
 (60, 'admin_allow_ip', '仅限登录后台IP', '', '', 4, 0, 'textarea', '填写IP地址，多个IP用英文逗号隔开。默认为空，允许所有IP', 1519828685, 1519828685, 99, 1);
@@ -415,20 +421,21 @@ CREATE TABLE `eacoo_hooks` (
 --
 
 INSERT INTO `eacoo_hooks` (`id`, `name`, `description`, `plugins`, `type`, `create_time`, `update_time`, `status`) VALUES
-(1, 'AdminIndex', '后台首页小工具', '', 1, 1446522155, 1446522155, 1),
-(2, 'FormBuilderExtend', 'FormBuilder类型扩展Builder', '', 1, 1447831268, 1447831268, 1),
-(3, 'UploadFile', '上传文件钩子', '', 1, 1407681961, 1407681961, 1),
-(4, 'PageHeader', '页面header钩子，一般用于加载插件CSS文件和代码', '', 1, 1407681961, 1407681961, 1),
-(5, 'PageFooter', '页面footer钩子，一般用于加载插件CSS文件和代码', '', 1, 1407681961, 1407681961, 1),
-(6, 'ThirdLogin', '第三方账号登陆', '', 1, 1465057122, 1465057122, 1),
-(7, 'SendMessage', '发送消息钩子，用于消息发送途径的扩展', '', 2, 1467423450, 1467423450, 1),
-(8, 'sms', '短信插件钩子', '', 2, 1467424112, 1467424112, 1),
-(10, 'ImageGallery', '图片轮播钩子', '', 1, 1467424242, 1467424242, 1),
-(11, 'JChinaCity', '每个系统都需要的一个中国省市区三级联动插件。', '', 1, 1467424257, 1467424257, 1),
-(12, 'checkIn', '签到', '', 1, 1467424298, 1467424298, 1),
-(14, 'adminEditor', '后台内容编辑页编辑器', '', 1, 1467424354, 1467424354, 1),
-(15, 'ThirdLogin', '集成第三方授权登录，包括微博、QQ、微信、码云', '', 1, 1507627833, 1507627833, 1),
-(16, 'submitComment', '评论提交方式扩展钩子。', '', 1, 1507627833, 1507627833, 1);
+(1, 'AdminIndex', '后台首页小工具', '', 1, 1518696015, 1518696015, 1),
+(2, 'FormBuilderExtend', 'FormBuilder类型扩展Builder', '', 1, 1518696015, 1518696015, 1),
+(3, 'UploadFile', '上传文件钩子', '', 1, 1518696015, 1518696015, 1),
+(4, 'PageHeader', '页面header钩子，一般用于加载插件CSS文件和代码', '', 1, 1518696015, 1518696015, 1),
+(5, 'PageFooter', '页面footer钩子，一般用于加载插件CSS文件和代码', '', 1, 1518696015, 1518696015, 1),
+(6, 'ThirdLogin', '第三方账号登陆', '', 1, 1518696015, 1518696015, 1),
+(7, 'SendMessage', '发送消息钩子，用于消息发送途径的扩展', '', 2, 1518696015, 1518696015, 1),
+(8, 'sms', '短信插件钩子', '', 2, 1518696015, 1518696015, 1),
+(10, 'ImageGallery', '图片轮播钩子', '', 1, 1518696015, 1518696015, 1),
+(11, 'JChinaCity', '每个系统都需要的一个中国省市区三级联动插件。', '', 1, 1518696015, 1518696015, 1),
+(12, 'checkIn', '签到', '', 1, 1518696015, 1518696015, 1),
+(13, 'editor', '内容编辑器钩子', '', 1, 1518696015, 1518696015, 1),
+(14, 'adminEditor', '后台内容编辑页编辑器', '', 1, 1518696015, 1518696015, 1),
+(15, 'ThirdLogin', '集成第三方授权登录，包括微博、QQ、微信、码云', '', 1, 1518696015, 1518696015, 1),
+(16, 'submitComment', '评论提交方式扩展钩子。', '', 1, 1518696015, 1518696015, 1);
 
 -- --------------------------------------------------------
 
@@ -640,12 +647,12 @@ CREATE TABLE `eacoo_themes` (
   `author` varchar(32) NOT NULL DEFAULT '' COMMENT '开发者',
   `version` varchar(8) NOT NULL DEFAULT '' COMMENT '版本',
   `config` text COMMENT '主题配置',
-  `current` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '是否当前主题',
+  `current` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '当前主题类型，1PC端，2手机端。默认0',
   `website` varchar(120) DEFAULT '' COMMENT '站点',
-  `sort` tinyint(4) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
+  `sort` tinyint(4) UNSIGNED NOT NULL DEFAULT '99' COMMENT '排序',
   `create_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
-  `status` tinyint(3) NOT NULL DEFAULT '0' COMMENT '状态'
+  `status` tinyint(3) NOT NULL DEFAULT '1' COMMENT '状态'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='前台主题表';
 
 --
@@ -653,7 +660,8 @@ CREATE TABLE `eacoo_themes` (
 --
 
 INSERT INTO `eacoo_themes` (`id`, `name`, `title`, `description`, `author`, `version`, `config`, `current`, `website`, `sort`, `create_time`, `update_time`, `status`) VALUES
-(1, 'default', '官方默认主题', '内置于系统中，是其它主题的基础主题', '心云间、凝听', '1.0.0', '', 1, 'http://www.eacoo123.com', 0, 1475899420, 1510326902, 1);
+(1, 'default', '默认主题', '内置于系统中，是其它主题的基础主题', '心云间、凝听', '1.0.2', '', 1, 'http://www.eacoo123.com', 99, 1475899420, 1520090170, 1),
+(2, 'default-mobile', '默认主题-手机端', '内置于系统中，是系统的默认主题。手机端', '心云间、凝听', '1.0.1', '', 2, '', 99, 1520089999, 1520092270, 1);
 
 -- --------------------------------------------------------
 
@@ -707,7 +715,7 @@ INSERT INTO `eacoo_users` (`uid`, `username`, `number`, `password`, `nickname`, 
 (11, 'U1473391063', NULL, '031c9ffc4b280d3e78c750163d07d275', '@Gyb.', '', '', '/uploads/avatar/11/59e32aa3a75a2.jpg', 1, NULL, '', NULL, 0, NULL, 1473391063, '70d80a9f7599c81270a986abaea73e63101b3ecb', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
 (12, 'U1473396778', NULL, '4028d6d5a4cf4c3e75fc12f7d1749456', '董超楠', '', NULL, '/static/assets/img/avatar-woman.png', 2, NULL, NULL, NULL, 0, '1911132108', 1473396778, '8bbf5242300e5e8e4917b287a31efcb0c9feedfd', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
 (14, 'U1473396839', NULL, '3928540f538d3da96aee311b9a7dc4b3', '求真实者', '', NULL, '/static/assets/img/default-avatar.png', 0, NULL, NULL, NULL, 0, '2004314620', 1473396839, '8f7579a85981e1c1f726704b0865320dfadbef2e', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
-(15, 'U1473397391', NULL, '031c9ffc4b280d3e78c750163d07d275', 'peter', '', '', '/static/assets/img/avatar-man.png', 1, NULL, '', NULL, 0, NULL, 1473397391, 'c66d3a0e16a81a13173756a2832ba424b34a095c', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
+(15, 'U1473397391', NULL, '031c9ffc4b280d3e78c750163d07d275', 'peter', '', '', '/static/assets/img/avatar-woman.png', 2, NULL, '', NULL, 0, NULL, 1473397391, 'c66d3a0e16a81a13173756a2832ba424b34a095c', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
 (16, 'U1473397426', NULL, '7338af27b306b26d00adf2a006693d8c', '随风而去的心情', '', '15801182190', '/static/assets/img/avatar-man.png', 1, NULL, '大师傅', NULL, 0, NULL, 1473397426, '14855b00775de46b451c8255e6a73a5c044fc188', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
 (17, 'U1474181145', NULL, '965c4aab5c6c73930930ef1cfc6f8802', '班鱼先生', '', NULL, '/static/assets/img/avatar-man.png', 1, NULL, NULL, NULL, 0, '2938851779', 1474181146, '86d19a7b1f15db4fd25e0b64bfc17870a70f67e2', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1);
 
@@ -838,17 +846,17 @@ ALTER TABLE `eacoo_users`
 -- 使用表AUTO_INCREMENT `eacoo_action`
 --
 ALTER TABLE `eacoo_action`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=16;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=17;
 --
 -- 使用表AUTO_INCREMENT `eacoo_action_log`
 --
 ALTER TABLE `eacoo_action_log`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=11;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=39;
 --
 -- 使用表AUTO_INCREMENT `eacoo_attachment`
 --
 ALTER TABLE `eacoo_attachment`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=100;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=97;
 --
 -- 使用表AUTO_INCREMENT `eacoo_auth_group`
 --
@@ -858,7 +866,7 @@ ALTER TABLE `eacoo_auth_group`
 -- 使用表AUTO_INCREMENT `eacoo_auth_rule`
 --
 ALTER TABLE `eacoo_auth_rule`
-  MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
 --
 -- 使用表AUTO_INCREMENT `eacoo_config`
 --
@@ -908,9 +916,12 @@ ALTER TABLE `eacoo_term_relationships`
 -- 使用表AUTO_INCREMENT `eacoo_themes`
 --
 ALTER TABLE `eacoo_themes`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=2;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=3;
 --
 -- 使用表AUTO_INCREMENT `eacoo_users`
 --
 ALTER TABLE `eacoo_users`
   MODIFY `uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

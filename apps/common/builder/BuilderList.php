@@ -118,7 +118,7 @@ class BuilderList extends Builder {
                 $my_attribute['icon'] = 'fa fa-recycle';
                 $my_attribute['class'] = 'btn btn-danger ajax-table-btn confirm btn-sm';
                 $my_attribute['confirm-info'] = '您确定要执行回收操作吗？';
-                $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;
+                $my_attribute['model'] = !empty($attribute['model']) ? $attribute['model']: CONTROLLER_NAME;
                 $my_attribute['href']  = url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'recycle']).'?model='.$my_attribute['model'];
 
                 break;
@@ -126,9 +126,9 @@ class BuilderList extends Builder {
                 // 预定义按钮属性以简化使用
                 $my_attribute['title'] = '还原';
                 $my_attribute['target-form'] = 'ids';
-                $my_attribute['icon'] = 'fa fa-plus';
-                $my_attribute['class'] = 'btn btn-success ajax-post confirm btn-sm';
-                $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;
+                $my_attribute['icon'] = 'fa fa-window-restore';
+                $my_attribute['class'] = 'btn btn-success ajax-table-btn confirm btn-sm';
+                $my_attribute['model'] = !empty($attribute['model']) ? $attribute['model']: CONTROLLER_NAME;
                 $my_attribute['href']  = url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'restore']).'?model='.$my_attribute['model'];
 
                 break;
