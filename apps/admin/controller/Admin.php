@@ -79,17 +79,17 @@ class Admin extends Base
 
             $_admin_public_base = '';
             if ($this->request->param('load_type')=='iframe') {
-                $_admin_public_base = $template_path_str.'apps/admin/view/public/layerbase.html';
+                $_admin_public_base = $template_path_str.'apps/admin/view/public/layerbase.' .config('template.view_suffix');
             } else{
-                $_admin_public_base = $template_path_str.'apps/admin/view/public/base.html';
+                $_admin_public_base = $template_path_str.'apps/admin/view/public/base.' .config('template.view_suffix');
             }
-            $_admin_public_base = APP_PATH.'admin/view/public/base.html';
+            $_admin_public_base = APP_PATH.'admin/view/public/base.' .config('template.view_suffix');
 
             //顶部模版
-            $this->assign('_admin_document_header_',$template_path_str.'apps/admin/view/public/document_header.html');
-            $this->assign('_admin_public_left_',$template_path_str.'apps/admin/view/public/left.html');
+            $this->assign('_admin_document_header_',$template_path_str.'apps/admin/view/public/document_header.'.config('template.view_suffix'));
+            $this->assign('_admin_public_left_',$template_path_str.'apps/admin/view/public/left.'.config('template.view_suffix'));
             $this->assign('_admin_public_base_', $_admin_public_base);
-            $this->assign('_admin_public_layerbase_', $template_path_str.'apps/admin/view/public/layerbase.html');
+            $this->assign('_admin_public_layerbase_', $template_path_str.'apps/admin/view/public/layerbase.'.config('template.view_suffix'));
         } 
         
     }

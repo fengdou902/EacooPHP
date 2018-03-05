@@ -48,6 +48,7 @@ class Config {
             if (MODULE_NAME!=='admin' && MODULE_NAME!=='api' && MODULE_NAME!=='install') {
                 $ec_config['url_controller_layer'] = 'admin';
                 //定义后台模版view路径
+                $ec_config['template'] = thinkConfig::get('template');
                 $ec_config['template']['view_path']   = APP_PATH.MODULE_NAME.'/view/admin/';
             }
             
@@ -100,11 +101,9 @@ class Config {
                     $ec_config['template']['view_path'] = ROOT_PATH.'plugins/'.$plugin_name.'/view/';
                 }
                 
-                
             }
             //插件静态资源路径
             $ec_config['view_replace_str']['__PLUGIN_STATIC__'] = $ec_config['view_replace_str']['__STATIC__'].'/plugins';
-
         }
 
         //各模块静态资源路径
