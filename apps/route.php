@@ -10,10 +10,13 @@
 // +----------------------------------------------------------------------
 use think\Route;
 
-//微信接口
-Route::rule('WxInterface/:wxid', 'wechat/WxInterface/index');
-Route::rule('wechat/Oauth/:wxid', 'wechat/home/wechatOauth');
-//前台插件执行入口
-Route::rule('plugin_execute', 'home/plugin/execute');
-//前台上传入口
-Route::rule('upload', 'home/Upload/upload');
+//防止路由冲突了后台
+if (MODULE_MARK!=='admin') {
+	//微信接口
+	Route::rule('WxInterface/:wxid', 'wechat/WxInterface/index');
+	Route::rule('wechat/Oauth/:wxid', 'wechat/home/wechatOauth');
+	//前台插件执行入口
+	Route::rule('plugin_execute', 'home/plugin/execute');
+	//前台上传入口
+	Route::rule('upload', 'home/Upload/upload');
+}

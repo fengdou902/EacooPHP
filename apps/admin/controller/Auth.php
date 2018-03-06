@@ -124,8 +124,9 @@ class Auth extends Admin {
             $menus = logic('Auth')->getAdminMenu();
             $menus = array_merge([0=>['id'=>0,'title_show'=>'顶级菜单']], $menus);
 
+            $extra_html = logic('Auth')->getFormMenuHtml();//获取表单菜单html
             return builder('Form')
-                    ->setMetaTitle($title.'菜单')  // 设置页面标题
+                    ->setMetaTitle($title.'规则')  // 设置页面标题
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
                     ->addFormItem('title', 'text', '标题', '用于后台显示的配置标题')
                     ->addFormItem('pid', 'multilayer_select', '上级菜单', '上级菜单',$menus)
@@ -137,6 +138,7 @@ class Auth extends Admin {
                     ->addFormItem('sort', 'number', '排序', '按照数值大小的倒叙进行排序，数值越小越靠前')
                     ->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'启用'])
                     ->setFormData($info)
+                    ->setExtraHtml($extra_html)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
         }   

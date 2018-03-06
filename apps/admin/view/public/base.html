@@ -31,11 +31,9 @@
             {present name="show_box_header"}
               {eq name="show_box_header" value="1"}
                   <div class="box-header with-border">
-                    <div class="pb-5">
-                        <h3 class="box-title">{$meta_title}</h3>  {present name="page_config.help"}<a href="{$page_config.help|default=''}" class="color-6" title="帮助" target="_blank"><i class="fa fa-question-circle f15"></i></a>{/present}
-                        <!-- <div class="box-tools pull-right">{present name="page_config.self"}{$page_config.self}{/present}</div> -->
-                    </div>
-                    {notempty name="tips"}<p class="f12 color-6">提示：{$tips|default=""}</p>{/notempty}
+                    <h3 class="box-title">{$meta_title}</h3>  {present name="page_config.help"}<a href="{$page_config.help|default=''}" class="color-6" title="帮助" target="_blank"><i class="fa fa-question-circle f15"></i></a>{/present}
+                    <div class="box-tools pull-right">{present name="page_config.self"}{$page_config.self}{/present}</div>
+                    {notempty name="tips"}<p class="f12 color-6 pt-5">提示：{$tips|default=""}</p>{/notempty}
                       
                   </div>
               {/eq}
@@ -64,9 +62,9 @@
 
 <script type="text/javascript" src="__LIBS__/iCheck/icheck.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/jquery.toaster.js"></script>
-<script type="text/javascript" src="__ADMIN_JS__/common.js" ></script>
-<script type="text/javascript" src="__ADMIN_JS__/eacoo.js?v=1.0.1" ></script>
-<script type="text/javascript" src="__ADMIN_JS__/base.js" ></script>
+<script type="text/javascript" src="__ADMIN_JS__/common.js?v={:EACOOPHP_V}" ></script>
+<script type="text/javascript" src="__ADMIN_JS__/eacoo.js?v={:EACOOPHP_V}" ></script>
+<script type="text/javascript" src="__ADMIN_JS__/base.js?v={:EACOOPHP_V}" ></script>
 {block name="script"}{/block}
 </body>
 </html>
