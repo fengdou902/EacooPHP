@@ -30,7 +30,7 @@ class Module extends AdminLogic
         $_menu_list = db('auth_rule')->where($map_rules)->field('id,name,title,module,pid,type,icon')->order('sort asc')->select();
         // 转换成树结构
         $tree = new tree();
-        return $tree->list_to_tree($_menu_list);
+        return $tree->listToTree($_menu_list);
     }
 
     /**

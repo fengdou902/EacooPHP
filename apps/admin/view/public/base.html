@@ -25,7 +25,7 @@
      <section class="content">
          {php}if(isset($page_config['disable_panel']) && $page_config['disable_panel']===true){ {/php}
             {block name="main-top"}{/block}
-              {block name="main"}{/block}
+            {block name="main"}{/block}
          {php} }else{ {/php}
           <div class="box box-solid eacoo-box">
             {present name="show_box_header"}
@@ -38,6 +38,20 @@
                   </div>
               {/eq}
             {/present}
+            <!-- Tab导航 -->
+            {notempty name="tab_nav"}
+                <div class="box-body pb-0">
+                    <div class="eacoo-tabs">
+                        <div class="">
+                            <ul class="nav nav-tabs">
+                                {volist name="tab_nav.tab_list" id="tab"}
+                                    <li class="{php}if($tab_nav['current'] == $key) echo 'active';{/php}"><a href="{$tab.href}" {$tab.extra_attr|default=''}>{$tab.title}</a></li>
+                                {/volist}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {/notempty}
             {block name="main-top"}{/block}
               <div class="box-body">
                 {block name="main"}{/block}

@@ -39,6 +39,7 @@ class Hook extends Admin {
         list($data_list,$total) = $this->hooksModel->search('name|description')->getListByPage([],true,'create_time desc',20);
         return builder('List')
                 ->setMetaTitle('钩子列表')  // 设置页面标题
+                ->setPageTips('钩子是基于行为实现，通过监听行为，可以对钩子挂的功能进行触发调用。')
                 ->addTopButton('addnew',array('href'=>url('edit'),'title'=>'新增钩子','class'=>'btn bg-purple btn-sm margin'))    // 添加新增按钮
                 ->keyListItem('id', 'ID')
                 ->keyListItem('name', '名称')

@@ -55,6 +55,7 @@ class Auth extends Admin {
 
         return builder('list')
             ->setMetaTitle('规则管理')
+            ->setPageTips('用于管理后台的规则项')
             ->addTopBtn('addnew',array('href'=>url('edit',['pid'=>$pid])))  // 添加新增按钮
             ->addTopBtn('resume',array('model'=>'auth_rule'))  // 添加启用按钮
             ->addTopBtn('forbid',array('model'=>'auth_rule'))  // 添加禁用按钮
@@ -271,8 +272,9 @@ class Auth extends Admin {
             ->search() //添加搜索框
             ->getListByPage([],true,'id asc');
 
-        return builder('List')        
+        return builder('List')   
                 ->setMetaTitle('角色管理') // 设置页面标题
+                ->setPageTips('角色组也是用户组，是对用户划分权限组，可以对用户组进行授权，也可以添加用户到用户组')
                 ->addTopButton('addnew',array('href'=>url('roleEdit')))  // 添加新增按钮
                 ->addTopButton('resume',['model'=>'AuthGroup'])  // 添加启用按钮
                 ->addTopButton('forbid',['model'=>'AuthGroup'])  // 添加禁用按钮
@@ -359,7 +361,7 @@ class Auth extends Admin {
             $this->assign('menu_auth_rules',explode(',',$role_auth_rule));//获取指定获取到的权限
             $rule = db('auth_rule')->select();
             $tree_obj = new \eacoo\Tree;
-            $rule = $tree_obj->list_to_tree($rule);
+            $rule = $tree_obj->listToTree($rule);
             $this->assign('auth_rules_list',$rule);//所以规则
             return $this->fetch();
         }

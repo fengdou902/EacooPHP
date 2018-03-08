@@ -144,6 +144,7 @@ base.css
 .pl0 { padding-left: 0px !important; }
 .pl15{padding-left:15px;}
 .pl20{padding-left:20px;}
+.pl30{padding-left:30px}/*左填充30像素*/
 .pl60{padding-left:60px;}
 .pl54{padding-left:54px;}
 .pr0{padding-right:0!important;}
@@ -185,7 +186,7 @@ base.css
 .mb-50{margin-bottom:50px}/*距下50像素*/
 .mb-90{margin-bottom:90px}/*距下90像素*/
  
- .ml-0{margin-left:0px}/*距左5像素*/
+.ml-0{margin-left:0px}/*距左5像素*/
 .ml-5{margin-left:5px}/*距左5像素*/
 .ml-10{margin-left:10px}/*距左10像素*/
 .ml-15{margin-left:15px}/*距左15像素*/
@@ -220,21 +221,22 @@ base.css
 .pt-15{padding-top:15px}/*上填充15像素*/
 .pt-20{padding-top:20px}/*上填充20像素*/
  
- .pb-0{padding-bottom:0px}/*下填充5像素*/
+.pb-0{padding-bottom:0px}/*下填充5像素*/
 .pb-5{padding-bottom:5px}/*下填充5像素*/
 .pb-10{padding-bottom:10px}/*下填充10像素*/
 .pb-15{padding-bottom:15px}/*下填充15像素*/
 .pb-20{padding-bottom:20px!important;}/*下填充20像素*/
  
- .pl-0{padding-left:0px}/*左填充5像素*/
+.pl-0{padding-left:0px}/*左填充5像素*/
 .pl-5{padding-left:5px}/*左填充5像素*/
 .pl-10{padding-left:10px!important;}/*左填充10像素*/
 .pl-15{padding-left:15px}/*左填充15像素*/
 .pl-20{padding-left:20px}/*左填充20像素*/
+.pl-30{padding-left:30px}/*左填充30像素*/
 .pl-0.75{padding-left:0.75rem!important;}
 .pl-75 { padding-left: 0.75rem; }
- .pl-11{padding-left:11px!important;}/*左填充10像素*/
- .pr-0{padding-right:0px!important;}/*右填充5像素*/
+.pl-11{padding-left:11px!important;}/*左填充10像素*/
+.pr-0{padding-right:0px!important;}/*右填充5像素*/
 .pr-5{padding-right:5px}/*右填充5像素*/
 .pr-10{padding-right:10px}/*右填充10像素*/
 .pr-12{padding-right:12px}/*右填充15像素*/

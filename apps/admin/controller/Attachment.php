@@ -11,6 +11,7 @@
 namespace app\admin\controller;
 
 use app\common\model\Attachment as AttachmentModel;
+use app\admin\logic\Attachment as AttachmentLogic;//引入逻辑层
 use app\common\model\TermRelationships as TermRelationshipsModel;
 
 class Attachment extends Admin {
@@ -119,6 +120,9 @@ class Attachment extends Admin {
         $media_cats = model('terms')->getList(['taxonomy'=>'media_cat']);
         $this->assign('media_cats',$media_cats);
 
+        //设置tab_nav
+        $tab_list = AttachmentLogic::getTabList();
+        $this->assign('tab_nav',['tab_list'=>$tab_list,'current'=>'index']);
     	return $this->fetch();
     }
 
@@ -253,11 +257,9 @@ class Attachment extends Admin {
                 $row['object_count'] = logic('common/Terms')->termRelationCount($row['term_id'],'attachment');
             }
         }
-        $tab_list = [
-                'index'    =>['title'=>'附件管理','href'=>url('index')],
-                'category' =>['title'=>'附件分类','href'=>url('category')],
-                'setting'  =>['title'=>'设置','href'=>url('setting')]
-            ];
+
+        //获取tab_list
+        $tab_list = AttachmentLogic::getTabList();
         return builder('List')
                     ->setMetaTitle('附件分类')
                     ->setTabNav($tab_list,'category')  // 设置页面Tab导航
@@ -289,13 +291,9 @@ class Attachment extends Admin {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function CategoryEdit($term_id = 0){
-        $tab_list=[
-                'index'    =>['title'=>'媒体文件','href'=>url('index'),'extra_attr'=>'data-pjax=false'],
-                'category' =>['title'=>'附件分类','href'=>url('category')],
-                'setting'  =>['title'=>'设置','href'=>url('setting')]
-            ];
+        
         $tab_obj=[
-            'tab_list'=>$tab_list,
+            'tab_list'=>AttachmentLogic::getTabList(),
             'current'=>'category'
             ];
         \think\Loader::action('admin/Terms/edit',[$term_id,'media_cat',$tab_obj]);
@@ -310,11 +308,9 @@ class Attachment extends Admin {
      */
     public function setting(){
         
-        $tab_list=[
-            'index'=>['title'=>'附件管理','href'=>url('index'),'extra_attr'=>'data-pjax=false'],
-            'category'=>['title'=>'附件分类','href'=>url('category')],
-            'attachment_option'=>['title'=>'设置','href'=>url('setting')]
-        ];
+        $tab_list = AttachmentLogic::getTabList();
+        $tab_list['attachment_option']=['title'=>'设置','href'=>url('setting')];
+        unset($tab_list['setting']);
         \think\Loader::action('admin/Config/attachmentOption',[$tab_list]);
     }
 

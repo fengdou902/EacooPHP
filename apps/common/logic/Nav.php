@@ -31,7 +31,7 @@ class Nav extends Base {
 			if (!empty($menus)) {
 				$menus = collection($menus)->toArray();
 	            $tree_obj = new Tree;
-	            $menus = $tree_obj->list_to_tree($menus);
+	            $menus = $tree_obj->listToTree($menus);
 	            cache("front_{$position}_navs",$menus,3600);
 	        }
 		}

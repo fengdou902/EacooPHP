@@ -124,14 +124,19 @@ if (!function_exists('plugin_url')) {
         $params = [];
         // 拆分URL
         $url  = explode('/', $url);
-        if (isset($url[0])) {
-            $params['_plugin'] = $url[0];
-        }
-        if (isset($url[1])) {
+
+        if (!isset($url[1]) && !isset($url[2])) {
+            $params['_plugin']     = input('param._plugin');
+            $params['_controller'] = input('param._controller');
+            $params['_action']     = $url[0];
+        } elseif (!isset($url[2])) {
+            $params['_plugin']     = input('param._plugin');
+            $params['_controller'] = $url[0];
+            $params['_action']     = $url[1];
+        } else {
+            $params['_plugin']     = $url[0];
             $params['_controller'] = $url[1];
-        }
-        if (isset($url[2])) {
-            $params['_action'] = $url[2];
+            $params['_action']     = $url[2];
         }
 
         // 合并参数

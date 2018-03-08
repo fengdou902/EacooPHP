@@ -24,7 +24,7 @@ class Tree {
 	 * @return array
 	 * @author 麦当苗儿 <zuojiazi@vip.qq.com>
 	 */
-	public function list_to_tree($list, $pk='id', $pid = 'pid', $child = '_child', $root = 0) {
+	public function listToTree($list, $pk='id', $pid = 'pid', $child = '_child', $root = 0) {
 	    // 创建Tree
 	    $tree = [];
 	    if(is_array($list)) {

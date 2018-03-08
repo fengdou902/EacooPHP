@@ -1,5 +1,5 @@
 <?php
-// 附件逻辑
+// 插件逻辑层      
 // +----------------------------------------------------------------------
 // | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
@@ -8,25 +8,14 @@
 // +----------------------------------------------------------------------
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
-namespace app\admin\logic;
+namespace app\home\logic;
+use app\admin\logic\AdminLogic;
 
-use think\File;
-class Attachment extends AdminLogic {
+class Plugin extends AdminLogic
+{
+    public function initialize() {
+        parent::initialize();
 
-	/**
-	 * 获取tab_list
-	 * @param  string $current [description]
-	 * @return [type] [description]
-	 * @date   2018-03-06
-	 * @author 心云间、凝听 <981248356@qq.com>
-	 */
-	public static function getTabList($current='')
-	{
-		$tab_list = [
-                'index'    =>['title'=>'附件管理','href'=>url('index')],
-                'category' =>['title'=>'附件分类','href'=>url('category')],
-                'setting'  =>['title'=>'设置','href'=>url('setting')]
-            ];
-        return $tab_list;
-	}
+    }
+
 }

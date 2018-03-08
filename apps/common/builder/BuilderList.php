@@ -223,13 +223,13 @@ class BuilderList extends Builder {
      *                               'title' => '标题',
      *                               'href' => 'http://www.xxx.cn'
      *                           )
-     * @param $current_tab 当前tab
+     * @param $current 当前tab
      * @return $this
      */
-    public function setTabNav($tab_list, $current_tab) {
+    public function setTabNav($tab_list, $current) {
         $this->tabNav = [
-            'tab_list'    => $tab_list,
-            'current_tab' => $current_tab
+            'tab_list' => $tab_list,
+            'current' => $current
         ];
         return $this;
     }

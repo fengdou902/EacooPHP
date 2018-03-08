@@ -11,20 +11,36 @@
 namespace app\home\admin;
 use app\admin\controller\Admin;
 
+use app\admin\controller\Extension;
+
 /**
  * 插件控制器
  * @package app\index\home
  */
 class Plugin extends Admin
 {
+    protected $name             = '';
+    protected $pluginPath       = '';
+
     public function _initialize() {
         parent::_initialize();
 
+        $name = input('param._plugin', '', 'trim');
+        if ($name) {
+            $this->name = $name;
+            $extensionObj = new Extension;
+            $extensionObj->initInfo('plugin',$name);
+            $this->pluginPath = $extensionObj->appExtensionPath;
+        } else{
+            $class = get_class($this);
+            $path = strstr($class,substr($class, strrpos($class, '\\') + 1),true);
+            $this->pluginPath = ROOT_PATH.str_replace('\\','/',$path);
+        }
     }
 
     /**
-     * 执行插件内部方法
-     */
+    * 执行插件内部方法
+    */
     public function execute()
     {
         $plugin     = input('param._plugin');
@@ -55,27 +71,32 @@ class Plugin extends Admin
      * @return [type]               [description]
      */
     public function fetch($template='', $vars = [], $replace = [], $config = [] ,$render=false) {
-
         $plugin_name = input('param.plugin_name');
 
         if ($plugin_name != '') {
-            $plugin = $plugin_name;
-            $action = 'index';
+            $plugin     = $plugin_name;
+            $controller = input('param._controller');
+            $action     = 'index';
         } else {
-            $plugin = input('param._plugin');
-            $action = input('param._action');
+            $plugin     = input('param._plugin');
+            $controller = input('param._controller');
+            $action     = input('param._action');
         }
         $template = $template == '' ? $action : $template;
         if (MODULE_MARK === 'admin') {
-            $template = 'admin/'.$template;
+            $template = 'admin/'.$controller.'/'.$template;
         }
-
         if ($template != '') {
-            $template = config('template.view_path').$template . '.' .config('template.view_suffix');dump($template);
             if (!is_file($template)) {
-                throw new \Exception('模板不存在：'.$template, 5001);
+                $template = $this->pluginPath. 'view/'. $template . '.' .config('template.view_suffix');
+                if (!is_file($template)) {
+                    throw new \Exception('模板不存在：'.$template, 5001);
+                }
             }
+            //$template = config('template.view_path').$template . '.' .config('template.view_suffix');
+            
             echo $this->view->fetch($template, $vars, $replace, $config, $render);
         }
     }
+
 }

@@ -19,6 +19,17 @@ class Plugin extends Home
     public function _initialize() {
         parent::_initialize();
 
+        $name = input('param._plugin', '', 'trim');
+        if ($name) {
+            $this->name = $name;
+            $extensionObj = new Extension;
+            $extensionObj->initInfo('plugin',$name);
+            $this->pluginPath = $extensionObj->appExtensionPath;
+        } else{
+            $class = get_class($this);
+            $path = strstr($class,substr($class, strrpos($class, '\\') + 1),true);
+            $this->pluginPath = ROOT_PATH.str_replace('\\','/',$path);
+        }
     }
 
     /**
@@ -54,12 +65,32 @@ class Plugin extends Home
      * @return [type]               [description]
      */
     public function fetch($template='', $vars = [], $replace = [], $config = [] ,$render=false) {
+        $plugin_name = input('param.plugin_name');
 
-        //$name  = input('param._plugin');
-
-        if ($template != '') {
-            $template = config('template.view_path').$template . '.' .config('template.view_suffix');
-            echo $this->view->fetch($template, $vars, $replace, $config, $render);
+        if ($plugin_name != '') {
+            $plugin = $plugin_name;
+            $action = 'index';
+        } else {
+            $plugin = input('param._plugin',$this->name);
+            $action = input('param._action');
         }
+        $template = $template == '' ? $action : $template;
+        if (!is_file($template)) {
+
+            // 获取当前主题的名称
+            $current_theme_path = THEME_PATH.CURRENT_THEME.'/'; //默认主题设为当前主题
+            $theme_plugin_path  = $current_theme_path.'plugins/'.$plugin.'/'; //当前主题插件文件夹路径
+            $template     = $theme_plugin_path.$template . '.' .config('template.view_suffix');
+            
+            if (!is_file($template)) {
+                $template = $this->pluginPath. 'view/'. $template . '.' .config('template.view_suffix');
+                if (!is_file($template)) {
+                    throw new \Exception('模板不存在：'.$template, 5001);
+                }
+            }
+            
+        }
+
+        echo $this->view->fetch($template, $vars, $replace, $config, $render);
     }
 }

@@ -1,4 +1,4 @@
-{extend name="public/base"/}
+{extend name="$_admin_public_base_"/}
   {block name="style"}
     <link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
     <link href="__LIBS__/daterangepicker/daterangepicker-bs3.css" type="text/css" rel="stylesheet">
@@ -9,22 +9,18 @@
     .attachment_meta_id{position: absolute;left:15px;bottom: 33px;font-size: 12px;color: #fff;}
     </style>
   {/block}
+    {block name="main-top"}
+        
+    {/block}
 
   {block name="main"}
   <div class="attachment-wrap">
-      <div class="h50 eacoo-tabs">
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="{:url('index')}" >附件管理</a></li>
-            <li class=""><a href="{:url('category')}">附件分类</a></li>
-            <li class=""><a href="{:url('setting')}">设置</a></li>
-        </ul>
-        <div class="form-group"></div>
-    </div>
+      
     <!--此页面主体内容-->
     <div class="row mt-10">
         
       <div class="col-xs-9 col-sm-9 button-list clearfix">   
-         <div class="col-xs-3 col-sm-3 form-group"><span id="web_uploader_wrapper_attachmentIndex" class="btn btn-info btn-raised btn-sm"><i class="fa fa-cloud-upload"></i> 本地上传</span>
+         <div class="col-xs-3 col-sm-3 form-group pr-0"><span id="web_uploader_wrapper_attachmentIndex" class="btn btn-info btn-raised btn-sm"><i class="fa fa-cloud-upload"></i> 本地上传</span>
          &nbsp;&nbsp;<span class="btn btn-default btn-sm" id="media_batch">批量操作</span></div>
            <div class="col-xs-9 col-sm-9">
            <form id="selectForm" method="get" action="{:url('index')}" class="form-choice-url-param form-horizontal">

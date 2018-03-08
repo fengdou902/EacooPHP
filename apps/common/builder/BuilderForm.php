@@ -51,22 +51,22 @@ class BuilderForm extends Builder
     /**
      * 设置Tab按钮列表
      * @param $tab_list    Tab列表  array('title' => '标题', 'href' => 'http://www.xxx.com')
-     * @param $current_tab 当前tab
+     * @param $current 当前tab
      * @return $this
      */
-    public function setTabNav($tab_list, $current_tab) {
-        $this->tabNav = ['tab_list' => $tab_list, 'current_tab' => $current_tab];
+    public function setTabNav($tab_list, $current) {
+        $this->tabNav = ['tab_list' => $tab_list, 'current' => $current];
         return $this;
     }
 
     /**
      * 组tab
      * @param $tab_list    Tab列表  array('title' => '标题', 'href' => 'http://www.xxx.com')
-     * @param $current_tab 当前tab
+     * @param $current 当前tab
      * @return $this
      */
-    public function setGTabNav($tab_list, $current_tab) {
-        $this->groupTabNav = ['tab_list' => $tab_list, 'current_tab' => $current_tab];
+    public function setGTabNav($tab_list, $current) {
+        $this->groupTabNav = ['tab_list' => $tab_list, 'current' => $current];
         return $this;
     }
 
