@@ -11,6 +11,7 @@
 namespace app\common\behavior;
 use think\Config as thinkConfig;
 use app\common\logic\Config as ConfigLogic;
+use app\common\model\Config as ConfigModel;
 use think\Cache;
 use think\Db;
 use think\Request;
@@ -154,7 +155,9 @@ class Config {
                 }
             }
             Cache::set('DB_CONFIG_DATA', $system_config, 3600);  // 缓存配置
+            
         }
+        $system_config['captcha'] = $this->setCaptcha();
 
         // 移动端不显示trace
         if (IS_MOBILE==true) {
@@ -163,6 +166,32 @@ class Config {
         
         thinkConfig::set($system_config);  // 添加配置
 
+    }
+
+    /**
+     * 设置验证码配置
+     * @date   2018-03-08
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    private function setCaptcha()
+    {
+        $captcha_type = ConfigModel::where('name','captcha_type')->value('value');
+        $return = thinkConfig::get('captcha');
+        switch ($captcha_type) {
+            case 1://中文
+                $return['useZh'] = true;
+                break;
+            case 2://英文
+                $return['codeSet'] = 'abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY';
+                break;
+            case 3://数字
+                $return['codeSet'] = '0123456789';
+                break;
+            default://英文+数字
+                # code...
+                break;
+        }
+        return $return;
     }
 
 }

@@ -31,7 +31,6 @@ class Login extends Base
      * 后台登录
      */
     public function index(){ 
-
         if(session('user_login_auth')) $this->redirect('admin/index/index');
 
         if (IS_POST) {
