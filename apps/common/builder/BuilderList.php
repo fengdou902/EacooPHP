@@ -87,8 +87,12 @@ class BuilderList extends Builder {
                 $my_attribute['title'] = '添加';
                 $my_attribute['icon'] = 'fa fa-plus';
                 $my_attribute['class'] = 'btn btn-primary btn-sm';
-                $my_attribute['href']  = url(MODULE_NAME.'/'.CONTROLLER_NAME.'/edit');
-
+                if (input('param._plugin') && input('param._controller')) {
+                    $my_attribute['href']  = plugin_url('edit');
+                } else{
+                    $my_attribute['href']  = url(MODULE_NAME.'/'.CONTROLLER_NAME.'/edit');
+                }
+                
                 break;
             case 'resume':  // 添加启用按钮(禁用的反操作)
                 //预定义按钮属性以简化使用
