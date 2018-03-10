@@ -28,7 +28,7 @@
     <div class="eacoo-tabs builder-form-tabs">
         <ul class="nav nav-tabs">
             {volist name="tab_list" id="tab"}
-                <li class="{php}if($from_type == $key) echo 'active';{/php}"><a href="{$tab.href}" {$tab.extra_attr|default=''}>{$tab.title}</a></li>
+                <li class="{php}if($from_type == $key) echo 'active';{/php}"><a class="reset-appstore-conent" href="{$tab.href}" {$tab.extra_attr|default=''}>{$tab.title}</a></li>
             {/volist}
         </ul>
         <div class="form-group"></div>
@@ -44,52 +44,70 @@
       
     </div>
     
-    <div class="builder formbuilder-box panel-body">
+    <div class="builder formbuilder-box panel-body" id="appstore-content">
+        
+    </div>
 
-    <div class="row">    
-      {notempty name="data_list"}
-        {foreach name="data_list" item="row"}
-        	<div class="col-sm-4 col-xs-6 extension-item">
+<script id="appstore_tpl" type="text/html">
+<div class="row" >
+  <% for (var i = 0; i < data.length; i ++) { %>
+   <% var row = data[i]; %>
+    <div class="col-sm-4 col-xs-6 extension-item">
+      <div class="app-item">
+        <div class="col-sm-3 col-xs-3 item-logo view-app-detail" data-name="<%= row.name %>" data-type="plugin" style="cursor: pointer;">{{@row.logo}}</div>
+        <div class="col-sm-9 col-xs-9 pr-0" >
+            <h4>
+            <span class="view-app-detail" data-name="<%= row.name %>" data-type="plugin" style="cursor: pointer;"><%= row.title %></span>
+            <% if (row.mark) { %> <span class="btn bg-maroon margin btn-xs app-meta-mark">推荐</span><% } %>
+            {eq name="from_type" value="oneline"}
+                <span class="fr color-red f12">
+                    <% if (row.price>0) { %>¥<%= row.price %><% }else { %>免费<% } %>
+                </span>
+            {/eq}
 
-              <div class="app-item">
-                <div class="col-sm-3 col-xs-3 item-logo view-app-detail" data-name="{$row.name}" data-type="plugin" style="cursor: pointer;">{$row.logo}</div>
-                <div class="col-sm-9 col-xs-9 pr-0" ><h4>
-                    <span class="view-app-detail" data-name="{$row.name}" data-type="plugin" style="cursor: pointer;">{$row.title}</span>
-                    {notempty name="mark"}<span class="btn bg-maroon margin btn-xs app-meta-mark">推荐</span>{/notempty}
-                    {eq name="from_type" value="oneline"}<span class="fr color-red f12">{gt name="row.price" value="0"}¥{$row.price|default=''}{else/}免费{/gt}</span>{/eq}</h4>
-                  <p class="item-desc">{$row.description}</p>
-                  <div class="item-metas">
-                      <p class="text-muted f13">作者：<a href="http://www.eacoo123.com/appstore_plugin/{$row.name}" target="_blank">{$row.author}</a></p>
-                      <p class="text-muted f13">版本：{$row.version}</p>
-                  </div>
-                </div>
-              <p class="oh w pt-10" >
-                {eq name="from_type" value="oneline"}<span class="text-muted f13"><i class="fa fa-star color-warning"></i> {$row.downloaded|default=''}</span>{else/}<span class="text-muted">{present name="row.create_time"}{$row.create_time|strtotime|friendly_date|default=''}{/present}</span>{/eq} <span class="fr">{$row.right_button|default=""}</span>
-              </p>
-              </div>
-              
-            </div>
-
-        {/foreach}
-      {else/}
-        <div class="tc no-found">
-          <p>暂无插件，请前往<a class="label label-success" href="{:url('index',['from_type'=>'oneline'])}">插件市场</a>下载</p>
+            </h4>
+          <p class="item-desc"><%= row.description %></p>
+          <div class="item-metas">
+              <p class="text-muted f13">作者：<a href="http://www.eacoo123.com/appstore_plugin/<%= row.name %>" target="_blank"><%= row.author %></a></p>
+              <p class="text-muted f13">版本：<%= row.version %></p>
+          </div>
         </div>
-      {/notempty}
-   </div><!--row-->
- </div>
-
+      <p class="oh w pt-10" >
+        {eq name="from_type" value="oneline"}
+        <span class="text-muted f13"><i class="fa fa-star color-warning"></i> <%= row.downloaded %></span>
+        {else/}
+        <span class="text-muted">
+            <%= row.create_time %>
+        </span>{/eq}
+        <span class="fr">{{@row.right_button}}</span>
+      </p>
+      </div>
+      
+    </div>
+  <% } %>
+  <% if(data.length==0){ %>
+    <div class="tc no-found">
+      <p>暂无插件，请前往<a class="label label-success" href="{:url('index',['from_type'=>'oneline'])}">插件市场</a>下载</p>
+    </div>
+  <% } %>
+  </div><!--row-->
+  <% if(page_content){ %>
+    <div class="appstore-page-warp tc">
+        <ul class="pagination">
+            {{@page_content}}
+        </ul>
+    </div>
+    <% } %>
+</script>
 {/block}
 
 {block name="script"}
-<script type="text/javascript" src="__ADMIN_JS__/eacoo.extension.js" ></script>
+<script type="text/javascript" src="__LIBS__/artTemplate/template.js"></script>
+<script type="text/javascript" src="__ADMIN_JS__/eacoo.extension.js?v={:EACOOPHP_V}" ></script>
 <link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
 <script type="text/javascript" src="__LIBS__/webuploader/js/webuploader.min.js"></script>
 <script>
-  $(function () {
-    appLocalInstall('plugin');
-
-  })
-   
+    var apptype = 'plugin';
+    var from_type = '{:$from_type}';
 </script>
 {/block}

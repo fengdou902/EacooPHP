@@ -54,7 +54,7 @@
     <div class="eacoo-tabs builder-form-tabs">
         <ul class="nav nav-tabs">
             {volist name="tab_list" id="tab"}
-                <li class="{php}if($from_type == $key) echo 'active';{/php}"><a href="{$tab.href}" {$tab.extra_attr|default=''}>{$tab.title}</a></li>
+                <li class="{php}if($from_type == $key) echo 'active';{/php}"><a class="reset-appstore-conent" href="{$tab.href}" {$tab.extra_attr|default=''}>{$tab.title}</a></li>
             {/volist}
         </ul>
         <div class="form-group"></div>
@@ -70,39 +70,42 @@
 
     <div class="builder formbuilder-box panel-body">
 
-    <div class="row">    
-      {notempty name="data_list"}
-        {foreach name="data_list" item="row"}
-          <div class="col-md-4 theme-item"> 
-            <div class="block-content">     
-                <div class="theme-cover view-app-detail" data-name="{$row.name}" data-type="theme" style="cursor: pointer;">{$row.logo|default=''}</div>
-                <h3>{$row.title}</h3>
-                <div class="item-metas"><span class="meta-author"><i class="fa fa-user"></i> {$row.author}</span><span class="meta-author text-success pull-right">{$row.status|default=''}</span></div>
-                <div class="item-description">{$row.description}</div>
-                <div class="ml-10 mt-10 mb-10">
-                    {$row.right_button|default=''}
-                </div>
-              </div>
-          </div>
-        {/foreach}
-      {else/}
-        <div class="tc no-found">
-          <p>暂无主题，请前往<a href="{:url('index',['from_type'=>'oneline'])}">主题市场</a>下载</p>
-        </div>
-      {/notempty}
+    <div class="row" id="appstore-content">    
+      
    </div><!--row-->
  </div>
+<script id="appstore_tpl" type="text/html">
+  <% for (var i = 0; i < data.length; i ++) { %>
+   <% var row = data[i]; %>
+   <div class="col-md-4 theme-item"> 
+    <div class="block-content">     
+        <div class="theme-cover view-app-detail" data-name="<%= row.name %>" data-type="theme" style="cursor: pointer;">{{@row.logo}}</div>
+        <h3><%= row.title %></h3>
+        <div class="item-metas"><span class="meta-author"><i class="fa fa-user"></i> <a href="http://www.eacoo123.com/appstore_theme/<%= row.name %>" target="_blank"><%= row.author %></a></span>
+          <% if (row.status && row.status!='undefined') { %><span class="meta-status text-success pull-right">{{@row.status}}</span><% } %></div>
+        <div class="item-description"><%= row.description %></div>
+        <div class="ml-10 mt-10 mb-10">
+            {{@row.right_button}}
+        </div>
+      </div>
+  </div>
 
+  <% } %>
+  <% if(data.length==0){ %>
+    <div class="tc no-found">
+      <p>暂无主题，请前往<a href="{:url('index',['from_type'=>'oneline'])}">主题市场</a>下载</p>
+    </div>
+  <% } %>
+</script>
 {/block}
 
 {block name="script"}
-<script type="text/javascript" src="__ADMIN_JS__/eacoo.extension.js" ></script>
+<script type="text/javascript" src="__LIBS__/artTemplate/template.js"></script>
+<script type="text/javascript" src="__ADMIN_JS__/eacoo.extension.js?v={:EACOOPHP_V}" ></script>
 <link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
 <script type="text/javascript" src="__LIBS__/webuploader/js/webuploader.min.js"></script>
 <script>
-    //本地上传(分开写为了好控制)
-    $(function () {
-        appLocalInstall('theme');
-    })
+    var apptype = 'theme';
+    var from_type = '{:$from_type}';
 </script>
 {/block}

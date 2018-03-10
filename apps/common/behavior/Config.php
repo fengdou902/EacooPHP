@@ -55,11 +55,14 @@ class Config {
             
         } elseif (MODULE_MARK=='front' && is_file(APP_PATH . 'install.lock')){
             //主题区分pc和移动端
-            if (IS_MOBILE==true) {
-                $current_theme = Db::name('themes')->where('current',2)->value('name');
-            } else {
-                $current_theme = Db::name('themes')->where('current',1)->value('name');
+            $pc_theme = Db::name('themes')->where('current',1)->cache(true)->value('name');
+            $mobile_theme = Db::name('themes')->where('current',2)->cache(true)->value('name');
+            if (IS_MOBILE==true ) {
+                $current_theme = !empty($mobile_theme) ? $mobile_theme : ($pc_theme ? $pc_theme : '');
+            } else{
+                $current_theme = !empty($pc_theme) ? $pc_theme : ($mobile_theme ? $mobile_theme : '');
             }
+            
             //定义当前主题
             defined('CURRENT_THEME') or define('CURRENT_THEME', $current_theme);
 

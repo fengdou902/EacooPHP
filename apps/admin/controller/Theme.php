@@ -32,28 +32,46 @@ class Theme extends Admin {
      */
     public function index($from_type = 'oneline') {
         //$this->assign('page_config',['self'=>logic('admin/AppStore')->getAppsCenterTabList('theme')]);
-        $tab_list = [
-            'local'=>['title'=>'本地主题','href'=>url('index',['from_type'=>'local'])],
-            'oneline'=>['title'=>'主题市场','href'=>url('index',['from_type'=>'oneline'])],
-        ];
+        if (IS_AJAX) {
+             if ($from_type == 'local') {
+                $data_list = ThemeLogic::getAll();
 
-        $this->assign('tab_list',$tab_list);
-        $this->assign('from_type',$this->request->param('from_type','oneline'));
+            } elseif ($from_type == 'oneline') {
+                $data_list = $this->getCloudAppstore(input('param.paged'));
+            }
+            
+            $return = [
+                'code'=>1,
+                'msg'=>'成功获取应用',
+                'data'=>$data_list
+            ];
+            return json($return);
+        } else{
+            $tab_list = [
+                'local'=>['title'=>'本地主题','href'=>url('index',['from_type'=>'local'])],
+                'oneline'=>['title'=>'主题市场','href'=>url('index',['from_type'=>'oneline'])],
+            ];
 
+            $this->assign('tab_list',$tab_list);
+            $this->assign('from_type',$this->request->param('from_type','oneline'));
+            if ($from_type == 'local') {
+                $meta_title = '本地主题';
 
-        if ($from_type == 'local') {
-            $data_list = ThemeLogic::getAll();
-            $meta_title = '本地主题';
+            } elseif ($from_type == 'oneline') {
+                $meta_title = '主题市场';
 
-        } elseif ($from_type == 'oneline') {
-            $data_list = $this->getCloudAppstore();
-            $meta_title = '主题市场';
+            }
 
+            $this->assign([
+                'meta_title'=>$meta_title,
+                'page_tips'=>'主题是前台显示的网页，系统会自动根据启用的主题来展示。当只启用了一种设备主题，系统会自动判断只显示一种！'
+            ]);
+            return $this->fetch('extension/themes');
         }
+        
 
-        $this->assign('data_list',$data_list);
-        $this->assign('meta_title',$meta_title);
-        return $this->fetch('extension/themes');
+
+        
     }
 
     /**
@@ -223,7 +241,8 @@ class Theme extends Admin {
         if (empty($store_data) || !$store_data) {
             $url        = config('eacoo_api_url').'/api/appstore/themes';
             $params = [
-                'paged'=>$paged
+                'paged'=>$paged,
+                'eacoophp_version'=>EACOOPHP_V
             ];
             $result = curl_post($url,$params);
             $result = json_decode($result,true);

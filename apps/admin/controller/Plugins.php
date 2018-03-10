@@ -38,30 +38,46 @@ class Plugins extends Admin {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function index($from_type = 'oneline') {
-
-        $this->assign('page_config',['self'=>'<a href="'.url('admin/Hook/index').'" class="btn btn-primary btn-sm mr-10">钩子管理</a>']);
-        $tab_list = [
-            'local'=>['title'=>'本地插件','href'=>url('index',['from_type'=>'local'])],
-            'oneline'=>['title'=>'插件市场','href'=>url('index',['from_type'=>'oneline'])],
-        ];
-        $this->assign('tab_list',$tab_list);
-        $this->assign('from_type',$this->request->param('from_type','oneline'));
-        // 获取所有插件信息
-        //$paged = input('get.p',1);
-        if ($from_type == 'local') {
-            $meta_title = '本地插件';
-            //本地插件
-            $plugins = $this->pluginModel->getAll();
-            
-        } elseif($from_type == 'oneline'){
-            $meta_title = '插件市场';
-            //线上插件
-            $plugins = $this->getCloudAppstore();
-            
-        }
-        $this->assign('meta_title',$meta_title);
-        $this->assign('data_list',$plugins);
-        return $this->fetch('extension/plugins');
+        if (IS_AJAX) {
+            $paged = input('param.paged',1);
+            // 获取所有插件信息
+            //$paged = input('get.p',1);
+            if ($from_type == 'local') {
+                //本地插件
+                $data_list = $this->pluginModel->getAll();
+                $data_list = !empty($data_list) ? array_values($data_list):[];
+                $total = 0;
+            } elseif($from_type == 'oneline'){
+                //线上插件
+                list($data_list,$total) = $this->getCloudAppstore($paged);
+                
+            }
+            $return = [
+                'code'=>1,
+                'msg'=>'成功获取应用',
+                'data'=>$data_list,
+                'page_content'=>logic('admin/AppStore')->getPaginationHtml($paged,$total)
+            ];
+            return json($return);
+        } else{
+            $this->assign('page_config',['self'=>'<a href="'.url('admin/Hook/index').'" class="btn btn-primary btn-sm mr-10">钩子管理</a>']);
+            $tab_list = [
+                'local'=>['title'=>'本地插件','href'=>url('index',['from_type'=>'local']),'extra_attr'=>''],
+                'oneline'=>['title'=>'插件市场','href'=>url('index',['from_type'=>'oneline']),'extra_attr'=>''],
+            ];
+            $this->assign('tab_list',$tab_list);
+            if ($from_type == 'local') {
+                $meta_title = '本地插件';
+                
+            } elseif($from_type == 'oneline'){
+                $meta_title = '插件市场';
+                
+            }
+            $this->assign('from_type',$from_type);
+            $this->assign('meta_title',$meta_title);
+            return $this->fetch('extension/plugins');
+        } 
+        
     }
 
     /**
@@ -168,7 +184,7 @@ class Plugins extends Admin {
         $extensionObj->initInfo('plugin');
         $result = $extensionObj->install($name,$clear);
         if ($result['code']==1) {
-            $this->success('安装成功', '');
+            $this->success('安装成功', url('index',['from_type'=>'local']));
         } else{
             $this->error($result['msg'], '');
         }
@@ -263,7 +279,7 @@ class Plugins extends Admin {
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
-        $this->success('卸载成功','');
+        $this->success('卸载成功',url('index',['from_type'=>'local']));
 
     }
 
@@ -286,7 +302,7 @@ class Plugins extends Admin {
      * @date   2017-11-07
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function del($name='')
+    public function delPlugin($name='')
     {
         if ($name) {
             if (!is_writable(PLUGIN_PATH.$name)) {
@@ -346,16 +362,20 @@ class Plugins extends Admin {
      */
     private function getCloudAppstore($paged = 1)
     {
+        $total = 20;
         $store_data = cache('eacoo_appstore_plugins_'.$paged);
         if (empty($store_data) || !$store_data) {
             $url        = config('eacoo_api_url').'/api/appstore/plugins';
             $params = [
-                'paged'=>$paged
+                'paged'=>$paged,
+                'eacoophp_version'=>EACOOPHP_V
             ];
             $result = curl_post($url,$params);
             $result = json_decode($result,true);
             $store_data = $result['data'];
+            $total = 20;
             cache('eacoo_appstore_plugins_'.$paged,$store_data,3600);
+            cache('eacoo_appstore_plugins_info',['total'=>$total],3600);
         }
         if (!empty($store_data)) {
             $extensionObj = new Extension();
@@ -383,6 +403,6 @@ class Plugins extends Admin {
                 //$val['right_button'] .= '<a class="btn btn-info btn-sm" href="http://www.eacoo123.com" target="_blank">更多详情</a> ';
             }
         }
-        return $store_data;
+        return [$store_data,$total];
     }
 }

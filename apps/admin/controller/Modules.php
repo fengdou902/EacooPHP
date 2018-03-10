@@ -35,27 +35,43 @@ class Modules extends Admin {
 	 */
 	public function index($from_type = 'oneline') {
         //$this->assign('page_config',['self'=>logic('admin/AppStore')->getAppsCenterTabList('module')]);
-        
-		$tab_list = [
-            'local'=>['title'=>'本地模块','href'=>url('index',['from_type'=>'local'])],
-            'oneline'=>['title'=>'模块市场','href'=>url('index',['from_type'=>'oneline'])],
-        ];
+        if (IS_AJAX) {
+            $paged = input('param.paged',1);
+             if ($from_type == 'local') {
+                $data_list = ModuleLogic::getAll();
+                $total = 0;
+            } elseif ($from_type == 'oneline') {
+                list($data_list,$total) = $this->getCloudAppstore($paged);
 
-        $this->assign('tab_list',$tab_list);
-        $this->assign('from_type',$this->request->param('from_type','oneline'));
+            }
+            $return = [
+                'code'=>1,
+                'msg'=>'成功获取应用',
+                'data'=>$data_list,
+                'page_content'=>logic('admin/AppStore')->getPaginationHtml($paged,$total)
+            ];
+            return json($return);
+        } else{
+            $tab_list = [
+                'local'=>['title'=>'本地模块','href'=>url('index',['from_type'=>'local'])],
+                'oneline'=>['title'=>'模块市场','href'=>url('index',['from_type'=>'oneline'])],
+            ];
+             if ($from_type == 'local') {
+                $meta_title = '本地模块';
 
-        if ($from_type == 'local') {
-        	$data_list = ModuleLogic::getAll();
-        	$meta_title = '本地模块';
+            } elseif ($from_type == 'oneline') {
+                $meta_title = '模块市场';
 
-        } elseif ($from_type == 'oneline') {
-        	$data_list = $this->getCloudAppstore();
-        	$meta_title = '模块市场';
-
+            }
+            $this->assign('tab_list',$tab_list);
+            $this->assign('from_type',$this->request->param('from_type','oneline'));
+            $this->assign('meta_title',$meta_title);
+            return $this->fetch('extension/modules');
         }
-		 $this->assign('meta_title',$meta_title);
-		 $this->assign('data_list',$data_list);
-        return $this->fetch('extension/modules');
+		
+
+       
+		 
 	}
 
 	/**
@@ -233,9 +249,9 @@ class Modules extends Admin {
 	                    $this->error('卸载失败，原因：模块静态资源目录不可写');
 	                }
 	            }
-	            $this->success('卸载成功','');
+	            $this->success('卸载成功',url('index',['from_type'=>'local']));
 			} else {
-				$this->success('卸载成功，相关数据未卸载！','');
+				$this->success('卸载成功，相关数据未卸载！',url('index',['from_type'=>'local']));
 			}
 		} else {
 			$this->error('卸载失败', '');
@@ -409,16 +425,20 @@ class Modules extends Admin {
      */
     private function getCloudAppstore($paged = 1)
     {
+        $total = 12;
         $store_data = cache('eacoo_appstore_modules_'.$paged);
         if (empty($store_data) || !$store_data) {
             $url        = config('eacoo_api_url').'/api/appstore/modules';
             $params = [
-                'paged'=>$paged
+                'paged'=>$paged,
+                'eacoophp_version'=>EACOOPHP_V
             ];
             $result = curl_post($url,$params);
             $result = json_decode($result,true);
             $store_data = $result['data'];
+            $total = 12;
             cache('eacoo_appstore_modules_'.$paged,$store_data,3600);
+            cache('eacoo_appstore_modules_info',['total'=>$total],3600);
         }
         if (!empty($store_data)) {
         	$extensionObj = new Extension();
@@ -445,6 +465,6 @@ class Modules extends Admin {
                 //$val['right_button'] .= '<a class="btn btn-info btn-sm" href="http://www.eacoo123.com" target="_blank">更多详情</a> ';
             }
         }
-        return $store_data;
+        return [$store_data,$total];
     }
 }

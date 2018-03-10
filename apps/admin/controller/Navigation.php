@@ -11,7 +11,6 @@
 namespace app\admin\controller;
 
 use app\common\model\Nav as NavModel;
-use app\common\builder\Builder;
 use eacoo\Tree;
 
 class Navigation extends Admin {
@@ -41,11 +40,11 @@ class Navigation extends Admin {
         return builder('List')
                 ->setMetaTitle('前台导航管理')
                 ->addTopBtn('addnew')  // 添加新增按钮
-                ->addTopBtn('resume',['model'=>'auth_rule'])  // 添加启用按钮
-                ->addTopBtn('forbid',['model'=>'auth_rule'])  // 添加禁用按钮
-                ->addTopBtn('delete',['model'=>'auth_rule'])  // 添加删除按钮
+                ->addTopBtn('resume',['model'=>'Nav'])  // 添加启用按钮
+                ->addTopBtn('forbid',['model'=>'Nav'])  // 添加禁用按钮
+                ->addTopBtn('delete',['model'=>'Nav'])  // 添加删除按钮
                 ->addTopButton('self', $move_position_attr) //移动菜单位置
-                ->addTopBtn('sort',['model'=>'auth_rule','href'=>url('sort')])  // 添加排序按钮
+                ->addTopBtn('sort',['model'=>'Nav','href'=>url('sort')])  // 添加排序按钮
                 //->setSearch('', url('rule'))
                 ->keyListItem('id','ID')
                 ->keyListItem('title_show','名称')

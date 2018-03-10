@@ -69,8 +69,8 @@ class Tree {
 			}
 		}
 	}
-
-	protected function cat_empty_deal($cat, $next_parentid, $pid='pid', $empty = "&nbsp;&nbsp;&nbsp;&nbsp;") {
+	
+	protected function catEmptyDeal($cat, $next_parentid, $pid='pid', $empty = "&nbsp;&nbsp;&nbsp;&nbsp;") {
 	    $str = "";
 	    if ($cat[$pid]) {
 	        for ($i=2; $i < $cat['level']; $i++) {
@@ -89,13 +89,13 @@ class Tree {
 		if (empty($list)) {
 			return false;
 		}
-		$list = $this->list_to_tree($list,$pk,$pid,'_child',$root);
+		$list = $this->listToTree($list,$pk,$pid,'_child',$root);
 		$this->formatTree = $data = [];
 		$this->_toFormatTree($list);
 		foreach ($this->formatTree as $key => $value) {
 			$index = ($key+1);
 			$next_parentid = isset($this->formatTree[$index][$pid]) ? $this->formatTree[$index][$pid] : '';
-			$value['level_show'] = $this->cat_empty_deal($value, $next_parentid);
+			$value['level_show'] = $this->catEmptyDeal($value, $next_parentid);
 			$value['title_show'] = $value['level_show'].$value[$title];
 			$data[] = $value;
 		}

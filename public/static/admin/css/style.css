@@ -134,7 +134,7 @@ label.radio-label1{padding-left: 0;}
 /*应用扩展*/
 .extension-tab{}
 .extension-tab .info-box-number{font-weight: normal;font-size: 14px;}
-.extension-item{margin-bottom: 20px;}
+.extension-item{margin-bottom: 15px;}
 .extension-item .app-meta-mark{left: 8px;top: 3px;z-index: 999;}
 
 .app-manage-nav{margin:10px;color: #666;font-size: 16px;border-right: 1px solid #ddd;}

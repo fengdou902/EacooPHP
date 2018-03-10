@@ -92,7 +92,7 @@ class Plugins extends Model {
                 case -1:  // 未安装
                     $val['status'] = '<i class="fa fa-trash" style="color:red"></i>';
                     $val['right_button']  = '<a class="btn btn-primary btn-sm app-install-before" href="javascript:void(0)" data-type="plugins" data-name="'.$val['name'].'" >安装</a>';
-                    $val['right_button']  .= '<a class="btn btn-danger btn-sm ajax-get confirm ml-5" confirm-info="您确定要删除该插件吗？" href="'.url('del',['name'=>$val['name']]).'">删除</a>';
+                    $val['right_button']  .= '<a class="btn btn-danger btn-sm ajax-get confirm ml-5" confirm-info="您确定要删除该插件吗？" href="'.url('delPlugin',['name'=>$val['name']]).'">删除</a>';
                     break;
                 case 0:  // 禁用
                     $val['status'] = '<i class="fa fa-ban" style="color:red"></i>';

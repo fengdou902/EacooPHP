@@ -1000,12 +1000,18 @@ class Extension extends Admin {
                         }
                         $this->appExtensionPath = $this->appsPath . $name . DS;
                         $info_file = $this->appExtensionPath . 'install/info.json';
-                        $info = $this->getInfoByFile($info_file);
-                        $info_flag = $this->checkInfoFile($info_file);
-                        if (!$info || !$info_flag) {
-                            \think\Log::record('应用'.$name.'的信息缺失！');
+                        
+                        try {
+                            $info      = $this->getInfoByFile($info_file);
+                            $info_flag = $this->checkInfoFile($info_file);
+                            if (!$info || !$info_flag) {
+                                throw new \Exception('应用'.$name.'的信息缺失！', 0);
+                            }
+                        } catch (\Exception $e) {
+                            setAppLog($e->getMessage(),'Extension','info');
                             continue;
                         }
+                        
                         if (!$this->appExtensionModel->where('name',$name)->find()) $info['status']=3;
 
                         $list[$name] = $info;

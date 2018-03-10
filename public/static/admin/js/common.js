@@ -414,7 +414,7 @@ function setAttachmentInputVal(inputName,ids,srcs) {
  */
 function setAttachmentMultipleVal(inputName,ids,content) {
      //插入数据ids
-    var field_ids=$("#"+inputName).val();    
+    var field_ids = $("#"+inputName).val();    
     $("#"+inputName).val(field_ids+ids);
 
     $('#'+inputName+'-gallery-box').addClass('gallery-box-bg').append(content);
