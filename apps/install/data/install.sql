@@ -3,18 +3,12 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 2018-03-05 04:48:27
+-- Generation Time: 2018-03-11 14:41:31
 -- 服务器版本： 5.7.15
 -- PHP Version: 7.0.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `eacoophp`
@@ -95,8 +89,8 @@ CREATE TABLE `eacoo_attachment` (
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '文件名',
   `path` varchar(255) NOT NULL DEFAULT '' COMMENT '文件路径',
   `url` varchar(255) NOT NULL DEFAULT '' COMMENT '文件链接（暂时无用）',
-  `location` varchar(15) NOT NULL DEFAULT '' COMMENT '文件存储位置(驱动)',
-  `path_type` varchar(20) DEFAULT 'picture' COMMENT '路径类型',
+  `location` varchar(15) NOT NULL DEFAULT '' COMMENT '文件存储位置(或驱动)',
+  `path_type` varchar(20) DEFAULT 'picture' COMMENT '路径类型，存储在uploads的哪个目录中',
   `ext` char(4) NOT NULL DEFAULT '' COMMENT '文件类型',
   `mime_type` varchar(60) NOT NULL DEFAULT '' COMMENT '文件mime类型',
   `size` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '文件大小',
@@ -119,10 +113,10 @@ INSERT INTO `eacoo_attachment` (`id`, `uid`, `name`, `path`, `url`, `location`, 
 (2, 1, 'gerxiangimg200x200.jpg', '/uploads/Editor/Picture/2016-06-12/575d4bfb09961.jpg', '', 'local', 'editor', 'jpg', '', 5291, 'gerxiangimg200x200', '4db879c357c4ab80c77fce8055a0785f', '480eb2e097397856b99b373214fb28c2f717dacf', 0, 1465732090, 1465732090, 99, 1),
 (3, 1, 'oraclmysqlzjfblhere.jpg', '/uploads/Editor/Picture/2016-06-12/575d4c691e976.jpg', '', 'local', 'editor', 'jpg', '', 23866, 'mysql', '5a3a5a781a6d9b5f0089f6058572f850', 'a17bfe395b29ba06ae5784486bcf288b3b0adfdb', 0, 1465732201, 1465732201, 99, 1),
 (4, 1, 'logo.png', '/logo.png', '', 'local', 'picture', 'jpg', '', 40000, 'eacoophp-logo', '', '', 0, 1465732201, 1465732201, 99, 1),
-(6, 1, '功能表格', '/uploads/attachment/2016-07-13/5785daaa2f2e6.xlsx', '', 'local', 'file', 'xlsx', '', 11399, NULL, '5fd89f172ca8a95fa13b55ccb24d5971', 'b8706af3fa59ef0fc65675e40131f25e12f94664', 0, 1468390058, 1468390058, 99, 1),
-(8, 1, '会员数据2016-06-30 18_44_14', '/uploads/attachment/2016-07-13/5785dce2e15c1.xls', '', 'local', 'file', 'xls', '', 173387, NULL, '9ff55acddd75366d20dcb931eb1d87ea', 'acf5daf769e6ba06854002104bfb8c2886da97af', 0, 1468390626, 1468390626, 99, 1),
-(10, 1, '苹果短信-三全音 - 铃声', '/uploads/attachment/2016-07-27/579857b5aca95.mp3', '', 'local', 'file', 'mp3', '', 19916, NULL, 'bab00edb8d6a5cf4de5444a2e5c05009', '73cda0fb4f947dcb496153d8b896478af1247935', 0, 1469601717, 1469601717, 99, 1),
-(12, 1, 'music', '/uploads/attachment/2016-07-28/57995fe9bf0da.mp3', '', 'local', 'file', 'mp3', '', 160545, NULL, '935cd1b8950f1fdcd23d47cf791831cf', '73c318221faa081544db321bb555148f04b61f00', 0, 1469669353, 1469669353, 99, 1),
+(6, 1, '功能表格', '/uploads/file/2016-07-13/5785daaa2f2e6.xlsx', '', 'local', 'file', 'xlsx', '', 11399, NULL, '5fd89f172ca8a95fa13b55ccb24d5971', 'b8706af3fa59ef0fc65675e40131f25e12f94664', 0, 1468390058, 1468390058, 99, 1),
+(8, 1, '会员数据2016-06-30 18_44_14', '/uploads/file/2016-07-13/5785dce2e15c1.xls', '', 'local', 'file', 'xls', '', 173387, NULL, '9ff55acddd75366d20dcb931eb1d87ea', 'acf5daf769e6ba06854002104bfb8c2886da97af', 0, 1468390626, 1468390626, 99, 1),
+(10, 1, '苹果短信-三全音 - 铃声', '/uploads/file/2016-07-27/579857b5aca95.mp3', '', 'local', 'file', 'mp3', '', 19916, NULL, 'bab00edb8d6a5cf4de5444a2e5c05009', '73cda0fb4f947dcb496153d8b896478af1247935', 0, 1469601717, 1469601717, 99, 1),
+(12, 1, 'music', '/uploads/file/2016-07-28/57995fe9bf0da.mp3', '', 'local', 'file', 'mp3', '', 160545, NULL, '935cd1b8950f1fdcd23d47cf791831cf', '73c318221faa081544db321bb555148f04b61f00', 0, 1469669353, 1469669353, 99, 1),
 (13, 1, '7751775467283337', '/uploads/picture/2016-09-26/57e8dc9d29b01.jpg', '', 'local', 'picture', 'jpg', '', 70875, NULL, '3e3bfc950aa0b6ebb56654c15fe8e392', 'c75e70753eaf36aaee10efb3682fdbd8f766d32d', 0, 1474878621, 1474878621, 99, 1),
 (14, 1, '4366486814073822', '/uploads/picture/2016-09-26/57e8ddebaafff.jpg', '', 'local', 'picture', 'jpg', '', 302678, NULL, 'baf2dc5ea7b80a6d73b20a2c762aec1e', 'd73fe63f5c179135b2c2e7f174d6df36e05ab3d8', 0, 1474878955, 1474878955, 99, 1),
 (15, 1, 'wx1image_14751583274385', '/uploads/picture/2016-09-29/wx1image_14751583274385.jpg', '', 'local', 'picture', 'jpg', '', 311261, NULL, '', '', 0, 1475158327, 1475158327, 99, 1),
@@ -385,8 +379,8 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `group`, 
 (39, 'mail_captcha_template_content', '验证码邮件模板内容', '<p><span style="font-family: 微软雅黑; font-size: 14px;">您的验证码为{$verify}验证码，账号为{$account}。</span></p>', '', 8, 0, 'textarea', '验证码邮件模板内容部分', 1467818435, 1467818435, 0, 1),
 (40, 'attachment_options', '附件配置选项', '{"driver":"local","file_max_size":"2097152","file_exts":"doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,bz2,7z","file_save_name":"uniqid","image_max_size":"2097152","image_exts":"gif,jpg,jpeg,bmp,png","image_save_name":"uniqid","page_number":"24","widget_show_type":"0","cut":"1","small_size":{"width":"150","height":"150"},"medium_size":{"width":"320","height":"280"},"large_size":{"width":"560","height":"430"},"watermark_scene":"2","watermark_type":"1","water_position":"9","water_img":"\\/logo.png","water_opacity":"80"}', '', 9, 0, 'json', '以JSON格式保存', 1467858734, 1519804860, 0, 1),
 (42, 'user_deny_username', '保留用户名和昵称', '管理员,测试,admin,垃圾', '', 7, 0, 'textarea', '禁止注册用户名和昵称，包含这些即无法注册,用&quot; , &quot;号隔开，用户只能是英文，下划线_，数字等', 1468493201, 1468493201, 0, 1),
-(43, 'verify_open', '验证码配置', 'reg,login,reset', 'reg:注册显示\r\nlogin:登陆显示\r\nreset:密码重置', 4, 0, 'checkbox', '验证码开启配置', 1468494419, 1506099586, 0, 1),
-(44, 'verify_type', '验证码类型', '2', '1:中文\r\n2:英文\r\n3:数字\r\n4:英文+数字', 4, 0, 'select', '验证码类型', 1468494591, 1506099586, 0, 1),
+(43, 'captcha_open', '验证码配置', 'reg,login,reset', 'reg:注册显示\r\nlogin:登陆显示\r\nreset:密码重置', 4, 0, 'checkbox', '验证码开启配置', 1468494419, 1506099586, 0, 1),
+(44, 'captcha_type', '验证码类型', '4', '1:中文\r\n2:英文\r\n3:数字\r\n4:英文+数字', 4, 0, 'select', '验证码类型', 1468494591, 1506099586, 0, 1),
 (45, 'web_site_subtitle', '网站副标题', '基于ThinkPHP5的开发框架', '', 6, 0, 'textarea', '用简洁的文字描述本站点（网站口号、宣传标语、一句话介绍）', 1468593713, 1507036190, 2, 1),
 (46, 'cache', '缓存配置', '{"type":"File","path":"\\/Library\\/WebServer\\/Documents\\/EacooPHP\\/runtime\\/cache\\/","prefix":"","expire":"0"}', '', 9, 0, 'json', '以JSON格式保存', 1518696015, 1518696015, 0, 1),
 (47, 'session', 'Session配置', '{"type":"","prefix":"eacoophp_","auto_start":"1"}', '', 9, 0, 'json', '以JSON格式保存', 1518696015, 1518696015, 99, 1),
@@ -394,7 +388,7 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `group`, 
 (49, 'reg_default_roleid', '注册默认角色', '4', '', 7, 0, 'select', '', 1471681620, 1471689765, 0, 1),
 (50, 'open_register', '开放注册', '0', '1:是\r\n0:否', 7, 0, 'radio', '', 1471681674, 1471681674, 0, 1),
 (56, 'meanwhile_user_online', '允许同时登录', '1', '1:是\r\n0:否', 7, 0, 'radio', '是否允许同一帐号在不同地方同时登录', 1473437355, 1473437355, 0, 1),
-(57, 'admin_collect_menus', '后台收藏菜单', '{"\\/admin.php\\/admin\\/navigation\\/index.html":{"title":"\\u524d\\u53f0\\u5bfc\\u822a\\u7ba1\\u7406"},"\\/admin.php\\/admin\\/attachment\\/setting.html":{"title":"\\u591a\\u5a92\\u4f53\\u8bbe\\u7f6e"},"\\/admin.php\\/user\\/user\\/index.html":{"title":"\\u7528\\u6237\\u5217\\u8868"},"\\/admin.php\\/admin\\/auth\\/index.html":{"title":"\\u89c4\\u5219\\u7ba1\\u7406"},"\\/admin.php\\/admin\\/modules\\/index.html":{"title":"\\u6a21\\u5757\\u5e02\\u573a"},"\\/admin.php\\/admin\\/dashboard\\/index.html":{"title":"\\u4eea\\u8868\\u76d8"}}', '', 2, 0, 'json', '在后台顶部菜单栏展示，可以方便快速菜单入口', 1518629152, 1518629152, 99, 1),
+(57, 'admin_collect_menus', '后台收藏菜单', '{"\\/admin.php\\/admin\\/attachment\\/setting.html":{"title":"\\u591a\\u5a92\\u4f53\\u8bbe\\u7f6e"},"\\/admin.php\\/admin\\/auth\\/index.html":{"title":"\\u89c4\\u5219\\u7ba1\\u7406"},"\\/admin.php\\/admin\\/modules\\/index.html":{"title":"\\u6a21\\u5757\\u5e02\\u573a"},"\\/admin.php\\/admin\\/dashboard\\/index.html":{"title":"\\u4eea\\u8868\\u76d8"}}', '', 2, 0, 'json', '在后台顶部菜单栏展示，可以方便快速菜单入口', 1518629152, 1518629152, 99, 1),
 (58, 'minify_status', '开启minify', '1', '1:开启\r\n0:关闭', 2, 0, 'radio', '开启minify会压缩合并js、css文件，可以减少资源请求次数，如果不支持minify，可关闭', 1518716395, 1518716395, 99, 1),
 (59, 'admin_allow_login_many', '同账号多人登录后台', '0', '0:不允许\r\n1:允许', 2, 0, 'radio', '允许多个人使用同一个账号登录后台。默认：不允许', 1519785747, 1519785747, 99, 1),
 (60, 'admin_allow_ip', '仅限登录后台IP', '', '', 4, 0, 'textarea', '填写IP地址，多个IP用英文逗号隔开。默认为空，允许所有IP', 1519828685, 1519828685, 99, 1);
@@ -431,11 +425,10 @@ INSERT INTO `eacoo_hooks` (`id`, `name`, `description`, `plugins`, `type`, `crea
 (8, 'sms', '短信插件钩子', '', 2, 1518696015, 1518696015, 1),
 (10, 'ImageGallery', '图片轮播钩子', '', 1, 1518696015, 1518696015, 1),
 (11, 'JChinaCity', '每个系统都需要的一个中国省市区三级联动插件。', '', 1, 1518696015, 1518696015, 1),
-(12, 'checkIn', '签到', '', 1, 1518696015, 1518696015, 1),
 (13, 'editor', '内容编辑器钩子', '', 1, 1518696015, 1518696015, 1),
 (14, 'adminEditor', '后台内容编辑页编辑器', '', 1, 1518696015, 1518696015, 1),
 (15, 'ThirdLogin', '集成第三方授权登录，包括微博、QQ、微信、码云', '', 1, 1518696015, 1518696015, 1),
-(16, 'submitComment', '评论提交方式扩展钩子。', '', 1, 1518696015, 1518696015, 1);
+(16, 'comment', '实现本地评论功能，支持评论点赞', '', 1, 1520776468, 1520776468, 1);
 
 -- --------------------------------------------------------
 
@@ -493,8 +486,8 @@ CREATE TABLE `eacoo_modules` (
 --
 
 INSERT INTO `eacoo_modules` (`id`, `name`, `title`, `description`, `author`, `version`, `config`, `is_system`, `url`, `admin_manage_into`, `create_time`, `update_time`, `sort`, `status`) VALUES
-(1, 'user', '用户中心', '用户模块，系统核心模块，不可卸载', '心云间、凝听', '1.0.2', '', 1, 'http://www.eacoo123.com', '', 1470274208, 1509880558, 0, 1),
-(2, 'home', '前台Home', '一款基础前台Home模块', '心云间、凝听', '1.0.0', '', 1, NULL, '', 1505923537, 1515848907, 99, 1);
+(1, 'user', '用户中心', '用户模块，系统核心模块，不可卸载', '心云间、凝听', '1.0.2', '', 1, 'http://www.eacoo123.com', '', 1520095970, 1520095970, 99, 1),
+(2, 'home', '前台Home', '一款基础前台Home模块', '心云间、凝听', '1.0.0', '', 1, NULL, '', 1520095970, 1520095970, 99, 1);
 
 -- --------------------------------------------------------
 
@@ -597,7 +590,6 @@ INSERT INTO `eacoo_terms` (`term_id`, `name`, `slug`, `taxonomy`, `pid`, `seo_ti
 (5, '技术类', 'technology', 'post_category', 0, '技术类', '关键词', '自定义分类描述', 1465570866, 1516430690, 99, 1),
 (6, '大数据', 'cat_dashuju', 'post_category', 0, '大数据', '大数据', '这是描述内容', 1465576314, 1466607965, 99, 1),
 (7, '运营', 'yunying', 'post_tag', 0, '运营', '关键字', '自定义标签描述', 1466612937, 1516432746, 99, 1),
-(8, '案例展示', 'cases', 'post_category', 0, '案例展示', 'case', 'case', 1466613025, 1519315296, 99, 0),
 (9, '人物', 'renwu', 'media_cat', 0, '人物', '', '聚集多为人物显示的分类', 1466613381, 1466613381, 99, 1),
 (10, '美食', 'meishi', 'media_cat', 0, '美食', '', '', 1466613499, 1466613499, 99, 1),
 (11, '图标素材', 'icons', 'media_cat', 0, '图标素材', '', '', 1466613803, 1466613803, 99, 1),
@@ -715,7 +707,7 @@ INSERT INTO `eacoo_users` (`uid`, `username`, `number`, `password`, `nickname`, 
 (11, 'U1473391063', NULL, '031c9ffc4b280d3e78c750163d07d275', '@Gyb.', '', '', '/uploads/avatar/11/59e32aa3a75a2.jpg', 1, NULL, '', NULL, 0, NULL, 1473391063, '70d80a9f7599c81270a986abaea73e63101b3ecb', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
 (12, 'U1473396778', NULL, '4028d6d5a4cf4c3e75fc12f7d1749456', '董超楠', '', NULL, '/static/assets/img/avatar-woman.png', 2, NULL, NULL, NULL, 0, '1911132108', 1473396778, '8bbf5242300e5e8e4917b287a31efcb0c9feedfd', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
 (14, 'U1473396839', NULL, '3928540f538d3da96aee311b9a7dc4b3', '求真实者', '', NULL, '/static/assets/img/default-avatar.png', 0, NULL, NULL, NULL, 0, '2004314620', 1473396839, '8f7579a85981e1c1f726704b0865320dfadbef2e', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
-(15, 'U1473397391', NULL, '031c9ffc4b280d3e78c750163d07d275', 'peter', '', '', '/static/assets/img/avatar-woman.png', 2, NULL, '', NULL, 0, NULL, 1473397391, 'c66d3a0e16a81a13173756a2832ba424b34a095c', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
+(15, 'U1473397391', NULL, '031c9ffc4b280d3e78c750163d07d275', 'peter', '', '', '/uploads/avatar/15/5a9d1473d4c91.png', 2, NULL, '', NULL, 0, NULL, 1473397391, 'c66d3a0e16a81a13173756a2832ba424b34a095c', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
 (16, 'U1473397426', NULL, '7338af27b306b26d00adf2a006693d8c', '随风而去的心情', '', '15801182190', '/static/assets/img/avatar-man.png', 1, NULL, '大师傅', NULL, 0, NULL, 1473397426, '14855b00775de46b451c8255e6a73a5c044fc188', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
 (17, 'U1474181145', NULL, '965c4aab5c6c73930930ef1cfc6f8802', '班鱼先生', '', NULL, '/static/assets/img/avatar-man.png', 1, NULL, NULL, NULL, 0, '2938851779', 1474181146, '86d19a7b1f15db4fd25e0b64bfc17870a70f67e2', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1);
 
@@ -851,7 +843,7 @@ ALTER TABLE `eacoo_action`
 -- 使用表AUTO_INCREMENT `eacoo_action_log`
 --
 ALTER TABLE `eacoo_action_log`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=39;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键';
 --
 -- 使用表AUTO_INCREMENT `eacoo_attachment`
 --
@@ -866,7 +858,7 @@ ALTER TABLE `eacoo_auth_group`
 -- 使用表AUTO_INCREMENT `eacoo_auth_rule`
 --
 ALTER TABLE `eacoo_auth_rule`
-  MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
+  MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 --
 -- 使用表AUTO_INCREMENT `eacoo_config`
 --
