@@ -1033,7 +1033,13 @@ class Extension extends Admin {
      */
     public static function refresh($type='')
     {
-        cache('eacoo_appstore_'.$type.'s_1',null);
+        $page_num = 3;
+        $paged = 1;
+        for ($i=0; $i < 3; $i++) { 
+            $paged = $i+1;
+            cache('eacoo_appstore_'.$type.'s_'.$paged,null);
+        }
+        
         cache('local_'.$type.'s_list',null);
         return true;
     }
