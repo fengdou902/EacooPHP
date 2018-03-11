@@ -167,6 +167,13 @@ class Config {
             $system_config['app_trace']=false;
         }
         
+        //头信息
+        $header_info = $request->header();
+
+        if (!empty($header_info['apiversion']) && !empty($header_info['clientfrom']) && !empty($header_info['sign'])) {
+            $system_config['url_controller_layer']='api';
+        }
+        
         thinkConfig::set($system_config);  // 添加配置
 
     }

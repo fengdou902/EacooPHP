@@ -381,7 +381,7 @@ class Plugins extends Admin {
             $extensionObj = new Extension();
             $local_plugins = $extensionObj->localApps('plugin');
             foreach ($store_data as $key => &$val) {
-                
+                $val['from_type']    = 'oneline';
                 $val['publish_time'] = friendly_date($val['publish_time']);
                 $val['right_button'] = '<button class="btn btn-primary btn-sm app-online-install" data-name="'.$val['name'].'" data-type="plugin" href="javascript:void(0);" data-install-method="install">现在安装</button> ';
                 if (!empty($local_plugins)) {

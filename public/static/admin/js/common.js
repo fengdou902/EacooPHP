@@ -370,8 +370,10 @@ function openAttachmentLayer(obj) {
                     }
                     $.get(url('admin/Upload/getViewAttachmentHtml'), {ids:ids,nolayout:nolayout}, function (content) {
                         if (from=='wangeditor') {
+                            EditorObj = eval('editor_'+input_name);//字符串转换成变量
                             //EditorObj是定义在wangeditor定义的编辑器对象
-                            win.EditorObj.txt.append(content);
+                            //win.EditorObj.txt.append(content);
+                            win.EditorObj.cmd.do('insertHTML', content)
                         } else{
                             win.setAttachmentMultipleVal(input_name,ids,content);
                         }

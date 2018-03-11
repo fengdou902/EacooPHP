@@ -57,6 +57,7 @@ class Module extends AdminLogic
     public static function getAll() {
         // 文件夹下必须有$info_file定义的安装描述文件
         $dirs = self::getInstallFiles(APP_PATH);
+        $extensionObj = new Extension;
         foreach ($dirs as $subdir) {
             $info_file = APP_PATH.$subdir.'/install/info.json';
             if (is_file($info_file) && $subdir != '.' && $subdir != '..') {
@@ -77,6 +78,15 @@ class Module extends AdminLogic
             if (!isset($val['name'])) {
                 continue;
             }
+            $val['from_type']    = 'local';
+            $val['create_time'] = isset($val['create_time']) ? friendly_date(strtotime($val['create_time']),'mohu') :'';
+            $extensionObj->initInfo('module',$val['name']);
+            //判断是否有设置
+            $name_options = $extensionObj->getOptionsByFile($val['name']);
+            $val['is_option'] = 1;
+            if (empty($name_options)) {
+                $val['is_option'] = 0;
+            }
             if (!isset($val['right_button'])) $val['right_button']='';
             switch($val['status']){
                 case -3:  // 模块信息异常
@@ -94,14 +104,19 @@ class Module extends AdminLogic
                     break;
                 case 0:  // 禁用
                     $val['status'] = '<i class="fa fa-ban text-danger"></i>';
-                    $val['right_button'] .= '<a class="btn btn-info btn-sm ajax-get" href="'.url('updateInfo', ['id' => $val['id']]).'" >刷新</a> ';
+                    //$val['right_button'] .= '<a class="btn btn-info btn-sm ajax-get" href="'.url('updateInfo', ['id' => $val['id']]).'" >刷新</a> ';
                     $val['right_button'] .= '<a class="btn btn-success btn-sm ajax-get" href="'.url('setStatus', ['status' => 'resume', 'ids' => $val['id']]).'" >启用</a> ';
                     $val['right_button'] .= '<a class="btn btn-default btn-sm app-local-uninstall" href="javascript:void(0)" data-type="modules" data-id="'.$val['id'].'" >卸载</a> ';
                     break;
                 case 1:  // 正常
                     $val['status'] = '<i class="fa fa-check text-success"></i>';
-                    $val['right_button'] .= '<a class="btn btn-info btn-sm ajax-get" href="'.url('updateInfo?id='.$val['id']).'" >刷新</a> ';
+                    //$val['right_button'] .= '<a class="btn btn-info btn-sm ajax-get" href="'.url('updateInfo?id='.$val['id']).'" >刷新</a> ';
                     if (!$val['is_system']) {
+                        if ($val['is_option']==1) {
+                            $val['right_button']  = '<a class="btn btn-info btn-sm opentab" href="'.url('config',['name'=>$val['name']]).'" data-iframe="true" tab-title="设置-'.$val['title'].'" tab-name="navtab-collapse-app-modules-option-'.$val['id'].'" >设置</a> ';
+                        } else{
+                            $val['right_button'] = '';
+                        }
                         $val['right_button'] .= '<a class="btn btn-warning btn-sm ajax-get" href="'.url('setStatus', ['status' => 'forbid', 'ids' => $val['id']]).'" >禁用</a> ';
                         $val['right_button'] .= '<a class="btn btn-default btn-sm app-local-uninstall" href="javascript:void(0)" data-type="modules" data-id="'.$val['id'].'" >卸载</a> ';
                     }

@@ -22,9 +22,7 @@ class Plugin extends Home
         $name = input('param._plugin', '', 'trim');
         if ($name) {
             $this->name = $name;
-            $extensionObj = new Extension;
-            $extensionObj->initInfo('plugin',$name);
-            $this->pluginPath = $extensionObj->appExtensionPath;
+            $this->pluginPath = PLUGIN_PATH.$name.DS;
         } else{
             $class = get_class($this);
             $path = strstr($class,substr($class, strrpos($class, '\\') + 1),true);

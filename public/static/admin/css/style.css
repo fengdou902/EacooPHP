@@ -16,6 +16,7 @@ form .form-section small{font-size: 12px;margin-left: 20px;}
 .price_color{color: #ff6600;}
 .iframe{width: 100%;height: 100%;border:0;min-height: 645px;}
 .iframe-wrapper{background-color:#ecf0f5;}
+.main-header .logo{height: 51px!important;}
 /*current theme*/
 /*.skin-blue .main-header .navbar{background-color: #fff;}
 .skin-blue .main-header .navbar .nav>li>a{color:#555;}
@@ -119,6 +120,8 @@ label.radio-label1{padding-left: 0;}
 .media-modal-pic img{max-height: 100%;max-width: 100%;}
 .media-modal-ul li{line-height: 24px;word-wrap: break-word; word-break: normal;}
 .media-modal-ul span{font-weight:normal;}
+
+.attachment_list{padding-left: 0;overflow: hidden;}
 .attachment_list li{cursor: pointer;padding-left: 8px;padding-right: 8px;}
   /* 媒体 */
 .attachment-content .col-lg-3{width: 20%;padding: 0;}

@@ -59,6 +59,8 @@ function friendly_date($sTime,$type = 'normal',$alt = 'false') {
             return intval($dDay/7) . '周前';
         } elseif( $dDay > 30 ){
             return intval($dDay/30) .'个月前';
+        } else{
+           return date("Y-m-d H:i",$sTime); 
         }
         //full: Y-m-d , H:i:s
     } elseif($type=='full'){

@@ -81,6 +81,8 @@ class Plugins extends Model {
             if (!isset($val['name'])) {
                 continue;
             }
+            $val['from_type']    = 'local';
+            $val['create_time'] = isset($val['create_time']) ? friendly_date(strtotime($val['create_time']),'mohu') :'';
             $extensionObj->initInfo('plugin',$val['name']);
             //判断是否有设置
             $name_options = $extensionObj->getOptionsByFile($val['name']);
@@ -105,7 +107,7 @@ class Plugins extends Model {
                 case 1:  // 正常
                     $val['status'] = '<i class="fa fa-check" style="color:green"></i>';
                     if ($val['is_option']==1) {
-                        $val['right_button']  = '<a class="btn btn-info btn-sm" href="'.url('config',['name'=>$val['name']]).'" data-pjax=false>设置</a> ';
+                        $val['right_button']  = '<a class="btn btn-info btn-sm opentab" href="'.url('config',['name'=>$val['name']]).'" data-iframe="true" tab-title="设置-'.$val['title'].'" tab-name="navtab-collapse-app-plugin-option-'.$val['id'].'">设置</a> ';
                     } else{
                         $val['right_button'] = '';
                     }

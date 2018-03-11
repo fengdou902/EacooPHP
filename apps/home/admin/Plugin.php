@@ -11,8 +11,6 @@
 namespace app\home\admin;
 use app\admin\controller\Admin;
 
-use app\admin\controller\Extension;
-
 /**
  * 插件控制器
  * @package app\index\home
@@ -28,9 +26,7 @@ class Plugin extends Admin
         $name = input('param._plugin', '', 'trim');
         if ($name) {
             $this->name = $name;
-            $extensionObj = new Extension;
-            $extensionObj->initInfo('plugin',$name);
-            $this->pluginPath = $extensionObj->appExtensionPath;
+            $this->pluginPath = PLUGIN_PATH.$name.DS;
         } else{
             $class = get_class($this);
             $path = strstr($class,substr($class, strrpos($class, '\\') + 1),true);

@@ -44,7 +44,7 @@
               <input type="text"  id="captcha" class=" form-control"  name="captcha" placeholder="验证码" size="10"/>
             </div>
             <div class="col-sm-4">
-              <img class="right" src="{:BASE_PATH}{:url('login/verify_img')}" id="code" height="34" onclick="verifys('code')"/>
+              <img class="right" src="{:BASE_PATH}{:url('login/verify_img')}" id="code" height="34" onclick="changeVerify()"/>
           </div>
           </div>
       </div>
@@ -87,8 +87,8 @@
       });
 })(jQuery);
 
-function verifys(code){
-			document.getElementById(code).src="{:BASE_PATH}{:url('login/verify_img',['v'=>rand_string(15)])}"; 
+function changeVerify(){
+    $('#code').attr('src',"{:BASE_PATH}{:url('login/verify_img',['v'=>rand_string(15)])}");
 }
 
 function BindEnter(obj)
@@ -143,7 +143,7 @@ $("#login").click(function(){
           window.location.href = data.url; 
         }else{
           layer.msg(data.msg, {icon:5});
-          verifys('code');
+          changeVerify();
         }
 
       }

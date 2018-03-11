@@ -6,14 +6,13 @@
 {/block}
 {block name="main-top"}
 {:logic('admin/AppStore')->getAppStoreTabs('module')}
-
   <div class="box box-solid">
     <div class="box-header with-border">
-          <h3 class="box-title">温馨提示</h3>
-          <div class="box-tools">
+        <h3 class="box-title">温馨提示</h3>
+        <div class="box-tools">
             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
             </button>
-          </div>
+        </div>
         <p class="f13 color-6 pt-5">可在线安装、卸载、禁用、启用模块，同时支持本地安装。EacooPHP已上线应用市场，你可以发布你的免费或付费扩展应用：<a href="http://www.eacoo123.com/appstore/modules" target="_blank">http://www.eacoo123.com/appstore/modules</a></p>
     </div>
     <div class="box-body no-padding">
@@ -57,11 +56,7 @@
             <h4>
             <span class="view-app-detail" data-name="<%= row.name %>" data-type="module" style="cursor: pointer;"><%= row.title %></span>
             <% if (row.mark) { %> <span class="btn bg-maroon margin btn-xs app-meta-mark">推荐</span><% } %>
-            {eq name="from_type" value="oneline"}
-                <span class="fr color-red f12">
-                    <% if (row.price>0) { %>¥<%= row.price %><% }else { %>免费<% } %>
-                </span>
-            {/eq}
+            <% if (row.from_type=='oneline') { %><span class="fr color-red f12"><% if (row.price>0) { %>¥<%= row.price %><% }else { %>免费<% } %></span><% } %>
 
             </h4>
           <p class="item-desc"><%= row.description %></p>
@@ -71,12 +66,12 @@
           </div>
         </div>
       <p class="oh w pt-10" >
-        {eq name="from_type" value="oneline"}
+        <% if (row.from_type=='oneline') { %>
         <span class="text-muted f13"><i class="fa fa-star color-warning"></i> <%= row.downloaded %></span>
-        {else/}
+        <% } else{ %>
         <span class="text-muted">
             <%= row.create_time %>
-        </span>{/eq}
+        </span><% } %>
         <span class="fr">{{@row.right_button}}</span>
       </p>
       </div>

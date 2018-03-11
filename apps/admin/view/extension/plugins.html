@@ -59,11 +59,11 @@
             <h4>
             <span class="view-app-detail" data-name="<%= row.name %>" data-type="plugin" style="cursor: pointer;"><%= row.title %></span>
             <% if (row.mark) { %> <span class="btn bg-maroon margin btn-xs app-meta-mark">推荐</span><% } %>
-            {eq name="from_type" value="oneline"}
+            <% if (row.from_type=='oneline') { %>
                 <span class="fr color-red f12">
                     <% if (row.price>0) { %>¥<%= row.price %><% }else { %>免费<% } %>
                 </span>
-            {/eq}
+            <% } %>
 
             </h4>
           <p class="item-desc"><%= row.description %></p>
@@ -73,12 +73,12 @@
           </div>
         </div>
       <p class="oh w pt-10" >
-        {eq name="from_type" value="oneline"}
+        <% if (row.from_type=='oneline') { %>
         <span class="text-muted f13"><i class="fa fa-star color-warning"></i> <%= row.downloaded %></span>
-        {else/}
+        <% } else{ %>
         <span class="text-muted">
             <%= row.create_time %>
-        </span>{/eq}
+        </span><% } %>
         <span class="fr">{{@row.right_button}}</span>
       </p>
       </div>
