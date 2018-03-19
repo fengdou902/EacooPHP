@@ -1,7 +1,7 @@
 <?php
 // 用户管理控制器
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
+// | Copyright (c) 2016-2018 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -65,7 +65,7 @@ class User extends Admin {
                 ->setListData($data_list)    // 数据列表
                 ->setListPage($total) // 数据列表分页
                 ->addRightButton('edit')//->addRightButton('forbid')
-                ->addRightButton('delete')  // 添加编辑按钮
+                ->addRightButton('forbid')  // 添加编辑按钮
                 ->fetch();
     }
 

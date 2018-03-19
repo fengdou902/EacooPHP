@@ -1,7 +1,7 @@
 <?php
 // 字符串
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
+// | Copyright (c) 2016-2018 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -123,12 +123,17 @@ function symmetry_decode($string = '', $skey = 'http://www.eacoo123.com/') {
 }
 
 /**
- * [build_user_no 根据日期生成唯一用户ID号]
+ * [build_user_no 生成唯一用户ID号]
  * @param  [int] $length [会员ID编号]
  * @return [str]         [把会一个数字串]
  */
-function build_user_no($length){
-    return substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, $length);
+function build_user_no($length, $extra = ''){
+    if (!empty($extra)) {
+        $no_code = substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))).mb_substr($extra, -5, 5, 'utf8'), 0, $length);
+    } else {
+        $no_code = substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, $length);
+    }
+    return $no_code;
 }
 
 /**
