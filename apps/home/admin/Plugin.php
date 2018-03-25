@@ -81,6 +81,8 @@ class Plugin extends Admin
         $template = $template == '' ? $action : $template;
         if (MODULE_MARK === 'admin') {
             $template = 'admin/'.$controller.'/'.$template;
+        }else{
+            $template = 'Index/'.$controller.'/'.$template;
         }
         if ($template != '') {
             if (!is_file($template)) {
