@@ -142,7 +142,17 @@ class Upload {
 
         } else {
             //不存在则上传并返回信息
-			$config          = config($upload_type.'_upload');
+			$config      = config('attachment_options');
+			$config['subName']=['date','Y-m-d'];
+			if ($upload_type=='picture') {
+				$config['maxSize']  = $config['image_max_size'];
+				$config['exts']     = $config['image_exts'];
+				$config['saveName'] = $config['image_save_name'];
+			} else{
+				$config['maxSize']  = $config['file_max_size'];
+				$config['exts']     = $config['file_exts'];
+				$config['saveName'] = $config['file_save_name'];
+			}
 			$this->path_type = $path_type;//路径类型
 	        
 	        $rootPath = $this->path_type!='picture' && $this->path_type ? './uploads/'.$this->path_type : $config['rootPath'];

@@ -141,7 +141,7 @@ function handleBuilderListAjaxEvent(object) {
     for (var i = 0; i < getSelectRows.length; i++) {
         result[i]=getSelectRows[i][key];
     }
-    console.log(getSelectRows);
+    //console.log(getSelectRows);
     $this.addClass('disabled').prop('disabled', true);
     $.post(target, {ids:result}).success(function (result) {
         handleAjax(result,$this);

@@ -19,6 +19,15 @@ use think\Exception;
  */
 class Builder extends Base {
 
+    protected $pluginName;
+    public function _initialize() {
+        parent::_initialize();
+
+        $this->pluginName = null;
+        if (input('?param._plugin')) {
+            $this->pluginName = input('param._plugin');
+        }
+    }
     /**
      * 开启Builder
      * @param  string $type 构建器名称
