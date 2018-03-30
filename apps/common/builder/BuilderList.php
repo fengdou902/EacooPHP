@@ -283,7 +283,7 @@ class BuilderList extends Builder {
         //如果请求方式不是ajax，则直接返回对象
         if (!IS_AJAX) return $this;
 
-        $model_name = !empty($attribute['model']) ? $attribute['model'] : $this->pluginName ? input('param._controller') : CONTROLLER_NAME;
+        $model_name = !empty($attribute['model']) ? $attribute['model'] : ($this->pluginName ? input('param._controller') : CONTROLLER_NAME);
         switch ($type) {
             case 'edit':  // 编辑按钮
                 // 预定义按钮属性以简化使用
@@ -299,7 +299,6 @@ class BuilderList extends Builder {
             case 'forbid':  // 改变记录状态按钮，会更具数据当前的状态自动选择应该显示启用/禁用
                 //预定义按钮属
                 $my_attribute['type'] = 'forbid';
-                $my_attribute['model'] = $model_name;
                 $my_attribute['0']['title'] = '启用';
                 $my_attribute['0']['class'] = $this->rightButtonType==1 ? 'btn btn-success btn-xs ajax-get confirm':'ajax-get confirm';
                 $my_attribute['0']['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'resume',$this->tablePrimaryKey => '__data_id__']) : url(
@@ -323,7 +322,6 @@ class BuilderList extends Builder {
             case 'hide':  // 改变记录状态按钮，会更具数据当前的状态自动选择应该显示隐藏/显示
                 // 预定义按钮属
                 $my_attribute['type'] = 'hide';
-                $my_attribute['model'] = $model_name;
                 $my_attribute['2']['title'] = '显示';
                 $my_attribute['2']['class'] = $this->rightButtonType==1 ? 'btn btn-success btn-xs ajax-get confirm':'ajax-get confirm';
                 $my_attribute['2']['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'show',$this->tablePrimaryKey => '__data_id__']) : url(
@@ -350,7 +348,6 @@ class BuilderList extends Builder {
                 $my_attribute['icon'] = 'fa fa-recycle';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-danger btn-xs ajax-get confirm':'ajax-get confirm';
                 $my_attribute['confirm-info'] = '您确定要执行回收操作吗？';
-                $my_attribute['model'] = $model_name;
                 if ($this->pluginName) {
                     $plugin     = input('param._plugin');
                     $controller = input('param._controller');
@@ -377,7 +374,6 @@ class BuilderList extends Builder {
                 // 预定义按钮属性以简化使用
                 $my_attribute['title'] = '还原';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-success btn-xs ajax-get confirm':'ajax-get confirm';
-                $my_attribute['model'] = $model_name;
                 $my_attribute['href'] = url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
                     array(
@@ -393,7 +389,6 @@ class BuilderList extends Builder {
                 $my_attribute['icon'] = 'fa fa-trash';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-danger btn-xs ajax-get confirm':'ajax-get confirm';
                 $my_attribute['confirm-info'] = '您确定要执行删除操作吗？';
-                $my_attribute['model'] = $model_name;
                 $my_attribute['href'] = url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
                     array(

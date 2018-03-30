@@ -77,7 +77,7 @@ class Auth extends Admin {
             ->setListPage($total,20) // 数据列表分页
             ->setExtraHtml(logic('Auth')->moveMenuHtml())//添加移动按钮html
             ->addRightButton('edit')      // 添加编辑按钮
-            ->addRightButton('forbid',array('model'=>'auth_rule'))// 添加启用禁用按钮
+            ->addRightButton('forbid',['model'=>'auth_rule'])// 添加启用禁用按钮
             ->alterListData(
                 array('key' => 'pid', 'value' =>'0'),
                 array('p_menu' => '无'))
