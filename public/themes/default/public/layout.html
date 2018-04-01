@@ -64,7 +64,7 @@
               {notempty name="row._child"}
                 <ul class="dropdown-menu" role="menu">
                   {volist name="row._child" id="child"}
-                    <li><a href="{:url($child.value)}">{$child.title}</a></li>
+                    <li><a href="{$child.depend_type==1?url($child['value']):plugin_url($child['value'])}">{$child.title}</a></li>
                   {/volist}
                 </ul>
               {/notempty}
