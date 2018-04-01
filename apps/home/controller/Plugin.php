@@ -72,16 +72,16 @@ class Plugin extends Home
             $plugin = input('param._plugin',$this->name);
             $action = input('param._action');
         }
-        $template = $template == '' ? $action : $template;
+        $controller = input('param._controller','');
+        $template = $template_name = $template == '' ? $controller.'/'.$action : $template;
         if (!is_file($template)) {
-
             // 获取当前主题的名称
             $current_theme_path = THEME_PATH.CURRENT_THEME.'/'; //默认主题设为当前主题
             $theme_plugin_path  = $current_theme_path.'plugins/'.$plugin.'/'; //当前主题插件文件夹路径
             $template     = $theme_plugin_path.$template . '.' .config('template.view_suffix');
             
             if (!is_file($template)) {
-                $template = $this->pluginPath. 'view/'. $template . '.' .config('template.view_suffix');
+                $template = $this->pluginPath. 'view/'. $template_name . '.' .config('template.view_suffix');
                 if (!is_file($template)) {
                     throw new \Exception('模板不存在：'.$template, 5001);
                 }

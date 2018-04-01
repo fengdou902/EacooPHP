@@ -164,7 +164,7 @@ class Config {
 
         // 移动端不显示trace
         if (IS_MOBILE==true) {
-            $system_config['app_trace']=false;
+            $system_config['app_trace'] = false;
         }
         
         //头信息
