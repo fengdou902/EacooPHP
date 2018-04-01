@@ -203,7 +203,7 @@ class Plugins extends Admin {
             ];
         foreach ($fieldList as $key => &$val) {
             if ($val['name']!='self_html') {
-                $val['value']=isset($info[$val['name']])? $info[$val['name']]:'';
+                $val['value'] = isset($info[$val['name']]) ? $info[$val['name']]:'';
             }
             
         }
@@ -225,8 +225,8 @@ class Plugins extends Admin {
         try {
             if ($id>0) {
 
-                $plugin_info = $this->pluginModel->where('id',$id)->field('name')->find();
-                $name        = $plugin_info['name'];
+                $plugin_info  = $this->pluginModel->where('id',$id)->field('name')->find();
+                $name         = $plugin_info['name'];
                 $_static_path = PUBLIC_PATH.'static/plugins/'.$name;
                 if (is_dir($_static_path)) {
                     if(!is_writable(PUBLIC_PATH.'static/plugins') || !is_writable(PLUGIN_PATH.$name)){
@@ -255,6 +255,7 @@ class Plugins extends Admin {
                     $extensionObj->initInfo('plugin',$name);
                     // 删除后台菜单
                     $extensionObj->removeAdminMenus($name,$clear);
+                    $extensionObj->removeNavigationMenus($clear);
                     if ($clear) {
                         // 卸载数据库
                         $sql_file = PLUGIN_PATH.$name.'/install/uninstall.sql';
