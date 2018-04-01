@@ -103,7 +103,7 @@ class Plugin extends Admin
         }
         if (!$model) {
             $model = input('param._controller');;
-        }dump($this->name);dump($model);
+        }
         //在插件中，先优先查找插件中的类
         $model_class = "\\plugins\\$this->name\\model\\$model";
         if (class_exists($model_class)) {
