@@ -899,8 +899,8 @@ class Extension extends Admin {
     public function removeNavigationMenus($delete=true)
     {
         $map = [
-            'depend_type'=>$this->depend_type,
-            'depend_flag'=>$this->appName
+            'depend_type' => $this->depend_type,
+            'depend_flag' => $this->appName
         ];
         if ($delete) {
             $res = NavModel::where($map)->delete();

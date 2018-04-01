@@ -81,6 +81,8 @@ class BuilderList extends Builder {
     public function addBtn($position='top',$type, $attribute = null){
         //如果请求方式是ajax，则直接返回对象
         if (IS_AJAX) return $this;
+
+        $model_name = !empty($attribute['model']) ? $attribute['model'] : ($this->pluginName ? input('param._controller') : CONTROLLER_NAME);
         switch ($type) {
             case 'addnew':  // 添加新增按钮
                 // 预定义按钮属性以简化使用
@@ -96,8 +98,7 @@ class BuilderList extends Builder {
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['icon'] = 'fa fa-play';
                 $my_attribute['class'] = 'btn btn-success ajax-table-btn confirm btn-sm';
-                $my_attribute['model'] = $attribute['model'] ? : CONTROLLER_NAME;;  // 要操作的数据模型
-                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'resume']) : url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status'=>'resume']).'?model='.$my_attribute['model'];
+                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'resume']) : url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status'=>'resume']).'?model='.$model_name;
 
                 break;
             case 'forbid':  // 添加禁用按钮(启用的反操作)
@@ -107,8 +108,7 @@ class BuilderList extends Builder {
                 $my_attribute['icon'] = 'fa fa-pause';
                 $my_attribute['class'] = 'btn btn-warning ajax-table-btn confirm btn-sm';
                 $my_attribute['confirm-info'] = '您确定要执行禁用操作吗？';
-                $my_attribute['model'] = !empty($attribute['model']) ? $attribute['model']: CONTROLLER_NAME;
-                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'forbid']) : url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'forbid']).'?model='.$my_attribute['model'];
+                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'forbid']) : url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'forbid']).'?model='.$model_name;
 
                 break;
             case 'recycle':  // 添加回收按钮(还原的反操作)
@@ -118,8 +118,7 @@ class BuilderList extends Builder {
                 $my_attribute['icon'] = 'fa fa-recycle';
                 $my_attribute['class'] = 'btn btn-danger ajax-table-btn confirm btn-sm';
                 $my_attribute['confirm-info'] = '您确定要执行回收操作吗？';
-                $my_attribute['model'] = !empty($attribute['model']) ? $attribute['model']: CONTROLLER_NAME;
-                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'recycle']) : url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'recycle']).'?model='.$my_attribute['model'];
+                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'recycle']) : url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'recycle']).'?model='.$model_name;
 
                 break;
             case 'restore':  // 添加还原按钮(回收的反操作)
@@ -128,8 +127,7 @@ class BuilderList extends Builder {
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['icon'] = 'fa fa-window-restore';
                 $my_attribute['class'] = 'btn btn-success ajax-table-btn confirm btn-sm';
-                $my_attribute['model'] = !empty($attribute['model']) ? $attribute['model']: CONTROLLER_NAME;
-                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status'=>'restore']) :  url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'restore']).'?model='.$my_attribute['model'];
+                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status'=>'restore']) :  url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'restore']).'?model='.$model_name;
 
                 break;
             case 'delete': // 添加删除按钮(我没有反操作，删除了就没有了，就真的找不回来了)
@@ -139,13 +137,12 @@ class BuilderList extends Builder {
                 $my_attribute['icon'] = 'fa fa-trash';
                 $my_attribute['class'] = 'btn btn-danger ajax-table-btn confirm btn-sm';
                 $my_attribute['confirm-info'] = '您确定要执行删除操作吗？';
-                $my_attribute['model'] = isset($attribute['model']) && $attribute['model'] ? $attribute['model']: CONTROLLER_NAME;
                 $my_attribute['href']  = $this->pluginName ? plugin_url('delete') :  url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
                     array(
                         'status' => 'delete',
                     )
-                ).'?model='.$my_attribute['model'];
+                ).'?model='.$model_name;
 
                 break;
             case 'sort':  // 添加排序按钮
@@ -290,10 +287,7 @@ class BuilderList extends Builder {
                 $my_attribute['title'] = '编辑';
                 $my_attribute['icon'] = 'fa fa-edit';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-primary btn-xs':'';
-                $my_attribute['href']  =  $this->pluginName ? plugin_url('edit',[$this->tablePrimaryKey => '__data_id__']) : url(
-                    MODULE_NAME.'/'.CONTROLLER_NAME.'/edit',
-                    [$this->tablePrimaryKey => '__data_id__']
-                );
+                $my_attribute['href']  =  $this->pluginName ? plugin_url('edit',[$this->tablePrimaryKey => '__data_id__']) : url(MODULE_NAME.'/'.CONTROLLER_NAME.'/edit',[$this->tablePrimaryKey => '__data_id__']);
 
                 break;
             case 'forbid':  // 改变记录状态按钮，会更具数据当前的状态自动选择应该显示启用/禁用
