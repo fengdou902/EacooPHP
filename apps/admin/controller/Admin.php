@@ -104,7 +104,8 @@ class Admin extends Base
         if (empty($ids)) {
             $this->error('请选择要操作的数据');
         }
-        $model_primary_key = model($model)->getPk();
+        $model = model($model);
+        $model_primary_key = $model->getPk();
         $map[$model_primary_key] = ['in',$ids];
         if ($script) {
             $map['uid'] = ['eq', is_login()];
@@ -170,7 +171,7 @@ class Admin extends Base
                 break;
             case 'delete'  :  // 删除条目
                 //action_log(0, is_login(), ['param'=>$this->request->param()],'删除操作');
-                $result = model($model)->where($map)->delete();
+                $result = $model->where($map)->delete();
                 if ($result) {
                     $this->success('删除成功，不可恢复！');
                 } else {
@@ -207,7 +208,6 @@ class Admin extends Base
             ),
             (array)$msg
         );
-        $model = model($model);
         if (method_exists($model,'editRow')) {//如果定义了该方法
             $result = $model->editRow($data,$map);
         } else{

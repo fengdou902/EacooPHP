@@ -65,7 +65,7 @@ class Menu extends Admin {
 
         return builder('list')
             ->setMetaTitle('后台菜单管理')
-            ->addTopBtn('addnew',['href'=>url('edit',['pid'=>0])])  // 添加新增按钮
+            ->addTopBtn('addnew')  // 添加新增按钮
             ->addTopBtn('resume',['model'=>'auth_rule'])  // 添加启用按钮
             ->addTopBtn('forbid',['model'=>'auth_rule'])  // 添加禁用按钮
             ->addTopBtn('delete',['model'=>'auth_rule'])  // 添加删除按钮

@@ -11,10 +11,6 @@
 namespace app\home\admin;
 use app\admin\controller\Admin;
 
-/**
- * 插件控制器
- * @package app\index\home
- */
 class Plugin extends Admin
 {
     protected $name             = '';
@@ -92,6 +88,106 @@ class Plugin extends Admin
             //$template = config('template.view_path').$template . '.' .config('template.view_suffix');
             
             echo $this->view->fetch($template, $vars, $replace, $config, $render);
+        }
+    }
+
+    /**
+     * 设置一条或者多条数据的状态
+     * @param $script 严格模式要求处理的纪录的uid等于当前登陆用户UID
+     */
+    public function setStatus($model = null, $script = false) {
+        $ids = $this->request->param('ids/a');
+        $status = $this->request->param('status');
+        if (empty($ids)) {
+            $this->error('请选择要操作的数据');
+        }
+        if (!$model) {
+            $model = input('param._controller');;
+        }
+        //在插件中，先优先查找插件中的类
+        $model_class = "\\plugins\\$this->name\\model\\$model";
+        if (class_exists($model_class)) {
+            $model = new $model_class();
+        } else{
+            $model = model($model);
+        }
+        
+        $model_primary_key = $model->getPk();
+        $map[$model_primary_key] = ['in',$ids];
+        if ($script) {
+            $map['uid'] = ['eq', is_login()];
+        }
+        switch ($status) {
+            case 'forbid' :  // 禁用条目
+                $data = ['status' => 0];
+                $this->editRow(
+                    $model,
+                    $data,
+                    $map,
+                    ['success'=>'禁用成功','error'=>'禁用失败']
+                );
+                break;
+            case 'resume' :  // 启用条目
+                $data = ['status' => 1];
+                $map  = array_merge(['status' => 0], $map);
+                $this->editRow(
+                    $model,
+                    $data,
+                    $map,
+                    array('success'=>'启用成功','error'=>'启用失败')
+                );
+                break;
+            case 'hide' :  // 隐藏条目
+                $data = array('status' => 1);
+                $map  = array_merge(array('status' => 2), $map);
+                $this->editRow(
+                    $model,
+                    $data,
+                    $map,
+                    array('success'=>'隐藏成功','error'=>'隐藏失败')
+                );
+                break;
+            case 'show' :  // 显示条目
+                $data = array('status' => 2);
+                $map  = array_merge(array('status' => 1), $map);
+                $this->editRow(
+                   $model,
+                   $data,
+                   $map,
+                   array('success'=>'显示成功','error'=>'显示失败')
+                );
+                break;
+            case 'recycle' :  // 移动至回收站
+                $data['status'] = -1;
+                $this->editRow(
+                    $model,
+                    $data,
+                    $map,
+                    array('success'=>'成功移至回收站','error'=>'删除失败')
+                );
+                break;
+            case 'restore' :  // 从回收站还原
+                $data = ['status' => 1];
+                $map  = array_merge(['status' => -1], $map);
+                $this->editRow(
+                    $model,
+                    $data,
+                    $map,
+                    array('success'=>'恢复成功','error'=>'恢复失败')
+                );
+                break;
+            case 'delete'  :  // 删除条目
+                //action_log(0, is_login(), ['param'=>$this->request->param()],'删除操作');
+                $result = $model->where($map)->delete();
+                if ($result) {
+                    $this->success('删除成功，不可恢复！');
+                } else {
+                    $this->error('删除失败');
+                }
+                break;
+            default :
+                $this->error('参数错误');
+                break;
         }
     }
 

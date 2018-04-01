@@ -299,7 +299,7 @@ class BuilderList extends Builder {
             case 'forbid':  // 改变记录状态按钮，会更具数据当前的状态自动选择应该显示启用/禁用
                 //预定义按钮属
                 $my_attribute['type'] = 'forbid';
-                $my_attribute['0']['title'] = '启用';
+                $my_attribute['0']['title'] = !empty($attribute['0']['title']) ? $attribute['0']['title'] : '启用';
                 $my_attribute['0']['class'] = $this->rightButtonType==1 ? 'btn btn-success btn-xs ajax-get confirm':'ajax-get confirm';
                 $my_attribute['0']['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'resume',$this->tablePrimaryKey => '__data_id__']) : url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
@@ -308,7 +308,7 @@ class BuilderList extends Builder {
                         'ids' => '__data_id__',
                     )
                 ).'?model='.$model_name;
-                $my_attribute['1']['title'] = '禁用';
+                $my_attribute['1']['title'] = !empty($attribute['1']['title']) ? $attribute['1']['title'] : '禁用';
                 $my_attribute['1']['class'] = $this->rightButtonType==1 ? 'btn btn-warning btn-xs ajax-get confirm':'ajax-get confirm';
                 $my_attribute['1']['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'forbid',$this->tablePrimaryKey => '__data_id__']) : url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
@@ -729,8 +729,8 @@ class BuilderList extends Builder {
                 //     break;
                 case 'array'://新增
                     if (is_array($column['param'])) {
-                        $column_array=$column['param'];
-                        $data[$column['name']] = $column_array[$data[$column['name']]];
+                        $column_array = $column['param'];
+                        $data[$column['name']] = isset($column_array[$data[$column['name']]]) ? $column_array[$data[$column['name']]]:$data[$column['name']];
                     }
                     
                     break;
