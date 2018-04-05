@@ -41,7 +41,7 @@ class Tree {
 	            } else{
 	                if (isset($refer[$parentId])) {
 	                    $parent =& $refer[$parentId];
-	                    $parent['childs'][] = $data['id'];
+	                    $parent['childs'][] = $data[$pk];
 	                    $parent[$child][] =& $list[$key];
 	                }
 	            }
@@ -85,6 +85,17 @@ class Tree {
 	    return $str;
 	}
 
+	/**
+	 * 转换成树
+	 * @param  [type] $list [description]
+	 * @param  string $title [description]
+	 * @param  string $pk [description]
+	 * @param  string $pid [description]
+	 * @param  integer $root [description]
+	 * @return [type] [description]
+	 * @date   2018-04-06
+	 * @author 心云间、凝听 <981248356@qq.com>
+	 */
 	public function toFormatTree($list,$title = 'title',$pk='id',$pid = 'pid',$root = 0){
 		if (empty($list)) {
 			return false;

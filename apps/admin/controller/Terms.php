@@ -113,7 +113,7 @@ class Terms extends Admin {
             }
 
         } else {
-            $info=[];
+            $info = [];
             if ($term_id!=0) {
                 $info = TermsModel::get($term_id);
             }

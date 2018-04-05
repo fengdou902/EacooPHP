@@ -21,7 +21,7 @@ class Terms extends Base {
     public function getParentAttr($value,$data)
     {
         $name = $this->where(['term_id'=>$data['pid']])->value('name');
-        return $name ? :'顶级分类';
+        return $name ? :'-';
     }
 
 }

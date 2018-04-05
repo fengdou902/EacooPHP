@@ -254,6 +254,7 @@ class Attachment extends Admin {
         list($data_list,$total) = model('common/Terms')->search('name,slug')->getListByPage($map,true,'sort desc,create_time desc',15);
         if (!empty($data_list)) {
             foreach ($data_list as $key => &$row) {
+                $row['parent'] = $row['parent'];
                 $row['object_count'] = logic('common/Terms')->termRelationCount($row['term_id'],'attachment');
             }
         }
