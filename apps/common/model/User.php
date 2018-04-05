@@ -20,8 +20,17 @@ class User extends Base
     protected $updateTime = '';
     // 自动完成
     protected $auto       = ['last_login_ip'];
-    protected $insert     = ['register_ip','password'];
+    protected $insert     = ['number','register_ip','password'];
     //protected $update     = ['password'];
+
+    protected function setNumberAttr($value)
+    {
+        if ($value) {
+            return build_user_no(5, $value);
+        } else {
+            return build_user_no(10);
+        }
+    }
 
     public function setRegisterIpAttr($value)
     {

@@ -144,7 +144,8 @@ class Config {
 
            // 加载Formbuilder扩展类型
             if (isset($system_config['form_item_type'])) {
-                $formbuilder_extend = explode(',', db('Hooks')->where('name','FormBuilderExtend')->value('plugins'));
+                $form_builder_hook_id = db('Hooks')->where('name','FormBuilderExtend')->value('id');
+                $formbuilder_extend = db('Hooks_extra')->where('hook_id',$form_builder_hook_id)->where('depend_type',2)->column('depend_flag');
                 if (!empty($formbuilder_extend)) {
                     $plugin_object = db('plugins');
                     foreach ($formbuilder_extend as $val) {
