@@ -52,6 +52,7 @@ class Config extends Admin {
 
         return builder('list')
                 ->setMetaTitle('配置列表')  // 设置页面标题
+                ->setPageTips('调用方式，如：<code>config("web_site_statistics")</code>，即可调用站点统计的配置信息')
                 ->addTopButton('addnew',['href'=>url('edit',['group_id'=>$group])])   // 添加新增按钮
                 //->addTopButton('resume',array('title'=>'显示'))   // 添加启用按钮
                 //->addTopButton('forbid',array('title'=>'隐藏'))   // 添加禁用按钮
@@ -151,8 +152,8 @@ class Config extends Admin {
         $tab_list = logic('admin/Config')->getTabList();
         // 构造表单名、解析options
         foreach ($data_list as &$data) {
+            $data['description'] = $data['remark'].'，配置名：<code>'.$data['name'].'</code>';
             $data['name']        = 'config['.$data['name'].']';
-            $data['description'] = $data['remark'];
             $data['confirm']     = $data['extra_class'] = $data['extra_attr']='';
             $data['options']     = parse_config_attr($data['options']);
             
@@ -160,6 +161,7 @@ class Config extends Admin {
 
         return builder('form')
                 ->setMetaTitle('系统设置')       // 设置页面标题
+                ->setPageTips('调用方式，如：<code>config("web_site_statistics")</code>，即可调用站点统计的配置信息')
                 ->setTabNav($tab_list, $group)  // 设置Tab按钮列表
                 ->setExtraItems($data_list)     // 直接设置表单数据
                 ->addButton('submit','确认',url('groupSave'))

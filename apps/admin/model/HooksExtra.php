@@ -1,5 +1,5 @@
 <?php
-// 钩子模型
+// 钩子应用依赖模型       
 // +----------------------------------------------------------------------
 // | Copyright (c) 2016-2018 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
@@ -11,11 +11,8 @@
 namespace app\admin\model;
 
 use app\common\model\Base;
-/**
- * 插件钩子模型
- * 该类参考了OneThink的部分实现
- */
-class Hooks extends Base {
 
-    
+class HooksExtra extends Base {
+   
+
 }

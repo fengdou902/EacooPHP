@@ -261,21 +261,14 @@ function url(url, params, rewrite) {
     url = url.split('/');
     if (url[0] == '' || url[0] == '@')
         url[0] = EacooPHP.root;
-    if (!url[1])
-        url[1] = 'Index';
-    if (!url[2])
-        url[2] = 'index';
-    if (!url[3])
-        url[3] = 'index';
-    if (!url[4])
-        url[4] = 'index';
-    website = website + '/' + url[0] + '/' + url[1] + '/' + url[2]+ '/' + url[3]+ '/' + url[4];
+    for(i in url){
+        website = website + '/' + url[i];
+    }
 
     if (!rewrite) {
         website = website + '.html';
     }
 
-    website = website+ '/'  + url;
     if (params) {
         params = params.join('&');
         //设置分割符，主要解决nginx兼容问题
@@ -289,7 +282,7 @@ function url(url, params, rewrite) {
     }
 
     if(typeof (window.EacooPHP.url_model)!='undefined'){
-        website = website.toLowerCase();
+        //website = website.toLowerCase();
     }
     return website;
 }

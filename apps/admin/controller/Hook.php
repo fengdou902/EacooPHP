@@ -1,5 +1,5 @@
 <?php
-// 插件后台管理控制器
+// 钩子后台管理控制器
 // +----------------------------------------------------------------------
 // | Copyright (c) 2016-2018 http://www.eacoo123.com, All rights reserved.         
 // +----------------------------------------------------------------------
@@ -12,10 +12,6 @@ namespace app\admin\controller;
 
 use app\admin\model\Plugins as PluginsModel;
 use app\admin\model\Hooks as HooksModel;
-use app\admin\model\AuthRule;
-
-use eacoo\Sql;
-use eacoo\Cloud;
 
 class Hook extends Admin {
 

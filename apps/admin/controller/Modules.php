@@ -218,6 +218,13 @@ class Modules extends Admin {
 		}
 		
 		if ($result) {
+            $hooksLogic   = logic('Hooks');
+            $hooks_update = $hooksLogic->removeHooks('module',$name);
+            if ($hooks_update === false) {
+                throw new \Exception("卸载模块所挂载的钩子数据失败", 0);
+            }
+            cache('hooks', null);
+
 			$extensionObj = new Extension;
             $extensionObj->initInfo('module',$name);
             // 删除后台菜单
@@ -356,7 +363,7 @@ class Modules extends Admin {
         if ($name!='') {
             @rmdirs(APP_PATH.$name);
             Extension::refresh('module');
-            $this->success('删除模块成功');
+            $this->success('删除模块成功',url('index',['from_type'=>'local']));
         }
         $this->error('删除模块失败');
     }

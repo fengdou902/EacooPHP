@@ -11,11 +11,9 @@
 namespace app\admin\controller;
 
 use app\admin\model\Plugins as PluginsModel;
-use app\admin\model\Hooks;
-use app\admin\model\AuthRule;
+use app\admin\model\Hooks as HooksModel;
 
 use eacoo\Sql;
-use eacoo\Cloud;
 
 class Plugins extends Admin {
 
@@ -27,7 +25,7 @@ class Plugins extends Admin {
         parent::_initialize();
         
         $this->pluginModel = new PluginsModel();
-        $this->hooksModel  = new Hooks();
+        $this->hooksModel  = new HooksModel();
     }
 
     /**
@@ -240,7 +238,8 @@ class Plugins extends Admin {
                         throw new \Exception($error_msg.'目录写入权限不足',0);
                     }
                 }
-                $hooks_update = $this->hooksModel->removeHooks($name);
+                $hooksLogic = logic('Hooks');
+                $hooks_update = $hooksLogic->removeHooks('plugin',$name);
                 if ($hooks_update === false) {
                     throw new \Exception("卸载插件所挂载的钩子数据失败", 0);
                 }
@@ -311,7 +310,7 @@ class Plugins extends Admin {
             }
             @rmdirs(PLUGIN_PATH.$name);
             Extension::refresh('plugin');
-            $this->success('删除插件成功');
+            $this->success('删除插件成功',url('index',['from_type'=>'local']));
         }
         $this->error('删除插件失败');
     }

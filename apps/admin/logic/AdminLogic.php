@@ -14,6 +14,20 @@ use app\common\logic\Base as BaseLogic;
 
 class AdminLogic extends BaseLogic {
 
+    //依赖的应用对应的类型标识
+    const DEPEND_APP_TYPE = [
+        'module' => 1,
+        'plugin' => 2,
+        'theme'  => 3
+    ];
+
+    //依赖的应用对应的类型
+    const DEPEND_TYPE_APP = [
+        1=>'module',
+        2=>'plugin',
+        3=>'theme'
+    ];
+
 	protected function initialize()
     {
         parent::initialize();

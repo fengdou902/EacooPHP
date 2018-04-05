@@ -265,12 +265,6 @@ class Extension extends Admin {
 	        $this->checkInstall();
 	        $info = $this->info;
 
-	        $hooks = $this->getDependentHooks();
-	        if (!empty($hooks)) {
-	            foreach ($hooks as $val) {
-	                $this->hooksModel->existHook($val, ['description' => $info['description']]);
-	            }
-	        }
             $uninstall_sql_status = true;
             if ($clear && $install_method!='upgrade') {
                 $sql_file = $this->appExtensionPath.'install/uninstall.sql';
@@ -296,16 +290,23 @@ class Extension extends Admin {
                 $res = $this->appExtensionModel->allowField(true)->isUpdate(false)->data($info)->save();
             }
 	        if ($res) {
-                if ($this->type=='plugin') {
-                    $hooks_update = $this->hooksModel->updateHooks($name);
-                    if (!$hooks_update) {
-                        $this->appExtensionModel->where('name',$name)->delete();
-                        throw new \Exception('更新钩子失败,请卸载后尝试重新安装');
-                    } else{
-                        cache('hooks', null);
-                    } 
-                    
+                //获取依赖的钩子
+                $hooks = $this->getDependentHooks();
+                if (!empty($hooks)) {
+                    $hooksLogic = logic('Hooks');
+                    foreach ($hooks as $val) {
+                        $hooksLogic->existHook($val, ['description' => $info['description']]);
+                    }
+                }
+  
+                $hooks_update = $hooksLogic->updateHooks($this->type,$name,$hooks);
+                if (!$hooks_update) {
+                    $this->appExtensionModel->where('name',$name)->delete();
+                    throw new \Exception('更新钩子失败,请卸载后尝试重新安装');
+                } else{
+                    cache('hooks', null);
                 } 
+
                 //设置后台菜单
                 $admin_menus = $this->getAdminMenusByFile($name);
                 if (!empty($admin_menus) && is_array($admin_menus)) {
@@ -564,15 +565,22 @@ class Extension extends Admin {
             return false;
         }
         if ($this->type=='plugin') {
-            $plugin_class = get_plugin_class($name);//获取插件名
-            if (!class_exists($plugin_class)) {
+            $hook_class = get_plugin_class($name);//获取插件名
+            if (!class_exists($hook_class)) {
                 $this->error = "未实现{$name}插件的入口文件";
                 return false;
             }
-            $plugin_obj = new $plugin_class;
-            $dependent_hooks = $plugin_obj->hooks;
-            return $dependent_hooks;
+            
+        } elseif ($this->type=='module') {
+            $hook_class = "\\app\\" . $name . "\\widget\\Hooks";
+            if (!class_exists($hook_class)) {
+                $this->error = "未实现{$name}模块的钩子文件";
+                return false;
+            }
         }
+        $hook_obj = new $hook_class;
+        $dependent_hooks = $hook_obj->hooks;
+        return $dependent_hooks;
     }
 
     /**

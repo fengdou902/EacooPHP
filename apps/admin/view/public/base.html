@@ -30,12 +30,12 @@
           <div class="box box-solid eacoo-box">
             {present name="show_box_header"}
               {eq name="show_box_header" value="1"}
-                  <div class="box-header with-border">
-                    <h3 class="box-title">{$meta_title}</h3>  {present name="page_config.help"}<a href="{$page_config.help|default=''}" class="color-6" title="帮助" target="_blank"><i class="fa fa-question-circle f15"></i></a>{/present}
-                    <div class="box-tools pull-right">{present name="page_config.self"}{$page_config.self}{/present}</div>
-                    {notempty name="tips"}<p class="f12 color-6 pt-5">提示：{$tips|default=""}</p>{/notempty}
+                  {notempty name="tips"}<div class="box-header with-border">
+                    <!-- <h3 class="box-title">{$meta_title}</h3> -->  
+                    <p class="f12 color-6 pt-5">提示：{$tips|default=""}</p>
                       
                   </div>
+                  {/notempty}
               {/eq}
             {/present}
             <!-- Tab导航 -->
