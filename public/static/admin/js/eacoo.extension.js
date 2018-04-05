@@ -92,7 +92,7 @@ $(function () {
             shade: 0.6,
             area: ['25%', '35%'],
             content: url('admin/'+app_type+'/installBefore',['name='+app_name,'load_type=iframe']), 
-            btn: ['提交'],
+            btn: ['安装'],
             yes: function(index, layero){
                 var action_url = p_layer.getChildFrame('#action_url', index).val();
                 var params = p_layer.getChildFrame('.app-form', index).serialize();
@@ -116,7 +116,7 @@ $(function () {
               shade: 0.6,
               area: ['25%', '35%'],
               content: url('admin/'+app_type+'/uninstallBefore',['id='+app_id,'load_type=iframe']), 
-              btn: ['提交'],
+              btn: ['卸载'],
               yes: function(index, layero){
                   var action_url = p_layer.getChildFrame('#action_url', index).val();
                   var params = p_layer.getChildFrame('.app-form', index).serialize();
@@ -180,7 +180,7 @@ function loadAppstore(action_url,paged) {
         } else{
             url_pa = apptype+'s';
         }
-        action_url = url('admin/'+url_pa+'/index');
+        action_url = url('admin/'+url_pa+'/index',['from_type='+from_type]);
     }
     var paged;
     if (!paged) {

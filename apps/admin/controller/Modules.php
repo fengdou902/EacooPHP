@@ -68,9 +68,6 @@ class Modules extends Admin {
             $this->assign('meta_title',$meta_title);
             return $this->fetch('extension/modules');
         }
-		
-
-       
 		 
 	}
 
@@ -167,7 +164,7 @@ class Modules extends Admin {
         $extensionObj->initInfo('module',$name);
         $result = $extensionObj->install($name,$clear);
         if ($result['code']==1) {
-        	$this->success('安装成功', '');
+        	$this->success('安装成功', url('index',['from_type'=>'local']));
         } else{
         	$this->error($result['msg'], '');
         }

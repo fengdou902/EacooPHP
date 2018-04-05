@@ -53,7 +53,7 @@ class Theme extends Admin {
             ];
 
             $this->assign('tab_list',$tab_list);
-            $this->assign('from_type',$this->request->param('from_type','oneline'));
+            
             if ($from_type == 'local') {
                 $meta_title = '本地主题';
 
@@ -61,17 +61,14 @@ class Theme extends Admin {
                 $meta_title = '主题市场';
 
             }
-
+            $this->assign('from_type',$from_type);
             $this->assign([
                 'meta_title'=>$meta_title,
                 'page_tips'=>'主题是前台显示的网页，系统会自动根据启用的主题来展示。当只启用了一种设备主题，系统会自动判断只显示一种！'
             ]);
             return $this->fetch('extension/themes');
         }
-        
-
-
-        
+         
     }
 
     /**
@@ -93,7 +90,7 @@ class Theme extends Admin {
         // 写入数据库记录
         $result = $this->themeModel->allowField(true)->isUpdate(false)->data($info)->save();
         if ($result) {
-            $this->success('安装成功', url('index'));
+            $this->success('安装成功', url('index',['from_type'=>'local']));
         } else {
             $this->error($this->themeModel->getError());
         }
@@ -135,7 +132,7 @@ class Theme extends Admin {
         $info['id'] = $id;
         //$data里包含主键id，则editData就会更新数据，否则是新增数据
         if ($this->themeModel->editData($info)) {
-            $this->success('更新成功');
+            $this->success('更新成功',url('index',['from_type'=>'local']));
         } else {
             $this->error($this->themeModel->getError());
         }
@@ -160,7 +157,7 @@ class Theme extends Admin {
             $map = [
                 'id'=>$id
             ];
-            $res = $this->themeModel->where($map)->update(['current'=>$type]);
+            $res = $this->themeModel->where($map)->cache('pc_theme')->update(['current'=>$type]);
             if (!$res) {
                 $this->error('设置当前主题失败',$this->themeModel->getError());
             }
@@ -170,7 +167,7 @@ class Theme extends Admin {
                 'current' =>$type
             ];
             if ($this->themeModel->where($map)->count() > 0) {
-                $res = $this->themeModel->where($map)->update(['current'=>0]);
+                $res = $this->themeModel->where($map)->cache('mobile_theme')->update(['current'=>0]);
                 if (!$res) {
                     throw new \Exception("设置当前主题失败".$this->themeModel->getError(), 0);
                     
@@ -181,7 +178,7 @@ class Theme extends Admin {
             $this->error($e);
         }
 
-        $this->success('前台主题设置成功！');
+        $this->success('前台主题设置成功！',url('index',['from_type'=>'local']));
         
     }
 
