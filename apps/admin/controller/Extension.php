@@ -297,16 +297,16 @@ class Extension extends Admin {
                     foreach ($hooks as $val) {
                         $hooksLogic->existHook($val, ['description' => $info['description']]);
                     }
+
+                    $hooks_update = $hooksLogic->updateHooks($this->type,$name,$hooks);
+                    if (!$hooks_update) {
+                        $this->appExtensionModel->where('name',$name)->delete();
+                        throw new \Exception('更新钩子失败,请卸载后尝试重新安装');
+                    } else{
+                        cache('hooks', null);
+                    }
                 }
   
-                $hooks_update = $hooksLogic->updateHooks($this->type,$name,$hooks);
-                if (!$hooks_update) {
-                    $this->appExtensionModel->where('name',$name)->delete();
-                    throw new \Exception('更新钩子失败,请卸载后尝试重新安装');
-                } else{
-                    cache('hooks', null);
-                } 
-
                 //设置后台菜单
                 $admin_menus = $this->getAdminMenusByFile($name);
                 if (!empty($admin_menus) && is_array($admin_menus)) {
@@ -577,9 +577,13 @@ class Extension extends Admin {
                 $this->error = "未实现{$name}模块的钩子文件";
                 return false;
             }
+        } 
+        $dependent_hooks = [];
+        if (isset($hook_class)) {
+            $hook_obj = new $hook_class;
+            $dependent_hooks = $hook_obj->hooks;
         }
-        $hook_obj = new $hook_class;
-        $dependent_hooks = $hook_obj->hooks;
+        
         return $dependent_hooks;
     }
 

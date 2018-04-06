@@ -106,7 +106,7 @@ class Theme extends Admin {
         if (!$res_count) {
             $result = ThemeModel::destroy($id);
             if ($result) {
-                $this->success('卸载成功！');
+                $this->success('卸载成功！',url('index',['from_type'=>'local']));
             } else {
                 $this->error('卸载失败',$this->themeModel->getError());
             }
@@ -224,7 +224,7 @@ class Theme extends Admin {
             }
             @rmdirs(THEME_PATH.$name);
             Extension::refresh('theme');
-            $this->success('删除主题成功');
+            $this->success('删除主题成功',url('index',['from_type'=>'local']));
         }
         $this->error('删除主题失败');
     }

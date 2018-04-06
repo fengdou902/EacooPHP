@@ -228,9 +228,9 @@ function downloadExcel($strTable,$filename)
 function upload_drivers()
 {
     $dirver_list = ['local'=>'本地'];
-    $dirvers = db('hooks')->where('name','UploadFile')->value('plugins');
-    if ($dirvers!='') {
-        $dirvers  = explode(',', $dirvers);
+    $dirver_hook_id = db('hooks')->where('name','UploadFile')->value('id');
+    if ($dirver_hook_id>0) {
+        $dirvers = db('Hooks_extra')->where('hook_id',$dirver_hook_id)->where('depend_type',2)->column('depend_flag');
         if (!empty($dirvers)) {
             foreach ($dirvers as $key => $dirver) {
                 $dirver_list[$dirver] = db('plugins')->where('name',$dirver)->value('title');
