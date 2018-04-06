@@ -219,7 +219,10 @@ class Theme extends Admin {
     public function del($name='')
     {
         if ($name) {
-            @rmdirs(APP_PATH.$name);
+            if (!is_writable(THEME_PATH.$name)) {
+                $this->error('目录权限不足，请手动删除目录');
+            }
+            @rmdirs(THEME_PATH.$name);
             Extension::refresh('theme');
             $this->success('删除主题成功');
         }
