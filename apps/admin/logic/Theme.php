@@ -51,6 +51,7 @@ class Theme extends AdminLogic
                 case '-1': //未安装
                     $val['status'] = '<i class="fa fa-download" style="color:green"></i>';
                     $val['right_button']  = '<a class="btn btn-sm btn-success ajax-get" href="'.url('install', array('name' => $val['name'])).'">安装</a>';
+                    $val['right_button']  .= '<a class="btn btn-danger btn-sm ajax-get confirm ml-5" href="'.url('del',['name'=>$val['name']]).'" >删除</a>';
                     break;
                 default :
                     $val['status'] = '<i class="fa fa-check" style="color:green"></i>';
