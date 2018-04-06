@@ -9,6 +9,7 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\common\controller;
+use think\Db;
 
 class Widget extends Base {
 
@@ -35,11 +36,27 @@ class Widget extends Base {
         $template_path = '';
         if (MODULE_MARK === 'admin') {
             $template_path = 'admin/';
+        }elseif (MODULE_MARK=='front' && is_file(APP_PATH . 'install.lock')) {
+            //主题区分pc和移动端
+            $pc_theme = Db::name('themes')->where('current', 1)->cache('pc_theme', 3600)->value('name');
+            $mobile_theme = Db::name('themes')->where('current', 2)->cache('mobile_theme', 3600)->value('name');
+            if (IS_MOBILE == true) {
+                $current_theme = !empty($mobile_theme) ? $mobile_theme : ($pc_theme ? $pc_theme : '');
+            } else {
+                $current_theme = !empty($pc_theme) ? $pc_theme : ($mobile_theme ? $mobile_theme : '');
+            }
+            //定义当前主题
+            defined('CURRENT_THEME') or define('CURRENT_THEME', $current_theme);
+            $current_theme_path = THEME_PATH . $current_theme . '/'; //默认主题设为当前主题
         }
         $template_path .= 'widget/';
         if ($template != '') {
         	$template_path .= $controller.'/'.$template;
-        	$template = $widget_view_path.$template_path. '.' .config('template.view_suffix');
+            if (MODULE_MARK === 'admin') {
+                $template = $widget_view_path.$template_path. '.' .config('template.view_suffix');
+            }elseif (MODULE_MARK=='front' && is_file(APP_PATH . 'install.lock')) {
+                $template = $current_theme_path.$module.'/'.$template_path. '.' .config('template.view_suffix');
+            }
             if (!is_file($template)) {
                 throw new \Exception('模板不存在：'.$template, 5001);
             }
