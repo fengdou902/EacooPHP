@@ -32,6 +32,7 @@ class Widget extends Base {
 		$controller = strtolower($names[3]);
 
 		$widget_view_path = APP_PATH.$module.'/view/';
+        $template_path = '';
         if (MODULE_MARK === 'admin') {
             $template_path = 'admin/';
         }
