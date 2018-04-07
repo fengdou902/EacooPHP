@@ -114,7 +114,7 @@ class Plugin extends Admin
         
         $model_primary_key = $model->getPk();
         $map[$model_primary_key] = ['in',$ids];
-        if ($script) {
+        if ($script===true) {
             $map['uid'] = ['eq', is_login()];
         }
         switch ($status) {
