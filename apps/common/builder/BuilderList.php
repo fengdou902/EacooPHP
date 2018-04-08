@@ -99,7 +99,7 @@ class BuilderList extends Builder {
                 $my_attribute['icon'] = 'fa fa-play';
                 $my_attribute['class'] = 'btn btn-success ajax-table-btn confirm btn-sm';
                 $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'resume']) : url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status'=>'resume']);
-                $my_attribute['href'] = $my_attribute['href'].'?model='.$model_name;
+                $my_attribute['href'] .= '?model='.$model_name;
                 break;
             case 'forbid':  // 添加禁用按钮(启用的反操作)
                 // 预定义按钮属性以简化使用
@@ -109,7 +109,7 @@ class BuilderList extends Builder {
                 $my_attribute['class'] = 'btn btn-warning ajax-table-btn confirm btn-sm';
                 $my_attribute['confirm-info'] = '您确定要执行禁用操作吗？';
                 $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'forbid']) : url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'forbid']);
-                $my_attribute['href'] = $my_attribute['href'].'?model='.$model_name;
+                $my_attribute['href'] .= '?model='.$model_name;
                 break;
             case 'recycle':  // 添加回收按钮(还原的反操作)
                 // 预定义按钮属性以简化使用
@@ -119,7 +119,7 @@ class BuilderList extends Builder {
                 $my_attribute['class'] = 'btn btn-danger ajax-table-btn confirm btn-sm';
                 $my_attribute['confirm-info'] = '您确定要执行回收操作吗？';
                 $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'recycle']) : url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'recycle']);
-                $my_attribute['href'] = $my_attribute['href'].'?model='.$model_name;
+                $my_attribute['href'] .= '?model='.$model_name;
                 break;
             case 'restore':  // 添加还原按钮(回收的反操作)
                 // 预定义按钮属性以简化使用
@@ -128,7 +128,7 @@ class BuilderList extends Builder {
                 $my_attribute['icon'] = 'fa fa-window-restore';
                 $my_attribute['class'] = 'btn btn-success ajax-table-btn confirm btn-sm';
                 $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status'=>'restore']) :  url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'restore']);
-                $my_attribute['href'] = $my_attribute['href'].'?model='.$model_name;
+                $my_attribute['href'] .= '?model='.$model_name;
                 break;
             case 'delete': // 添加删除按钮(我没有反操作，删除了就没有了，就真的找不回来了)
                 // 预定义按钮属性以简化使用
@@ -143,7 +143,7 @@ class BuilderList extends Builder {
                         'status' => 'delete',
                     )
                 );
-                $my_attribute['href'] = $my_attribute['href'].'?model='.$model_name;
+                $my_attribute['href'] .= '?model='.$model_name;
                 break;
             case 'sort':  // 添加排序按钮
                 // 预定义按钮属性以简化使用
@@ -342,38 +342,28 @@ class BuilderList extends Builder {
                 $my_attribute['icon'] = 'fa fa-recycle';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-danger btn-xs ajax-get confirm':'ajax-get confirm';
                 $my_attribute['confirm-info'] = '您确定要执行回收操作吗？';
-                if ($this->pluginName) {
-                    $controller = input('param._controller');
-                    $url = plugin_url(
-                        $this->pluginName.'/'.$controller.'/setStatus',
-                        [
-                            'status' => 'recycle',
-                            'ids' => '__data_id__',
-                        ]
-                    );
-                } else{
-                    $url = url(
-                        MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
-                        array(
-                            'status' => 'recycle',
-                            'ids' => '__data_id__',
-                        )
-                    );
-                }
-                $my_attribute['href'] = $url.'?model='.$model_name;
+                $my_attribute['href'] = $this->pluginName ? plugin_url('setStatus',['status'=>'recycle','ids' => '__data_id__']) :  url(
+                    MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
+                    array(
+                        'status' => 'recycle',
+                        'ids' => '__data_id__',
+                    )
+                );
+                $my_attribute['href'] .= '?model='.$model_name;
 
                 break;
             case 'restore':
                 // 预定义按钮属性以简化使用
                 $my_attribute['title'] = '还原';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-success btn-xs ajax-get confirm':'ajax-get confirm';
-                $my_attribute['href'] = url(
+                $my_attribute['href'] = $this->pluginName ? plugin_url('setStatus',['status'=>'restore','ids' => '__data_id__']) :  url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
                     array(
                         'status' => 'restore',
                         'ids' => '__data_id__',
                     )
-                ).'?model='.$model_name;
+                );
+                $my_attribute['href'] .= '?model='.$model_name;
 
                 break;
             case 'delete':
@@ -382,13 +372,14 @@ class BuilderList extends Builder {
                 $my_attribute['icon'] = 'fa fa-trash';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-danger btn-xs ajax-get confirm':'ajax-get confirm';
                 $my_attribute['confirm-info'] = '您确定要执行删除操作吗？';
-                $my_attribute['href'] = url(
+                $my_attribute['href'] = $this->pluginName ? plugin_url('setStatus',['status'=>'delete','ids' => '__data_id__']) :  url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
                     array(
                         'status' => 'delete',
                         'ids' => '__data_id__',
                     )
-                ).'?model='.$model_name;
+                );
+                $my_attribute['href'] .= '?model='.$model_name;
 
                 break;
             case 'self':
