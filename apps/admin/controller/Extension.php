@@ -186,7 +186,7 @@ class Extension extends Admin {
             if (is_file($tmp_app_file))
             {
                 if ($install_method=='upgrade') {//如果是升级，先备份
-                    $this->upgradeAction($name);
+                    $this->_upgradeAction($name);
                 }
 
                 $tmpName   = $name;
@@ -307,7 +307,11 @@ class Extension extends Admin {
                     }
                 }
   
-                //设置后台菜单
+                //设置后台菜单，升级前先清空菜单
+                if ($install_method=='upgrade') {
+                    $this->removeAdminMenus($name);
+                }
+                
                 $admin_menus = $this->getAdminMenusByFile($name);
                 if (!empty($admin_menus) && is_array($admin_menus)) {
                     $this->addAdminMenus($admin_menus,$name);
@@ -364,7 +368,7 @@ class Extension extends Admin {
      * @date   2018-01-18
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function upgradeAction($name='')
+    private function _upgradeAction($name='')
     {
         if($name==''){
             $name = $this->appName;

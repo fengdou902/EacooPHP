@@ -1,0 +1,146 @@
+{extend name="$_theme_public_layout"/}
+{block name="style"}
+<style type="text/css">
+    
+    /*User home*/
+    .homebox {
+        margin-bottom: 20px;
+        font-size: 12px;
+    }
+    .card {
+        width: 100%;
+        text-align: center;
+        background: #fff;
+        padding-top: 20px;
+    }
+    .card:hover {
+        box-shadow: 0 0 5px 1px rgba(0,0,0,.3);
+    }
+    .img-circlea {
+
+    }
+    .img-circlea img {
+        border-radius: 50%;
+        width: 80px;
+    }
+    .card-heading {
+        padding-top: 20px;
+    }
+    .card-heading a {
+        color: #767676;
+    }
+    .card-actions {
+        padding-bottom: 40px;
+    }
+    .p-box {
+        margin-bottom: 15px;
+        background-color: #fff;
+    }
+    .p-cutis {
+        height: 300px;
+        overflow: hidden;
+    }
+    .p-cutis img {
+        width: 100%;
+    }
+    .p-onesinfo {
+        padding: 0 0 15px;
+        text-align: center;
+    }
+    .p-avatar, .p-avatar img {
+        border-radius: 50%;
+        -webkit-border-radius: 50%;
+        -ms-border-radius: 50%;
+        -o-border-radius: 50%;
+        border: 2px solid #FFF;
+    }
+    .p-avatar img {
+        width: 135px;
+        height: 135px;
+    }
+    .p-avatar {
+        z-index: 10;
+        width: 150px;
+        height: 150px;
+        margin: -110px auto 0;
+        padding: 5px;
+    }
+    .p-username {
+        margin: 10px 0 0;
+    }
+    .p-exchange {
+        margin: 10px 0 0;
+    }
+    .pipe {
+        margin: 0 20px;
+    }
+    .p-navs {
+        height: 50px;
+        line-height: 50px;
+        border-width: 1px 0 0;
+        background-color: #DDD;
+        border-color: #eee;
+    }
+    .p-navs ul {
+        padding: 0 25px;
+        list-style: none;
+        line-height: 50px;
+        overflow: hidden;
+    }
+    .p-navs li {
+        float: left;
+        margin: 0 -1px -1px 0;
+        border-width: 0 1px;
+        list-style: none;
+        padding: 0 25px;
+        background-color: #f35b4f;
+        color: #fff;
+        border-color: #eee;
+    }
+</style>
+{/block}
+
+{block name="main"}
+
+<div class="content-wrapper">
+    <div class="container">
+        <section class="content-header">
+        <ol class="breadcrumb">
+          {$page_config.breadcrumbs|default=''}
+        </ol>
+      </section>
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                {notempty name="user_list"}
+                {volist name="user_list" id="data"}
+                    <div class="col-xs-6 col-sm-3 col-md-3 homebox">
+                        <div class="card">
+                            <a class="img-circlea" href="{:url('user/index/home',['uid'=>$data['uid']])}">
+                                <img src="{$data.avatar}" alt="{$data.nickname}" class="avatar">
+                            </a>
+                            <div class="card-heading">
+                                <a href="{:url('/user/index/home',['uid'=>$data['uid']])}">
+                                    {$data.nickname}</strong>
+                                </a>
+                            </div>
+                            <div class="card-actions">
+                                <span class="text-muted">加入时间：{$data.reg_timestamp|friendly_date=###,'mohu'}</span>
+                            </div>
+                        </div>
+                    </div>
+                {/volist}
+                {else/}
+                <p class="tc">暂无内容</p>
+                {/notempty}
+            </div>
+        </section>
+    </div>
+</div>
+<!-- /.content-wrapper -->
+
+{/block}
+
+{block name="script"}
+
+{/block}

@@ -3,7 +3,7 @@
       <!-- Sidebar user panel -->
       <div class="user-panel">
         <div class="pull-left image">
-         <img src="{$current_user.avatar|root_full_path|default='/static/assets/img/default-avatar.svg'}" class="img-circle" alt="">
+         <a href="{:url('user/User/profile',['uid'=>$current_user['uid']])}" class="opentab" tab-name="navtab-collapse-profile" data-selftabhtml="个人资料"><img src="{$current_user.avatar|root_full_path|default='/static/assets/img/default-avatar.svg'}" class="img-circle" style="width: 100%;max-width: 45px;height: auto;" alt=""></a>
         </div>
         <div class="pull-left info">
           <p><a href="{:url('user/User/profile',['uid'=>$current_user['uid']])}" class="opentab" tab-title='个人资料' tab-name="navtab-collapse-profile">{$current_user.nickname}</a></p>
