@@ -27,7 +27,13 @@ class Nav extends Base {
 		//先从缓存中获取
 		$menus = cache("front_{$position}_navs");
 		if (!$menus) {
-			$menus = self::where('position',$position)->field('id,title,value,pid,icon,target,depend_type,depend_flag')->order('sort asc')->select();
+			$menus = self::where('position',$position)->field('id,title,value,pid,icon,target,depend_type,depend_flag,status')->order('sort asc')->select();
+			//移除不显示的导航
+			foreach ($menus as $key => $value){
+			    if($value['status'] == 0){
+              unset($menus[$key]);
+          }
+      }
 			if (!empty($menus)) {
 				$menus = collection($menus)->toArray();
 	            $tree_obj = new Tree;
