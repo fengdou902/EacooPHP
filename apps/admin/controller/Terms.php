@@ -43,20 +43,17 @@ class Terms extends Admin {
         }
         
         list($data_list,$total) = $this->termsModel->search('name,slug')->getListByPage($map,true,'sort desc,create_time desc',15);
-        $addnew_href=null;
-        if ($edit_U) {
-           $addnew_href=['href'=>$edit_U];//新增按钮URL
-        }
         if (!empty($data_list)) {
             foreach ($data_list as $key => &$row) {
                 $row['object_count'] = logic('common/Terms')->termRelationCount($row['term_id'],$from_table);
             }
         }
-        $builder = builder('List')->setMetaTitle('分类管理');
+        $builder = builder('List')
+                    ->setMetaTitle('分类管理');
         if (!empty($tab_nav)) {//构建tab
             $builder->setTabNav($tab_nav['tab_list'],$tab_nav['current']);  // 设置页面Tab导航
         }
-        return $builder->addTopButton('addnew',$addnew_href)  // 添加新增按钮
+        return $builder->addTopButton('addnew',$edit_U ? ['href'=>$edit_U],false)  // 添加新增按钮
                         ->addTopButton('resume')  // 添加启用按钮
                         ->addTopButton('forbid')  // 添加禁用按钮
                         ->addTopButton('recycle') //添加回收按钮

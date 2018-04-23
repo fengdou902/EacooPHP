@@ -18,15 +18,18 @@ class InitApp {
         defined('PUBLIC_RELATIVE_PATH') or define('PUBLIC_RELATIVE_PATH','');
         // 定义插件目录
         define('PLUGIN_PATH', ROOT_PATH . 'plugins/');
-		//定义环境类型
-        if (strpos($_SERVER["SERVER_SOFTWARE"],'nginx')!==false) {
-            define('SERVER_SOFTWARE_TYPE','nginx');
-        } elseif(strpos($_SERVER["SERVER_SOFTWARE"],'apache')!==false){
-            define('SERVER_SOFTWARE_TYPE','apache');
-        } else{
-            define('SERVER_SOFTWARE_TYPE','no');
-        }
 
+        if (!IS_CLI) {
+            //定义环境类型
+            if (strpos($_SERVER["SERVER_SOFTWARE"],'nginx')!==false) {
+                define('SERVER_SOFTWARE_TYPE','nginx');
+            } elseif(strpos($_SERVER["SERVER_SOFTWARE"],'apache')!==false){
+                define('SERVER_SOFTWARE_TYPE','apache');
+            } else{
+                define('SERVER_SOFTWARE_TYPE','no');
+            }
+        }
+        
         define('EACOOPHP_V','1.2.4');
         define('BUILD_VERSION','201804111001');//编译版本
 
@@ -46,29 +49,30 @@ class InitApp {
         //         thinkConfig::set($global_extra_functions_config);// 添加模块函数
         //     }
         // }
-        
-        //定义模版变量
-        $ec_config = [
-            'view_replace_str'=>[
-                                '__ROOT__'      => BASE_PATH.PUBLIC_RELATIVE_PATH,
-                                '__STATIC__'    => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static',
-                                '__PUBLIC__'    => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/assets',
-                                '__LIBS__'      => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/libs',
-                                '__ADMIN_CSS__' => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/css',
-                                '__ADMIN_JS__'  => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/js',
-                                '__ADMIN_IMG__' => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/img',
-                            ],
-            //404页面
-            'http_exception_template'    =>  [
-                // 定义404错误的重定向页面地址
-                404 =>  THEME_PATH.'404.html',
-                // 还可以定义其它的HTTP status
-                401 =>  THEME_PATH.'401.html',
-            ],                
-        ];
-        //定义接口地址
-        $ec_config['eacoo_api_url']='http://www.eacoo123.com';
-        thinkConfig::set($ec_config);// 添加配置
+        if (!IS_CLI) {
+            //定义模版变量
+            $ec_config = [
+                'view_replace_str'=>[
+                                    '__ROOT__'      => BASE_PATH.PUBLIC_RELATIVE_PATH,
+                                    '__STATIC__'    => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static',
+                                    '__PUBLIC__'    => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/assets',
+                                    '__LIBS__'      => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/libs',
+                                    '__ADMIN_CSS__' => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/css',
+                                    '__ADMIN_JS__'  => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/js',
+                                    '__ADMIN_IMG__' => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/img',
+                                ],
+                //404页面
+                'http_exception_template'    =>  [
+                    // 定义404错误的重定向页面地址
+                    404 =>  THEME_PATH.'404.html',
+                    // 还可以定义其它的HTTP status
+                    401 =>  THEME_PATH.'401.html',
+                ],                
+            ];
+            //定义接口地址
+            $ec_config['eacoo_api_url']='http://www.eacoo123.com';
+            thinkConfig::set($ec_config);// 添加配置
+        }
 	}
 
 }

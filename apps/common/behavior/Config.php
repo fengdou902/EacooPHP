@@ -176,7 +176,7 @@ class Config {
         }
         
         thinkConfig::set($system_config);  // 添加配置
-
+        
     }
 
     /**
