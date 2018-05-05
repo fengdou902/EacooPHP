@@ -201,6 +201,6 @@ function setAppLog($content='', $scene_name='default', $type='info')
     $path = dirname($file);
     !is_dir($path) && mkdir($path, 0755, true);
     $content = $content." \r\n";
-    file_put_contents($file,$base_message.$content,FILE_APPEND);
+    file_put_contents($file,$base_message.$content,FILE_APPEND|LOCK_EX);
     return true;
 }

@@ -48,6 +48,7 @@ class Terms extends Admin {
                 $row['object_count'] = logic('common/Terms')->termRelationCount($row['term_id'],$from_table);
             }
         }
+        
         $builder = builder('List')
                     ->setMetaTitle('分类管理');
         if (!empty($tab_nav)) {//构建tab
