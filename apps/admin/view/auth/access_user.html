@@ -1,0 +1,83 @@
+  {extend name="$_admin_public_base_"/}
+  {block name="style"}{/block}
+
+  {block name="main"}
+    <div class="eacoo-tabs builder-form-tabs">
+        <ul class="nav nav-tabs">
+            <li class=""><a href="{:url('roleedit',array('group_id'=>$group_id))}">角色信息</a></li>
+            <li class=""><a href="{:url('access',array('group_id'=>$group_id))}">权限分配</a></li>
+            <li class="active"><a href="{:url('accessUser',['group_id'=>$group_id])}">成员授权</a></li>
+            <li class="right form-group mt0 mr20">
+                <select name="group" class="form-control col-md-8">
+                    {volist name="auth_group" id="vo"}
+                        <option value="{:url('AuthManager/user',['group_id'=>$vo['id'],'group_name'=>$vo['title']])}" {eq name="vo['id']" value="$this_group['id']"}selected{/eq} >{$vo.title}</option>
+                    {/volist}
+                </select>
+            </li>
+        </ul>
+    <div class="form-group"></div>
+    </div>
+
+    <div class="builder-container listbuilder-box">
+
+    <div class="row">    
+
+        <div class="builder-table">      
+            <!-- 数据列表 -->
+            <div class="col-sm-12">
+            <table class="table table-responsive table-hover dataTable">
+            <thead>
+                <tr>
+                <th class="">UID</th>
+                <th class="">昵称</th>
+                <th class="">最后登录时间</th>
+                <th class="">最后登录IP</th>
+                <th class="">状态</th>
+                <th class="">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {volist name="_list" id="vo"}
+                <tr>
+                    <td>{$vo.uid} </td>
+                    <td>{$vo.nickname}</td>
+                    <td><span>{$vo.last_login_time|time_format}</span></td>
+                    <td><span>{$vo.last_login_ip}</span></td>
+                    <td>{switch name="vo.status"}
+                            {case value="-1"}删除{/case}
+                            {case value="0"}禁用{/case}
+                            {case value="1"}正常{/case}
+                            {case value="2"}待审核{/case}
+                            {case value="3"}草稿{/case}
+                            {default /}未知
+                        {/switch}</td>
+                    <td><a href="{:url('auth/removeFromGroup?uid='.$vo['uid'].'&group_id='.input('group_id'))}" class="ajax-get">解除授权</a>
+
+                        </td>
+                </tr>
+                {/volist}
+            </tbody>
+            </table>
+
+            </div>          
+    </div>   
+    <div class="main-title">
+        <div class="page_nav col-md-8">
+            {$_list->render()}
+        </div>
+        <div id="add-to-group" class="tools col-md-4">
+            <form class="add-user" action="{:url('Auth/addToGroup')}" method="post" enctype="application/x-www-form-urlencoded" >
+            <div class="form-group">
+                <div class="col-md-10">
+                    <input class="form-control" type="text" name="uid" placeholder="请输入uid,多个用英文逗号分隔">
+                </div>
+                <input type="hidden" name="group_id" value="{:input('group_id')}">
+                <button type="submit" class="btn btn-info btn-raised btn-sm ajax-post col-md-2" target-form="add-user">新 增</button>
+            </div>
+            </form>
+        </div>
+    </div> 
+   </div>
+ </div>
+
+  {/block}
