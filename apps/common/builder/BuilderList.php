@@ -273,10 +273,11 @@ class BuilderList extends Builder {
      * 因为添加右侧按钮的时候你并没有办法知道数据ID，于是我们采用__data_id__作为约定的标记
      * __data_id__会在fetch方法里自动替换成数据的真实ID
      * @param string $type 按钮类型，edit/forbid/recycle/restore/delete/self六种取值
-     * @param array  $attr 按钮属性，一个定了标题/链接/CSS类名等的属性描述数组
+     * @param array  $attribute 按钮属性，一个定了标题/链接/CSS类名等的属性描述数组
+     * @param array  $condition 条件表达式
      * @return $this
      */
-    public function addRightButton($type, $attribute = null) {
+    public function addRightButton($type, $attribute = null,$condition=[]) {
         //如果请求方式不是ajax，则直接返回对象
         if (!IS_AJAX) return $this;
 
@@ -413,6 +414,11 @@ class BuilderList extends Builder {
             $my_attribute['href'] = 'javascript:layer.open({type: 2,title: \''.$my_attribute['title'].'\',shadeClose: true,shade: 0.8,area: [\''.$layer_width.'\',\''.$layer_height.'\'],content:\''.$my_attribute['href'].'?page_type=iframe\'});';
             unset($my_attribute['layer']);
         }
+
+        if (!empty($condition)) {
+            $my_attribute['condition'] = $condition;
+        }
+
         // 这个按钮定义好了把它丢进按钮池里
         $this->rightButtonList[] = $my_attribute;
         return $this;
@@ -572,6 +578,13 @@ class BuilderList extends Builder {
             }
             
             foreach ($this->rightButtonList as $right_button) {
+                //如果条件存在
+                if (isset($right_button['condition']) && !empty($right_button['condition'])) {
+                    $condition_res = $this->resolveConditionRules($data,$right_button['condition']);
+                    if (!$condition_res) {
+                        continue;
+                    }
+                }
                 // 禁用按钮与隐藏比较特殊，它需要根据数据当前状态判断是显示禁用还是启用
                 if (isset($right_button['type'])) {
                     if ($right_button['type'] === 'forbid' || $right_button['type'] === 'hide'){
@@ -755,6 +768,51 @@ class BuilderList extends Builder {
                 $this->staticFiles[$type.'_files'][] = $item;
             }
         }
+    }
+
+    /**
+     * 解析条件规则
+     * @param  [type] $rules [description]
+     * @return [type] [description]
+     * @date   2018-05-16
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    private function resolveConditionRules($data=[], $rules=null)
+    {
+        if (empty($rules) || empty($data)) {
+            return false;
+        }
+        $res = false;
+        if (is_array($rules)) {
+            foreach ($rules as $split => $rule) {
+                foreach ($rule as $field => $condition_c) {
+                    $operator = $condition_c[0];//运算符
+                    $condition_val = $condition_c[1];//比较值
+                    switch ($operator) {
+                        case '=':
+                            $res = $data[$field] == $condition_val ? true : false;
+                            break;
+                        case '>':
+                            $res = $data[$field] > $condition_val ? true : false;
+                            break;
+                        case '<':
+                            $res = $data[$field] < $condition_val ? true : false;
+                            break;
+                        case '>=':
+                            $res = $data[$field] >= $condition_val ? true : false;
+                            break;
+                        case '=<':
+                            $res = $data[$field] <= $condition_val ? true : false;
+                            break;
+                        default:
+                            # code...
+                            break;
+                    }
+                }
+            }
+        }
+
+        return $res;
     }
 
 }

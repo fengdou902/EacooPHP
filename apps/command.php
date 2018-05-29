@@ -10,4 +10,8 @@
 // +----------------------------------------------------------------------
 
 //return ['app\common\lib\Crond'];
-return [];
+return [
+    'app\admin\command\Module',
+    'app\admin\command\Plugin',
+    'app\admin\command\Theme',
+];
