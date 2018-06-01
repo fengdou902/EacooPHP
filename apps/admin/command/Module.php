@@ -52,7 +52,21 @@ class Module extends AppBase
                     'name'               => $name,
                     'title'              => $title,
                 ];
-                $this->writeToFile("info", $data, $moduleDir . '/install/info.info');
+                $write_files = [
+                    ['name'=>'info','pathname'=>'/install/info.json'],
+                    ['name'=>'install_sql','pathname'=>'/install/install.sql'],
+                    ['name'=>'uninstall_sql','pathname'=>'/install/uninstall.sql'],
+                    ['name'=>'menus','pathname'=>'/install/menus.php'],
+                    ['name'=>'options','pathname'=>'/install/options.php'],
+                    ['name'=>'admin_Example','pathname'=>'/admin/Example.php'],
+                    ['name'=>'controller_Example','pathname'=>'/controller/Example.php'],
+                    ['name'=>'model_Example','pathname'=>'/model/Example.php'],
+                    ['name'=>'logic_LogicBase','pathname'=>'/logic/'.$name.'Logic.php'],
+                    ['name'=>'logic_Example','pathname'=>'/logic/Example.php'],
+                ];
+                foreach ($write_files as $key => $row) {
+                    $this->writeToFile('module',$row['name'], $data, $moduleDir . $row['pathname']);
+                }
 
                 $output->info("创建模块成功!");
                 break;

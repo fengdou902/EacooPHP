@@ -2,7 +2,7 @@
     "name":"{%name%}",
     "title":"{%title%}",
     "description":"EacooPHP应用描述",
-    "author":"心云间、凝听",
+    "author":"未知",
     "admin_manage_into":"",
     "version":"1.0.0",
     "dependences":{

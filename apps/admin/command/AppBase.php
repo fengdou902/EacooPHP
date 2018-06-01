@@ -18,19 +18,22 @@ class AppBase extends Command
 {
     /**
      * 写入到文件
-     * @param string $name
-     * @param array $data
-     * @param string $pathname
-     * @return mixed
+     * @param  [type] $type 类型。module,plugin,theme
+     * @param  [type] $name [description]
+     * @param  [type] $data [description]
+     * @param  [type] $pathname [description]
+     * @return [type] [description]
+     * @date   2018-05-30
+     * @author 心云间、凝听 <981248356@qq.com>
      */
-    protected function writeToFile($name, $data, $pathname)
+    protected function writeToFile($type,$name, $data, $pathname)
     {
         $search = $replace = [];
         foreach ($data as $k => $v) {
             $search[] = "{%{$k}%}";
             $replace[] = $v;
         }
-        $stub = file_get_contents($this->getTemp($name));
+        $stub = file_get_contents($this->getTemp($type,$name));
         $content = str_replace($search, $replace, $stub);
 
         if (!is_dir(dirname($pathname))) {
@@ -41,11 +44,14 @@ class AppBase extends Command
 
     /**
      * 获取基础模板
-     * @param string $name
-     * @return string
+     * @param  [type] $type 类型。module,plugin,theme
+     * @param  [type] $name [description]
+     * @return [type] [description]
+     * @date   2018-05-30
+     * @author 心云间、凝听 <981248356@qq.com>
      */
-    protected function getTemp($name)
+    protected function getTemp($type,$name)
     {
-        return __DIR__ . '/app/temps/' . $name . '.t';
+        return __DIR__ . '/app/'.$type.'/stubs/' . $name . '.stub';
     }
 }
