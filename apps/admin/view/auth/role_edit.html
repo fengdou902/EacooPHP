@@ -1,0 +1,54 @@
+  {extend name="$_admin_public_base_"/}
+  {block name="style"}{/block}
+
+  {block name="main"}
+    {present name="group_id"}
+      <div class="eacoo-tabs builder-form-tabs">
+          <ul class="nav nav-tabs">
+              <li class="active"><a href="{:url('role_edit',['group_id'=>$group_id])}">角色信息</a></li>
+              <li class=""><a href="{:url('access',['group_id'=>$group_id])}">权限分配</a></li>
+              <li class=""><a href="{:url('accessUser',['group_id'=>$group_id])}">成员授权</a></li>
+          </ul>
+          <div class="form-group"></div>
+      </div>
+    {/present}
+    <div class="builder formbuilder-box panel-body bg-color-fff">
+
+    <div class="row">    
+
+        <div class="col-md-7">      
+          <form action="" method="post" class="form-builder form-horizontal">
+            <fieldset>
+              {notempty name="info"}
+              <input type="hidden" name="id" value="{$info.id}">
+              {/notempty}
+                  <div class="form-group">
+                    <label for="title" class="col-md-2 control-label">名称：</label>
+                    <div class="col-md-10">
+                      <input type="text" class="form-control" name="title" placeholder="创建的角色名称" value="{$info.title|default=''}" >
+                      <span class="material-input"></span>
+                    </div>
+                </div>
+                    <div class="form-group item_description">
+                      <label for="description" class="col-md-2 control-label">描述：</label>
+                      <div class="col-md-10">
+                        <textarea name="description" class="form-control" length="120" rows='5' >{$info.description|default=''}</textarea>
+                          <span class="material-input"></span>
+                       </div>
+                      </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12 col-md-offset-2">
+                          <div class="col-md-3"><button class="btn btn-block btn-primary submit ajax-post" type="submit" target-form="form-builder">确定</button></div>
+                          <div class="col-md-3"><button class="btn btn-block btn-default return" onclick="javascript:history.back(-1);return false;">返回</button></div>
+                      </div>
+                  </div>
+
+                 </fieldset>
+          </form>
+
+            </div>    
+   </div>
+ </div>
+
+  {/block}

@@ -1,0 +1,16 @@
+{
+    "name":"{%name%}",
+    "title":"{%title%}",
+    "description":"EacooPHP主题描述",
+    "author":"未知",
+    "version":"1.0.0",
+    "dependences":{
+        "core":"1.2.4",
+        "plugins":{
+
+        },
+        "modules":{
+
+        }
+    }
+}
