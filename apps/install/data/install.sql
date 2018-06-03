@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 2018-04-11 02:35:17
+-- Generation Time: 2018-06-03 14:47:48
 -- 服务器版本： 5.7.15
 -- PHP Version: 7.0.14
 
@@ -11,6 +11,10 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `eacoophp`
@@ -193,7 +197,8 @@ INSERT INTO `eacoo_attachment` (`id`, `uid`, `name`, `path`, `url`, `location`, 
 (93, 1, '9812496129086622', '/uploads/picture/2016-10-06/57f6136b5bd4e.jpg', '', 'local', 'picture', 'jpg', '', 164177, '9812496129086622', '983944832c987b160ae409f71acc7933', 'bce6147f4070989fc0349798acf6383938e5563a', 0, 1475744619, 1475744619, 99, 1),
 (94, 1, 'eacoophp-watermark-banner-1', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg', 'link', 'picture', 'jpg', 'image', 171045, 'eacoophp-watermark-banner-1', '', '', 0, 1506215777, 1506215777, 99, 1),
 (95, 1, 'eacoophp-banner-3', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-banner-3.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-banner-3.jpg', 'link', 'picture', 'jpg', 'image', 356040, 'eacoophp-banner-3', '', '', 0, 1506215801, 1506215801, 99, 1),
-(96, 1, 'eacoophp-watermark-banner-2', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'link', 'picture', 'jpg', 'image', 356040, 'eacoophp-watermark-banner-2', '', '', 0, 1506215801, 1506215801, 99, 1);
+(96, 1, 'eacoophp-watermark-banner-2', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'link', 'picture', 'jpg', 'image', 356040, 'eacoophp-watermark-banner-2', '', '', 0, 1506215801, 1506215801, 99, 1),
+(97, 1, '150217753092666', '/uploads/picture/2018-04-12/5acec2ffee8a4.jpg', '/uploads/picture/2018-04-12/5acec2ffee8a4.jpg', 'local', 'picture', 'jpg', 'image', 67406, '150217753092666', '82a25ea71fd7db1a2180894086790ea9', '87a03fe9161c0d3b4b757e999160355f9ce0ee75', 0, 1523499775, 1523499775, 99, 1);
 
 -- --------------------------------------------------------
 
@@ -366,7 +371,7 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `group`, 
 (19, 'only_auth_rule', '权限仅验证规则表', '1', '1:开启\n0:关闭', 4, 0, 'radio', '开启此项，则后台验证授权只验证规则表存在的规则', 1473437355, 1473437355, 0, 1),
 (20, 'static_domain', '静态文件独立域名', '', '', 3, 0, 'text', '静态文件独立域名一般用于在用户无感知的情况下平和的将网站图片自动存储到腾讯万象优图、又拍云等第三方服务。', 1438564784, 1438564784, 3, 1),
 (21, 'config_group_list', '配置分组', '1:基本\r\n2:系统\r\n3:开发\r\n4:安全\r\n5:数据库\r\n6:网站设置\r\n7:用户\r\n8:邮箱\r\n9:高级', '', 3, 0, 'array', '配置分组的键值对不要轻易改变', 1379228036, 1518783085, 5, 1),
-(25, 'form_item_type', '表单项目类型', 'hidden:隐藏\r\nonlyreadly:仅读文本\r\nnumber:数字\r\ntext:单行文本\r\ntextarea:多行文本\r\narray:数组\r\npassword:密码\r\nradio:单选框\r\ncheckbox:复选框\r\nselect:下拉框\r\nicon:字体图标\r\ndate:日期\r\ndatetime:时间\r\npicture:单张图片\r\npictures:多张图片\r\nfile:单个文件\r\nfiles:多个文件\r\nwangeditor:wangEditor编辑器\r\nueditor:百度富文本编辑器\r\neditormd:Markdown编辑器\r\ntags:标签\r\njson:JSON\r\nboard:拖', '', 3, 0, 'array', '专为配置管理设定\r\n', 1464533806, 1500174666, 0, 1),
+(25, 'form_item_type', '表单项目类型', 'hidden:隐藏\r\nreadonly:仅读文本\r\nnumber:数字\r\ntext:单行文本\r\ntextarea:多行文本\r\narray:数组\r\npassword:密码\r\nradio:单选框\r\ncheckbox:复选框\r\nselect:下拉框\r\nicon:字体图标\r\ndate:日期\r\ndatetime:时间\r\npicture:单张图片\r\npictures:多张图片\r\nfile:单个文件\r\nfiles:多个文件\r\nwangeditor:wangEditor编辑器\r\nueditor:百度富文本编辑器\r\neditormd:Markdown编辑器\r\ntags:标签\nselect2:高级下拉框\r\njson:JSON\r\nboard:拖', '', 3, 0, 'array', '专为配置管理设定\r\n', 1464533806, 1500174666, 0, 1),
 (26, 'term_taxonomy', '分类法', 'post_category:分类目录\r\npost_tag:标签\r\nmedia_cat:多媒体分类', '', 3, 0, 'array', '', 1465267993, 1468421717, 0, 1),
 (27, 'data_backup_path', '数据库备份根路径', '../data/backup', '', 5, 0, 'text', '', 1465478225, 1506099586, 0, 1),
 (28, 'data_backup_part_size', '数据库备份卷大小', '20971520', '', 5, 0, 'number', '', 1465478348, 1506099586, 0, 1),
@@ -637,13 +642,13 @@ CREATE TABLE `eacoo_term_relationships` (
 --
 
 INSERT INTO `eacoo_term_relationships` (`id`, `object_id`, `term_id`, `table`, `uid`, `sort`, `status`) VALUES
-(1, 95, 9, 'attachment', 0, 99, 1),
-(2, 94, 13, 'attachment', 0, 99, 1),
-(3, 116, 12, 'attachment', 0, 99, 1),
-(4, 92, 12, 'attachment', 0, 99, 1),
-(5, 70, 12, 'attachment', 0, 9, 1),
-(6, 93, 11, 'attachment', 0, 99, 1),
-(7, 96, 12, 'attachment', 0, 99, 1);
+(1, 95, 9, 'attachment', 1, 99, 1),
+(2, 94, 13, 'attachment', 1, 99, 1),
+(3, 116, 12, 'attachment', 1, 99, 1),
+(4, 92, 12, 'attachment', 1, 99, 1),
+(5, 70, 12, 'attachment', 1, 9, 1),
+(6, 93, 11, 'attachment', 1, 99, 1),
+(7, 96, 12, 'attachment', 1, 99, 1);
 
 -- --------------------------------------------------------
 
@@ -870,12 +875,12 @@ ALTER TABLE `eacoo_action`
 -- 使用表AUTO_INCREMENT `eacoo_action_log`
 --
 ALTER TABLE `eacoo_action_log`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=16;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键';
 --
 -- 使用表AUTO_INCREMENT `eacoo_attachment`
 --
 ALTER TABLE `eacoo_attachment`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=97;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=98;
 --
 -- 使用表AUTO_INCREMENT `eacoo_auth_group`
 --
