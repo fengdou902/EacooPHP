@@ -83,10 +83,10 @@ class User extends Base
             $deny = explode ( ',', $deny);
             foreach ($deny as $k=>$v) {
                 if(stristr($username, $v)){
-                    return false;
+                    return true;
                 }
             }
-            return true;
+            return false;
         } 
         return false;
     }

@@ -258,7 +258,7 @@ class Attachment extends Admin {
                 $row['object_count'] = logic('common/Terms')->termRelationCount($row['term_id'],'attachment');
             }
         }
-
+        $total =15;
         //获取tab_list
         $tab_list = AttachmentLogic::getTabList();
         return builder('List')

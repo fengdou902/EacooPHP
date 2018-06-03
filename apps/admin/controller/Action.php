@@ -24,9 +24,9 @@ class Action extends Admin {
 		//获取列表数据
 		$map['status']  = ['gt',-1];  // 禁用和正常状态
 		list($data_list,$total) 
-			= model('action')//
-			->search() //添加搜索查询
-			->getListByPage($map,'id,name,title,depend_type,depend_flag,log,remark,status','id desc');
+					= model('action')//
+					->search() //添加搜索查询
+					->getListByPage($map,'id,name,title,depend_type,depend_flag,log,remark,status','id desc');
 
         return builder('list')
     			->setMetaTitle('用户行为')  // 设置页面标题

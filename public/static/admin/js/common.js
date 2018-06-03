@@ -265,9 +265,9 @@ function url(url, params, rewrite) {
         website = website + '/' + url[i];
     }
 
-    if (!rewrite) {
-        website = website + '.html';
-    }
+    // if (!rewrite) {
+    //     website = website + '.html';
+    // }
 
     if (params) {
         params = params.join('&');

@@ -77,8 +77,10 @@ class Builder extends Base {
     protected function compileHtmlAttr($attr) {
         $result = [];
         foreach($attr as $key=>$value) {
-            $value = htmlspecialchars($value);
-            $result[] = "$key=\"$value\"";
+            if (is_string($value)) {
+                $value = htmlspecialchars($value);
+                $result[] = "$key=\"$value\"";
+            }
         }
         $result = implode(' ', $result);
         return $result;

@@ -13,6 +13,7 @@ namespace app\install\controller;
 use think\Controller;
 use think\Db;
 
+ini_set('display_errors', 'off');
 error_reporting(0);
 
 class Index extends Controller {

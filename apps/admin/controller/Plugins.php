@@ -306,7 +306,7 @@ class Plugins extends Admin {
     {
         if ($name) {
             if (!is_writable(PLUGIN_PATH.$name)) {
-                $this->error('目录权限不足，请手动删除目录');
+                $this->error('目录权限不足，请手动删除');
             }
             @rmdirs(PLUGIN_PATH.$name);
             Extension::refresh('plugin');
