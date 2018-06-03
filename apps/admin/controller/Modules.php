@@ -361,6 +361,9 @@ class Modules extends Admin {
     public function delapp($name='')
     {
         if ($name!='') {
+            if (!is_writable(APP_PATH.$name)) {
+                $this->error('目录权限不足，请手动删除');
+            }
             @rmdirs(APP_PATH.$name);
             Extension::refresh('module');
             $this->success('删除模块成功',url('index',['from_type'=>'local']));

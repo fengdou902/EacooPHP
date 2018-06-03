@@ -1,9 +1,8 @@
 {
     "name":"{%name%}",
     "title":"{%title%}",
-    "description":"EacooPHP应用描述",
+    "description":"EacooPHP主题描述",
     "author":"未知",
-    "admin_manage_into":"",
     "version":"1.0.0",
     "dependences":{
         "core":"1.2.4",
@@ -13,6 +12,5 @@
         "modules":{
 
         }
-    },
-    "database_prefix":"eacoo_"
+    }
 }

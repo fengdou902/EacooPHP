@@ -1,0 +1,15 @@
+{extend name="$_theme_public_layout"/}
+{block name="style"}
+<!--自定义引入css样式文件-->
+<style type="text/css">
+
+</style>
+{/block}
+
+{block name="main"}
+  <!--内容区-->
+{/block}
+
+{block name="script"}
+   <!--自定义加载javascript-->
+{/block}

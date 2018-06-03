@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="zh-CN" class="ie8"> <![endif]-->
+<html lang="zh-CN">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>{$meta_title|default="EacooPHP系统"}</title>
+<meta content="telephone=no,email=no,address=no" name="format-detection" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<meta name="msapplication-tap-highlight" content="no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="wap-font-scale" content="no" />
+<meta name="Keywords" content="{:config('web_site_keyword')}" />
+<meta name="Description" content="{:config('web_site_description')}" />
+<meta name="frontend-mobile" content="yes" />
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css"/>
+<!-- Font Awesome -->
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+{load href="__ADMIN_CSS__/AdminLTE.min.css,__ADMIN_CSS__/_all-skins.min.css,__PUBLIC__/css/animate.min.css,__PUBLIC__/css/base.css" /}
+<link type="text/css" rel="stylesheet" href="__THEME_CSS__/style.css?v=1.0.1"/>
+{block name="style"}{/block}
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.10.2.min.js"></script>    
+<script type="text/javascript">
+    var EacooPHP = window.EacooPHP = {
+        "root_domain": "{$Request.domain}", //当前网站地址
+        "static": "__STATIC__", //静态资源地址
+        "public": "__PUBLIC__", //项目公共目录地址
+        "uploads_url" :'/uploads/',
+        "cdn_url":"{:config('aliyun_oss.domain')}",
+    }
+</script>
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
+{:hook('PageHeader')}
+</head>
+<body class="hold-transition skin-blue layout-top-nav">
+ <div class="wrapper">
+
+  <header class="main-header">
+    <nav class="navbar navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a href="/" class="navbar-brand logo"><img class="logo-img" src="__ROOT__/eacoophp_logo_v1.png"></a>
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+            <i class="fa fa-bars"></i>
+          </button>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+          <!--顶部导航 start-->
+          <ul class="nav navbar-nav">
+            {notempty name="header_menus"}
+              {volist name="header_menus" id="row"}
+                <li class="{notempty name="row._child"}dropdown{/notempty}">
+              {empty name="row._child"}
+                <a href="{$row.value|eacoo_url=###,[],$row.depend_type|default=''}" target="{$row.target|default=''}" title="{$row.title|default=''}">{notempty name="row.icon"}<i class="{$row.icon}"></i>{/notempty} {$row.title|default='未知'}</a>
+              {else/}
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{notempty name="row.icon"}<i class="{$row.icon}"></i>{/notempty} {$row.title|default='未知'}<span class="caret"></span></a>
+              {/empty}
+              {notempty name="row._child"}
+                <ul class="dropdown-menu" role="menu">
+                  {volist name="row._child" id="child"}
+                    <li><a href="{$child.depend_type==1?url($child['value']):plugin_url($child['value'])}">{$child.title}</a></li>
+                  {/volist}
+                </ul>
+              {/notempty}
+              </li>
+              {/volist}
+            {else/}
+                <li class="active"><a href="/">主页 <span class="sr-only">(current)</span></a></li>
+                <li><a href="{:url('user/index/index')}">会员<span class="sr-only">会员</span></a></li>
+                <li><a href="https://gitee.com/ZhaoJunfeng/EacooPHP/attach_files" target="_blank">下载</a></li>
+                <li><a href="http://forum.eacoo123.com" target="_blank">社区</a></li>
+                <li><a href="https://www.kancloud.cn/youpzt/eacoo" target="_blank">文档</a></li>
+            {/notempty}
+            
+          </ul>
+          <!--顶部导航 end-->
+          <form class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" id="navbar-search-input" placeholder="Search">
+            </div>
+          </form>
+        </div>
+            {empty name="current_user"}
+              <li><a href="{:url('user/login/login')}">登录</a></li>
+            {else/}
+              <li class="dropdown user user-menu">
+              <!-- Menu Toggle Button -->
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <!-- The user image in the navbar-->
+                <img src="{$current_user.avatar}" class="user-image" alt="{$current_user.nickname}">
+                <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                <span class="hidden-xs">{$current_user.nickname}</span>
+              </a>
+              <ul class="dropdown-menu">
+                <!-- The user image in the menu -->
+                <li class="user-header">
+                  <img src="{$current_user.avatar}" class="img-circle" alt="User Image">
+                  <p>
+                    {$current_user.nickname}
+                    <small>注册时间：{$current_user.reg_time}</small>
+                  </p>
+                </li>
+                <!-- Menu Body -->
+                <!--<li class="user-body">
+                  <div class="row">
+                    <div class="col-xs-4 text-center">
+                      <a href="#">Followers</a>
+                    </div>
+                    <div class="col-xs-4 text-center">
+                      <a href="#">Sales</a>
+                    </div>
+                    <div class="col-xs-4 text-center">
+                      <a href="#">Friends</a>
+                    </div>
+                  </div>
+                  &lt;!&ndash; /.row &ndash;&gt;
+                </li>-->
+                <!-- Menu Footer-->
+                <li class="user-footer">
+                  <div class="pull-left">
+                    <a href="{:url('user/index/personal')}" class="btn btn-default btn-flat">个人资料</a>
+                  </div>
+                  <div class="pull-right">
+                    <a href="{:url('user/login/logout')}" class="btn btn-default btn-flat">退出</a>
+                  </div>
+                </li>
+              </ul>
+            </li>
+            {/empty}
+          </ul>
+        </div>
+        <!-- /.navbar-custom-menu -->
+      </div>
+      <!-- /.container-fluid -->
+    </nav>
+  </header>
+  <!-- 站点 -->
+{block name="main"}
+
+{/block}
+
+<strong>Copyright &copy; 2016-2018 <a href="http://www.eacoo123.com" target="_blank">EacooPHP</a>.</strong> 保留所有权利。
+</footer>
+</div>
+<!-- ./wrapper -->
+
+ {:hook('PageFooter')}
+{:config('web_site_statistics')}
+{block name="script"}{/block}
+
+</body>
+</html>

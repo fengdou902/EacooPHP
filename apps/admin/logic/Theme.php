@@ -33,7 +33,7 @@ class Theme extends AdminLogic
                     if ($logo) {
                         $info['logo'] = '<img src="'.$logo.'" class="theme-logo">';
                     } else{
-                        $info['logo'] = '<span class="theme-logo theme-avatar-tx">'.mb_substr($info['title'], 0,1,'utf-8').'</span>';
+                        $info['logo'] = '<img class="theme-logo" src="/static/assets/img/theme-default.jpg">';
                     }
                     $theme_list[] = $info;
                 }

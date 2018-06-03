@@ -35,7 +35,7 @@ class Module extends AppBase
         //操作方式(create/enable/disable/install/uninstall/refresh/upgrade/package)
         $action = $input->getOption('action') ?: '';
         //模块名称
-        $title = $input->getOption('title') ?: '';
+        $title = $input->getOption('title') ?: $name;
         if (!$name) {
             throw new Exception('模块名不能为空');
         }
@@ -49,25 +49,28 @@ class Module extends AppBase
                 $prefix = Config::get('database.prefix');
 
                 $data = [
-                    'name'               => $name,
-                    'title'              => $title,
+                    'name'  => $name,
+                    'title' => $title,
                 ];
                 $write_files = [
-                    ['name'=>'info','pathname'=>'/install/info.json'],
-                    ['name'=>'install_sql','pathname'=>'/install/install.sql'],
-                    ['name'=>'uninstall_sql','pathname'=>'/install/uninstall.sql'],
-                    ['name'=>'menus','pathname'=>'/install/menus.php'],
-                    ['name'=>'options','pathname'=>'/install/options.php'],
-                    ['name'=>'admin_Example','pathname'=>'/admin/Example.php'],
-                    ['name'=>'controller_Example','pathname'=>'/controller/Example.php'],
-                    ['name'=>'model_Example','pathname'=>'/model/Example.php'],
-                    ['name'=>'logic_LogicBase','pathname'=>'/logic/'.$name.'Logic.php'],
-                    ['name'=>'logic_Example','pathname'=>'/logic/Example.php'],
+                    ['name' =>'info','pathname'=>'/install/info.json'],
+                    ['name' =>'install_sql','pathname'=>'/install/install.sql'],
+                    ['name' =>'uninstall_sql','pathname'=>'/install/uninstall.sql'],
+                    ['name' =>'menus','pathname'=>'/install/menus.php'],
+                    ['name' =>'options','pathname'=>'/install/options.php'],
+                    ['name' =>'admin_Example','pathname'=>'/admin/Example.php'],
+                    ['name' =>'controller_Example','pathname'=>'/controller/Example.php'],
+                    ['name' =>'model_Example','pathname'=>'/model/Example.php'],
+                    ['name' =>'logic_LogicBase','pathname'=>'/logic/'.$name.'Logic.php'],
+                    ['name' =>'logic_Example','pathname'=>'/logic/Example.php'],
+                    ['name' =>'common','pathname'=>'/common.php'],
+                    ['name' =>'config','pathname'=>'/config.php'],
                 ];
                 foreach ($write_files as $key => $row) {
                     $this->writeToFile('module',$row['name'], $data, $moduleDir . $row['pathname']);
                 }
-
+                //试图修改目录用户组
+                recurse_chown_chgrp_chmod($moduleDir,'www','www',0755);
                 $output->info("创建模块成功!");
                 break;
             

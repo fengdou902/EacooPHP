@@ -169,7 +169,7 @@
             // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
             compress: false, 
             // 验证单个文件大小是否超出限制, 超出则不允许加入队列 
-            fileSingleSizeLimit:{php}echo intval(config('upload_image_size'))?:2;{/php}*1024*1024,
+            fileSingleSizeLimit:{php}echo intval(config('upload_image_size'))?:2*1024*1024;{/php},
             // 选择文件的按钮。可选。
             // 内部根据当前运行是创建，可能是input元素，也可能是flash.
             pick: {'id': "#web_uploader_wrapper_attachmentIndex", 'multi': false},

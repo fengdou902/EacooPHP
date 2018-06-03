@@ -26,20 +26,26 @@ class AppBase extends Command
      * @date   2018-05-30
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    protected function writeToFile($type,$name, $data, $pathname)
+    protected function writeToFile($type,$name=null, $data, $pathname)
     {
-        $search = $replace = [];
-        foreach ($data as $k => $v) {
-            $search[] = "{%{$k}%}";
-            $replace[] = $v;
+        if (!empty($data)) {
+            $search = $replace = [];
+            foreach ($data as $k => $v) {
+                $search[] = "{%{$k}%}";
+                $replace[] = $v;
+            }
         }
-        $stub = file_get_contents($this->getTemp($type,$name));
-        $content = str_replace($search, $replace, $stub);
-
+        
+        if ($name) {
+            $stub = file_get_contents($this->getTemp($type,$name));
+            $content = str_replace($search, $replace, $stub);
+        }
+        
         if (!is_dir(dirname($pathname))) {
             mkdir(strtolower(dirname($pathname)), 0755, true);
         }
-        return file_put_contents($pathname, $content);
+
+        return !empty($content) ? file_put_contents($pathname, $content):true;
     }
 
     /**

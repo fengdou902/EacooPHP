@@ -97,6 +97,40 @@ if (!function_exists('copydirs'))
 }
 
 /**
+ * 改变用户组的权限
+ * @param  [type] $path 递归路径
+ * @param  [type] $uid 用户名
+ * @param  [type] $gid 用户组
+ * @param  integer $model [description]
+ * @return [type] [description]
+ * @date   2018-06-03
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function recurse_chown_chgrp_chmod($path, $uid, $gid,$model=0755) 
+{ 
+    $d = opendir ($path) ; 
+    chown($path,'www');
+    chgrp($path,'www');
+    chmod($path,$model);
+    while(($file = readdir($d)) !== false) { 
+        if ($file != "." && $file != "..") { 
+
+            $typepath = $path . "/" . $file ; 
+
+            //print $typepath. " : " . filetype ($typepath). "<BR>" ; 
+            if (filetype ($typepath) == 'dir') { 
+                recurse_chown_chgrp_chmod ($typepath, $uid, $gid); 
+            } 
+
+            chown($typepath, $uid); 
+            chgrp($typepath, $gid); 
+            chmod($typepath,$model);
+        } 
+    } 
+    return true;
+}
+
+/**
  * 快速获取文件的扩展名即后缀。
  * @param  [type] $filename [description]
  * @return [type] [description]

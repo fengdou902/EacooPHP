@@ -40,6 +40,7 @@ class Extension extends Admin {
 		$this->initInfo($this->type);
 		$option = [
 			'type'=>$this->type,
+            'eacoophp_v'=>EACOOPHP_V
 		];
 		$this->cloudService = new Cloud($option);
 		$this->hooksModel  = new HooksModel();
