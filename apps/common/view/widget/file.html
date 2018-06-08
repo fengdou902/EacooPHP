@@ -6,15 +6,24 @@
     <div class="col-md-9" style="padding-bottom: 5px;">
 
     <input id="{$field.id}" class="attach" name="{$field.name}" type="hidden" value="{$field.value}" event-node="uploadinput">
-    <div class="upload-img-box tc popup-gallery img-thumbnail pr">
+    <div class="upload-img-box tc popup-gallery img-thumbnail pr" style="width:{$field.width}px;height: {$field.height}px;">
         <div class="each">
             {empty name="field.value"}
                 <img src="{php}echo get_image(0);{/php}">
             {else /}
                 <i onclick="admin_image.removeImage($(this),'{$field.value}')" class="fa fa-times-circle remove-attachment"></i>
-                <a href="{$field.value|get_image}" title="点击查看大图">
-                    <img src="{$field.value|get_image}">
-                </a>
+                {switch name="file.ext"}
+                    {case value="mp4"}
+                        <video width="{$field.width}" height="{$field.height}" controls>
+                            <source src="{$file.url}" type="video/mp4">
+                            您的浏览器不支持 video 标签。
+                        </video>
+                    {/case}
+                    {default /}
+                        <a href="{$field.value|get_image}" title="点击查看大图">
+                            <img src="{$field.value|get_image}">
+                        </a>
+                {/switch}
 
             {/empty}
         </div>

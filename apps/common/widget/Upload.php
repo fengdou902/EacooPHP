@@ -86,10 +86,10 @@ class Upload extends Base
         $params['config'] = ['text' =>'文件选择'];*/
 
         if($value){
-           $file = db('attachment')->find($value);
+            $file = db('attachment')->find($value);
             $this->assign('file',$file);
         }
-
+        
         $this->assign($params);
         $this->assign('field',$params);
         return $this->fetch('common@Widget/file');
