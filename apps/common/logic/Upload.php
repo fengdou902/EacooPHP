@@ -38,7 +38,7 @@ class Upload {
 	/**
 	 * 上传控制器
 	 */
-	public function upload() {
+	public function upload($param=[]) {
 		try {
 			$upload_type = $this->request->param('type', 'picture', 'trim');//上传类型包括picture,file,avatar
 			$config      = config('attachment_options');
@@ -76,6 +76,7 @@ class Upload {
 
 			$info = $file->rule($config['saveName'])->move($upload_path, true, false);//保存文件
 			$upload_info = $this->parseFile($info);
+            $upload_info['uid'] = isset($param['uid'])?$param['uid']:'';//设置上传者；如果为空，保存的时候会自动处理为当前用户
             unset($info);   //释放文件，避免上传通文件无法删除
 			
 			$is_sql = $this->request->param('is_sql', 'on', 'trim');//是否保存入库
@@ -388,7 +389,7 @@ class Upload {
 	 * @access public
 	 */
 	public function save($config, $from_file_name, $file) {
-		$file['uid']      = is_login();
+		$file['uid']      = $file['uid']?$file['uid']:is_login();
 		$file['location'] = $config['driver'];
 		$file['code']   = 1;
 		$file_exist = AttachmentModel::where(['md5'=>$file['md5'],'sha1'=>$file['sha1']])->count();
@@ -410,7 +411,7 @@ class Upload {
 	            $file['driver'] = $config['driver'];
 	            hook('UploadFile', $file);
 	        }
-        	
+
 			$this->attachmentModel->allowField(true)->isUpdate(false)->data($file)->save();
 			$id  = $this->attachmentModel->id;
 			if ($id>0) {

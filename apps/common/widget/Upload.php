@@ -89,7 +89,7 @@ class Upload extends Base
             $file = db('attachment')->find($value);
             $this->assign('file',$file);
         }
-        
+
         $this->assign($params);
         $this->assign('field',$params);
         return $this->fetch('common@Widget/file');
