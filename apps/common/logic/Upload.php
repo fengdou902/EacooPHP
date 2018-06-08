@@ -76,6 +76,7 @@ class Upload {
 
 			$info = $file->rule($config['saveName'])->move($upload_path, true, false);//保存文件
 			$upload_info = $this->parseFile($info);
+            unset($info);   //释放文件，避免上传通文件无法删除
 			
 			$is_sql = $this->request->param('is_sql', 'on', 'trim');//是否保存入库
 			$return = [
@@ -391,7 +392,6 @@ class Upload {
 		$file['location'] = $config['driver'];
 		$file['code']   = 1;
 		$file_exist = AttachmentModel::where(['md5'=>$file['md5'],'sha1'=>$file['sha1']])->count();
-
 		if ($file_exist>0) {//已存在
 			unlink(PUBLIC_PATH.$file['path']);//删除存在的文件
 
