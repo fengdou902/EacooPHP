@@ -73,7 +73,7 @@ class Upload extends Base
     public function file($params = []){
 
         $params['id'] = $params['id'] ? $params['id'] : $params['name'];
-        $config           = $params['config'];
+        //$config           = $params['config'];
         $class            = $params['class'];
         $value            = $params['value'];
         $name             = $params['name'];
@@ -81,16 +81,17 @@ class Upload extends Base
         $height           = $params['height'] ? $params['height'] : 100;
         //$filetype = $this->rules['filetype'];
 
-        $config = $config['config'];
+        /*$config = $config['config'];
 
-        $params['config'] = ['text' =>'文件选择'];
+        $params['config'] = ['text' =>'文件选择'];*/
 
         if($value){
-           $file = db('File')->find($value);
+           $file = db('attachment')->find($value);
             $this->assign('file',$file);
         }
 
         $this->assign($params);
+        $this->assign('field',$params);
         return $this->fetch('common@Widget/file');
 
     }
