@@ -9,18 +9,22 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+// +----------------------------------------------------------------------
+// | Cookie设置
+// +----------------------------------------------------------------------
 return [
-    // 生成应用公共文件
-    '__file__' => ['common.php'],
-
-    // 定义demo模块的自动生成 （按照实际定义的文件名生成）
-    'demo'     => [
-        '__file__'   => ['common.php'],
-        '__dir__'    => ['behavior', 'controller', 'model', 'view'],
-        'controller' => ['Index', 'Test', 'UserType'],
-        'model'      => ['User', 'UserType'],
-        'view'       => ['index/index'],
-    ],
-
-    // 其他更多的模块定义
+    // cookie 名称前缀
+    'prefix'    => '',
+    // cookie 保存时间
+    'expire'    => 0,
+    // cookie 保存路径
+    'path'      => '/',
+    // cookie 有效域名
+    'domain'    => '',
+    //  cookie 启用安全传输
+    'secure'    => false,
+    // httponly设置
+    'httponly'  => '',
+    // 是否使用 setcookie
+    'setcookie' => true,
 ];

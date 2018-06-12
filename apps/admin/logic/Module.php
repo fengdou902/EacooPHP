@@ -78,7 +78,7 @@ class Module extends AdminLogic
             if (!isset($val['name'])) {
                 continue;
             }
-            $val['from_type']    = 'local';
+            $val['from_type']   = 'local';
             $val['create_time'] = isset($val['create_time']) ? friendly_date(strtotime($val['create_time']),'mohu') :'';
             $extensionObj->initInfo('module',$val['name']);
             //判断是否有设置

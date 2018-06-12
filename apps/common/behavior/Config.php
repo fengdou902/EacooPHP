@@ -9,12 +9,12 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\common\behavior;
-use think\Config as thinkConfig;
+use think\facade\Config as thinkConfig;
 use app\common\logic\Config as ConfigLogic;
 use app\common\model\Config as ConfigModel;
-use think\Cache;
+use think\facade\Cache;
 use think\Db;
-use think\Request;
+use think\facade\Request;
 
 /**
  * 根据不同情况读取数据库的配置信息并与本地配置合并
@@ -25,15 +25,14 @@ class Config {
     /**
      * 行为扩展的执行入口必须是run
      */
-    public function run(&$params) {
+    public function run($params) {
         defined('MODULE_NAME') or define('MODULE_NAME',$params['module'][0] ? $params['module'][0]:config('default_module'));
         
         //验证是否安装
-        if ((!is_file(APP_PATH . 'install.lock') || !is_file(APP_PATH . 'database.php')) && MODULE_NAME!='install') {
+        if ((!is_file(APP_PATH . 'install.lock') || !is_file(CONFIG_PATH . 'database.php')) && MODULE_NAME!='install') {
             if (!IS_CLI) {
                 header("location: http://".$_SERVER['HTTP_HOST'].'/install/index/index');exit;
             }
-            
         }
         
         //关于请求
@@ -42,7 +41,7 @@ class Config {
         // 安装模式下直接返回
         if(defined('MODULE_NAME') && MODULE_NAME === 'install') return;
         // 当前模块模版参数配置
-        $ec_config['view_replace_str'] = thinkConfig::get('view_replace_str',false);  // 先取出配置文件中定义的否则会被覆盖
+        $ec_config['tpl_replace_string'] = thinkConfig::get('tpl_replace_string',false);  // 先取出配置文件中定义的否则会被覆盖
 
         if (MODULE_MARK === 'admin') {
             // 如果是后台并且不是Admin模块则设置默认控制器层为Admin
@@ -74,11 +73,11 @@ class Config {
                 $ec_config['theme_public']  = $theme_public_path;
 
                 $theme_static_public_path = PUBLIC_RELATIVE_PATH.'/themes/'.$current_theme.'/'.'public/';
-                $ec_config['view_replace_str']['__THEME_PUBLIC__']= $theme_static_public_path;
-                $ec_config['view_replace_str']['__THEME_IMG__']   = $theme_static_public_path.'img';
-                $ec_config['view_replace_str']['__THEME_CSS__']   = $theme_static_public_path.'css';
-                $ec_config['view_replace_str']['__THEME_JS__']    = $theme_static_public_path.'js';
-                $ec_config['view_replace_str']['__THEME_LIBS__']  = $theme_static_public_path.'libs';
+                $ec_config['tpl_replace_string']['__THEME_PUBLIC__']= $theme_static_public_path;
+                $ec_config['tpl_replace_string']['__THEME_IMG__']   = $theme_static_public_path.'img';
+                $ec_config['tpl_replace_string']['__THEME_CSS__']   = $theme_static_public_path.'css';
+                $ec_config['tpl_replace_string']['__THEME_JS__']    = $theme_static_public_path.'js';
+                $ec_config['tpl_replace_string']['__THEME_LIBS__']  = $theme_static_public_path.'libs';
             }
 
             // 模块化主题
@@ -107,16 +106,16 @@ class Config {
                 
             }
             //插件静态资源路径
-            $ec_config['view_replace_str']['__PLUGIN_STATIC__'] = $ec_config['view_replace_str']['__STATIC__'].'/plugins';
+            $ec_config['tpl_replace_string']['__PLUGIN_STATIC__'] = $ec_config['tpl_replace_string']['__STATIC__'].'/plugins';
         }
 
         //各模块静态资源路径
         $static_path = PUBLIC_RELATIVE_PATH.'/static/'.MODULE_NAME;
-        $ec_config['view_replace_str']['__MODULE_STATIC__']    = $static_path;
-        $ec_config['view_replace_str']['__MODULE_IMG__']    = $static_path.'/img';
-        $ec_config['view_replace_str']['__MODULE_CSS__']    = $static_path.'/css';
-        $ec_config['view_replace_str']['__MODULE_JS__']     = $static_path.'/js';
-        $ec_config['view_replace_str']['__MODULE_LIBS__']   = $static_path.'/libs';
+        $ec_config['tpl_replace_string']['__MODULE_STATIC__']    = $static_path;
+        $ec_config['tpl_replace_string']['__MODULE_IMG__']    = $static_path.'/img';
+        $ec_config['tpl_replace_string']['__MODULE_CSS__']    = $static_path.'/css';
+        $ec_config['tpl_replace_string']['__MODULE_JS__']     = $static_path.'/js';
+        $ec_config['tpl_replace_string']['__MODULE_LIBS__']   = $static_path.'/libs';
 
         thinkConfig::set($ec_config);// 添加配置
         // 读取数据库中的配置

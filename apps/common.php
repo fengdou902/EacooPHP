@@ -1,4 +1,6 @@
 <?php 
+
+// 应用公共文件
 use think\Route;
 use app\common\builder\Builder;
 use app\admin\model\Modules as ModulesModel;

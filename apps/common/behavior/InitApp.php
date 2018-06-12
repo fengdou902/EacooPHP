@@ -9,50 +9,38 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\common\behavior;
-use think\Config as thinkConfig;
-use think\Hook;
+use think\facade\Config as thinkConfig;
+use think\facade\Env;
 
 class InitApp {
 
-	public function run(&$params) {
-        defined('PUBLIC_RELATIVE_PATH') or define('PUBLIC_RELATIVE_PATH','');
-        // 定义插件目录
-        define('PLUGIN_PATH', ROOT_PATH . 'plugins/');
-
-        if (!IS_CLI) {
-            //定义环境类型
-            if (strpos($_SERVER["SERVER_SOFTWARE"],'nginx')!==false) {
-                define('SERVER_SOFTWARE_TYPE','nginx');
-            } elseif(strpos($_SERVER["SERVER_SOFTWARE"],'apache')!==false){
-                define('SERVER_SOFTWARE_TYPE','apache');
-            } else{
-                define('SERVER_SOFTWARE_TYPE','no');
-            }
-        }
+	public function run($params) {
         
-        define('EACOOPHP_V','1.2.5');
-        define('BUILD_VERSION','201806032001');//编译版本
+        //初始化定义常量
+        $this->initDefineCons();
 
+        /**
+         * 循环加载全局函数
+         * @var [type]
+         */
+        foreach (glob(APP_PATH.'functions/*.php') as $key => $function_file) {
+            include($function_file);
+        }
         //加载模块全局函数
-        // $module_names = db('modules')->where(['status' =>1])->column('name');
-        // if (!empty($module_names)) {
-        //     $module_functions_list = [];
-        //     foreach ($module_names as $key => $module_name) {
-        //         $module_funcitons_file = APP_PATH.$module_name.'/functions.php';
-        //         if (is_file($module_funcitons_file)) {
-        //             $module_functions_list[] = $module_funcitons_file;
-        //         }
-        //     }
-        //     if (!empty($module_functions_list)) {
-        //         $global_extra_functions_config['extra_file_list'] = thinkConfig::get('extra_file_list');
-        //         $global_extra_functions_config['extra_file_list'] = array_merge($global_extra_functions_config['extra_file_list'],$module_functions_list);
-        //         thinkConfig::set($global_extra_functions_config);// 添加模块函数
-        //     }
-        // }
+        $module_names = db('modules')->where(['status' =>1])->column('name');
+        if (!empty($module_names)) {
+            foreach ($module_names as $key => $module_name) {
+                $module_funcitons_file = APP_PATH.$module_name.'/functions.php';
+                if (is_file($module_funcitons_file)) {
+                    include($module_funcitons_file);
+                }
+            }
+
+        }
         if (!IS_CLI) {
             //定义模版变量
             $ec_config = [
-                'view_replace_str'=>[
+                'template.tpl_replace_string'=>[
                                     '__ROOT__'      => BASE_PATH.PUBLIC_RELATIVE_PATH,
                                     '__STATIC__'    => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static',
                                     '__PUBLIC__'    => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/assets',
@@ -69,10 +57,63 @@ class InitApp {
                     401 =>  THEME_PATH.'401.html',
                 ],                
             ];
+            thinkConfig::set(['template.tpl_replace_string'=>[
+                                    '__ROOT__'      => BASE_PATH.PUBLIC_RELATIVE_PATH,
+                                    '__STATIC__'    => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static',
+                                    '__PUBLIC__'    => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/assets',
+                                    '__LIBS__'      => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/libs',
+                                    '__ADMIN_CSS__' => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/css',
+                                    '__ADMIN_JS__'  => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/js',
+                                    '__ADMIN_IMG__' => BASE_PATH.PUBLIC_RELATIVE_PATH.'/static/admin/img',
+                                ]],'template');
             //定义接口地址
             $ec_config['eacoo_api_url']='http://www.eacoo123.com';
             thinkConfig::set($ec_config);// 添加配置
         }
+
 	}
+
+    /**
+     * 初始化定义常量
+     * @return [type] [description]
+     * @date   2018-06-04
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    private function initDefineCons()
+    {
+        define('EACOOPHP_V','2.0');
+        define('BUILD_VERSION','201806032001');//编译版本
+
+        defined('PUBLIC_RELATIVE_PATH') or define('PUBLIC_RELATIVE_PATH','');
+        // 定义应用根目录
+        define('ROOT_PATH', Env::get('root_path'));
+        //定义配置常量
+        define('CONFIG_PATH', Env::get('config_path'));
+         // 定义资源目录
+        define('PUBLIC_PATH', ROOT_PATH);
+        // 定义插件目录
+        define('PLUGIN_PATH', ROOT_PATH . 'plugins/');
+
+        //主题目录
+        define('THEME_PATH',PUBLIC_PATH . '/themes/');
+
+        // 环境常量
+        define('IS_CLI', PHP_SAPI == 'cli' ? true : false);
+        if (MODULE_MARK=='cli') {
+            define('IS_CLI', true);
+        }
+
+        if (!IS_CLI) {
+            //定义环境类型
+            if (strpos($_SERVER["SERVER_SOFTWARE"],'nginx')!==false) {
+                define('SERVER_SOFTWARE_TYPE','nginx');
+            } elseif(strpos($_SERVER["SERVER_SOFTWARE"],'apache')!==false){
+                define('SERVER_SOFTWARE_TYPE','apache');
+            } else{
+                define('SERVER_SOFTWARE_TYPE','no');
+            }
+        }
+        
+    }
 
 }

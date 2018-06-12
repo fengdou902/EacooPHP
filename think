@@ -3,19 +3,25 @@
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2006-2016 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2006-2018 http://thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
 // | Author: yunwuxin <448901948@qq.com>
 // +----------------------------------------------------------------------
 
-// 定义项目路径
-define('APP_PATH', __DIR__ . '/apps/');
+namespace think;
+
+// 加载基础文件
+require __DIR__ . '/thinkphp/base.php';
+
 /**
  * 定义标记
  */
-define('MODULE_MARK','command');
+define('MODULE_MARK','cli');
 
-// 加载框架引导文件
-require './thinkphp/console.php';
+// 应用初始化
+Container::get('app')->path(__DIR__ . '/apps/')->initialize();
+
+// 控制台初始化
+Console::init();
