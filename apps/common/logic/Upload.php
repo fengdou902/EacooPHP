@@ -230,6 +230,7 @@ class Upload {
         //$data['md5']  = md5_file($file_content);
         //$data['sha1'] = sha1_file($file_content);
         //$data['size'] = strlen($file_content);
+        $data['uid']      = is_login();
         $data['size']     = fsockopen_remote_filesize($url);
         $file_ext         = strrchr($url,'.');
         $data['ext']      = str_replace('.','',$file_ext);//截取格式并替换掉点.
@@ -238,7 +239,7 @@ class Upload {
         if (!$data['ext']||!$data['name']) {
             return false;
         }
-        $this->attachmentModel->allowField(true)->data($file)->save();
+        $this->attachmentModel->allowField(true)->data($data)->save();
 		$id = $this->attachmentModel->id;
 
 		if ($id>0) {

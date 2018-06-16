@@ -283,18 +283,18 @@ span.show-media-info{width: 20px;text-align:center;}
           //   });
           // });
           //图片选择器URL添加按钮
-          // $("#addonlinefile").click(function () {
-          //       var $this = $(this);
-          //       var ids;
-          //       var src = $("#onlinefile_url").val();
-          //       $.post("{:url('admin/Attachment/upload_onlinefile')}", {}, function (res) {
-          //           var ids=res.id;
-          //           javascript:window.parent.setAttachmentInputVal($this.data('id'),ids,src);
+           $("#addonlinefile").click(function () {
+                 var $this = $(this);
+                 var ids;
+                 var src = $("#onlinefile_url").val();
+                 $.post("{:url('admin/Attachment/uploadOnlinefile')}", {src:src}, function (res) {
+                     console.log(res);
+                     var id=res.id;
+                     //javascript:window.parent.setAttachmentInputVal($this.data('id'),ids,src);
 
-          //           $('#attachmentModal').modal('hide')
-          //       })
-
-          //   })
+                     $('#attachmentModal').modal('hide')
+                 })
+           })
           
 
             //本地上传

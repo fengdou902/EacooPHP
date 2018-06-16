@@ -10,6 +10,7 @@
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
 
+use app\common\logic\Upload as UploadLogic;
 use app\common\model\Attachment as AttachmentModel;
 use app\admin\logic\Attachment as AttachmentLogic;//引入逻辑层
 use app\common\model\TermRelationships as TermRelationshipsModel;
@@ -339,5 +340,19 @@ class Attachment extends Admin {
                 parent::setStatus($model);
                 break;
         }
+    }
+
+
+    /**
+     * 设置从URL插入的图片回调
+     * @date   2018-6-16
+     * @author yyyvy <76836785@qq.com>
+     */
+    public function uploadOnlinefile(){
+        $url = $this->request->param('src');//获取data
+        $controller = new UploadLogic;
+        $return = $controller->uploadRemoteFile($url);
+        return json($return);
+        //print_r($return);die;
     }
 }
