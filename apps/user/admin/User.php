@@ -33,6 +33,7 @@ class User extends Admin {
         list($data_list,$total) = $this->userModel->search('uid|username|nickname')->getListByPage($map,true,'reg_time desc');
         foreach ($data_list as $key => &$row) {
             $row['sex_text'] = $row['sex_text'];
+            $row['status_text'] = $row['status_text'];
         }
         $reset_password = [
             'icon'         => 'fa fa-recycle',
@@ -59,13 +60,13 @@ class User extends Admin {
                 ->keyListItem('mobile', '手机号')
                 ->keyListItem('reg_time', '注册时间')
                 ->keyListItem('allow_admin', '允许登录后台','status')
-                ->keyListItem('status', '状态', 'array',[0=>'禁用',1=>'正常',2=>'待验证'])
+                ->keyListItem('status_text', '状态')
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListPrimaryKey('uid')
                 ->setListData($data_list)    // 数据列表
                 ->setListPage($total) // 数据列表分页
                 ->addRightButton('edit')//->addRightButton('forbid')
-                ->addRightButton('forbid')  // 添加编辑按钮
+                //->addRightButton('forbid')  // 添加编辑按钮
                 ->fetch();
     }
 
