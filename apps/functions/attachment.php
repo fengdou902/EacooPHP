@@ -439,7 +439,7 @@ function getThumbImageById($img_id,$thumb_type='small')
  * @return mixed
  */
 function getImgSrcByExt($ext,$path='',$is_default=false){
-    if (in_array($ext,['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'wps', 'txt', 'zip', 'rar', 'gz', 'bz2', '7z'])) {
+    /*if (in_array($ext,['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'wps', 'txt', 'zip', 'rar', 'gz', 'bz2', '7z'])) {
         if ($path=''||$is_default==true) {
             $path = config('view_replace_str.__PUBLIC__').'/img/file-default.png';
         }
@@ -447,7 +447,8 @@ function getImgSrcByExt($ext,$path='',$is_default=false){
         if ($path=''||$is_default==true) {
             $path = config('view_replace_str.__PUBLIC__').'/img/file-default.png';
         }
-    }
+    }*/
+    $path = config('view_replace_str.__PUBLIC__').'/img/file-'.$ext.'.png';
     return root_full_path($path);
 }
 
