@@ -14,7 +14,7 @@ use think\File;
 class Attachment extends Base {
 
     // protected $auto  = ['update_time'];
-    protected $insert = ['status' => 1,'uid']; 
+    protected $insert = ['status' => 1];
 
     protected function setUidAttr($value)
     {

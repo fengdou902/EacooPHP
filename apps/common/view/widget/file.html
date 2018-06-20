@@ -1,0 +1,36 @@
+{php}
+    $path_type = isset($field['options']['path_type'])? $field['options']['path_type']:'file';
+{/php}
+
+<div class="controls picture">
+    <div class="col-md-9" style="padding-bottom: 5px;">
+
+    <input id="{$field.id}" class="attach" name="{$field.name}" type="hidden" value="{$field.value}" event-node="uploadinput">
+    <div class="upload-img-box tc popup-gallery img-thumbnail pr" style="width:{$field.width}px;height: {$field.height}px;">
+        <div class="each">
+            {empty name="field.value"}
+                <img src="{php}echo get_image(0);{/php}">
+            {else /}
+                <i onclick="admin_image.removeImage($(this),'{$field.value}')" class="fa fa-times-circle remove-attachment"></i>
+                {switch name="file.ext"}
+                    {case value="mp4"}
+                        <video width="{$field.width}" height="{$field.height}" controls>
+                            <source src="{$file.url}" type="video/mp4">
+                            您的浏览器不支持 video 标签。
+                        </video>
+                    {/case}
+                    {default /}
+                        <a href="{$field.value|get_image}" title="点击查看大图">
+                            <img src="{$field.value|get_image}">
+                        </a>
+                {/switch}
+
+            {/empty}
+        </div>
+
+    </div>
+    <div>
+      <span class="btn btn-info ml-10 mt-10 btn-sm" data-url="{:url('admin/Upload/attachmentLayer',['input_id_name'=>$field['id'],'path_type'=>'file','gettype'=>'single'])}" data-gettype="single" onclick="openAttachmentLayer(this);"><i class="fa fa-file-image-o"></i> 选择视频</span>
+    </div>
+</div>
+</div>

@@ -20,7 +20,13 @@
     <div class="row mt-10">
         
       <div class="col-xs-9 col-sm-9 button-list clearfix">   
-         <div class="col-xs-3 col-sm-3 form-group pr-0"><span id="web_uploader_wrapper_attachmentIndex" class="btn btn-info btn-raised btn-sm"><i class="fa fa-cloud-upload"></i> 本地上传</span>
+         <div class="col-xs-3 col-sm-3 form-group pr-0">
+             <span id="web_uploader_wrapper_attachmentIndex" class="btn btn-info btn-raised btn-sm">
+                 <i class="fa fa-cloud-upload"></i> 上传图片
+             </span>
+             <span id="web_uploader_wrapper_attachmentFile" class="btn btn-info btn-raised btn-sm">
+                 <i class="fa fa-cloud-upload"></i> 上传文件
+             </span>
          &nbsp;&nbsp;<span class="btn btn-default btn-sm" id="media_batch">批量操作</span></div>
            <div class="col-xs-9 col-sm-9">
            <form id="selectForm" method="get" action="{:url('index')}" class="form-choice-url-param form-horizontal">
@@ -157,7 +163,7 @@
         }
     );
      /*弹窗*/
-    $(function () { 
+    $(function () {
         var upload_attachmentIndex  = WebUploader.create({
             // 选完文件后，是否自动上传。
             auto: true,
@@ -167,18 +173,17 @@
             server: "{:url('admin/Upload/upload',['path_type'=>$path_type,'type'=>'picture'])}",
             fileNumLimit: 10,
             // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
-            compress: false, 
-            // 验证单个文件大小是否超出限制, 超出则不允许加入队列 
+            compress: false,
+            // 验证单个文件大小是否超出限制, 超出则不允许加入队列
             fileSingleSizeLimit:{php}echo intval(config('upload_image_size'))?:2*1024*1024;{/php},
             // 选择文件的按钮。可选。
             // 内部根据当前运行是创建，可能是input元素，也可能是flash.
             pick: {'id': "#web_uploader_wrapper_attachmentIndex", 'multi': false},
-             accept:{title:'Images',extensions:'gif,jpg,jpeg,bmp,png',mimeTypes:'image/*'}
-            
+            accept:{title:'Images',extensions:'gif,jpg,jpeg,bmp,png',mimeTypes:'image/*'}
         });
         // 当有文件添加进来的时候
         upload_attachmentIndex.on( 'fileQueued', function( file ) {
-          $("ul.attachment_list").prepend('<li class="col-sm-6 col-md-2 col-lg-2 mb-20" id="'+file.id+'"><div class="box-style oh" style="height:160px;"><div class="progress progress-striped active" style="display: block;margin-top:41%;"><div class="progress-bar" role="progressbar" style="width: 100%;"></div></div><div class="attachment-foot"><p class="state"></p></div></div></li>');
+            $("ul.attachment_list").prepend('<li class="col-sm-6 col-md-2 col-lg-2 mb-20" id="'+file.id+'"><div class="box-style oh" style="height:160px;"><div class="progress progress-striped active" style="display: block;margin-top:41%;"><div class="progress-bar" role="progressbar" style="width: 100%;"></div></div><div class="attachment-foot"><p class="state"></p></div></div></li>');
         })
         // 文件上传过程中创建进度条实时显示。
         upload_attachmentIndex.on( 'uploadProgress', function( file, percentage ) {
@@ -188,9 +193,9 @@
             // 避免重复创建
             if ( !$percent.length ) {
                 $percent = $('<div class="progress progress-striped active">' +
-                  '<div class="progress-bar" role="progressbar" style="width: 0%">' +
-                  '</div>' +
-                '</div>').appendTo( $li ).find('.progress-bar');
+                    '<div class="progress-bar" role="progressbar" style="width: 0%">' +
+                    '</div>' +
+                    '</div>').appendTo( $li ).find('.progress-bar');
             }
 
             $li.find('p.state').text('上传中');
@@ -210,12 +215,74 @@
                     updateAlert(result.msg,'success');
                     window.location.href="{:url('index',['path_type'=>$path_type])}";
                 }
-                
+
             } else {
                 updateAlert(result.msg);
             }
         });
         upload_attachmentIndex.on( 'uploadError', function( file ) {
+            console.debug(file);
+        });
+
+        //上传文件
+        var upload_attachmentFile  = WebUploader.create({
+            // 选完文件后，是否自动上传。
+            auto: true,
+            // swf文件路径
+            swf: '__LIBS__/webuploader/Uploader.swf',
+            // 文件接收服务端。
+            server: "{:url('admin/Upload/upload',['path_type'=>'file','type'=>'file'])}",
+            fileNumLimit: 10,
+            // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+            compress: false,
+            // 验证单个文件大小是否超出限制, 超出则不允许加入队列
+            fileSingleSizeLimit:{php}echo intval(config('upload_image_size'))?:2*1024*1024;{/php},
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: {'id': "#web_uploader_wrapper_attachmentFile", 'multi': false},
+            accept:{title:'file',extensions:'doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,bz2,7z,mp4',mimeTypes:'file/*'}
+
+        });
+        // 当有文件添加进来的时候
+        upload_attachmentFile.on( 'fileQueued', function( file ) {
+            $("ul.attachment_list").prepend('<li class="col-sm-6 col-md-2 col-lg-2 mb-20" id="'+file.id+'"><div class="box-style oh" style="height:160px;"><div class="progress progress-striped active" style="display: block;margin-top:41%;"><div class="progress-bar" role="progressbar" style="width: 100%;"></div></div><div class="attachment-foot"><p class="state"></p></div></div></li>');
+        })
+        // 文件上传过程中创建进度条实时显示。
+        upload_attachmentFile.on( 'uploadProgress', function( file, percentage ) {
+            var $li = $( '#'+file.id ),
+                $percent = $li.find('.progress .progress-bar');
+
+            // 避免重复创建
+            if ( !$percent.length ) {
+                $percent = $('<div class="progress progress-striped active">' +
+                    '<div class="progress-bar" role="progressbar" style="width: 0%">' +
+                    '</div>' +
+                    '</div>').appendTo( $li ).find('.progress-bar');
+            }
+
+            $li.find('p.state').text('上传中');
+
+            $percent.css( 'width', percentage * 100 + '%' );
+        });
+        /*上传成功*/
+        upload_attachmentFile.on('uploadSuccess', function (file, result) {
+            if(result.code==1){
+                var data = result.data;
+                if (data.already==1) {
+                    $( '#'+file.id ).remove();
+                    showAttachmentInfo(data.id);//存在同个文件直接显示附件信息
+                    $('#attachmentInfoModal').modal('show');
+                    updateAlert(result.msg,'success');
+                } else{
+                    updateAlert(result.msg,'success');
+                    window.location.href="{:url('index',['path_type'=>$path_type])}";
+                }
+
+            } else {
+                updateAlert(result.msg);
+            }
+        });
+        upload_attachmentFile.on( 'uploadError', function( file ) {
             console.debug(file);
         });
 
