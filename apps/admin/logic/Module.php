@@ -1,7 +1,7 @@
 <?php
 // 后台模块处理逻辑      
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017-2018 http://www.eacoo123.com, All rights reserved.         
+// | Copyright (c) 2017-2018 http://www.eacoophp.com, All rights reserved.         
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -91,7 +91,7 @@ class Module extends AdminLogic
             switch($val['status']){
                 case -3:  // 模块信息异常
                     $val['status'] = '<span class="text-danger">异常</span>';
-                    $val['right_button']  = '<a class="btn btn-danger btn-sm" href="http://forum.eacoo123.com" target="_blank">反馈</a>';
+                    $val['right_button']  = '<a class="btn btn-danger btn-sm" href="http://forum.eacoophp.com" target="_blank">反馈</a>';
                     break;
                 case -2:  // 损坏
                     $val['status'] = '<span class="text-danger">损坏</span>';
