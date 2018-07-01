@@ -298,7 +298,7 @@ function onlineInstall(name,app_type,install_method,only_download) {
           } else if(result.code==2){
             eacooTokenIdentification();
           }else if(result.code==3){
-            result.url='http://www.eacoo123.com/appstore_'+app_type+'/'+name;
+            result.url='http://www.eacoophp.com/appstore_'+app_type+'/'+name;
             purchaseApp(result);
           }else{
             p_layer.msg(result.msg, {icon:5});
@@ -374,7 +374,7 @@ function eacooTokenIdentification() {
               return false;
           },
           success: function (layero, index) {
-              $(".layui-layer-btn1", layero).prop("href", "http://www.eacoo123.com/register.html").prop("target", "_blank");
+              $(".layui-layer-btn1", layero).prop("href", "http://www.eacoophp.com/register.html").prop("target", "_blank");
           } 
       });
 }

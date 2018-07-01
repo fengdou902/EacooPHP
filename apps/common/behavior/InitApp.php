@@ -1,7 +1,7 @@
 <?php
 // 初始化应用
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017-2018 http://www.eacoo123.com, All rights reserved.         
+// | Copyright (c) 2017-2018 http://www.eacoophp.com, All rights reserved.         
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -31,7 +31,7 @@ class InitApp {
         }
         
         define('EACOOPHP_V','1.2.5');
-        define('BUILD_VERSION','201805291001');//编译版本
+        define('BUILD_VERSION','201806032001');//编译版本
 
         //加载模块全局函数
         // $module_names = db('modules')->where(['status' =>1])->column('name');
@@ -70,7 +70,7 @@ class InitApp {
                 ],                
             ];
             //定义接口地址
-            $ec_config['eacoo_api_url']='http://www.eacoo123.com';
+            $ec_config['eacoo_api_url']='http://www.eacoophp.com';
             thinkConfig::set($ec_config);// 添加配置
         }
 	}

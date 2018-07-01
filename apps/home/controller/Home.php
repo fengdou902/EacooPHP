@@ -1,7 +1,7 @@
 <?php
 // 前台基类
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016-2018 http://www.eacoo123.com, All rights reserved.         
+// | Copyright (c) 2016-2018 http://www.eacoophp.com, All rights reserved.         
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -23,6 +23,7 @@ class Home extends Base {
         $this->currentUser = session('user_login_auth');
         $this->assign('current_user', $this->currentUser);
         $this->assign('header_menus',logic('Nav')->getNavigationMenus('header'));
+        $this->assign('current',logic('Nav')->current());
         $this->assign('_theme_public_', config('theme_public'));  // 页面公共继承模版
         $this->assign('_theme_public_layout', config('theme_public').'layout.html');  // 页面公共继承模版
     }
