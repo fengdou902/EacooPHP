@@ -92,7 +92,7 @@ class Upload extends Base
 
         $this->assign($params);
         $this->assign('field',$params);
-        return $this->fetch('common@Widget/file');
+        return $this->fetch('common@widget/file');
 
     }
     
