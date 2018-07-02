@@ -22,7 +22,7 @@ use ZipArchive;
  */
 class Cloud {
 
-    const EACOO_APPSTORE_DOWNLOAD_URL = 'http://www.eacoophp.com/api/appstore/download';
+    const EACOO_APPSTORE_DOWNLOAD_URL = 'https://www.eacoophp.com/api/appstore/download';
 
     /**
      * 构造函数

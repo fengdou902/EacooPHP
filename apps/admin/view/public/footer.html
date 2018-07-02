@@ -1,9 +1,9 @@
 <!-- /.content-wrapper -->
   <footer class="main-footer">
     
-    <strong>Copyright &copy; 2017-2018 <a href="http://www.eacoophp.com" target="_blank">EacooPHP</a>.</strong> 保留所有权利。
+    <strong>Copyright &copy; 2017-2018 <a href="https://www.eacoophp.com" target="_blank">EacooPHP</a>.</strong> 保留所有权利。
     <div class="pull-right hidden-xs">
-      <b>Version</b> {:EACOOPHP_V}{neq name="accredit_status" value="yes"}<a class="text-warning" href="http://www.eacoophp.com/pricing">[未授权]</a>{/neq}
+      <b>Version</b> {:EACOOPHP_V}{neq name="accredit_status" value="yes"}<a class="text-warning" href="https://www.eacoophp.com/pricing">[未授权]</a>{/neq}
     </div>
   </footer>
  <div class="control-sidebar-bg"></div>
@@ -35,13 +35,13 @@
 $(function(){
   {present name="eacoo_version"}
   //检测新版本
-    layer.confirm('发现了新版本V{$eacoo_version.version}。点击查看<a href="http://forum.eacoophp.com/t/updating">更新详情</a><br><br>当前版本V{:EACOOPHP_V}', {
+    layer.confirm('发现了新版本V{$eacoo_version.version}。点击查看<a href="https://forum.eacoophp.com/t/updating">更新详情</a><br><br>当前版本V{:EACOOPHP_V}', {
       icon:1,
       title:'新版本提醒',
       offset: '100px',
       btn: ['查看更新','以后提醒'],
     }, function(){
-        redirect('http://forum.eacoophp.com/t/updating');
+        redirect('https://forum.eacoophp.com/t/updating');
     }, function(){
       $.ajax({
             type: 'get',

@@ -1,7 +1,7 @@
 <?php
 // 字符串
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016-2018 http://www.eacoophp.com, All rights reserved.         
+// | Copyright (c) 2016-2018 https://www.eacoophp.com, All rights reserved.         
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -100,7 +100,7 @@ function create_uuid($prefix = ""){
  * @param  [string] $skey   [加密EKY]
  * @return [string]
  */
-function symmetry_encode($string = '', $skey = 'http://www.eacoophp.com/') {
+function symmetry_encode($string = '', $skey = 'https://www.eacoophp.com/') {
     $strArr = str_split(base64_encode($string));
     $strCount = count($strArr);
     foreach (str_split($skey) as $key => $value)
@@ -114,7 +114,7 @@ function symmetry_encode($string = '', $skey = 'http://www.eacoophp.com/') {
  * @param  [string] $skey   [解密KEY]
  * @return [string]
  */
-function symmetry_decode($string = '', $skey = 'http://www.eacoophp.com/') {
+function symmetry_decode($string = '', $skey = 'https://www.eacoophp.com/') {
     $strArr = str_split(str_replace(array('O0O0O', 'o000o', 'oo00o'), array('=', '+', '/'), $string), 2);
     $strCount = count($strArr);
     foreach (str_split($skey) as $key => $value)

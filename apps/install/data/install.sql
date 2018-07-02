@@ -361,7 +361,7 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `group`, 
 (7, 'web_site_copyright', '版权信息', 'Copyright © ******有限公司 All rights reserved.', '', 1, 0, 'text', '设置在网站底部显示的版权信息', 1406991855, 1468493911, 7, 1),
 (8, 'web_site_icp', '网站备案号', '豫ICP备14003306号', '', 6, 0, 'text', '设置在网站底部显示的备案号，如“苏ICP备1502009-2号"', 1378900335, 1507036190, 8, 1),
 (9, 'web_site_statistics', '站点统计', '', '', 1, 0, 'textarea', '支持百度、Google、cnzz等所有Javascript的统计代码', 1378900335, 1415983236, 9, 1),
-(10, 'index_url', '首页地址', 'http://www.eacoophp.com', '', 2, 0, 'text', '可以通过配置此项自定义系统首页的地址，比如：http://www.xxx.com', 1471579753, 1519825834, 0, 1),
+(10, 'index_url', '首页地址', 'https://www.eacoophp.com', '', 2, 0, 'text', '可以通过配置此项自定义系统首页的地址，比如：http://www.xxx.com', 1471579753, 1519825834, 0, 1),
 (13, 'admin_tags', '后台多标签', '1', '0:关闭\r\n1:开启', 2, 0, 'radio', '', 1453445526, 1519825844, 3, 1),
 (14, 'admin_page_size', '后台分页数量', '12', '', 2, 0, 'number', '后台列表分页时每页的记录数', 1434019462, 1518942039, 4, 1),
 (15, 'admin_theme', '后台主题', 'default', 'default:默认主题\r\nblue:蓝色理想\r\ngreen:绿色生活', 2, 0, 'select', '后台界面主题', 1436678171, 1506099586, 5, 1),
@@ -511,7 +511,7 @@ CREATE TABLE `eacoo_modules` (
 --
 
 INSERT INTO `eacoo_modules` (`id`, `name`, `title`, `description`, `author`, `version`, `config`, `is_system`, `url`, `admin_manage_into`, `create_time`, `update_time`, `sort`, `status`) VALUES
-(1, 'user', '用户中心', '用户模块，系统核心模块，不可卸载', '心云间、凝听', '1.0.2', '', 1, 'http://www.eacoophp.com', '', 1520095970, 1520095970, 99, 1),
+(1, 'user', '用户中心', '用户模块，系统核心模块，不可卸载', '心云间、凝听', '1.0.2', '', 1, 'https://www.eacoophp.com', '', 1520095970, 1520095970, 99, 1),
 (2, 'home', '前台Home', '一款基础前台Home模块', '心云间、凝听', '1.0.0', '', 1, NULL, '', 1520095970, 1520095970, 99, 1);
 
 -- --------------------------------------------------------
@@ -677,7 +677,7 @@ CREATE TABLE `eacoo_themes` (
 --
 
 INSERT INTO `eacoo_themes` (`id`, `name`, `title`, `description`, `author`, `version`, `config`, `current`, `website`, `sort`, `create_time`, `update_time`, `status`) VALUES
-(1, 'default', '默认主题', '内置于系统中，是其它主题的基础主题', '心云间、凝听', '1.0.2', '', 1, 'http://www.eacoophp.com', 99, 1475899420, 1520090170, 1),
+(1, 'default', '默认主题', '内置于系统中，是其它主题的基础主题', '心云间、凝听', '1.0.2', '', 1, 'https://www.eacoophp.com', 99, 1475899420, 1520090170, 1),
 (2, 'default-mobile', '默认主题-手机端', '内置于系统中，是系统的默认主题。手机端', '心云间、凝听', '1.0.1', '', 2, '', 99, 1520089999, 1520092270, 1);
 
 -- --------------------------------------------------------

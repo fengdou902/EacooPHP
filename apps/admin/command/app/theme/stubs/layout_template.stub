@@ -74,7 +74,7 @@
                 <li class="active"><a href="/">主页 <span class="sr-only">(current)</span></a></li>
                 <li><a href="{:url('user/index/index')}">会员<span class="sr-only">会员</span></a></li>
                 <li><a href="https://gitee.com/ZhaoJunfeng/EacooPHP/attach_files" target="_blank">下载</a></li>
-                <li><a href="http://forum.eacoophp.com" target="_blank">社区</a></li>
+                <li><a href="https://forum.eacoophp.com" target="_blank">社区</a></li>
                 <li><a href="https://www.kancloud.cn/youpzt/eacoo" target="_blank">文档</a></li>
             {/notempty}
             
@@ -145,7 +145,7 @@
 
 {/block}
 
-<strong>Copyright &copy; 2016-2018 <a href="http://www.eacoophp.com" target="_blank">EacooPHP</a>.</strong> 保留所有权利。
+<strong>Copyright &copy; 2016-2018 <a href="https://www.eacoophp.com" target="_blank">EacooPHP</a>.</strong> 保留所有权利。
 </footer>
 </div>
 <!-- ./wrapper -->
