@@ -13,7 +13,7 @@
             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
             </button>
         </div>
-        <p class="f13 color-6 pt-5">可在线安装、卸载、禁用、启用模块，同时支持本地安装。EacooPHP已上线应用市场，你可以发布你的免费或付费扩展应用：<a href="https://www.eacoophp.com/appstore/modules" target="_blank">https://www.eacoophp.com/appstore/modules</a></p>
+        <p class="f13 color-6 pt-5">可在线安装、卸载、禁用、启用模块，同时支持本地安装。EacooPHP已上线应用市场，你可以发布你的免费或付费扩展应用：<a href="{:config('eacoo_api_url')}/appstore/modules" target="_blank">{:config('eacoo_api_url')}/appstore/modules</a></p>
     </div>
     <div class="box-body no-padding">
       
@@ -61,7 +61,7 @@
             </h4>
           <p class="item-desc"><%= row.description %></p>
           <div class="item-metas">
-              <p class="text-muted f13">作者：<a href="https://www.eacoophp.com/appstore_module/<%= row.name %>" target="_blank"><%= row.author %></a></p>
+              <p class="text-muted f13">作者：<a href="{:config('eacoo_api_url')}/appstore_module/<%= row.name %>" target="_blank"><%= row.author %></a></p>
               <p class="text-muted f13">版本：<%= row.version %></p>
           </div>
         </div>

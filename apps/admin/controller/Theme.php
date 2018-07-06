@@ -271,7 +271,7 @@ class Theme extends Admin {
                     }
                 }
 
-                //$val['right_button'] .= '<a class="btn btn-info btn-sm" href="https://www.eacoophp.com" target="_blank">更多详情</a> ';
+                //$val['right_button'] .= '<a class="btn btn-info btn-sm" href="'.config('eacoo_api_url').'" target="_blank">更多详情</a> ';
             }
         }
         return $store_data;
