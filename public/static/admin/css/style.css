@@ -172,7 +172,7 @@ label.radio-label1{padding-left: 0;}
     padding: 10px;
 }
 .main-footer{padding: 6px!important;font-size: 12px;position: absolute;left: 0;bottom: 0;width: 100%;}
-.pull-right {margin-right: 210px;}
+.main-footer .pull-right {margin-right: 210px;}
 #loading, #loading .lbk, #loading .lcont {
     width: 146px;
     height: 146px;
