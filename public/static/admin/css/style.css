@@ -1,4 +1,7 @@
 * { box-sizing: border-box; }
+html, body {
+    height: 100%;
+}
 p { display: block; -webkit-margin-before: 0em; -webkit-margin-after: 0em; -webkit-margin-start: 0px; -webkit-margin-end: 0px; }
 ul { display: block; list-style-type: none; -webkit-margin-before: 0em; -webkit-margin-after: 0em; -webkit-margin-start: 0px; -webkit-margin-end: 0px; -webkit-padding-start: 0px; }
 /*base*/
@@ -168,7 +171,7 @@ label.radio-label1{padding-left: 0;}
     background: rgba(0, 0, 0, 0.3);
     padding: 10px;
 }
-.main-footer{padding: 6px!important;font-size: 12px;}
+.main-footer{padding: 6px!important;font-size: 12px;position: absolute;left: 0;bottom: 0;width: 100%;}
 
 #loading, #loading .lbk, #loading .lcont {
     width: 146px;
