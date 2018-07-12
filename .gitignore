@@ -1,5 +1,6 @@
 /plugins/
 .idea
+.env
 composer.lock
 *.zip
 phpunit.xml

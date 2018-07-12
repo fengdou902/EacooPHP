@@ -5,6 +5,21 @@ use app\admin\model\Modules as ModulesModel;
 use app\admin\model\Plugins as PluginsModel;
 
 /**
+ * 获取对象
+ * @author 闻子 <270988107@qq.com>
+ */
+function get_sington_object($object_name = '', $class = null)
+{
+
+    $request = \think\Request::instance();
+    
+    $request->__isset($object_name) ?: $request->bind($object_name, new $class());
+    
+    return $request->__get($object_name);
+
+}
+
+/**
  * 获取构建器实例
  * @param  string $type 类型（list|form）
  * @return [type] [description]

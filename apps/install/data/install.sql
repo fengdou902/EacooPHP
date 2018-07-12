@@ -195,9 +195,9 @@ INSERT INTO `eacoo_attachment` (`id`, `uid`, `name`, `path`, `url`, `location`, 
 (91, 1, 'meinv_admin_avatar', '/uploads/picture/2016-09-30/57edd952ba0e0.jpg', '', 'local', 'picture', 'jpg', '', 7006, NULL, '89b678fa35106c7a0f7579cb8426bd7a', '7d10ddb80359255e58c04bd30412b00bba6938a5', 0, 1475205458, 1475205458, 99, 1),
 (92, 1, '57e0a9c03a61b', '/uploads/picture/2016-10-03/57f2076c4e997.jpg', '', 'local', 'picture', 'jpg', '', 110032, '', 'e3694c361707487802476e81709c863f', 'd5381f24235ee72d9fd8dfe2bb2e3d128217c8ce', 0, 1475479404, 1475479404, 99, 1),
 (93, 1, '9812496129086622', '/uploads/picture/2016-10-06/57f6136b5bd4e.jpg', '', 'local', 'picture', 'jpg', '', 164177, '9812496129086622', '983944832c987b160ae409f71acc7933', 'bce6147f4070989fc0349798acf6383938e5563a', 0, 1475744619, 1475744619, 99, 1),
-(94, 1, 'eacoophp-watermark-banner-1', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg', 'link', 'picture', 'jpg', 'image', 171045, 'eacoophp-watermark-banner-1', '', '', 0, 1506215777, 1506215777, 99, 1),
-(95, 1, 'eacoophp-banner-3', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-banner-3.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-banner-3.jpg', 'link', 'picture', 'jpg', 'image', 356040, 'eacoophp-banner-3', '', '', 0, 1506215801, 1506215801, 99, 1),
-(96, 1, 'eacoophp-watermark-banner-2', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'http://cdn.eacoo123.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'link', 'picture', 'jpg', 'image', 356040, 'eacoophp-watermark-banner-2', '', '', 0, 1506215801, 1506215801, 99, 1),
+(94, 1, 'eacoophp-watermark-banner-1', 'http://cdn.eacoophp.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg', 'http://cdn.eacoophp.com/static/demo-eacoophp/eacoophp-watermark-banner-1.jpg', 'link', 'picture', 'jpg', 'image', 171045, 'eacoophp-watermark-banner-1', '', '', 0, 1506215777, 1506215777, 99, 1),
+(95, 1, 'eacoophp-banner-3', 'http://cdn.eacoophp.com/static/demo-eacoophp/eacoophp-banner-3.jpg', 'http://cdn.eacoophp.com/static/demo-eacoophp/eacoophp-banner-3.jpg', 'link', 'picture', 'jpg', 'image', 356040, 'eacoophp-banner-3', '', '', 0, 1506215801, 1506215801, 99, 1),
+(96, 1, 'eacoophp-watermark-banner-2', 'http://cdn.eacoophp.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'http://cdn.eacoophp.com/static/demo-eacoophp/eacoophp-watermark-banner-2.jpg', 'link', 'picture', 'jpg', 'image', 356040, 'eacoophp-watermark-banner-2', '', '', 0, 1506215801, 1506215801, 99, 1),
 (97, 1, '150217753092666', '/uploads/picture/2018-04-12/5acec2ffee8a4.jpg', '/uploads/picture/2018-04-12/5acec2ffee8a4.jpg', 'local', 'picture', 'jpg', 'image', 67406, '150217753092666', '82a25ea71fd7db1a2180894086790ea9', '87a03fe9161c0d3b4b757e999160355f9ce0ee75', 0, 1523499775, 1523499775, 99, 1);
 
 -- --------------------------------------------------------
@@ -361,7 +361,7 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `group`, 
 (7, 'web_site_copyright', '版权信息', 'Copyright © ******有限公司 All rights reserved.', '', 1, 0, 'text', '设置在网站底部显示的版权信息', 1406991855, 1468493911, 7, 1),
 (8, 'web_site_icp', '网站备案号', '豫ICP备14003306号', '', 6, 0, 'text', '设置在网站底部显示的备案号，如“苏ICP备1502009-2号"', 1378900335, 1507036190, 8, 1),
 (9, 'web_site_statistics', '站点统计', '', '', 1, 0, 'textarea', '支持百度、Google、cnzz等所有Javascript的统计代码', 1378900335, 1415983236, 9, 1),
-(10, 'index_url', '首页地址', 'http://www.eacoo123.com', '', 2, 0, 'text', '可以通过配置此项自定义系统首页的地址，比如：http://www.xxx.com', 1471579753, 1519825834, 0, 1),
+(10, 'index_url', '首页地址', 'https://www.eacoophp.com', '', 2, 0, 'text', '可以通过配置此项自定义系统首页的地址，比如：http://www.xxx.com', 1471579753, 1519825834, 0, 1),
 (13, 'admin_tags', '后台多标签', '1', '0:关闭\r\n1:开启', 2, 0, 'radio', '', 1453445526, 1519825844, 3, 1),
 (14, 'admin_page_size', '后台分页数量', '12', '', 2, 0, 'number', '后台列表分页时每页的记录数', 1434019462, 1518942039, 4, 1),
 (15, 'admin_theme', '后台主题', 'default', 'default:默认主题\r\nblue:蓝色理想\r\ngreen:绿色生活', 2, 0, 'select', '后台界面主题', 1436678171, 1506099586, 5, 1),
@@ -511,7 +511,7 @@ CREATE TABLE `eacoo_modules` (
 --
 
 INSERT INTO `eacoo_modules` (`id`, `name`, `title`, `description`, `author`, `version`, `config`, `is_system`, `url`, `admin_manage_into`, `create_time`, `update_time`, `sort`, `status`) VALUES
-(1, 'user', '用户中心', '用户模块，系统核心模块，不可卸载', '心云间、凝听', '1.0.2', '', 1, 'http://www.eacoo123.com', '', 1520095970, 1520095970, 99, 1),
+(1, 'user', '用户中心', '用户模块，系统核心模块，不可卸载', '心云间、凝听', '1.0.2', '', 1, 'https://www.eacoophp.com', '', 1520095970, 1520095970, 99, 1),
 (2, 'home', '前台Home', '一款基础前台Home模块', '心云间、凝听', '1.0.0', '', 1, NULL, '', 1520095970, 1520095970, 99, 1);
 
 -- --------------------------------------------------------
@@ -544,7 +544,7 @@ INSERT INTO `eacoo_nav` (`id`, `title`, `value`, `pid`, `position`, `target`, `d
 (1, '主页', '/', 0, 'header', '_self', 1, 'home', 'fa fa-home', 10, 1517978360, 1516206948, 1),
 (2, '会员', 'user/index/index', 0, 'header', '_self', 1, 'user', '', 99, 1516245690, 1516245690, 1),
 (3, '下载', 'https://gitee.com/ZhaoJunfeng/EacooPHP/attach_files', 0, 'header', '_blank', 0, '', '', 99, 1516245884, 1516245884, 1),
-(4, '社区', 'http://forum.eacoo123.com', 0, 'header', '_blank', 0, '', '', 99, 1516246000, 1516246000, 1),
+(4, '社区', 'http://forum.eacoophp.com', 0, 'header', '_blank', 0, '', '', 99, 1516246000, 1516246000, 1),
 (5, '文档', 'https://www.kancloud.cn/youpzt/eacoo', 0, 'header', '_blank', 0, '', '', 99, 1516249947, 1516249947, 1);
 
 -- --------------------------------------------------------
@@ -677,7 +677,7 @@ CREATE TABLE `eacoo_themes` (
 --
 
 INSERT INTO `eacoo_themes` (`id`, `name`, `title`, `description`, `author`, `version`, `config`, `current`, `website`, `sort`, `create_time`, `update_time`, `status`) VALUES
-(1, 'default', '默认主题', '内置于系统中，是其它主题的基础主题', '心云间、凝听', '1.0.2', '', 1, 'http://www.eacoo123.com', 99, 1475899420, 1520090170, 1),
+(1, 'default', '默认主题', '内置于系统中，是其它主题的基础主题', '心云间、凝听', '1.0.2', '', 1, 'https://www.eacoophp.com', 99, 1475899420, 1520090170, 1),
 (2, 'default-mobile', '默认主题-手机端', '内置于系统中，是系统的默认主题。手机端', '心云间、凝听', '1.0.1', '', 2, '', 99, 1520089999, 1520092270, 1);
 
 -- --------------------------------------------------------

@@ -1,7 +1,7 @@
 <?php
 // 模块管理          
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016-2018 http://www.eacoo123.com, All rights reserved.         
+// | Copyright (c) 2016-2018 https://www.eacoophp.com, All rights reserved.         
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -469,7 +469,7 @@ class Modules extends Admin {
                     }
                 }
 
-                //$val['right_button'] .= '<a class="btn btn-info btn-sm" href="http://www.eacoo123.com" target="_blank">更多详情</a> ';
+                //$val['right_button'] .= '<a class="btn btn-info btn-sm" href="https://www.eacoophp.com" target="_blank">更多详情</a> ';
             }
         }
         return [$store_data,$total];

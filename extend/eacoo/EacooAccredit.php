@@ -1,7 +1,7 @@
 <?php
 // 官方授权处理执行类
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016-2017 http://www.eacoo123.com, All rights reserved.         
+// | Copyright (c) 2016-2017 http://www.eacoophp.com, All rights reserved.         
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -16,7 +16,7 @@ use think\Cache;
  */
 class EacooAccredit {
 
-    const EACOO_ACCREDIT_URL = 'http://www.eacoo123.com/client_product_accredit';
+    const EACOO_ACCREDIT_URL = 'https://www.eacoophp.com/client_product_accredit';
     /**
      * 授权执行
      * @param  array $data [description]

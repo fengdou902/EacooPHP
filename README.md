@@ -1,4 +1,4 @@
-EacooPHP v1.2.5
+EacooPHP v1.2.6
 ===============
 ### 介绍
 EacooPHP是基于ThinkPHP5.0.20开发的一套轻量级WEB产品开发框架，追求高效，简单，灵活。
@@ -80,10 +80,10 @@ return builder('List')
 ### 前端组件
 artTemplate(JS模版引擎),artDialog(弹窗),datetimepicker(日期),echarts(图表),colorpicker(颜色选择器),fastclick,iCheck(复选框美化),ieonly,imgcutter,jquery-repeater,lazyload(延迟加载),select2,superslide,ueditor,wangeditor,webuploader,x-editable
 
-官网：[http://www.eacoo123.com](http://www.eacoo123.com)
+官网：[https://www.eacoophp.com](https://www.eacoophp.com)
 QQ群: 436491685
 ### 演示地址
-[http://demo1.eacoo123.com/admin](http://demo1.eacoo123.com/admin)  
+[https://demo1.eacoophp.com/admin](https://demo1.eacoophp.com/admin)  
 账号：admin  
 密码：123456 
 
@@ -98,5 +98,5 @@ GitHub：[https://github.com/fengdou902/EacooPHP.git](https://github.com/fengdou
 ### 版权申明
 EacooPHP遵循Apache2开源协议发布，并提供免费使用。  
 本项目包含的第三方源码和二进制文件之版权信息另行标注。  
-版权所有Copyright © 2017-2018 by EacooPHP (http://www.eacoo123.com)  
+版权所有Copyright © 2017-2018 by EacooPHP (http://www.eacoophp.com)  
 All rights reserved。
