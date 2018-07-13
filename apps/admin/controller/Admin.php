@@ -35,13 +35,16 @@ class Admin extends Base
             \think\Url::root('/admin.php');
             $this->assign('url_model',1);
         }
-        
+
         if( !is_login()){
             // 还没登录 跳转到登录页面
             $this->redirect('admin/login/index');
-            exit;
         } else {
             $this->currentUser = session('user_login_auth');
+
+            if(!is_allow_admin()){
+                $this->error('该用户不允许登录后台','/');
+            }
         }
 
         if (!in_array($this->urlRule,['admin/login/index', 'admin/index/logout'])) {

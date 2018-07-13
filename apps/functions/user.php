@@ -39,6 +39,22 @@ function is_administrator($uid = null) {
 }
 
 /**
+ * 检测用户是否允许登录后台
+ * @return boolean true-允许，false-不允许
+ * @author yyyvy <76836785@qq.com>
+ */
+function is_allow_admin($uid = null) {
+    $uid = is_null($uid) ? is_login() : $uid;
+    $result = get_user_info($uid);
+    if ($result['allow_admin'] == 1) {
+        return true;
+    } else {
+        return false;
+    }
+
+}
+
+/**
  * 获取超级管理员用户
  * @return [type] [description]
  * @date   2017-10-17
