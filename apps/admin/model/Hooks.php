@@ -17,5 +17,7 @@ use app\common\model\Base;
  */
 class Hooks extends Base {
 
+    // 设置数据表（不含前缀）
+    protected $name = 'hooks';
     
 }

@@ -15,7 +15,7 @@ class Hook extends Validate
 {
     // 验证规则
     protected $rule = [
-        'name'        => 'require|length:1,32|regex:^[a-zA-Z]\w{0,39}$|unique',
+        'name'        => 'require|length:1,32|regex:^[a-zA-Z]\w{0,39}$',
         'description' => 'require'
     ];
 
@@ -23,7 +23,6 @@ class Hook extends Validate
         'name.require'        => '钩子名称必须！',
         'name.length'        => '钩子名称长度为1-32个字符',
         'name.regex'          => '钩子名称由字母和下划线组成',
-        'name.unique'         => '钩子名称已经存在',
         'description.require' => '钩子描述必须！',
     ];
 

@@ -61,11 +61,16 @@ class Hook extends Admin {
         if (IS_POST) {
             $data = input('param.');
             //验证数据
-            $this->validateData($data,'Hook');
+            $this->validateData($data,'Hook.edit');
 
+            //验证插件名是否存在
+            /*$valiname = $this->hooksModel->where('name',$data['name'])->find();
+            if($data['id'] != $valiname['id']){
+                $this->error('插件名已存在');
+            }*/
             //$data里包含主键id，则editData就会更新数据，否则是新增数据
             if ($this->hooksModel->editData($data)) {
-                $this->success($title.'成功', url('hooks'));
+                $this->success($title.'成功', url('index'));
             } else {
                 $this->error($this->hooksModel->getError());
             }
