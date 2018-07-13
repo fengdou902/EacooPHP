@@ -51,8 +51,6 @@ class Nav extends Base {
 		return $menus;
 	}
 
-
-
 	/*
 	 * 获取当前导航高亮
 	 *

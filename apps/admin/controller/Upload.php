@@ -37,7 +37,7 @@ class Upload extends Admin {
      * @param  boolean $download_local 是否同时下载到本地
      * @return [type]                  [description]
      */
-    public function uploadRemoteFile($url='',$download_local=false){
+    public function uploadRemoteFile($url='', $download_local=false){
         $controller = new UploadLogic;
         $return = $controller->uploadRemoteFile();
         return json($return);

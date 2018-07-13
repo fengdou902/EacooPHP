@@ -73,7 +73,7 @@ class Attachment extends Base {
      * 附件分页
      * @param  int $page_totalCount 数据总数
      * @param  int $number 每页数量
-     * @author 赵俊峰 <981248356@qq.com>
+     * @author 心云间、凝听 <981248356@qq.com>
      */
     protected function media_data_page($page_totalCount,$number){
         $p_num=$page_totalCount/$number;

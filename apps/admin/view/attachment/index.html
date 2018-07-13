@@ -175,11 +175,11 @@
             // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
             compress: false,
             // 验证单个文件大小是否超出限制, 超出则不允许加入队列
-            fileSingleSizeLimit:{php}echo intval(config('upload_image_size'))?:2*1024*1024;{/php},
+            fileSingleSizeLimit:{php}echo intval(config('attachment_options.image_max_size'))?:2*1024*1024;{/php},
             // 选择文件的按钮。可选。
             // 内部根据当前运行是创建，可能是input元素，也可能是flash.
             pick: {'id': "#web_uploader_wrapper_attachmentIndex", 'multi': false},
-            accept:{title:'Images',extensions:'gif,jpg,jpeg,bmp,png',mimeTypes:'image/*'}
+            accept:{title:'Image',extensions:'{:config('attachment_options.image_exts')}',mimeTypes:'image/*'}
         });
         // 当有文件添加进来的时候
         upload_attachmentIndex.on( 'fileQueued', function( file ) {
@@ -236,11 +236,11 @@
             // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
             compress: false,
             // 验证单个文件大小是否超出限制, 超出则不允许加入队列
-            fileSingleSizeLimit:{php}echo intval(config('upload_image_size'))?:2*1024*1024;{/php},
+            fileSingleSizeLimit:{php}echo intval(config('attachment_options.file_max_size'))?:2*1024*1024;{/php},
             // 选择文件的按钮。可选。
             // 内部根据当前运行是创建，可能是input元素，也可能是flash.
             pick: {'id': "#web_uploader_wrapper_attachmentFile", 'multi': false},
-            accept:{title:'file',extensions:'doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,bz2,7z,mp4',mimeTypes:'file/*'}
+            accept:{title:'file',extensions:'{:config('attachment_options.file_exts')}',mimeTypes:'file/*'}
 
         });
         // 当有文件添加进来的时候

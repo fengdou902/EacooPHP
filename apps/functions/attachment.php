@@ -448,7 +448,7 @@ function getImgSrcByExt($ext,$path='',$is_default=false){
             $path = config('view_replace_str.__PUBLIC__').'/img/file-default.png';
         }
     }*/
-    if(!in_array($ext,['jpg','png','gif'])){
+    if(!in_array($ext,['jpg','jpeg','bmp','png','gif'])){
         $path = config('view_replace_str.__PUBLIC__').'/img/file-'.$ext.'.png';
     }
 

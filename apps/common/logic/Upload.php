@@ -54,9 +54,8 @@ class Upload {
 			}
 
 	        $this->path_type = $this->request->param('path_type', 'picture', 'trim');//路径类型
-	        
-	        $rootPath = $this->path_type!='picture' && $this->path_type ? './uploads/'.$this->path_type : './uploads/picture';
-			$upload_path = $rootPath.'/'.call_user_func_array($config['subName'][0],[$config['subName'][1],time()]);
+
+			$upload_path = './uploads/'.$this->path_type.'/'.call_user_func_array($config['subName'][0],[$config['subName'][1],time()]);
 			// 获取表单上传文件 例如上传了001.jpg
 			$file = $this->request->file('file');
 			if (!$file) {
