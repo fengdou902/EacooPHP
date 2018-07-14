@@ -3,6 +3,7 @@
     
     <strong>Copyright &copy; 2017-2018 <a href="{:config('eacoo_api_url')}" target="_blank">EacooPHP</a>.</strong> 保留所有权利。
     <div class="pull-right hidden-xs">
+        {present name="eacoo_version"}<a class="text-danger mr-10 " href="">发现了最新版本:V{$eacoo_version.version|default=''}</a>{/present}
       <b>Version</b> {:EACOOPHP_V}{neq name="accredit_status" value="yes"}<a class="text-warning" href="{:config('eacoo_api_url')}/pricing">[未授权]</a>{/neq}
     </div>
   </footer>
