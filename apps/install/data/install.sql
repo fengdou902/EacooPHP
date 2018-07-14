@@ -1,20 +1,17 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.2
+-- version 4.8.2
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: 2018-06-03 14:47:48
+-- Host: localhost
+-- Generation Time: 2018-07-14 05:17:04
 -- 服务器版本： 5.7.15
--- PHP Version: 7.0.14
+-- PHP Version: 7.2.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `eacoophp`
@@ -359,7 +356,7 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `group`, 
 (5, 'web_site_description', 'SEO描述', 'EacooPHP框架基于统一核心的通用互联网+信息化服务解决方案，追求简单、高效、卓越。可轻松实现支持多终端的WEB产品快速搭建、部署、上线。系统功能采用模块化、组件化、插件化等开放化低耦合设计，应用商城拥有丰富的功能模块、插件、主题，便于用户灵活扩展和二次开发。', '', 6, 1, 'textarea', '网站搜索引擎描述', 1378898976, 1506257875, 6, 1),
 (6, 'web_site_keyword', 'SEO关键字', '开源框架 EacooPHP ThinkPHP', '', 6, 1, 'textarea', '网站搜索引擎关键字', 1378898976, 1506257874, 4, 1),
 (7, 'web_site_copyright', '版权信息', 'Copyright © ******有限公司 All rights reserved.', '', 1, 0, 'text', '设置在网站底部显示的版权信息', 1406991855, 1468493911, 7, 1),
-(8, 'web_site_icp', '网站备案号', '豫ICP备14003306号', '', 6, 0, 'text', '设置在网站底部显示的备案号，如“苏ICP备1502009-2号"', 1378900335, 1507036190, 8, 1),
+(8, 'web_site_icp', '网站备案号', '豫ICP备14003306号', '', 6, 0, 'text', '设置在网站底部显示的备案号，如“苏ICP备1502009-2号\"', 1378900335, 1507036190, 8, 1),
 (9, 'web_site_statistics', '站点统计', '', '', 1, 0, 'textarea', '支持百度、Google、cnzz等所有Javascript的统计代码', 1378900335, 1415983236, 9, 1),
 (10, 'index_url', '首页地址', 'https://www.eacoophp.com', '', 2, 0, 'text', '可以通过配置此项自定义系统首页的地址，比如：http://www.xxx.com', 1471579753, 1519825834, 0, 1),
 (13, 'admin_tags', '后台多标签', '1', '0:关闭\r\n1:开启', 2, 0, 'radio', '', 1453445526, 1519825844, 3, 1),
@@ -380,22 +377,22 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `group`, 
 (31, 'hooks_type', '钩子的类型', '1:视图\r\n2:控制器', '', 3, 0, 'array', '', 1465478697, 1465478697, 0, 1),
 (33, 'action_type', '行为类型', '1:系统\r\n2:用户', '1:系统\r\n2:用户', 7, 0, 'array', '配置说明', 1466953086, 1466953086, 0, 1),
 (34, 'website_group', '网站信息子分组', '0:基本信息\r\n1:SEO设置\r\n3:其它', '', 6, 0, 'array', '作为网站信息配置的子分组配置，每个大分组可设置子分组作为tab切换', 1467516762, 1518785115, 20, 1),
-(36, 'mail_reg_active_template', '注册激活邮件模板', '{"active":"0","subject":"\\u6ce8\\u518c\\u6fc0\\u6d3b\\u901a\\u77e5"}', '', 8, 0, 'json', 'JSON格式保存除了模板内容的属性', 1467519451, 1467519451, 0, 1),
-(37, 'mail_captcha_template', '验证码邮件模板', '{"active":"0","subject":"\\u90ae\\u7bb1\\u9a8c\\u8bc1\\u7801\\u901a\\u77e5"}', '', 8, 0, 'json', 'JSON格式保存除了模板内容的属性', 1467519582, 1467818456, 0, 1),
-(38, 'mail_reg_active_template_content', '注册激活邮件模板内容', '<p><span style="font-family: 微软雅黑; font-size: 14px;"></span><span style="font-family: 微软雅黑; font-size: 14px;">您在{$title}的激活链接为</span><a href="{$url}" target="_blank" style="font-family: 微软雅黑; font-size: 14px; white-space: normal;">激活</a><span style="font-family: 微软雅黑; font-size: 14px;">，或者请复制链接：{$url}到浏览器打开。</span></p>', '', 8, 0, 'textarea', '注册激活模板邮件内容部分，模板内容单独存放', 1467818340, 1467818340, 0, 1),
-(39, 'mail_captcha_template_content', '验证码邮件模板内容', '<p><span style="font-family: 微软雅黑; font-size: 14px;">您的验证码为{$verify}验证码，账号为{$account}。</span></p>', '', 8, 0, 'textarea', '验证码邮件模板内容部分', 1467818435, 1467818435, 0, 1),
-(40, 'attachment_options', '附件配置选项', '{"driver":"local","file_max_size":"2097152","file_exts":"doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,bz2,7z","file_save_name":"uniqid","image_max_size":"2097152","image_exts":"gif,jpg,jpeg,bmp,png","image_save_name":"uniqid","page_number":"24","widget_show_type":"0","cut":"1","small_size":{"width":"150","height":"150"},"medium_size":{"width":"320","height":"280"},"large_size":{"width":"560","height":"430"},"watermark_scene":"2","watermark_type":"1","water_position":"9","water_img":"\\/logo.png","water_opacity":"80"}', '', 9, 0, 'json', '以JSON格式保存', 1467858734, 1519804860, 0, 1),
+(36, 'mail_reg_active_template', '注册激活邮件模板', '{\"active\":\"0\",\"subject\":\"\\u6ce8\\u518c\\u6fc0\\u6d3b\\u901a\\u77e5\"}', '', 8, 0, 'json', 'JSON格式保存除了模板内容的属性', 1467519451, 1467519451, 0, 1),
+(37, 'mail_captcha_template', '验证码邮件模板', '{\"active\":\"0\",\"subject\":\"\\u90ae\\u7bb1\\u9a8c\\u8bc1\\u7801\\u901a\\u77e5\"}', '', 8, 0, 'json', 'JSON格式保存除了模板内容的属性', 1467519582, 1467818456, 0, 1),
+(38, 'mail_reg_active_template_content', '注册激活邮件模板内容', '<p><span style=\"font-family: 微软雅黑; font-size: 14px;\"></span><span style=\"font-family: 微软雅黑; font-size: 14px;\">您在{$title}的激活链接为</span><a href=\"{$url}\" target=\"_blank\" style=\"font-family: 微软雅黑; font-size: 14px; white-space: normal;\">激活</a><span style=\"font-family: 微软雅黑; font-size: 14px;\">，或者请复制链接：{$url}到浏览器打开。</span></p>', '', 8, 0, 'textarea', '注册激活模板邮件内容部分，模板内容单独存放', 1467818340, 1467818340, 0, 1),
+(39, 'mail_captcha_template_content', '验证码邮件模板内容', '<p><span style=\"font-family: 微软雅黑; font-size: 14px;\">您的验证码为{$verify}验证码，账号为{$account}。</span></p>', '', 8, 0, 'textarea', '验证码邮件模板内容部分', 1467818435, 1467818435, 0, 1),
+(40, 'attachment_options', '附件配置选项', '{\"driver\":\"local\",\"file_max_size\":\"2097152\",\"file_exts\":\"doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,bz2,7z\",\"file_save_name\":\"uniqid\",\"image_max_size\":\"2097152\",\"image_exts\":\"gif,jpg,jpeg,bmp,png\",\"image_save_name\":\"uniqid\",\"page_number\":\"24\",\"widget_show_type\":\"0\",\"cut\":\"1\",\"small_size\":{\"width\":\"150\",\"height\":\"150\"},\"medium_size\":{\"width\":\"320\",\"height\":\"280\"},\"large_size\":{\"width\":\"560\",\"height\":\"430\"},\"watermark_scene\":\"2\",\"watermark_type\":\"1\",\"water_position\":\"9\",\"water_img\":\"\\/logo.png\",\"water_opacity\":\"80\"}', '', 9, 0, 'json', '以JSON格式保存', 1467858734, 1519804860, 0, 1),
 (42, 'user_deny_username', '保留用户名和昵称', '管理员,测试,admin,垃圾', '', 7, 0, 'textarea', '禁止注册用户名和昵称，包含这些即无法注册,用&quot; , &quot;号隔开，用户只能是英文，下划线_，数字等', 1468493201, 1468493201, 0, 1),
 (43, 'captcha_open', '验证码配置', 'reg,login,reset', 'reg:注册显示\r\nlogin:登陆显示\r\nreset:密码重置', 4, 0, 'checkbox', '验证码开启配置', 1468494419, 1506099586, 0, 1),
 (44, 'captcha_type', '验证码类型', '4', '1:中文\r\n2:英文\r\n3:数字\r\n4:英文+数字', 4, 0, 'select', '验证码类型', 1468494591, 1506099586, 0, 1),
 (45, 'web_site_subtitle', '网站副标题', '基于ThinkPHP5的开发框架', '', 6, 0, 'textarea', '用简洁的文字描述本站点（网站口号、宣传标语、一句话介绍）', 1468593713, 1507036190, 2, 1),
-(46, 'cache', '缓存配置', '{"type":"File","path":"\\/Library\\/WebServer\\/Documents\\/EacooPHP\\/runtime\\/cache\\/","prefix":"","expire":"0"}', '', 9, 0, 'json', '以JSON格式保存', 1518696015, 1518696015, 0, 1),
-(47, 'session', 'Session配置', '{"type":"","prefix":"eacoophp_","auto_start":"1"}', '', 9, 0, 'json', '以JSON格式保存', 1518696015, 1518696015, 99, 1),
-(48, 'cookie', 'Cookie配置', '{"path":"\\/","prefix":"eacoophp_","expire":"0","domain":"","secure":"0","httponly":"","setcookie":"1"}', '', 9, 0, 'json', '以JSON格式保存', 1518696015, 1518696015, 99, 1),
+(46, 'cache', '缓存配置', '{\"type\":\"File\",\"path\":\"\\/Library\\/WebServer\\/Documents\\/EacooPHP\\/runtime\\/cache\\/\",\"prefix\":\"\",\"expire\":\"0\"}', '', 9, 0, 'json', '以JSON格式保存', 1518696015, 1518696015, 0, 1),
+(47, 'session', 'Session配置', '{\"type\":\"\",\"prefix\":\"eacoophp_\",\"auto_start\":\"1\"}', '', 9, 0, 'json', '以JSON格式保存', 1518696015, 1518696015, 99, 1),
+(48, 'cookie', 'Cookie配置', '{\"path\":\"\\/\",\"prefix\":\"eacoophp_\",\"expire\":\"0\",\"domain\":\"\",\"secure\":\"0\",\"httponly\":\"\",\"setcookie\":\"1\"}', '', 9, 0, 'json', '以JSON格式保存', 1518696015, 1518696015, 99, 1),
 (49, 'reg_default_roleid', '注册默认角色', '4', '', 7, 0, 'select', '', 1471681620, 1471689765, 0, 1),
 (50, 'open_register', '开放注册', '0', '1:是\r\n0:否', 7, 0, 'radio', '', 1471681674, 1471681674, 0, 1),
 (56, 'meanwhile_user_online', '允许同时登录', '1', '1:是\r\n0:否', 7, 0, 'radio', '是否允许同一帐号在不同地方同时登录', 1473437355, 1473437355, 0, 1),
-(57, 'admin_collect_menus', '后台收藏菜单', '{"\\/admin.php\\/admin\\/attachment\\/setting.html":{"title":"\\u591a\\u5a92\\u4f53\\u8bbe\\u7f6e"},"\\/admin.php\\/admin\\/auth\\/index.html":{"title":"\\u89c4\\u5219\\u7ba1\\u7406"},"\\/admin.php\\/admin\\/modules\\/index.html":{"title":"\\u6a21\\u5757\\u5e02\\u573a"},"\\/admin.php\\/admin\\/dashboard\\/index.html":{"title":"\\u4eea\\u8868\\u76d8"}}', '', 2, 0, 'json', '在后台顶部菜单栏展示，可以方便快速菜单入口', 1518629152, 1518629152, 99, 1),
+(57, 'admin_collect_menus', '后台收藏菜单', '{\"\\/admin.php\\/admin\\/attachment\\/setting.html\":{\"title\":\"\\u591a\\u5a92\\u4f53\\u8bbe\\u7f6e\"},\"\\/admin.php\\/admin\\/auth\\/index.html\":{\"title\":\"\\u89c4\\u5219\\u7ba1\\u7406\"},\"\\/admin.php\\/admin\\/modules\\/index.html\":{\"title\":\"\\u6a21\\u5757\\u5e02\\u573a\"},\"\\/admin.php\\/admin\\/dashboard\\/index.html\":{\"title\":\"\\u4eea\\u8868\\u76d8\"}}', '', 2, 0, 'json', '在后台顶部菜单栏展示，可以方便快速菜单入口', 1518629152, 1518629152, 99, 1),
 (58, 'minify_status', '开启minify', '1', '1:开启\r\n0:关闭', 2, 0, 'radio', '开启minify会压缩合并js、css文件，可以减少资源请求次数，如果不支持minify，可关闭', 1518716395, 1518716395, 99, 1),
 (59, 'admin_allow_login_many', '同账号多人登录后台', '0', '0:不允许\r\n1:允许', 4, 0, 'radio', '允许多个人使用同一个账号登录后台。默认：不允许', 1519785747, 1519785747, 99, 1),
 (60, 'admin_allow_ip', '仅限登录后台IP', '', '', 4, 0, 'textarea', '填写IP地址，多个IP用英文逗号隔开。默认为空，允许所有IP', 1519828685, 1519828685, 99, 1);
@@ -544,7 +541,7 @@ INSERT INTO `eacoo_nav` (`id`, `title`, `value`, `pid`, `position`, `target`, `d
 (1, '主页', '/', 0, 'header', '_self', 1, 'home', 'fa fa-home', 10, 1517978360, 1516206948, 1),
 (2, '会员', 'user/index/index', 0, 'header', '_self', 1, 'user', '', 99, 1516245690, 1516245690, 1),
 (3, '下载', 'https://gitee.com/ZhaoJunfeng/EacooPHP/attach_files', 0, 'header', '_blank', 0, '', '', 99, 1516245884, 1516245884, 1),
-(4, '社区', 'http://forum.eacoophp.com', 0, 'header', '_blank', 0, '', '', 99, 1516246000, 1516246000, 1),
+(4, '社区', 'https://forum.eacoophp.com', 0, 'header', '_blank', 0, '', '', 99, 1516246000, 1516246000, 1),
 (5, '文档', 'https://www.kancloud.cn/youpzt/eacoo', 0, 'header', '_blank', 0, '', '', 99, 1516249947, 1516249947, 1);
 
 -- --------------------------------------------------------
@@ -722,6 +719,7 @@ CREATE TABLE `eacoo_users` (
 --
 
 INSERT INTO `eacoo_users` (`uid`, `username`, `number`, `password`, `nickname`, `email`, `mobile`, `avatar`, `sex`, `birthday`, `description`, `register_ip`, `login_num`, `last_login_ip`, `last_login_time`, `activation_auth_sign`, `url`, `score`, `money`, `freeze_money`, `pay_pwd`, `reg_from`, `reg_method`, `level`, `p_uid`, `allow_admin`, `reg_time`, `status`) VALUES
+
 (3, 'U1471610993', '9948511005', '031c9ffc4b280d3e78c750163d07d275', '陈婧', '', '', '/static/assets/img/avatar-woman.png', 2, NULL, '', NULL, 0, NULL, 1473755335, 'a525c9259ff2e51af1b6e629dd47766f99f26c69', NULL, 0, '2.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
 (4, 'U1472438063', '9752985498', '031c9ffc4b280d3e78c750163d07d275', '妍冰', '', '', '/static/assets/img/avatar-woman.png', 2, NULL, '承接大型商业演出和传统文化学习班', NULL, 0, NULL, 1472438634, 'ed587cf103c3f100be20f7b8fdc7b5a8e2fda264', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
 (5, 'U1472522409', '9849571025', '031c9ffc4b280d3e78c750163d07d275', '久柳', '', '', '/static/assets/img/avatar-man.png', 1, NULL, '', NULL, 0, NULL, 1472522621, '5e542dc0c77b3749f2270cb3ec1d91acc895edc8', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 0),
@@ -871,84 +869,101 @@ ALTER TABLE `eacoo_users`
 --
 ALTER TABLE `eacoo_action`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=17;
+
 --
 -- 使用表AUTO_INCREMENT `eacoo_action_log`
 --
 ALTER TABLE `eacoo_action_log`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键';
+
 --
 -- 使用表AUTO_INCREMENT `eacoo_attachment`
 --
 ALTER TABLE `eacoo_attachment`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=98;
+
 --
 -- 使用表AUTO_INCREMENT `eacoo_auth_group`
 --
 ALTER TABLE `eacoo_auth_group`
   MODIFY `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
 --
 -- 使用表AUTO_INCREMENT `eacoo_auth_rule`
 --
 ALTER TABLE `eacoo_auth_rule`
   MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+
 --
 -- 使用表AUTO_INCREMENT `eacoo_config`
 --
 ALTER TABLE `eacoo_config`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '配置ID', AUTO_INCREMENT=61;
+
 --
 -- 使用表AUTO_INCREMENT `eacoo_hooks`
 --
 ALTER TABLE `eacoo_hooks`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '钩子ID', AUTO_INCREMENT=19;
+
 --
 -- 使用表AUTO_INCREMENT `eacoo_hooks_extra`
 --
 ALTER TABLE `eacoo_hooks_extra`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
 --
 -- 使用表AUTO_INCREMENT `eacoo_links`
 --
 ALTER TABLE `eacoo_links`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=3;
+
 --
 -- 使用表AUTO_INCREMENT `eacoo_modules`
 --
 ALTER TABLE `eacoo_modules`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=3;
+
 --
 -- 使用表AUTO_INCREMENT `eacoo_nav`
 --
 ALTER TABLE `eacoo_nav`
   MODIFY `id` smallint(6) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
 --
 -- 使用表AUTO_INCREMENT `eacoo_plugins`
 --
 ALTER TABLE `eacoo_plugins`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键';
+
 --
 -- 使用表AUTO_INCREMENT `eacoo_rewrite`
 --
 ALTER TABLE `eacoo_rewrite`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键id自增';
+
 --
 -- 使用表AUTO_INCREMENT `eacoo_terms`
 --
 ALTER TABLE `eacoo_terms`
   MODIFY `term_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=14;
+
 --
 -- 使用表AUTO_INCREMENT `eacoo_term_relationships`
 --
 ALTER TABLE `eacoo_term_relationships`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
 --
 -- 使用表AUTO_INCREMENT `eacoo_themes`
 --
 ALTER TABLE `eacoo_themes`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=3;
+
 --
 -- 使用表AUTO_INCREMENT `eacoo_users`
 --
 ALTER TABLE `eacoo_users`
   MODIFY `uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+COMMIT;
 
