@@ -139,10 +139,17 @@ class Index extends Controller {
 			//创建数据库
 			$dbname = $db['database'];
 			unset($db['database']);
-			$db_obj  = \think\Db::connect($db);
+			$db_instance  = \think\Db::connect($db);
+			// 检测数据库连接
+            try{
+                $db_instance->execute('select version()');
+            }catch(\Exception $e){
+                $this->error('数据库连接失败，请检查数据库配置！');
+            }
+
 			$sql = "CREATE DATABASE IF NOT EXISTS `{$dbname}` DEFAULT CHARACTER SET utf8";
-			if (!$db_obj->execute($sql)) {
-				return $this->error($db_obj->getError());
+			if (!$db_instance->execute($sql)) {
+				return $this->error($db_instance->getError());
 			} else {
 				$this->redirect('install/index/sql');
 			}
@@ -169,19 +176,20 @@ class Index extends Controller {
 		$this->assign('status', $this->status);
 		echo $this->fetch();
 		if (session('update')) {
-			$db = \think\Db::connect();
+			$db_instance = \think\Db::connect();
 			//更新数据表
-			update_tables($db, config('prefix'));
+			update_tables($db_instance, config('prefix'));
 		} else {
 			//连接数据库
 			$dbconfig = session('db_config');
-			$db       = \think\Db::connect($dbconfig);
+			//$dbconfig['params']=['MYSQL_ATTR_USE_BUFFERED_QUERY'=>true];
+			$db_instance       = \think\Db::connect($dbconfig);
 			//创建数据表
-			create_tables($db, $dbconfig['prefix']);
+			create_tables($db_instance, $dbconfig['prefix']);
 			//更新网站信息
-			update_webconfig($db, $dbconfig['prefix'], session('web_config'));
+			update_webconfig($db_instance, $dbconfig['prefix'], session('web_config'));
 			//注册创始人帐号
-			register_administrator($db, $dbconfig['prefix'], session('admin_info'));
+			register_administrator($db_instance, $dbconfig['prefix'], session('admin_info'));
 
 			//创建配置文件
 			$conf = write_config($dbconfig);

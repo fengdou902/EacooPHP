@@ -161,8 +161,8 @@ class Config {
             Cache::set('DB_CONFIG_DATA', $system_config, 3600);  // 缓存配置
             
         }
-        $system_config['captcha'] = $this->setCaptcha();
 
+        $system_config['captcha'] = $this->setCaptcha();
         // 移动端不显示trace
         if (IS_MOBILE==true) {
             $system_config['app_trace'] = false;
@@ -199,7 +199,7 @@ class Config {
                 $return['codeSet'] = '0123456789';
                 break;
             default://英文+数字
-                # code...
+                $return['codeSet'] = '0123456789';
                 break;
         }
         return $return;

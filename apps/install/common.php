@@ -189,23 +189,23 @@ function create_tables($db, $prefix = ''){
 		
 		//开始安装
 		show_msg('开始安装数据库...');
-		foreach ($sql as $value) {
+		foreach ($sql as $sub_sql) {
 			//替换前缀
-			$value = str_replace(" `{$orginal}", " `{$prefix}", $value);
-			$value = trim($value);
-			if(empty($value)) continue;
-			if (strpos($value, 'CREATE TABLE')!==false) {
-				//$name = preg_replace("/^CREATE TABLE `(\w+)` .*/s", "\\1", $value);
-				preg_match("/CREATE TABLE `(\w+)` .*/i", $value,$result);
+			$sub_sql = str_replace(" `{$orginal}", " `{$prefix}", $sub_sql);
+			$sub_sql = trim($sub_sql);
+			if(empty($sub_sql)) continue;
+			if (strpos($sub_sql, 'CREATE TABLE')!==false) {
+				//$name = preg_replace("/^CREATE TABLE `(\w+)` .*/s", "\\1", $sub_sql);
+				preg_match("/CREATE TABLE `(\w+)` .*/i", $sub_sql,$result);
 				$msg  = "创建数据表{$result[1]}";
-				if(false !== $db->execute($value)){
+				if(false !== $db->execute($sub_sql)){
 					show_msg($msg . '...成功');
 				} else {
 					show_msg($msg . '...失败！', 'error');
 					session('error', true);
 				}
 			} else {
-				$db->execute($value);
+				$db->execute($sub_sql);
 			}
 
 		}

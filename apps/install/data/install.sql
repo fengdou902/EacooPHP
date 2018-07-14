@@ -8,8 +8,6 @@
 -- PHP Version: 7.2.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
-START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -965,5 +963,3 @@ ALTER TABLE `eacoo_themes`
 --
 ALTER TABLE `eacoo_users`
   MODIFY `uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
-COMMIT;
-
