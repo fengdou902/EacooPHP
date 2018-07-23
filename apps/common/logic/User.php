@@ -215,6 +215,7 @@ class User extends Base
          // 记录登录SESSION和COOKIES
         $auth_login = [
             'uid'             => $user['uid'],
+            'number'          => $user['number'],
             'username'        => $user['username'],
             'nickname'        => $user['nickname'],
             'email'           => $user['email'],
