@@ -51,7 +51,7 @@ function logic($name='')
  * @date   2018-02-02
  * @author 心云间、凝听 <981248356@qq.com>
  */
-function getService($name='')
+function service($name='')
 {
     return model($name,'service');
 }

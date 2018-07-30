@@ -205,9 +205,9 @@ if (MODULE_MARK=='admin') {
         // 默认模块名
         'default_module'         => 'admin',
         // 默认控制器名
-        'default_controller'     => 'Index',
+        'default_controller'     => 'Login',
         // 默认操作名
-        'default_action'         => 'login',
+        'default_action'         => 'index',
         // +----------------------------------------------------------------------
         // | 会话设置
         // +----------------------------------------------------------------------

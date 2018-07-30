@@ -292,7 +292,7 @@ class Attachment extends Admin {
      * @param  int $term_id term_id
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function CategoryEdit($term_id = 0){
+    public function categoryEdit($term_id = 0){
         
         $tab_obj=[
             'tab_list'=>AttachmentLogic::getTabList(),

@@ -89,7 +89,7 @@ skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar 
 
 .fixed-table-container{border:none!important;}
 /*表单form*/
-label.radio-label1{padding-left: 0;}
+label.radio-label1,label.checkbox-label1{padding-left: 0;}
 .help-block{font-size: 13px;line-height: 24px;color: #888;padding-left: 0;}
 .help-block:hover{color: #666;}
 

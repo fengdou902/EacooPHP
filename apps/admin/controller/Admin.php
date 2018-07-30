@@ -22,19 +22,8 @@ class Admin extends Base
 { 
     public function _initialize() {
         parent::_initialize();
-        //检测是否是最新版本
-        $eacoo_version = EacooAccredit::getVersion();
-        if ($eacoo_version['version']>EACOOPHP_V) {
-            $this->assign('eacoo_version',$eacoo_version);
-        }
-
-        if (SERVER_SOFTWARE_TYPE=='nginx') {
-            \think\Url::root('/admin.php?s=');
-            $this->assign('url_model',2);
-        } else{
-            \think\Url::root('/admin.php');
-            $this->assign('url_model',1);
-        }
+        //初始化
+        $this->initConfig();
 
         if( !is_login()){
             // 还没登录 跳转到登录页面
@@ -95,6 +84,39 @@ class Admin extends Base
             $this->assign('_admin_public_layerbase_', $template_path_str.'apps/admin/view/public/layerbase.'.config('template.view_suffix'));
         } 
         
+    }
+
+    /**
+     * 初始化后台
+     * @return [type] [description]
+     * @date   2018-07-22
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    private function initConfig()
+    {
+        //检测是否是最新版本
+        $eacoo_version = EacooAccredit::getVersion();
+        if ($eacoo_version['version']>EACOOPHP_V) {
+            $this->assign('eacoo_version',$eacoo_version);
+        }
+
+        if (SERVER_SOFTWARE_TYPE=='nginx') {
+            \think\Url::root('/admin.php?s=');
+            $this->assign('url_model',2);
+        } else{
+            \think\Url::root('/admin.php');
+            $this->assign('url_model',1);
+        }
+
+        //如果是nginx，则后台重置分页参数
+        if (SERVER_SOFTWARE_TYPE=='nginx') {
+            $current_parameters = [
+                's'=>'/'.MODULE_NAME.'/'.$this->request->controller().'/'.$this->request->action()
+            ];
+            $parameters = $this->request->except('page');
+            $parameters = array_merge($current_parameters,$parameters);
+            config('paginate.query',$parameters);
+        }
     }
 
     /**

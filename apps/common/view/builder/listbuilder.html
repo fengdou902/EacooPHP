@@ -78,7 +78,7 @@
                                 data-checkbox="true">
                             </th>
                             {volist name="table_columns" id="column"}
-                                <th data-field="{$column.name}" >{$column.title}</th>
+                                <th data-field="{$column.name}" {$column.extra_attr|default=""}>{$column.title}</th>
                             {/volist}
                         </tr>
                     </thead>
@@ -141,14 +141,14 @@
           //console.log(param);
           //console.log(params);
           return param;                   
-        },  
+        },
         // onLoadSuccess: function(res){  //加载成功时执行  
         //     console.log(res);
         //   layer.msg("加载成功");  
         // },  
         onLoadError: function(res){  //加载失败时执行  
           layer.msg("加载数据失败", {time : 1500, icon : 2});  
-        }  
+        }
         
     })
 </script>

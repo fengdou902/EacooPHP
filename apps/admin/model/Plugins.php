@@ -124,7 +124,7 @@ class Plugins extends Model {
     }
 
     /**
-     * 检测是否安装了某个模块
+     * 检测是否安装了某个插件
      * @param  string $name [description]
      * @return [type] [description]
      * @date   2017-09-17

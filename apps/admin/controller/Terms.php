@@ -48,31 +48,31 @@ class Terms extends Admin {
                 $row['object_count'] = logic('common/Terms')->termRelationCount($row['term_id'],$from_table);
             }
         }
-        
+        $addnew_href = $edit_U ? ['href'=>$edit_U]:[];
         $builder = builder('List')
                     ->setMetaTitle('分类管理');
         if (!empty($tab_nav)) {//构建tab
             $builder->setTabNav($tab_nav['tab_list'],$tab_nav['current']);  // 设置页面Tab导航
         }
-        return $builder->addTopButton('addnew',$edit_U ? ['href'=>$edit_U],false)  // 添加新增按钮
-                        ->addTopButton('resume')  // 添加启用按钮
-                        ->addTopButton('forbid')  // 添加禁用按钮
-                        ->addTopButton('recycle') //添加回收按钮
-                        ->setSearch('输入分类名称', url('index'))
-                        ->keyListItem('term_id', 'ID')
-                        ->keyListItem('name', '名称','link',url('index',['term_id'=>'__data_id__']))//约定分类对象
-                        ->keyListItem('slug', '别名')
-                        ->keyListItem('parent', '父分类')
-                        ->keyListItem('seo_description', '描述')
-                        ->keyListItem('object_count', '对象数')
-                        ->keyListItem('status', '状态', 'status')
-                        ->keyListItem('right_button', '操作', 'btn')
-                        ->setListPrimaryKey('term_id')
-                        ->setListData($data_list)    // 数据列表
-                        ->setListPage($total,15) // 数据列表分页
-                        ->addRightButton('edit',$addnew_href)// 添加编辑按钮
-                        ->addRightButton('recycle')// 添加删除按钮
-                        ->fetch();
+        return $builder->addTopButton('addnew',$addnew_href,false)  // 添加新增按钮
+                    ->addTopButton('resume')  // 添加启用按钮
+                    ->addTopButton('forbid')  // 添加禁用按钮
+                    ->addTopButton('recycle') //添加回收按钮
+                    ->setSearch('输入分类名称', url('index'))
+                    ->keyListItem('term_id', 'ID')
+                    ->keyListItem('name', '名称','link',url('index',['term_id'=>'__data_id__']))//约定分类对象
+                    ->keyListItem('slug', '别名')
+                    ->keyListItem('parent', '父分类')
+                    ->keyListItem('seo_description', '描述')
+                    ->keyListItem('object_count', '对象数')
+                    ->keyListItem('status', '状态', 'status')
+                    ->keyListItem('right_button', '操作', 'btn')
+                    ->setListPrimaryKey('term_id')
+                    ->setListData($data_list)    // 数据列表
+                    ->setListPage($total,15) // 数据列表分页
+                    ->addRightButton('edit',$addnew_href)// 添加编辑按钮
+                    ->addRightButton('recycle')// 添加删除按钮
+                    ->fetch();
 
     }
 
@@ -136,7 +136,6 @@ class Terms extends Admin {
                     ->addFormItem('slug', 'text', '分类别名', '分类别名','','require')
                     ->addFormItem('taxonomy', 'select', '分类类型', '选择一个分类法',$this->termTaxonomy)
                     ->addFormItem('pid', 'multilayer_select', '上级分类', '上级分类',$p_terms)
-                    ->addFormItem('limit', 'number', '分页条数', '设置前台的分页条数')
                     ->addFormItem('seo_title', 'text', 'SEO标题', '留空自动设置为分类名称')
                     ->addFormItem('seo_keywords', 'text', 'SEO关键字', 'SEO关键字')
                     ->addFormItem('seo_description', 'textarea', '描述', '同时也作为SEO描述')
