@@ -30,7 +30,7 @@ class User extends Admin {
     public function index(){
         // 获取所有用户
         $map['status'] = ['egt', '0']; // 禁用和正常状态
-        list($data_list,$total) = $this->userModel->search('uid|username|nickname')->getListByPage($map,true,'reg_time desc');
+        list($data_list,$total) = $this->userModel->search('uid|username|nickname|email')->getListByPage($map,true,'reg_time desc');
         foreach ($data_list as $key => &$row) {
             $row['sex_text'] = $row['sex_text'];
             $row['status_text'] = $row['status_text'];

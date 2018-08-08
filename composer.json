@@ -33,6 +33,12 @@
     "extra": {
         "think-path": "thinkphp"
     },
+    "repositories": {
+        "laravel-china": {
+            "type": "composer",
+            "url": "https://packagist.laravel-china.org"
+        }
+    },
     "config": {
         "preferred-install": "dist"
     }

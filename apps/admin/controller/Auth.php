@@ -85,7 +85,7 @@ class Auth extends Admin {
     }
 
     /**
-     * 菜单编辑
+     * 规则编辑
      * @param  integer $id [description]
      * @return [type]      [description]
      */
@@ -114,7 +114,7 @@ class Auth extends Admin {
                 $pid       = (int)input('param.pid');
                 if ($pid>0) {
                     $pid_data  = $this->authRuleModel->where('pid',$pid)->field('depend_type,depend_flag')->find();
-                    $info = ['depend_type'=>pid_data['depend_type'],'depend_flag'=>$pid_data['depend_flag'],'pid'=>$pid,'is_menu'=>1,'sort'=>99,'status'=>1];
+                    $info = ['depend_type'=>$pid_data['depend_type'],'depend_flag'=>$pid_data['depend_flag'],'pid'=>$pid,'is_menu'=>1,'sort'=>99,'status'=>1];
                 } else{
                     
                     $info = ['depend_type'=>1,'is_menu'=>1,'sort'=>99,'status'=>1];
