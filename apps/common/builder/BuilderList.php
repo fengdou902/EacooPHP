@@ -756,8 +756,13 @@ class BuilderList extends Builder {
                     break;
             }
         }
-        $result = array_merge($result,$data->toArray());
-        unset($data);
+
+        if (!empty($data)) {
+            $data = !is_array($data) ? $data->toArray() : $data;
+            $result = array_merge($result,$data);
+            unset($data);
+        }
+        
         return $result;
     }
 
