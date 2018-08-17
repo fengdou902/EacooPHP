@@ -78,7 +78,7 @@
                                 data-checkbox="true">
                             </th>
                             {volist name="table_columns" id="column"}
-                                <th data-field="{$column.name}" {$column.extra_attr|default=""}>{$column.title}</th>
+                                <th data-field="{$column.name}" {$column.extra_attr|default=""} data-sortable="true">{$column.title}</th>
                             {/volist}
                         </tr>
                     </thead>

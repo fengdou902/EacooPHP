@@ -155,9 +155,7 @@ class Upload {
 				$config['saveName'] = $config['file_save_name'];
 			}
 			$this->path_type = $path_type;//路径类型
-	        
-	        $rootPath = $this->path_type!='picture' && $this->path_type ? './uploads/'.$this->path_type : $config['rootPath'];
-			$savePath = $rootPath.'/'.call_user_func_array($config['subName'][0],[$config['subName'][1],time()]);
+			$savePath = './uploads/'.$this->path_type.'/'.call_user_func_array($config['subName'][0],[$config['subName'][1],time()]);
 
 			$driver   = $config['driver'];
 			$saveName = uniqid();
@@ -389,7 +387,7 @@ class Upload {
 	 * @access public
 	 */
 	public function save($config, $from_file_name, $file) {
-		$file['uid']      = $file['uid']?$file['uid']:is_login();
+		$file['uid']      = isset($file['uid'])?$file['uid']:is_login();
 		$file['location'] = $config['driver'];
 		$file['code']   = 1;
 		$file_exist = AttachmentModel::where(['md5'=>$file['md5'],'sha1'=>$file['sha1']])->count();
