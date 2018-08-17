@@ -12,6 +12,7 @@ namespace app\admin\controller;
 
 use app\admin\model\Theme as ThemeModel;
 use app\admin\logic\Theme as ThemeLogic;
+use app\admin\logic\Extension as ExtensionLogic;
 
 class Theme extends Admin {
     
@@ -80,7 +81,7 @@ class Theme extends Admin {
      */
     public function install($name=''){
         // 获取当前主题信息
-        $extensionObj = new Extension;
+        $extensionObj = new ExtensionLogic;
         $extensionObj->initInfo('theme',$name);
         $info = $extensionObj->getInfoByFile();//从文件获取
 
@@ -122,7 +123,7 @@ class Theme extends Admin {
     public function updateInfo($id) {
         $name = ThemeModel::where('id',$id)->value('name');
         // 获取当前主题信息
-        $extensionObj = new Extension;
+        $extensionObj = new ExtensionLogic;
         $extensionObj->initInfo('theme',$name);
         $info = $extensionObj->getInfoByFile();//从文件获取
 
@@ -205,7 +206,7 @@ class Theme extends Admin {
      */
     public function refresh()
     {
-        Extension::refresh('theme');
+        ExtensionLogic::refresh('theme');
         $this->success('成功清理缓存','');
     }
 
@@ -223,7 +224,7 @@ class Theme extends Admin {
                 $this->error('目录权限不足，请手动删除目录');
             }
             @rmdirs(THEME_PATH.$name);
-            Extension::refresh('theme');
+            ExtensionLogic::refresh('theme');
             $this->success('删除主题成功',url('index',['from_type'=>'local']));
         }
         $this->error('删除主题失败');
@@ -250,7 +251,7 @@ class Theme extends Admin {
             cache('eacoo_appstore_themes_'.$paged,$store_data,3600);
         }
         if (!empty($store_data)) {
-            $extensionObj = new Extension();
+            $extensionObj = new ExtensionLogic();
             $local_themes = $extensionObj->localApps('theme');
             foreach ($store_data as $key => &$val) {
 

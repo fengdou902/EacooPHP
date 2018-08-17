@@ -18,7 +18,7 @@
     })
 
     //ajax get请求
-    $('body').on('click','.ajax-get',function () {
+    $('body').on('click','.ajax-get',function (event) {
         event.preventDefault();
         var target;
         var $this = $(this);
@@ -289,24 +289,23 @@ function url(url, params, rewrite) {
 
 //重置alert
 window.updateAlert = function (message,type,title) {
+
     if (typeof title=='undefined') {
         var title;
         switch(type){
-            case 'success': title = "提示"; break;
-            case 'warning': title = "注意"; break;
-            case 'danger':  title = "错误"; break;
-            case 'error':   title = "错误"; break;
-            default:        title = "未知错误"; break;
+            case 'success': title = "提示";toastr.success(message,title); break;
+            case 'warning': title = "注意";toastr.warning(message,title); break;
+            case 'danger':  title = "错误";toastr.danger(message,title); break;
+            case 'error':   title = "错误";toastr.error(message,title); break;
+            default:        title = "提示"; break;
         }
-        
     };
-    if(typeof type !='undefined')
+    if(typeof type =='undefined')
     {
-        $.toaster({ priority : type, title :title, message :message});
-    }else {
-        $.toaster({ priority : 'warning', title :title, message :message});
+        toastr.info(message,title);
     }
 };   
+
 
 //重置confirm
 window.updateConfirm = function (confirm_info) {

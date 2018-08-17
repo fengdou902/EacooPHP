@@ -628,11 +628,17 @@ class BuilderList extends Builder {
      * @date   2018-02-06
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    private function compileTableColumns($data=[])
+    private function compileTableColumns($data = [])
     {
+        $result = [];
         // 根据表格标题字段指定类型编译列表数据
         foreach ($this->tableColumns as &$column) {
-
+            //重新赋值一遍解决拿不到获取器的问题
+            //dump($column['name']);
+            if (isset($data['sex_text'])) {
+                //dump('debug');
+            }
+            $result[$column['name']] = $data[$column['name']];
             switch ($column['type']) {
                 case 'status':
                     switch($data[$column['name']]){
@@ -750,7 +756,9 @@ class BuilderList extends Builder {
                     break;
             }
         }
-        return $data;
+        $result = array_merge($result,$data->toArray());
+        unset($data);
+        return $result;
     }
 
     /**

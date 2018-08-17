@@ -144,24 +144,24 @@ class Config extends Admin {
     public function group($group = 1){
         //根据分组获取配置
         $map=[
-            'status'=>['egt', '1'],
+            'status'=>['egt', 1],
             'group' =>['eq', $group]
         ];
         $data_list =$this->configModel->getList($map,true,'sort asc,id asc');
 
         $tab_list = logic('admin/Config')->getTabList();
         // 构造表单名、解析options
-        foreach ($data_list as &$data) {
-            $data['description'] = $data['remark'].'，配置名：<code>'.$data['name'].'</code>';
-            $data['name']        = 'config['.$data['name'].']';
-            $data['confirm']     = $data['extra_class'] = $data['extra_attr']='';
-            $data['options']     = parse_config_attr($data['options']);
+        foreach ($data_list as &$val) {
+            $val['description'] = $val['remark'].'，配置名：<code>'.$val['name'].'</code>';
+            $val['name']        = 'config['.$val['name'].']';
+            $val['confirm']     = $val['extra_class'] = $val['extra_attr']='';
+            $val['options']     = parse_config_attr($val['options']);
             
         }
 
         return builder('form')
                 ->setMetaTitle('系统设置')       // 设置页面标题
-                ->setPageTips('调用方式，如：<code>config("web_site_statistics")</code>，即可调用站点统计的配置信息')
+                ->setPageTips('调用方式，如：<code>config("配置名")</code>，即可调用站点统计的配置信息')
                 ->setTabNav($tab_list, $group)  // 设置Tab按钮列表
                 ->setExtraItems($data_list)     // 直接设置表单数据
                 ->addButton('submit','确认',url('groupSave'))
@@ -198,12 +198,13 @@ class Config extends Admin {
      */
     public function advanced()
     {
+        $config_fields = ['cache','session','cookie','redis','memcache'];
         if (IS_POST) {
             $params = $this->request->param();
 
-            $res = $this->configModel->where('name','cache')->setField('value',json_encode($params['cache']));
-            $res = $this->configModel->where('name','session')->setField('value',json_encode($params['session']));
-            $res = $this->configModel->where('name','cookie')->setField('value',json_encode($params['cookie']));
+            foreach ($config_fields as $key => $field) {
+                $this->configModel->where('name',$field)->setField('value',json_encode($params[$field]));
+            }
             cache('DB_CONFIG_DATA',null);
             $this->success('提交成功');
         } else{
@@ -224,12 +225,27 @@ class Config extends Admin {
                     'path'      =>'/',
                     'secure'    =>0,
                     'setcookie' => 1,
+                ],
+                'redis'=>[
+                    'host'    =>'127.0.0.1',
+                    'port'    =>6979,
+                ],
+                'memcache'=>[
+                    'host'    =>'127.0.0.1',
+                    'port'    =>11211,
                 ]
             ];
+            //从数据库拿
+            foreach ($config_fields as $key => $field) {
+                $field_value = $this->configModel->where('name',$field)->value('value');
+                if (!empty($field_value)) {
+                    $data[$field] = array_merge($data[$field],json_decode($field_value,true));
+                }
+            }
             $options = [
                 'cache'=>[
                     'type'=>'group',
-                    'title'=>'缓存（Cache）<span class="f12 color-6">-全局</span>',
+                    'title'=>'缓存（Cache）<span class="f12 color-6">-全局。配置名：<code>cache</code></span>',
                     'options'=>[
                         'type'=>[
                             'title'       =>'驱动方式:',
@@ -260,7 +276,7 @@ class Config extends Admin {
                 ],
                 'session'=>[
                     'type'=>'group',
-                    'title'=>'会话（Session）<span class="f12 color-6">-全局</span>',
+                    'title'=>'会话（Session）<span class="f12 color-6">-全局。配置名：<code>session</code></span>',
                     'options'=>[
                         'type'=>[
                             'title'       =>'驱动方式:',
@@ -286,7 +302,7 @@ class Config extends Admin {
                 ],
                 'cookie'=>[
                     'type'=>'group',
-                    'title'=>'Cookie设置<span class="f12 color-6">-全局</span>',
+                    'title'=>'Cookie设置<span class="f12 color-6">-全局。配置名：<code>cookie</code></span>',
                     'options'=>[
                         'path'=>[
                             'title'       =>'保存路径:',
@@ -334,14 +350,51 @@ class Config extends Admin {
                         ],
                     ],
                 ],
+                'redis'=>[
+                    'type'=>'group',
+                    'title'=>'Redis<span class="f12 color-6">-全局。配置名：<code>redis</code></span>',
+                    'options'=>[
+                        'host'=>[
+                            'title'       =>'服务器Host:',
+                            'description' =>'请填写服务器地址。配置名：<code>redis.host</code>',
+                            'type'        =>'text',
+                            'value'       =>'',
+                        ],
+                        'port'=>[
+                            'title'       =>'端口port:',
+                            'description' =>'redis服务器端口。配置名：<code>redis.port</code>',
+                            'type'        =>'number',
+                            'value'       =>'',
+                        ]
+                    ],
+                ],
+                'memcache'=>[
+                    'type'=>'group',
+                    'title'=>'Memcache<span class="f12 color-6">-全局。配置名：<code>memcache</code></span>',
+                    'options'=>[
+                        'host'=>[
+                            'title'       =>'服务器Host:',
+                            'description' =>'请填写服务器地址。配置名：<code>memcache.host</code>',
+                            'type'        =>'text',
+                            'value'       =>'',
+                        ],
+                        'port'=>[
+                            'title'       =>'端口port:',
+                            'description' =>'memcache服务器端口。配置名：<code>memcache.port</code>',
+                            'type'        =>'number',
+                            'value'       =>''
+                        ]
+                    ],
+                ],
         ];
         $options = logic('common/Config')->buildFormByFiled($options,$data);
         $tab_list = logic('admin/Config')->getTabList();
         return builder('Form')
                 ->setMetaTitle('高级设置')  //设置页面标题
+                ->setPageTips('调用方式，如：<code>config("配置名")</code>，即可调用站点统计的配置信息')
                 ->setTabNav($tab_list,'advanced')  // 设置页面Tab导航
                 ->setExtraItems($options) //直接设置表单数据
-                ->setFormData($data)
+                //->setFormData($data)
                 //->setAjaxSubmit(false)
                 ->addButton('submit')->addButton('back')    // 设置表单按钮
                 ->fetch();
@@ -392,6 +445,7 @@ class Config extends Admin {
             //自定义表单项
             return builder('Form')
                     ->setMetaTitle('多媒体设置')  // 设置页面标题
+                    ->setPageTips('调用方式，如：<code>config("配置名")</code>，即可调用站点统计的配置信息')
                     ->setTabNav($tab_list,'attachment_option')  // 设置页面Tab导航
                     ->addFormItem('driver', 'select', '上传驱动', '选择上传驱动插件用于七牛云、又拍云等第三方文件上传的扩展',upload_drivers())
                     ->addFormItem('file_max_size', 'number', '上传的文件大小限制', '文件上传大小单位：kb (0-不做限制)')

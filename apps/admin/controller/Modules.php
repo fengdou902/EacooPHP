@@ -14,6 +14,7 @@ use eacoo\Sql;
 use app\admin\model\Modules as ModuleModel;
 use app\admin\logic\Module as ModuleLogic;
 use app\admin\model\AuthRule;
+use app\admin\logic\Extension as ExtensionLogic;
 
 class Modules extends Admin {
 
@@ -102,7 +103,7 @@ class Modules extends Admin {
             }
 
             $db_config = $app['config'];
-            $extensionObj = new Extension;
+            $extensionObj = new ExtensionLogic;
             $extensionObj->initInfo('module',$app['name']);
 
             $options   = $extensionObj->getOptionsByFile();
@@ -160,7 +161,7 @@ class Modules extends Admin {
 	 * @author 心云间、凝听 <981248356@qq.com>
 	 */
 	public function install($name, $clear = 1) {
-		$extensionObj = new Extension;
+		$extensionObj = new ExtensionLogic;
         $extensionObj->initInfo('module',$name);
         $result = $extensionObj->install($name,$clear);
         if ($result['code']==1) {
@@ -225,7 +226,7 @@ class Modules extends Admin {
             }
             cache('hooks', null);
 
-			$extensionObj = new Extension;
+			$extensionObj = new ExtensionLogic;
             $extensionObj->initInfo('module',$name);
             // 删除后台菜单
             $extensionObj->removeAdminMenus($name,$clear);
@@ -280,7 +281,7 @@ class Modules extends Admin {
 			}
 			$name = $module_db_info['name'];
 
-			$extensionObj = new Extension;
+			$extensionObj = new ExtensionLogic;
 	        $extensionObj->initInfo('module',$name);
 			// 获取当前模块信息
 			$info = $extensionObj->getInfoByFile();
@@ -347,7 +348,7 @@ class Modules extends Admin {
      */
     public function refresh()
     {
-        Extension::refresh('module');
+        ExtensionLogic::refresh('module');
         $this->success('操作成功','');
     }
 
@@ -365,7 +366,7 @@ class Modules extends Admin {
                 $this->error('目录权限不足，请手动删除');
             }
             @rmdirs(APP_PATH.$name);
-            Extension::refresh('module');
+            ExtensionLogic::refresh('module');
             $this->success('删除模块成功',url('index',['from_type'=>'local']));
         }
         $this->error('删除模块失败');
@@ -416,7 +417,7 @@ class Modules extends Admin {
 				$this->error('系统模块不允许操作');
 			}
 
-			$extensionObj = new Extension;
+			$extensionObj = new ExtensionLogic;
             $extensionObj->initInfo('module',$info['name']);
             $extensionObj->switchAdminMenus($info['name'],$status);
 			
@@ -448,7 +449,7 @@ class Modules extends Admin {
             cache('eacoo_appstore_modules_info',['total'=>$total],3600);
         }
         if (!empty($store_data)) {
-        	$extensionObj = new Extension();
+        	$extensionObj = new ExtensionLogic();
             $local_modules = $extensionObj->localApps('module');
             foreach ($store_data as $key => &$val) {
                 $val['from_type']    = 'oneline';

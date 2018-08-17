@@ -29,12 +29,8 @@ class User extends Admin {
      */
     public function index(){
         // 获取所有用户
-        $map['status'] = ['egt', '0']; // 禁用和正常状态
-        list($data_list,$total) = $this->userModel->search('uid|username|nickname|email')->getListByPage($map,true,'reg_time desc');
-        foreach ($data_list as $key => &$row) {
-            $row['sex_text'] = $row['sex_text'];
-            $row['status_text'] = $row['status_text'];
-        }
+        $condition['status'] = ['egt', '0']; // 禁用和正常状态
+        list($data_list,$total) = $this->userModel->search('uid|username|nickname|email')->getListByPage($condition,true,'reg_time desc','',true);
         $reset_password = [
             'icon'         => 'fa fa-recycle',
             'title'        => '重置原始密码',

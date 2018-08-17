@@ -126,6 +126,18 @@ class Config {
             // 获取所有系统配置
             $system_config = ConfigLogic::lists();
 
+            //单独处理cache,session等走redis,memcache缓存
+            $cache_fields = ['redis','memcache'];
+            foreach ($cache_fields as $key => $field) {
+                if ($system_config['cache']['type']==$field) {
+                    $system_config['cache']=array_merge($system_config['cache'],$system_config[$field]);
+                }
+                if ($system_config['session']['type']==$field) {
+                    $system_config['session']=array_merge($system_config['session'],$system_config[$field]);
+                }
+                
+            }
+            
             // SESSION与COOKIE与前缀设置避免冲突
             //$system_config['SESSION_PREFIX'] = ENV_PRE.MODULE_MARK.'_';  // Session前缀
             //$system_config['COOKIE_PREFIX']  = ENV_PRE.MODULE_MARK.'_';  // Cookie前缀

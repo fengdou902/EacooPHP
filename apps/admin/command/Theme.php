@@ -17,7 +17,7 @@ use think\console\input\Option;
 use think\console\Output;
 use think\Exception;
 
-use app\admin\controller\Extension;
+use app\admin\logic\Extension as ExtensionLogic;
 
 class Theme extends AppBase
 {
@@ -82,7 +82,7 @@ class Theme extends AppBase
                         $this->error('目录权限不足，请手动删除目录');
                     }
                     @rmdirs(THEME_PATH.$name);
-                    Extension::refresh('theme');
+                    ExtensionLogic::refresh('theme');
                     $output->info("成功删除主题{$name}!");
                 } else{
                     $output->warning("请设置主题名");

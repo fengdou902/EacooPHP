@@ -11,7 +11,7 @@
 namespace app\common\controller;
 use app\admin\model\Hooks;
 use app\admin\model\Plugins;
-use app\admin\controller\Extension;
+use app\admin\logic\Extension as ExtensionLogic;
 
 class Plugin extends Base {
 	
@@ -98,7 +98,7 @@ class Plugin extends Base {
 
 		if ($name) {
 			
-			$extensionObj = new Extension;
+			$extensionObj = new ExtensionLogic;
 			$extensionObj->initInfo('plugin',$name);
 			$this->pluginPath = $extensionObj->appExtensionPath;
 			return $extensionObj->getInfoByFile();
@@ -153,7 +153,7 @@ class Plugin extends Base {
 		if ($config) {
 			$config = json_decode($config, true);
 		} else {
-			$extensionObj = new Extension;
+			$extensionObj = new ExtensionLogic;
 			$config = $extensionObj->getDefaultConfig($name);
 		}
 		$_config[$name] = $config;

@@ -33,18 +33,19 @@ class Extension extends AdminLogic {
     protected $appExtensionModel;
     protected $uid;
 
-	function initialize()
-	{
-		parent::initialize();
-		$this->type = $this->request->param('apptype');
-		$this->initInfo($this->type);
-		$option = [
-			'type'=>$this->type,
-		];
-		$this->cloudService = new Cloud($option);
-		$this->hooksModel  = new HooksModel();
+    function _initialize()
+    {
+        parent::_initialize();
+        $this->type = $this->request->param('apptype');
+        $this->initInfo($this->type);
+        $option = [
+            'type'=>$this->type,
+            'eacoophp_v'=>EACOOPHP_V
+        ];
+        $this->cloudService = new Cloud($option);
+        $this->hooksModel  = new HooksModel();
         $this->uid = is_login();
-	}
+    }
 
     /**
      * 初始化信息
@@ -84,15 +85,15 @@ class Extension extends AdminLogic {
         
     }
 
-	/**
-	 * 本地安装
-	 * @return [type] [description]
-	 * @date   2017-10-25
-	 * @author 心云间、凝听 <981248356@qq.com>
-	 */
-	public function localInstall()
-	{
-		$file = $this->request->file('file');
+    /**
+     * 本地安装
+     * @return [type] [description]
+     * @date   2017-10-25
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function localInstall()
+    {
+        $file = $this->request->file('file');
         $appTmpDir = RUNTIME_PATH . $this->type . DS;
         if (!is_dir($appTmpDir))
         {
@@ -101,14 +102,14 @@ class Extension extends AdminLogic {
         $file = $file->rule('uniqid')->validate(['size' => 10240000, 'ext' => 'zip'])->move($appTmpDir);
         if ($file)
         {
-			$tmpName   = substr($file->getFilename(), 0, stripos($file->getFilename(), '.'));
-			$tmpAppDir = $this->appsPath . $tmpName . DS;
-			$tmpFile   = $appTmpDir . $file->getSaveName();
-			try {
+            $tmpName   = substr($file->getFilename(), 0, stripos($file->getFilename(), '.'));
+            $tmpAppDir = $this->appsPath . $tmpName . DS;
+            $tmpFile   = $appTmpDir . $file->getSaveName();
+            try {
 
-				$this->cloudService->unzip($tmpName);
-				@unlink($tmpFile);
-				$info_file = $tmpAppDir . 'install/info.json';
+                $this->cloudService->unzip($tmpName);
+                @unlink($tmpFile);
+                $info_file = $tmpAppDir . 'install/info.json';
                 if (!is_file($info_file))
                 {
                     throw new \Exception('应用信息文件不存在');
@@ -116,7 +117,7 @@ class Extension extends AdminLogic {
                 $check_res = $this->checkInfoFile($info_file);
                 
                 if ($check_res['code']==0) {
-                	throw new \Exception($check_res['msg']);
+                    throw new \Exception($check_res['msg']);
                 }
                 $name = $check_res['data']['name'];
                 $newAppDir = $this->appsPath . $name . DS;
@@ -129,18 +130,18 @@ class Extension extends AdminLogic {
                 rename($tmpAppDir, $newAppDir);
                 $return = $this->install();
                 return json($return);
-			} catch (\Exception $e) {
-				@unlink($tmpFile);
+            } catch (\Exception $e) {
+                @unlink($tmpFile);
                 @rmdirs($tmpAppDir);
                 return json([
-                	'code'=>0,
-                	'msg'=>$e->getMessage(),
-                	'data'=>''
+                    'code'=>0,
+                    'msg'=>$e->getMessage(),
+                    'data'=>''
                 ]);
-			}
+            }
             
         }
-	}
+    }
 
     /**
      * 在线安装之前
@@ -157,7 +158,7 @@ class Extension extends AdminLogic {
     }
 
     /**
-     * 在线安装
+     * 在线安装，包含在线升级
      * @return [type] [description]
      * @date   2017-10-27
      * @author 心云间、凝听 <981248356@qq.com>
@@ -186,7 +187,7 @@ class Extension extends AdminLogic {
             if (is_file($tmp_app_file))
             {
                 if ($install_method=='upgrade') {//如果是升级，先备份
-                    $this->upgradeAction($name);
+                    $this->_upgradeAction($name);
                 }
 
                 $tmpName   = $name;
@@ -216,23 +217,26 @@ class Extension extends AdminLogic {
                 if($only_download!=1){
                   $return = $this->install();  
                 } else{
-                    $return = ['code'=>1,'msg'=>'安装成功','data'=>[]];
+                    //仅仅下载
+                    $return = ['code'=>1,'msg'=>'下载完成','data'=>[]];
                 } 
                 $call_url = '';
                 if ($this->type=='plugin') {
                     $call_url = url('admin/Plugins/index',['from_type'=>'local']);
                 } elseif ($this->type=='module') {
                     $call_url = url('admin/Modules/index',['from_type'=>'local']);
+                } elseif ($this->type=='theme') {
+                    $call_url = url('admin/Theme/index',['from_type'=>'local']);
                 }
                 
-                $return['url']=$call_url;
+                $return['url'] = $call_url;
                 $this->refresh($this->type);
                 return json($return);
                 
             }
         } catch (\Exception $e) {
             @unlink($tmp_app_file);
-            @rmdirs($tmpAppDir);
+            @rmdirs($tmpAppDir);//清理缓存目录
             return json([
                     'code'=>$e->getCode(),
                     'msg'=>$e->getMessage(),
@@ -243,30 +247,25 @@ class Extension extends AdminLogic {
         
     }
     
-	/**
-	 * 应用安装
-	 * @return [type] [description]
-	 * @date   2017-10-26
-	 * @author 心云间、凝听 <981248356@qq.com>
-	 */
-	public function install($name='',$clear = 1)
-	{
+    /**
+     * 应用安装
+     * @return [type] [description]
+     * @date   2017-10-26
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function install($name='',$clear = 1)
+    {
         $install_method = $this->request->param('install_method','install');
-		if($name==''){
+        if($name==''){
             $name = $this->appName;
         } else{
             $this->appName = $name;
         }
-		try {
-	        $this->checkInstall();
-	        $info = $this->info;
+        try {
+            //安装前检测
+            $this->checkInstall($name);
+            $info = $this->info;
 
-	        $hooks = $this->getDependentHooks();
-	        if (!empty($hooks)) {
-	            foreach ($hooks as $val) {
-	                $this->hooksModel->existHook($val, ['description' => $info['description']]);
-	            }
-	        }
             $uninstall_sql_status = true;
             if ($clear && $install_method!='upgrade') {
                 $sql_file = $this->appExtensionPath.'install/uninstall.sql';
@@ -282,27 +281,38 @@ class Extension extends AdminLogic {
                     }
                 }
             }
-
-	        $config = $this->getDefaultConfig($name);
-	        $info['config'] = !empty($config) ? json_encode($config) : '';
+            //获取默认配置
+            $config = $this->getDefaultConfig($name);
+            $info['config'] = !empty($config) ? json_encode($config) : '';
             if ($this->appExtensionModel->where('name',$info['name'])->find()) {
                 $res = $this->appExtensionModel->where('name',$info['name'])->update(['version'=>$info['version'],'status'=>1]);
                 $res = true;
             } else{
                 $res = $this->appExtensionModel->allowField(true)->isUpdate(false)->data($info)->save();
             }
-	        if ($res) {
-                if ($this->type=='plugin') {
-                    $hooks_update = $this->hooksModel->updateHooks($name);
+            if ($res) {
+                //获取依赖的钩子
+                $hooks = $this->getDependentHooks();
+                if (!empty($hooks)) {
+                    $hooksLogic = logic('Hooks');
+                    foreach ($hooks as $val) {
+                        $hooksLogic->existHook($val, ['description' => $info['description']]);
+                    }
+
+                    $hooks_update = $hooksLogic->updateHooks($this->type,$name,$hooks);
                     if (!$hooks_update) {
                         $this->appExtensionModel->where('name',$name)->delete();
                         throw new \Exception('更新钩子失败,请卸载后尝试重新安装');
                     } else{
                         cache('hooks', null);
-                    } 
-                    
-                } 
-                //设置后台菜单
+                    }
+                }
+  
+                //设置后台菜单，升级前先清空菜单
+                if ($install_method=='upgrade') {
+                    $this->removeAdminMenus($name);
+                }
+                
                 $admin_menus = $this->getAdminMenusByFile($name);
                 if (!empty($admin_menus) && is_array($admin_menus)) {
                     $this->addAdminMenus($admin_menus,$name);
@@ -318,31 +328,39 @@ class Extension extends AdminLogic {
                         $type_path = '/plugins';
                     } elseif ($this->type=='module') {
                         $type_path = '';
+                    } elseif ($this->type=='theme') {
+                        $type_path = '/themes';
                     }
-                    if (!rename($static_path,PUBLIC_PATH.'static'.$type_path.'/'.$name)) {
+                    $_static_path = PUBLIC_PATH.'static'.$type_path.'/'.$name;
+
+                    if (is_dir($_static_path)) {
+                        @rmdirs($_static_path);//防止路径报错，前先清理静态资源目录
+                    }
+                    
+                    if (!rename($static_path,$_static_path)) {
                         setAppLog('应用静态资源移动失败'.PUBLIC_PATH.'static'.$type_path.'/'.$name,'Extension','error');
                     } 
                 }
 
                 return ['code'=>1,'msg'=>'安装成功','data'=>''];
-	            
-	        } else {
+                
+            } else {
 
-	            throw new \Exception('写入插件数据失败');
-	        }
-		} catch (\Exception $e) {
+                throw new \Exception('写入插件数据失败');
+            }
+        } catch (\Exception $e) {
             setAppLog($e,'Extension','install_error');
             //卸载安装的数据库
             $sql_file = $this->appExtensionPath.'install/uninstall.sql';
             if(is_file($sql_file) && isset($info['database_prefix'])) Sql::executeSqlByFile($sql_file, $info['database_prefix']);
-			return [
-                	'code'=>0,
-                	'msg'=>$e->getMessage(),
-                	'data'=>''
+            return [
+                    'code'=>0,
+                    'msg'=>$e->getMessage(),
+                    'data'=>''
                 ];
-		}
+        }
         
-	}
+    }
 
     /**
      * 升级操作
@@ -351,121 +369,58 @@ class Extension extends AdminLogic {
      * @date   2018-01-18
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function upgradeAction($name='')
+    private function _upgradeAction($name='')
     {
-        $install_method = $this->request->param('install_method','install');
         if($name==''){
             $name = $this->appName;
         } else{
             $this->appName = $name;
         }
 
-        if ($install_method=='upgrade') {//如果是升级，先备份
-            if ($this->type=='plugin') {
-                $type_path = 'plugins/';
-            } elseif ($this->type=='module') {
-                $type_path = '';
-            }
-            $_static_path = PUBLIC_PATH.'static/'.$type_path.$name;
-            $static_path = $this->appsPath.$name.'/static';
-            if (is_dir($_static_path)) {
-                if(is_writable(PUBLIC_PATH.'static/'.$type_path) && is_writable($this->appsPath.$name)){
-                    if (!rename($_static_path,$static_path)) {
-                        setAppLog('静态资源移动失败：'.$static_path.'移动到'.$_static_path,'error');
-                    } 
-                }
-            }
-            
-            $newAppDir = $this->appsPath . $name . DS;
-            //备份路径
-            $backup_path = ROOT_PATH.'data/backups/'.$this->type.'s/'. $name.'-'.date('YmdHis') . DS;
-            mkdirs($backup_path);
-            if(rename($newAppDir, $backup_path)){
-                @unlink($newAppDir);
-            }
-            
+        //如果是升级，先备份
+        if ($this->type=='plugin') {
+            $type_path = 'plugins/';
+        } elseif ($this->type=='module') {
+            $type_path = '';
+        } elseif ($this->type=='theme') {
+            $type_path = '/themes';
         }
+        $_static_path = PUBLIC_PATH.'static/'.$type_path.$name;
+        
+        $static_path = $this->appsPath.$name.'/static';
+        if (is_dir($_static_path)) {
+            @rmdirs($_static_path);//升级前先清理静态资源目录
+            if(is_writable(PUBLIC_PATH.'static/'.$type_path) && is_writable($this->appsPath.$name)){
+                if (!rename($_static_path,$static_path)) {
+                    setAppLog('静态资源移动失败：'.$static_path.'移动到'.$_static_path,'error');
+                } 
+            }
+        }
+        
+        $newAppDir = $this->appsPath . $name . DS;
+        //备份路径
+        $backup_path = ROOT_PATH.'data/backups/'.$this->type.'s/'. $name.'-'.date('YmdHis') . DS;
+        mkdirs($backup_path);
+        if(rename($newAppDir, $backup_path)){
+            @unlink($newAppDir);
+        }
+            
         return true;
     }
 
+
     /**
-     * 会员信息
+     * 检测安装
+     * @param  string $name [description]
      * @return [type] [description]
-     * @date   2017-11-02
+     * @date   2017-10-26
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function userinfo()
-    {
-        $eacoo_identification = cache('eacoo_identification');
-        if (IS_POST) {
-            try {
-                $from = $this->request->param('from');
-                if ($from=='iframe') {
-                    $return = EacooAccredit::eacooIdentification();
-                    if ($return['code']!=1) {
-                        throw new \Exception($return['msg'], $return['code']);
-                    }
-
-                } elseif ($from=='login') {
-                    $identification = $this->request->param('account');
-                    $password = $this->request->param('password');
-                    $vali_msg = $this->validate(['account'=>$identification,'password'=>$password],
-                      [
-                          ['account','require|email','账号不能为空|请用邮箱账号登录'],
-                          ['password','require','密码不能为空'],
-                      ]);
-                      if(true !== $vali_msg){
-                          // 验证失败 输出错误信息
-                          throw new \Exception($vali_msg,0);
-                      }
-                    $result = curl_request(config('eacoo_api_url').'/api/token',['identification'=>$identification,'password'=>$password]);
-                    $return = json_decode($result['content'],true);
-                    if ($return['code']==1) {
-                        $eacoo_identification = $return['data'];
-                        cache('eacoo_identification',$eacoo_identification,$eacoo_identification['expired']);
-                    } else{
-                        throw new \Exception($return['msg'], 2);
-                    }
-                    
-                } elseif ($from=='logout') {
-                    $uid = $eacoo_identification['uid'];
-                    $access_token = $eacoo_identification['access_token'];
-                    $result = curl_request(config('eacoo_api_url').'/api/token/logout',['uid'=>$uid,'token'=>$access_token]);
-                    $return = json_decode($result['content'],true);
-                    if ($return['code']==1) {
-                        cache('eacoo_identification',null);
-                    }
-                }
-                return json($return);
-            } catch (\Exception $e) {
-                cache('eacoo_identification',null);
-                return json([
-                    'code'=>$e->getCode(),
-                    'msg'=>$e->getMessage(),
-                    'data'=>[],
-                ]);
-            }
-             
-        } else{
-            $this->assign('eacoo_identification',$eacoo_identification);//dump($eacoo_identification);
-            $this->assign('eacoo_userinfo',$eacoo_identification['userinfo']);
-            return $this->fetch('extension/userinfo');
-        }
-        
-    }
-
-	/**
-	 * 检测安装
-	 * @param  string $name [description]
-	 * @return [type] [description]
-	 * @date   2017-10-26
-	 * @author 心云间、凝听 <981248356@qq.com>
-	 */
     private function checkInstall($name='')
     {
-    	if($name=='') $name = $this->appName;
-		$this->appExtensionPath = $this->appsPath . $name . DS;
-		$info_file = $this->appExtensionPath . 'install/info.json';
+        if($name=='') $name = $this->appName;
+        $this->appExtensionPath = $this->appsPath . $name . DS;
+        $info_file = $this->appExtensionPath . 'install/info.json';
         $result = $this->checkInfoFile($info_file);
         $info = $result['data'];
         if ($this->type=='plugin') {
@@ -493,6 +448,8 @@ class Extension extends AdminLogic {
                 $type_path = '/plugins';
             } elseif ($this->type=='module') {
                 $type_path = '';
+            } elseif ($this->type=='theme') {
+                $type_path = '/themes';
             }
             if(!is_writable(PUBLIC_PATH.'static'.$type_path) || !is_writable($static_path)){
                 $error_msg = '';
@@ -507,7 +464,7 @@ class Extension extends AdminLogic {
         }
     }
 
-	/**
+    /**
      * 检测信息文件
      * @param  string $name 信息
      * @return [type] [description]
@@ -516,9 +473,9 @@ class Extension extends AdminLogic {
      */
     public function checkInfoFile($info_file='')
     {
-    	if($info_file=='') $info_file = $this->appExtensionPath . 'install/info.json';
+        if($info_file=='') $info_file = $this->appExtensionPath . 'install/info.json';
 
-		if (!is_file($info_file))
+        if (!is_file($info_file))
         {
             throw new \Exception('应用信息文件不存在或文件权限不足');
         }
@@ -531,7 +488,7 @@ class Extension extends AdminLogic {
 
         }
         return ['code'=>1,'msg'=>'ok','data'=>$app_info];
-    	
+        
     }
 
     /**
@@ -543,20 +500,31 @@ class Extension extends AdminLogic {
      */
     public function getDependentHooks($name='')
     {
-    	if($name=='') $name = $this->appName;
+        if($name=='') $name = $this->appName;
         if ($name=='' || !$name) {
             return false;
         }
         if ($this->type=='plugin') {
-            $plugin_class = get_plugin_class($name);//获取插件名
-            if (!class_exists($plugin_class)) {
+            $hook_class = get_plugin_class($name);//获取插件名
+            if (!class_exists($hook_class)) {
                 $this->error = "未实现{$name}插件的入口文件";
                 return false;
             }
-            $plugin_obj = new $plugin_class;
-            $dependent_hooks = $plugin_obj->hooks;
-            return $dependent_hooks;
+            
+        } elseif ($this->type=='module') {
+            $hook_class = "\\app\\" . $name . "\\widget\\Hooks";
+            if (!class_exists($hook_class)) {
+                $this->error = "未实现{$name}模块的钩子文件";
+                return false;
+            }
+        } 
+        $dependent_hooks = [];
+        if (isset($hook_class)) {
+            $hook_obj = new $hook_class;
+            $dependent_hooks = $hook_obj->hooks;
         }
+        
+        return $dependent_hooks;
     }
 
     /**
@@ -651,7 +619,7 @@ class Extension extends AdminLogic {
         }
     }
 
-	/**
+    /**
      * 文件获取信息
      * @param  [type] $info_file 
      * @return [type] [description]
@@ -883,8 +851,8 @@ class Extension extends AdminLogic {
     public function removeNavigationMenus($delete=true)
     {
         $map = [
-            'depend_type'=>$this->depend_type,
-            'depend_flag'=>$this->appName
+            'depend_type' => $this->depend_type,
+            'depend_flag' => $this->appName
         ];
         if ($delete) {
             $res = NavModel::where($map)->delete();
@@ -984,12 +952,18 @@ class Extension extends AdminLogic {
                         }
                         $this->appExtensionPath = $this->appsPath . $name . DS;
                         $info_file = $this->appExtensionPath . 'install/info.json';
-                        $info = $this->getInfoByFile($info_file);
-                        $info_flag = $this->checkInfoFile($info_file);
-                        if (!$info || !$info_flag) {
-                            \think\Log::record('应用'.$name.'的信息缺失！');
+                        
+                        try {
+                            $info      = $this->getInfoByFile($info_file);
+                            $info_flag = $this->checkInfoFile($info_file);
+                            if (!$info || !$info_flag) {
+                                throw new \Exception('应用'.$name.'的信息缺失！', 0);
+                            }
+                        } catch (\Exception $e) {
+                            setAppLog($e->getMessage(),'Extension','info');
                             continue;
                         }
+                        
                         if (!$this->appExtensionModel->where('name',$name)->find()) $info['status']=3;
 
                         $list[$name] = $info;
@@ -1002,9 +976,22 @@ class Extension extends AdminLogic {
         return $list;
     }
 
+    /**
+     * 刷新缓存
+     * @param  string $type [description]
+     * @return [type] [description]
+     * @date   2018-03-05
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
     public static function refresh($type='')
     {
-        cache('eacoo_appstore_'.$type.'s_1',null);
+        $page_num = 3;
+        $paged = 1;
+        for ($i=0; $i < 3; $i++) { 
+            $paged = $i+1;
+            cache('eacoo_appstore_'.$type.'s_'.$paged,null);
+        }
+        
         cache('local_'.$type.'s_list',null);
         return true;
     }

@@ -78,35 +78,41 @@ class Base extends Model
 
     /**
      * 设置搜索
-     * @param  [type] $fields 字段名（多个字段用|分开）
+     * @param  [type] $condition 字段名（多个字段用|分开）
      * @param  string $rule 匹配规则
      * @return [type] [description]
      * @date   2018-02-06
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function search($fields='title',$rule='%[KEYWORD]%')
+    public function search($condition='title',$rule='%[KEYWORD]%')
     {
-
-        if (strpos($rule, '[KEYWORD]')!==false) {
-            $keyword     = input('param.keyword',false);//关键字
-            if (!empty($keyword)) {
-                $rule = str_replace('[KEYWORD]', $keyword, $rule);
-                $this->where($fields,'like',$rule);
+        if (is_string($condition)) {
+            if (strpos($rule, '[KEYWORD]')!==false) {
+                $keyword     = input('param.keyword',false);//关键字
+                if (!empty($keyword)) {
+                    $rule = str_replace('[KEYWORD]', $keyword, $rule);
+                    $this->where($condition,'like',$rule);
+                }
             }
+        } elseif ($condition instanceof \Closure) {
+            call_user_func_array($condition, [ & $this]);
         }
+        
         return $this;
         
     }
 
     /**
-     * @param  array $map 查询过滤
+     * 获取分页列表数据
+     * @param  array $condition 查询过滤条件(数组或闭包)
+     * @param  string $fields 结果字段（多个字段用逗号隔开）
      * @param  integer $page 分页值
      * @param  string $order 排序参数
-     * @param  string $field 结果字段
      * @param  integer $page_size 每页数量
+     * @param  integer $cache 是否启用缓存
      * @return 结果集
      */
-    public function getListByPage($map,$field=true,$order='create_time desc',$page_size=null)
+    public static function getListByPage($condition, $fields = true, $order='', $page_size = null,$cache = false)
     {
         $paged     = input('param.paged',1);//分页值
         if (!$page_size) {
@@ -114,20 +120,40 @@ class Base extends Model
         }
         $page_size = input('param.page_size',$page_size);//每页数量
         $order     = input('param.order',$order);
-        $list      = $this->where($map)->field($field)->order($order)->page($paged,$page_size)->select();
-        $total     = $this->where($map)->count();
+        if (is_array($condition)) {
+            $list      = self::where($condition)->field($fields)->order($order)->page($paged,$page_size)->select();
+            $total     = self::where($condition)->count();
+        } elseif ($condition instanceof \Closure) {
+            //闭包条件
+            $query = static::parseQuery($condition,'', $cache);
+            if ($fields!==true && is_string($fields) && $fields!='') {
+                $query->field($fields);
+            }
+            if ($order) {
+                $query->order($order);
+            }
+
+            $list = $query->page($paged,$page_size)->select();
+            $total = $query->count();
+        }
+        
         return [$list,$total];
     }
 
     /**
-     * @param  array $map 查询过滤
+     * @param  array $condition 查询过滤(数组或闭包)
      * @param  string $field 获取的字段
      * @param  string $order 排序
      * @return 结果集
      */
-    public function getList($map,$field=true,$order='create_time desc')
+    public static function getList($condition, $fields = true, $order='create_time desc', $cache = false)
     {
-        $lists = $this->where($map)->field($field)->order($order)->select();
+        if (is_array($condition)) {
+            $lists = self::where($condition)->field($fields)->order($order)->select();
+        } elseif ($condition instanceof \Closure) {
+            $query = static::parseQuery($condition,'', $cache);
+            $lists = $query->select();
+        }
         return $lists;
     }
 

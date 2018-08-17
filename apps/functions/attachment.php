@@ -307,6 +307,38 @@ function get_cdn_domain()
     return $cdn_domain;
     
 }
+/**
+ * 获取cdn域名
+ * @return [type] [description]
+ * @date   2017-11-16
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function get_uploadpath_url()
+{
+    $cdn_domain = cache('cdn_domain');
+    if (!$cdn_domain) {
+        $driver = !empty(config('attachment_options.driver')) ? config('attachment_options.driver') :'local';
+        if ($driver!='local') {
+            $check_res = check_install_plugin($driver);
+            if ($check_res) {
+                $class = get_plugin_class($driver);
+                if (class_exists($class)) {
+                    $plugin = new $class();
+                    if(method_exists($plugin,'getUploadPathUrl')){
+                        $cdn_domain = $plugin->getUploadPathUrl();
+                        cache('cdn_domain',$cdn_domain,3600);
+                        return $cdn_domain;
+                    }
+                    
+                } 
+            }
+        } 
+        $cdn_domain = request()->domain();
+        cache('cdn_domain',$cdn_domain,3600);
+    }
+    return $cdn_domain;
+    
+}
 
 /**
  * 图片地址转化为CDN
@@ -320,7 +352,7 @@ function cdn_img_url($path = '', $style='')
 
     if (strpos($path, 'http://')!==false || strpos($path, 'https://')!==false) return $path;
 
-    $cdn_path    = get_cdn_domain().$path;
+    $cdn_path    = get_uploadpath_url().$path;
     if ($style!='') {
         $url = $cdn_path.'!'.$style;
     } else{
@@ -333,7 +365,7 @@ function cdn_img_url($path = '', $style='')
 /*******************************images图片相关 start ********************************/
 
 //获取媒体分类对象数量
-function term_media_count($term_id,$path_type='picture'){
+function term_media_count($term_id,$path_type='picture',$map=[]){
     $media_ids = db('term_relationships')->where(['term_id'=>$term_id,'table'=>'attachment'])->select();
     if(count($media_ids)){
         $object_ids       = array_column($media_ids,'object_id');
@@ -383,7 +415,7 @@ function get_thumb_image($path = '', $style='small')
             }
         }
        
-        $url = get_cdn_domain().$path;
+        $url = get_uploadpath_url().$path;
     }
 
     return $url;

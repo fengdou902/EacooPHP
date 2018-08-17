@@ -9,7 +9,7 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\logic;
-use app\admin\controller\Extension;
+use app\admin\logic\Extension as ExtensionLogic;
 
 class Theme extends AdminLogic
 {
@@ -23,13 +23,13 @@ class Theme extends AdminLogic
     public static function getAll() {
         $path = THEME_PATH;
         $dirs = array_map('basename', glob($path.'*', GLOB_ONLYDIR));
-        $extensionObj = new Extension;
+        $extensionObj = new ExtensionLogic;
         foreach ($dirs as $subdir) {
             $info_file = THEME_PATH.$subdir.'/install/info.json';
             if (is_file($info_file) && $subdir != '.' && $subdir != '..') {
                 $info = self::getInfo($subdir);//模块名即为当前模块的文件夹名
                 if (!empty($info)) {
-                    $logo = Extension::getLogo($info['name'],'theme');
+                    $logo = ExtensionLogic::getLogo($info['name'],'theme');
                     if ($logo) {
                         $info['logo'] = '<img src="'.$logo.'" class="theme-logo">';
                     } else{
@@ -85,7 +85,7 @@ class Theme extends AdminLogic
     {
         $info = self::where(['name' => $name])->field(true)->find();
         if ($info === false || empty($info)) {//数据库中不存在信息
-            $extensionObj = new Extension;
+            $extensionObj = new ExtensionLogic;
             $extensionObj->initInfo('theme',$name);
             $theme_info = $extensionObj->getInfoByFile();//从文件获取
 

@@ -12,6 +12,7 @@ namespace app\admin\controller;
 
 use app\admin\model\Plugins as PluginsModel;
 use app\admin\model\Hooks as HooksModel;
+use app\admin\logic\Extension as ExtensionLogic;
 
 use eacoo\Sql;
 
@@ -115,7 +116,7 @@ class Plugins extends Admin {
             $addon['plugin_path']    = $plugin_obj->pluginPath;
             $plugin['custom_config'] = $plugin_obj->custom_config;
             $db_config = $plugin['config'];
-            $extensionObj = new Extension;
+            $extensionObj = new ExtensionLogic;
             $extensionObj->initInfo('plugin',$plugin['name']);
 
             $options   = $extensionObj->getOptionsByFile();
@@ -178,7 +179,7 @@ class Plugins extends Admin {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function install($name='',$clear = 1) {
-        $extensionObj = new Extension;
+        $extensionObj = new ExtensionLogic;
         $extensionObj->initInfo('plugin');
         $result = $extensionObj->install($name,$clear);
         if ($result['code']==1) {
@@ -250,7 +251,7 @@ class Plugins extends Admin {
                     $result = PluginsModel::where('id',$id)->update(['status'=>-1]);
                 }
                 if ($result) {
-                    $extensionObj = new Extension;
+                    $extensionObj = new ExtensionLogic;
                     $extensionObj->initInfo('plugin',$name);
                     // 删除后台菜单
                     $extensionObj->removeAdminMenus($name,$clear);
@@ -291,7 +292,7 @@ class Plugins extends Admin {
      */
     public function refresh()
     {
-        Extension::refresh('plugin');
+        ExtensionLogic::refresh('plugin');
         $this->success('操作成功','');
     }
 
@@ -309,7 +310,7 @@ class Plugins extends Admin {
                 $this->error('目录权限不足，请手动删除');
             }
             @rmdirs(PLUGIN_PATH.$name);
-            Extension::refresh('plugin');
+            ExtensionLogic::refresh('plugin');
             $this->success('删除插件成功',url('index',['from_type'=>'local']));
         }
         $this->error('删除插件失败');
@@ -323,7 +324,7 @@ class Plugins extends Admin {
         $status = $this->request->param('status');
 
         if (!empty($ids)) {
-            $extensionObj = new Extension;
+            $extensionObj = new ExtensionLogic;
             if (is_array($ids)) {
                 foreach ($ids as $id) {
                     $info = model($model)->where('id',$id)->field('name')->find();
@@ -378,7 +379,7 @@ class Plugins extends Admin {
             cache('eacoo_appstore_plugins_info',['total'=>$total],3600);
         }
         if (!empty($store_data)) {
-            $extensionObj = new Extension();
+            $extensionObj = new ExtensionLogic();
             $local_plugins = $extensionObj->localApps('plugin');
             foreach ($store_data as $key => &$val) {
                 $val['from_type']    = 'oneline';

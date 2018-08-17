@@ -32,6 +32,7 @@ class AdminLogic extends BaseLogic {
     {
         parent::initialize();
         $this->currentUser = session('user_login_auth');
+        $this->uid = is_login();
     }
 
     /**

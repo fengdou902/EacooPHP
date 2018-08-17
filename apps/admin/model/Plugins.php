@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 namespace app\admin\model;
 use think\Model;
-use app\admin\controller\Extension;
+use app\admin\logic\Extension as ExtensionLogic;
 
 /**
  * 插件模型
@@ -42,7 +42,7 @@ class Plugins extends Model {
                      ->select();
         foreach ($list as $plugin) {
             $plugins[$plugin['name']] = $plugin->toArray();
-            $logo = Extension::getLogo($plugin['name'],'plugin');
+            $logo = ExtensionLogic::getLogo($plugin['name'],'plugin');
             if (!$logo) {
                 $plugins[$plugin['name']]['logo'] = '<span class="plugin-logo plugin-avatar-tx">'.mb_substr($plugin['title'], 0,1,'utf-8').'</span>';
             } else{
@@ -50,13 +50,13 @@ class Plugins extends Model {
             }
         }
 
-        $extensionObj = new Extension;
+        $extensionObj = new ExtensionLogic;
         foreach ($dirs as $value) {
             if (!isset($plugins[$value])) {
                 $info_file = PLUGIN_PATH.$value.'/install/info.json';
                 $info      = $extensionObj->getInfoByFile($info_file);
                 //设置插件LOGO
-                $logo = Extension::getLogo($value,'plugin');
+                $logo = ExtensionLogic::getLogo($value,'plugin');
                 if ($logo) {
                     $info['logo'] = '<img src="'.$logo.'" class="plugin-logo">';
                     

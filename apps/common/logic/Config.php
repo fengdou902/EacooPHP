@@ -46,6 +46,7 @@ class Config extends Base
      * 通过字段配置构建一个Builder构建器配置
      * @param  array $option 配置选项
      * @param  string $value 值
+     * @param bool $is_config_field 是否来源配置项
      * @return [type] [description]
      * @date   2018-02-22
      * @author 心云间、凝听 <981248356@qq.com>

@@ -11,7 +11,7 @@
 namespace app\admin\logic;
 
 use app\admin\model\Modules as ModuleModel;
-use app\admin\controller\Extension;
+use app\admin\logic\Extension as ExtensionLogic;
 
 class Module extends AdminLogic
 {
@@ -57,13 +57,13 @@ class Module extends AdminLogic
     public static function getAll() {
         // 文件夹下必须有$info_file定义的安装描述文件
         $dirs = self::getInstallFiles(APP_PATH);
-        $extensionObj = new Extension;
+        $extensionObj = new ExtensionLogic;
         foreach ($dirs as $subdir) {
             $info_file = APP_PATH.$subdir.'/install/info.json';
             if (is_file($info_file) && $subdir != '.' && $subdir != '..') {
                 $info = self::getInfo($subdir);//模块名即为当前模块的文件夹名
                 if (!empty($info)) {
-                    $logo = Extension::getLogo($info['name'],'module');
+                    $logo = ExtensionLogic::getLogo($info['name'],'module');
                     if ($logo) {
                         $info['logo'] = '<img src="'.$logo.'" class="module-logo">';
                     } else{
@@ -134,7 +134,7 @@ class Module extends AdminLogic
     {
         $module = ModuleModel::where(['name' => $name])->field(true)->find();
         if ($module === false || empty($module)) {//数据库中不存在信息
-            $extensionObj = new Extension;
+            $extensionObj = new ExtensionLogic;
             $extensionObj->initInfo('module',$name);
             $module_info = $extensionObj->getInfoByFile();//从文件获取
 

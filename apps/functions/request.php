@@ -57,7 +57,7 @@ function path_to_url($path ='')
 
     if (strpos($path, 'http://')!==false || strpos($path, 'https://')!==false) return $path;//包含http和https的返回原值
 
-    $url = get_cdn_domain().$path;
+    $url = get_uploadpath_url().$path;
     return $url;
 }
 

@@ -134,7 +134,7 @@ class Upload extends Admin {
         $page_totalCount = AttachmentModel::where(['status'=>1])->count();
         $this->assign('media_totalCount',$page_totalCount);//总数量
 
-        $media_cats = model('admin/terms')->getList(['taxonomy'=>'media_cat']);
+        $media_cats = model('common/Terms')->getList(['taxonomy'=>'media_cat']);
 
         foreach ($media_cats as $key => $cat) {
             $media_cats[$key]['count'] = term_media_count($cat['term_id'],$path_type);
