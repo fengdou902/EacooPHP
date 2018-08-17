@@ -3,13 +3,13 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: 2018-07-14 05:17:04
+-- Generation Time: 2018-08-17 10:25:24
 -- 服务器版本： 5.7.15
 -- PHP Version: 7.2.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
 
+SET time_zone = "+00:00";
 
 --
 -- Database: `eacoophp`
@@ -41,7 +41,7 @@ CREATE TABLE `eacoo_action` (
 --
 
 INSERT INTO `eacoo_action` (`id`, `name`, `depend_type`, `depend_flag`, `title`, `remark`, `rule`, `log`, `action_type`, `create_time`, `update_time`, `status`) VALUES
-(1, 'index_login', 1, 'admin', '登录后台', '用户登录后台', '', '[user|get_nickname]在[time|time_format]登录了后台', 1, 1383285551, 1383285551, 1),
+(1, 'login_index', 1, 'admin', '登录后台', '用户登录后台', '', '[user|get_nickname]在[time|time_format]登录了后台', 1, 1383285551, 1383285551, 1),
 (2, 'update_config', 1, 'admin', '更新配置', '新增或修改或删除配置', '', '', 2, 1383294988, 1383294988, 1),
 (3, 'update_channel', 1, 'admin', '更新导航', '新增或修改或删除导航', '', '', 2, 1383296301, 1383296301, 1),
 (4, 'update_category', 1, 'admin', '更新分类', '新增或修改或删除分类', '', '', 2, 1383296765, 1383296765, 1),
@@ -118,7 +118,7 @@ INSERT INTO `eacoo_attachment` (`id`, `uid`, `name`, `path`, `url`, `location`, 
 (8, 1, '会员数据2016-06-30 18_44_14', '/uploads/file/2016-07-13/5785dce2e15c1.xls', '', 'local', 'file', 'xls', '', 173387, NULL, '9ff55acddd75366d20dcb931eb1d87ea', 'acf5daf769e6ba06854002104bfb8c2886da97af', 0, 1468390626, 1468390626, 99, 1),
 (10, 1, '苹果短信-三全音 - 铃声', '/uploads/file/2016-07-27/579857b5aca95.mp3', '', 'local', 'file', 'mp3', '', 19916, NULL, 'bab00edb8d6a5cf4de5444a2e5c05009', '73cda0fb4f947dcb496153d8b896478af1247935', 0, 1469601717, 1469601717, 99, 1),
 (12, 1, 'music', '/uploads/file/2016-07-28/57995fe9bf0da.mp3', '', 'local', 'file', 'mp3', '', 160545, NULL, '935cd1b8950f1fdcd23d47cf791831cf', '73c318221faa081544db321bb555148f04b61f00', 0, 1469669353, 1469669353, 99, 1),
-(13, 1, '7751775467283337', '/uploads/picture/2016-09-26/57e8dc9d29b01.jpg', '', 'local', 'picture', 'jpg', '', 70875, NULL, '3e3bfc950aa0b6ebb56654c15fe8e392', 'c75e70753eaf36aaee10efb3682fdbd8f766d32d', 0, 1474878621, 1474878621, 99, 1),
+(13, 1, '7751775467283337', '/uploads/picture/2016-09-26/57e8dc9d29b01.jpg', '', 'local', 'picture', 'jpg', '', 70875, NULL, '3e3bfc950aa0b6ebb56654c15fe8e392', 'c75e70753eaf36aaee10efb3682fdbd8f766d32d', 0, 1474878621, 1474878621, 99, -1),
 (14, 1, '4366486814073822', '/uploads/picture/2016-09-26/57e8ddebaafff.jpg', '', 'local', 'picture', 'jpg', '', 302678, NULL, 'baf2dc5ea7b80a6d73b20a2c762aec1e', 'd73fe63f5c179135b2c2e7f174d6df36e05ab3d8', 0, 1474878955, 1474878955, 99, 1),
 (15, 1, 'wx1image_14751583274385', '/uploads/picture/2016-09-29/wx1image_14751583274385.jpg', '', 'local', 'picture', 'jpg', '', 311261, NULL, '', '', 0, 1475158327, 1475158327, 99, 1),
 (17, 1, 'wx1image_14751583287356', '/uploads/picture/2016-09-29/wx1image_14751583287356.jpg', '', 'local', 'picture', 'jpg', '', 43346, NULL, '', '', 0, 1475158328, 1475158328, 99, 1),
@@ -393,7 +393,9 @@ INSERT INTO `eacoo_config` (`id`, `name`, `title`, `value`, `options`, `group`, 
 (57, 'admin_collect_menus', '后台收藏菜单', '{\"\\/admin.php\\/admin\\/attachment\\/setting.html\":{\"title\":\"\\u591a\\u5a92\\u4f53\\u8bbe\\u7f6e\"},\"\\/admin.php\\/admin\\/auth\\/index.html\":{\"title\":\"\\u89c4\\u5219\\u7ba1\\u7406\"},\"\\/admin.php\\/admin\\/modules\\/index.html\":{\"title\":\"\\u6a21\\u5757\\u5e02\\u573a\"},\"\\/admin.php\\/admin\\/dashboard\\/index.html\":{\"title\":\"\\u4eea\\u8868\\u76d8\"}}', '', 2, 0, 'json', '在后台顶部菜单栏展示，可以方便快速菜单入口', 1518629152, 1518629152, 99, 1),
 (58, 'minify_status', '开启minify', '1', '1:开启\r\n0:关闭', 2, 0, 'radio', '开启minify会压缩合并js、css文件，可以减少资源请求次数，如果不支持minify，可关闭', 1518716395, 1518716395, 99, 1),
 (59, 'admin_allow_login_many', '同账号多人登录后台', '0', '0:不允许\r\n1:允许', 4, 0, 'radio', '允许多个人使用同一个账号登录后台。默认：不允许', 1519785747, 1519785747, 99, 1),
-(60, 'admin_allow_ip', '仅限登录后台IP', '', '', 4, 0, 'textarea', '填写IP地址，多个IP用英文逗号隔开。默认为空，允许所有IP', 1519828685, 1519828685, 99, 1);
+(60, 'admin_allow_ip', '仅限登录后台IP', '', '', 4, 0, 'textarea', '填写IP地址，多个IP用英文逗号隔开。默认为空，允许所有IP', 1519828685, 1519828685, 99, 1),
+(61, 'redis', 'Redis配置', '{\"host\":\"127.0.0.1\",\"port\":\"6979\"}', '', 9, 0, 'json', '以JSON格式保存', 1534347808, 1534347808, 99, 1),
+(62, 'memcache', 'Memcache配置', '{\"host\":\"127.0.0.1\",\"port\":\"11211\"}', '', 9, 0, 'json', '以JSON格式保存', 1534347808, 1534347808, 99, 1);
 
 -- --------------------------------------------------------
 
@@ -424,14 +426,14 @@ INSERT INTO `eacoo_hooks` (`id`, `name`, `description`, `type`, `create_time`, `
 (6, 'ThirdLogin', '第三方账号登陆', 1, 1518696015, 1518696015, 1),
 (7, 'SendMessage', '发送消息钩子，用于消息发送途径的扩展', 2, 1518696015, 1518696015, 1),
 (8, 'sms', '短信插件钩子', 2, 1518696015, 1518696015, 1),
+(9, 'RegisterUser', '用户注册钩子', 2, 1523030193, 1523030193, 1),
 (10, 'ImageGallery', '图片轮播钩子', 1, 1518696015, 1518696015, 1),
 (11, 'JChinaCity', '每个系统都需要的一个中国省市区三级联动插件。', 1, 1518696015, 1518696015, 1),
 (13, 'editor', '内容编辑器钩子', 1, 1518696015, 1518696015, 1),
 (14, 'adminEditor', '后台内容编辑页编辑器', 1, 1518696015, 1518696015, 1),
 (15, 'ThirdLogin', '集成第三方授权登录，包括微博、QQ、微信、码云', 1, 1518696015, 1518696015, 1),
 (16, 'comment', '实现本地评论功能，支持评论点赞', 1, 1520776468, 1520776468, 1),
-(17, 'uploadPicture', '实现阿里云OSS对象存储，管理附件', 1, 1523030193, 1523030193, 1),
-(18, 'PictureboxList', '图集盒子插件，主要用作于发布美图、写真、产品图。格子模式、瀑布流模式，多种展示模式。', 1, 1523100518, 1523100518, 1);
+(17, 'uploadPicture', '实现阿里云OSS对象存储，管理附件', 1, 1523030193, 1523030193, 1);
 
 -- --------------------------------------------------------
 
@@ -605,13 +607,13 @@ CREATE TABLE `eacoo_terms` (
 --
 
 INSERT INTO `eacoo_terms` (`term_id`, `name`, `slug`, `taxonomy`, `pid`, `seo_title`, `seo_keywords`, `seo_description`, `create_time`, `update_time`, `sort`, `status`) VALUES
-(1, '未分类', 'nocat', 'post_category', 0, '未分类', '', '自定义分类描述', 0, 1516432626, 99, 1),
-(4, '大数据', 'tag_dashuju', 'post_tag', 0, '大数据', '', '这是标签描述', 0, 1466612845, 99, 1),
+(1, '未分类', 'nocat', 'post_category', 0, '未分类', '', '自定义分类描述', 1516432626, 1516432626, 99, 1),
+(4, '大数据', 'tag_dashuju', 'post_tag', 0, '大数据', '', '这是标签描述', 1516432626, 1516432626, 99, 1),
 (5, '技术类', 'technology', 'post_category', 0, '技术类', '关键词', '自定义分类描述', 1465570866, 1516430690, 99, 1),
 (6, '大数据', 'cat_dashuju', 'post_category', 0, '大数据', '大数据', '这是描述内容', 1465576314, 1466607965, 99, 1),
 (7, '运营', 'yunying', 'post_tag', 0, '运营', '关键字', '自定义标签描述', 1466612937, 1516432746, 99, 1),
-(9, '人物', 'renwu', 'media_cat', 0, '人物', '', '聚集多为人物显示的分类', 1466613381, 1466613381, 99, 1),
-(10, '美食', 'meishi', 'media_cat', 0, '美食', '', '', 1466613499, 1466613499, 99, 1),
+(9, '人物', 'renwu', 'media_cat', 0, '人物', '', '聚集多为人物显示的分类', 1466613381, 1532584734, 99, 1),
+(10, '美食', 'meishi', 'media_cat', 0, '美食', '', '', 1466613499, 1532584725, 99, 1),
 (11, '图标素材', 'icons', 'media_cat', 0, '图标素材', '', '', 1466613803, 1522951971, 99, 1),
 (12, '风景', 'fengjin', 'media_cat', 0, '风景', '风景', '', 1466614026, 1506557501, 99, 1),
 (13, '其它', 'others', 'media_cat', 0, '其它', '', '', 1467689719, 1519814576, 99, 1);
@@ -720,7 +722,7 @@ INSERT INTO `eacoo_users` (`uid`, `username`, `number`, `password`, `nickname`, 
 
 (3, 'U1471610993', '9948511005', '031c9ffc4b280d3e78c750163d07d275', '陈婧', '', '', '/static/assets/img/avatar-woman.png', 2, NULL, '', NULL, 0, NULL, 1473755335, 'a525c9259ff2e51af1b6e629dd47766f99f26c69', NULL, 0, '2.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
 (4, 'U1472438063', '9752985498', '031c9ffc4b280d3e78c750163d07d275', '妍冰', '', '', '/static/assets/img/avatar-woman.png', 2, NULL, '承接大型商业演出和传统文化学习班', NULL, 0, NULL, 1472438634, 'ed587cf103c3f100be20f7b8fdc7b5a8e2fda264', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
-(5, 'U1472522409', '9849571025', '031c9ffc4b280d3e78c750163d07d275', '久柳', '', '', '/static/assets/img/avatar-man.png', 1, NULL, '', NULL, 0, NULL, 1472522621, '5e542dc0c77b3749f2270cb3ec1d91acc895edc8', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 0),
+(5, 'U1472522409', '9849571025', '031c9ffc4b280d3e78c750163d07d275', '久柳', '', '', '/static/assets/img/avatar-man.png', 1, NULL, '', NULL, 0, NULL, 1472522621, '5e542dc0c77b3749f2270cb3ec1d91acc895edc8', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 2),
 (6, 'U1472739566', '5051101100', '031c9ffc4b280d3e78c750163d07d275', 'Ray', '', '', '/uploads/avatar/6/5a8ada8f72ac0.jpg', 1, NULL, '', NULL, 0, NULL, 1472739567, '6321b4d8ecb1ce1049eab2be70c44335856c840d', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 1, 1518696015, 1),
 (8, 'U1472877421', '5497481009', '031c9ffc4b280d3e78c750163d07d275', '印文博律师', '', '', '/static/assets/img/avatar-man.png', 1, NULL, '', NULL, 0, NULL, 1473494692, 'e99521af40a282e84718f759ab6b1b4a989d8eb1', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
 (9, 'U1472966655', '1004810149', '031c9ffc4b280d3e78c750163d07d275', '嘉伟', '', '', '/static/assets/img/avatar-man.png', 1, NULL, '', NULL, 0, NULL, 1473397571, 'f1075223be5f53b9c2c1abea8288258545365d96', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
@@ -731,7 +733,6 @@ INSERT INTO `eacoo_users` (`uid`, `username`, `number`, `password`, `nickname`, 
 (15, 'U1473397391', '9810148101', '031c9ffc4b280d3e78c750163d07d275', 'peter', '', '', '/uploads/avatar/15/5a9d1473d4c91.png', 2, NULL, '', NULL, 0, NULL, 1473397391, 'c66d3a0e16a81a13173756a2832ba424b34a095c', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
 (16, 'U1473397426', '1015057995', '031c9ffc4b280d3e78c750163d07d275', '随风而去的心情', '', '15801182190', '/static/assets/img/avatar-man.png', 1, NULL, '大师傅', NULL, 0, NULL, 1473397426, '14855b00775de46b451c8255e6a73a5c044fc188', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1),
 (17, 'U1474181145', '5551564851', '031c9ffc4b280d3e78c750163d07d275', '班鱼先生', '', '', '/static/assets/img/avatar-man.png', 1, NULL, '', NULL, 0, NULL, 1474181146, '86d19a7b1f15db4fd25e0b64bfc17870a70f67e2', NULL, 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1518696015, 1);
-
 --
 -- Indexes for dumped tables
 --
@@ -896,13 +897,13 @@ ALTER TABLE `eacoo_auth_rule`
 -- 使用表AUTO_INCREMENT `eacoo_config`
 --
 ALTER TABLE `eacoo_config`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '配置ID', AUTO_INCREMENT=61;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '配置ID', AUTO_INCREMENT=63;
 
 --
 -- 使用表AUTO_INCREMENT `eacoo_hooks`
 --
 ALTER TABLE `eacoo_hooks`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '钩子ID', AUTO_INCREMENT=19;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '钩子ID', AUTO_INCREMENT=18;
 
 --
 -- 使用表AUTO_INCREMENT `eacoo_hooks_extra`
@@ -963,3 +964,4 @@ ALTER TABLE `eacoo_themes`
 --
 ALTER TABLE `eacoo_users`
   MODIFY `uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
