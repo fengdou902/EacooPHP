@@ -37,13 +37,13 @@
                   <option value="0">选择类型</option>
                   {php}$media_type = input('get.media_type');{/php}
                   {volist name="mediaTypeList" id="mediaType"}
-                      <option value="{$key}" {eq name="key" value="media_type"}selected{/eq}>{$mediaType}</option>
+                      <option value="{$key}" {eq name="key" value="$media_type"}selected{/eq}>{$mediaType}</option>
                   {/volist}
                 </select>
                 </div>
 
                 <div class="col-md-4 pl-0 pr-5 has-feedback">
-                  <input id="choice_date_range" class="form-control pr30" type="text" value="" placeholder="选择日期" name="choice_date_range">
+                  <input id="choice_date_range" class="form-control pr30" type="text" value="{$choice_date_range|default=''}" placeholder="选择日期" name="choice_date_range">
                  <span class="fa fa-calendar form-control-feedback" style="right:5px;"></span>
                 </div>
 
@@ -51,8 +51,8 @@
                 <div class="col-md-3">
                   <select name="term_id" class="form-control">
                     <option value="0">全部分类</option>
+                    {php}$term_id = input('get.term_id');{/php}
                     {volist name="media_cats" id="media_cat"}
-                        {php}$term_id = input('get.term_id');{/php}
                         <option value="{$media_cat.term_id}" {eq name="media_cat.term_id" value="$term_id"}selected{/eq}>{$media_cat.name}</option>
                     {/volist}
                   </select>
@@ -311,7 +311,11 @@
             if(action == ''){
                 action = location.href;
             }
-            var new_location = action+'?' + seperator + form;
+            var sep_prefix = '?';
+            if (EacooPHP.url_model==2) {
+                sep_prefix = '&';
+            }
+            var new_location = action+sep_prefix + seperator + form;
             location.href = new_location;
 
             return false;

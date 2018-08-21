@@ -315,8 +315,8 @@ function get_cdn_domain()
  */
 function get_uploadpath_url()
 {
-    $cdn_domain = cache('cdn_domain');
-    if (!$cdn_domain) {
+    $cdn_uploadpath_url = cache('cdn_uploadpath_url');
+    if (!$cdn_uploadpath_url) {
         $driver = !empty(config('attachment_options.driver')) ? config('attachment_options.driver') :'local';
         if ($driver!='local') {
             $check_res = check_install_plugin($driver);
@@ -325,18 +325,18 @@ function get_uploadpath_url()
                 if (class_exists($class)) {
                     $plugin = new $class();
                     if(method_exists($plugin,'getUploadPathUrl')){
-                        $cdn_domain = $plugin->getUploadPathUrl();
-                        cache('cdn_domain',$cdn_domain,3600);
-                        return $cdn_domain;
+                        $cdn_uploadpath_url = $plugin->getUploadPathUrl();
+                        cache('cdn_uploadpath_url',$cdn_uploadpath_url,3600);
+                        return $cdn_uploadpath_url;
                     }
                     
                 } 
             }
         } 
-        $cdn_domain = request()->domain();
-        cache('cdn_domain',$cdn_domain,3600);
+        $cdn_uploadpath_url = request()->domain();
+        cache('cdn_uploadpath_url',$cdn_uploadpath_url,3600);
     }
-    return $cdn_domain;
+    return $cdn_uploadpath_url;
     
 }
 
