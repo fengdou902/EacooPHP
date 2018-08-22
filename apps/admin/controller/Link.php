@@ -9,7 +9,7 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
-use app\admin\model\Links as LinksModel;
+use app\common\model\Links as LinksModel;
 
 class Link extends Admin{
     
@@ -19,7 +19,7 @@ class Link extends Admin{
     function _initialize()
     {
         parent::_initialize();
-        $this->linkModel = model('links');
+        $this->linkModel = model('Links');
         $this->linkType  = [
                     1 => '友情链接',
                     2 => '合作伙伴'
@@ -38,10 +38,10 @@ class Link extends Admin{
 
         return builder('List')
                 ->setMetaTitle('友情链接')  // 设置页面标题
-                ->addTopButton('addnew')    // 添加新增按钮
-                ->addTopButton('resume')  // 添加启用按钮
-                ->addTopButton('forbid')  // 添加禁用按钮
-                ->addTopButton('sort')  // 添加排序按钮
+                ->addTopButton('addnew',['model'=>'Links'])    // 添加新增按钮
+                ->addTopButton('resume',['model'=>'Links'])  // 添加启用按钮
+                ->addTopButton('forbid',['model'=>'Links'])  // 添加禁用按钮
+                ->addTopButton('sort',['model'=>'Links'])  // 添加排序按钮
                 ->setSearch('请输入关键字')
                 ->keyListItem('title', '站点名称')
                 ->keyListItem('url', '链接地址','url',['extra_attr'=>'target="_blank"'])
@@ -64,12 +64,12 @@ class Link extends Admin{
     public function edit($id=0) {
         $title = $id>0 ? "编辑":"新增";
         if (IS_POST) {
-            $data = input('param.');
+            $params = input('param.');
             //验证数据
-            $this->validateData($data,'admin/Link');
+            $this->validateData($params,'admin/Link');
 
             //$data里包含主键id，则editData就会更新数据，否则是新增数据
-            if ($this->linkModel->editData($data)) {
+            if ($this->linkModel->editData($params)) {
                 $this->success($title.'成功', url('index'));
             } else {
                 $this->error($this->linkModel->getError());
