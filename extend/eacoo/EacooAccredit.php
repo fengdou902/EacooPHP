@@ -55,9 +55,10 @@ class EacooAccredit {
         if (!$token) {
             $install_lock = json_decode(file_get_contents(APP_PATH . 'install.lock'),true);
             if ($install_lock) {
-                $token = $install_lock['access_token'];
+                $token = isset($install_lock['access_token']) ? $install_lock['access_token'] : '';
+                Cache::set('accredit_token',$token,3600*3);
             }
-            Cache::set('accredit_token',$token,3600*3);
+            
         }
         return $token;
     }

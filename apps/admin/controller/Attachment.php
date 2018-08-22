@@ -81,16 +81,16 @@ class Attachment extends Admin {
         $media_type = input('param.media_type',false,'intval');
         if ($media_type>0) {
             switch ($media_type) {
-                case '1':
+                case 1:
                     $map['ext']=array('in','jpg,jpeg,png,gif');
                     break;
-                case '2':
+                case 2:
                     $map['ext']=array('in','mp3,wav,wma,ogg');
                     break;
-                case '3':
+                case 3:
                     $map['ext']=array('in','mp4,rm,rmvb,wmv,avi,3gp,mkv');
                     break;
-                case '4':
+                case 4:
                     $map['ext']=array('in','doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,7z,b2z');
                     break;
                 default:

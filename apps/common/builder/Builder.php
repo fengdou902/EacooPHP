@@ -20,6 +20,8 @@ use think\Exception;
 class Builder extends Base {
 
     protected $pluginName;
+    protected $preQueryConnector;
+
     public function _initialize() {
         parent::_initialize();
 
@@ -27,6 +29,8 @@ class Builder extends Base {
         if (input('?param._plugin')) {
             $this->pluginName = input('param._plugin');
         }
+        //参数前缀连接符
+        $this->preQueryConnector = SERVER_SOFTWARE_TYPE=='nginx' ? '&' : '?';
     }
     /**
      * 开启Builder
