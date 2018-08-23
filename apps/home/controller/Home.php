@@ -23,6 +23,7 @@ class Home extends Base {
         $this->currentUser = session('user_login_auth');
         $this->assign('current_user', $this->currentUser);
         $this->assign('header_menus',logic('Nav')->getNavigationMenus('header'));
+        $this->assign('users_menus',logic('Nav')->getNavigationMenus('my'));
         $this->assign('current',logic('Nav')->current());
         $this->assign('_theme_public_', config('theme_public'));  // 页面公共继承模版
         $this->assign('_theme_public_layout', config('theme_public').'layout.html');  // 页面公共继承模版
