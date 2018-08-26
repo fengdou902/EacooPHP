@@ -73,7 +73,8 @@ class EacooAccredit {
     {
         $version_info = Cache::get('eacoophp_remote_version');
         if (!$version_info) {
-            $url = config('eacoo_api_url').'/eacoophp_version?epv='+EACOOPHP_V;
+            $eacoophp_version = EACOOPHP_V;
+            $url = config('eacoo_api_url').'/eacoophp_version?epv='.urlencode($eacoophp_version);
             $result = curl_get($url);
             $version_info = json_decode($result,true);
             Cache::set('eacoophp_remote_version',$version_info,3600);
