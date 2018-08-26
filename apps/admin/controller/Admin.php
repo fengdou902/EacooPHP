@@ -95,7 +95,7 @@ class Admin extends Base
     private function initConfig()
     {
         //检测是否是最新版本
-        $eacoo_version = EacooAccredit::isUpdate();
+        $eacoo_version = EacooAccredit::getVersion();
         if ($eacoo_version) {
             $this->assign('eacoo_version',$eacoo_version);
         }
