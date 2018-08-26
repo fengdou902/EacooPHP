@@ -132,7 +132,7 @@ class Attachment extends Admin {
      * @param  int $id id
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function info($id=0){
+    public function info($id = 0){
         try {
             if ($id>0) {
                 $info = get_attachment_info($id);//附件信息

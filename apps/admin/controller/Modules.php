@@ -134,20 +134,25 @@ class Modules extends Admin {
 	 */
 	public function installBefore($name) {
 		$this->assign('meta_title','准备安装模块');
-        $info=['name'=>$name,'clear'=>1];
+        if ($this->moduleModel->where('name',$name)->find()) {
+            $clear = 0;
+        } else{
+            $clear = 1;
+        }
+        $info = ['name'=>$name,'clear'=>$clear,'flag'=>'local'];
         $fieldList = [
                 ['name'=>'name','type'=>'hidden','title'=>'名称'],
-                ['name'=>'clear','type'=>'radio','title'=>'清除数据：','description'=>'是否清除数据，默认否','options'=>[1=> '是', 0=> '否']],
+                ['name'=>'flag','type'=>'hidden','title'=>'标记（标识来源于本地安装）'],
+                ['name'=>'clear','type'=>'radio','title'=>'清除数据：','description'=>'是否清除数据，默认否。如果卸载时未选择清理数据，请选择否','options'=>[1=> '是', 0=> '否']],
             ];
         foreach ($fieldList as $key => &$val) {
-            if ($val['name']!='self_html') {
-                $val['value']=isset($info[$val['name']])? $info[$val['name']]:'';
+            if ($val['name'] != 'self_html') {
+                $val['value'] = isset($info[$val['name']])? $info[$val['name']]:'';
             }
             
         }
         $this->assign('fieldList',$fieldList);
-        $post_url = url('install');
-        $this->assign('post_url',$post_url);
+        $this->assign('post_url',url('install'));
         return $this->fetch('extension/install_before');
 
 	}
@@ -219,19 +224,23 @@ class Modules extends Admin {
 		}
 		
 		if ($result) {
-            $hooksLogic   = logic('Hooks');
-            $hooks_update = $hooksLogic->removeHooks('module',$name);
-            if ($hooks_update === false) {
-                throw new \Exception("卸载模块所挂载的钩子数据失败", 0);
-            }
-            cache('hooks', null);
-
 			$extensionObj = new ExtensionLogic;
             $extensionObj->initInfo('module',$name);
-            // 删除后台菜单
-            $extensionObj->removeAdminMenus($name,$clear);
-            $extensionObj->removeNavigationMenus($clear);
+            if ($clear) {
+                $setMenuNav = 'delete';
+            } else{
+                $setMenuNav = 'forbid';
+            }
+            // 重置菜单
+            $extensionObj->setAdminMenus($name,$setMenuNav);
+            logic('admin/Navigation')->setNavigationMenus($extensionObj->depend_type,$name,$setMenuNav);
 			if ($clear) {
+                $hooksLogic   = logic('Hooks');
+                $hooks_update = $hooksLogic->removeHooks('module',$name);
+                if ($hooks_update === false) {
+                    throw new \Exception("卸载模块所挂载的钩子数据失败", 0);
+                }
+                cache('hooks', null);
 		        //执行卸载sql
 				$sql_file   = APP_PATH.$name.'/install/uninstall.sql';
 				if (is_file($sql_file)) {
@@ -256,6 +265,7 @@ class Modules extends Admin {
 	            }
 	            $this->success('卸载成功',url('index',['from_type'=>'local']));
 			} else {
+                cache('hooks', null);
 				$this->success('卸载成功，相关数据未卸载！',url('index',['from_type'=>'local']));
 			}
 		} else {
@@ -317,7 +327,7 @@ class Modules extends Admin {
 			if ($result) {
 				if ($name!='user' && $name!='admin') {
 					// 删除后台该菜单
-				    $extensionObj->removeAdminMenus($name,true);
+				    $extensionObj->setAdminMenus($name,'delete');
 					//后台菜单入库
 					$admin_menus = $extensionObj->getAdminMenusByFile($name);
 					if (!empty($admin_menus) && is_array($admin_menus)) {
@@ -419,7 +429,7 @@ class Modules extends Admin {
 
 			$extensionObj = new ExtensionLogic;
             $extensionObj->initInfo('module',$info['name']);
-            $extensionObj->switchAdminMenus($info['name'],$status);
+            $extensionObj->setAdminMenus($info['name'],$status);
 			
 		}
 		parent::setStatus($model);

@@ -154,9 +154,10 @@ class Plugins extends Admin {
         } else{
             $clear = 1;
         }
-        $info=['name'=>$name,'clear'=>$clear];
+        $info=['name'=>$name,'clear'=>$clear,'flag'=>'local'];
         $fieldList = [
                 ['name'=>'name','type'=>'hidden','title'=>'名称'],
+                ['name'=>'flag','type'=>'hidden','title'=>'标记（标识来源于本地安装）'],
                 ['name'=>'clear','type'=>'radio','title'=>'清除数据：','description'=>'是否清除数据，默认否','options'=>[1=> '是', 0=> '否']],
             ];
         foreach ($fieldList as $key => &$val) {
@@ -226,25 +227,8 @@ class Plugins extends Admin {
 
                 $plugin_info  = $this->pluginModel->where('id',$id)->field('name')->find();
                 $name         = $plugin_info['name'];
-                $_static_path = PUBLIC_PATH.'static/plugins/'.$name;
-                if (is_dir($_static_path)) {
-                    if(!is_writable(PUBLIC_PATH.'static/plugins') || !is_writable(PLUGIN_PATH.$name)){
-                        $error_msg = '';
-                        if (!is_writable(PUBLIC_PATH.'static/plugins')) {
-                            $error_msg.=','.PUBLIC_PATH.'static/plugins';
-                        }
-                        if (!is_writable(PLUGIN_PATH.$name)) {
-                            $error_msg.=','.PLUGIN_PATH.$name;
-                        }
-                        throw new \Exception($error_msg.'目录写入权限不足',0);
-                    }
-                }
-                $hooksLogic = logic('Hooks');
-                $hooks_update = $hooksLogic->removeHooks('plugin',$name);
-                if ($hooks_update === false) {
-                    throw new \Exception("卸载插件所挂载的钩子数据失败", 0);
-                }
-                cache('hooks', null);
+                
+                
                 if ($clear) {
                     $result = PluginsModel::where('id',$id)->delete();
                 } else{
@@ -253,10 +237,21 @@ class Plugins extends Admin {
                 if ($result) {
                     $extensionObj = new ExtensionLogic;
                     $extensionObj->initInfo('plugin',$name);
-                    // 删除后台菜单
-                    $extensionObj->removeAdminMenus($name,$clear);
-                    $extensionObj->removeNavigationMenus($clear);
                     if ($clear) {
+                        $setMenuNav = 'delete';
+                    } else{
+                        $setMenuNav = 'forbid';
+                    }
+                    // 删除后台菜单
+                    $extensionObj->setAdminMenus($name,$setMenuNav);
+                    logic('admin/Navigation')->setNavigationMenus($extensionObj->depend_type,$name,$setMenuNav);
+                    if ($clear) {
+                        $hooksLogic = logic('Hooks');
+                        $hooks_update = $hooksLogic->removeHooks('plugin',$name);
+                        if ($hooks_update === false) {
+                            throw new \Exception("卸载插件所挂载的钩子数据失败", 0);
+                        }
+                        cache('hooks', null);
                         // 卸载数据库
                         $sql_file = PLUGIN_PATH.$name.'/install/uninstall.sql';
                         if (is_file($sql_file)) {
@@ -268,7 +263,19 @@ class Plugins extends Admin {
                         }
                     }
 
+                    $_static_path = PUBLIC_PATH.'static/plugins/'.$name;
                     if (is_dir($_static_path)) {
+                        if(!is_writable(PUBLIC_PATH.'static/plugins') || !is_writable(PLUGIN_PATH.$name)){
+                            $error_msg = '';
+                            if (!is_writable(PUBLIC_PATH.'static/plugins')) {
+                                $error_msg.=','.PUBLIC_PATH.'static/plugins';
+                            }
+                            if (!is_writable(PLUGIN_PATH.$name)) {
+                                $error_msg.=','.PLUGIN_PATH.$name;
+                            }
+                            throw new \Exception($error_msg.'目录写入权限不足',0);
+                        }
+
                         $static_path = PLUGIN_PATH.$name.'/static';
                         if (!rename($_static_path,$static_path)) {
                             trace('插件静态资源移动失败：'.'public/static/plugins/'.$name.'->'.$static_path,'error');
@@ -280,6 +287,7 @@ class Plugins extends Admin {
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
+        cache('hooks', null);
         $this->success('卸载成功',url('index',['from_type'=>'local']));
 
     }
@@ -329,13 +337,13 @@ class Plugins extends Admin {
                 foreach ($ids as $id) {
                     $info = model($model)->where('id',$id)->field('name')->find();
                     $extensionObj->initInfo('plugin',$info['name']);
-                    $extensionObj->switchAdminMenus($info['name'],$status);
+                    $extensionObj->setAdminMenus($info['name'],$status);
                 }
             } else {
                 $info = model($model)->where('id',$ids)->field('name')->find();
 
                 $extensionObj->initInfo('plugin',$info['name']);
-                $extensionObj->switchAdminMenus($info['name'],$status);
+                $extensionObj->setAdminMenus($info['name'],$status);
                 
             }
         }

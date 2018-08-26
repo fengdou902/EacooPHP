@@ -43,7 +43,7 @@ class BuilderForm extends Builder
      * @param $title 标题文本
      * @return $this
      */
-    public function setPageTips($content,$type='info') {
+    public function setPageTips($content, $type='info') {
         $this->tips = $content;
         return $this;
     }
@@ -116,7 +116,7 @@ class BuilderForm extends Builder
      * @param $extra_class 表单项是否隐藏
      * @return $this
      */
-    public function addFormItem($name, $type, $title, $description = '',$options = [],$extra_attr = '',$extra_class = '') {
+    public function addFormItem($name, $type, $title, $description = '', $options = [], $extra_attr = '', $extra_class = '') {
         $item = [
             'name'        => $name,
             'type'        => $type,
@@ -312,7 +312,7 @@ class BuilderForm extends Builder
             $template_path_str = './';
         }
 
-        $fields_name = ['text','number','info','section','date','datetime','hidden','password','left_icon_text','right_icon_text','left_icon_number','right_icon_number','textarea','ueditor','wangeditor','radio','checkbox','select','select2','select_multiple','tags','multilayer_select','email','group','icon','avatar','picture','pictures','image','file','files','repeater','self','self_html','tab'];
+        $fields_name = ['text','number','info','section','date','datetime','hidden','readonly','password','left_icon_text','right_icon_text','left_icon_number','right_icon_number','textarea','ueditor','wangeditor','radio','checkbox','select','select2','select_multiple','tags','multilayer_select','email','group','icon','avatar','picture','pictures','image','file','files','repeater','self','self_html','tab'];
         $field_type = $field['type'];
         if (in_array($field_type, $fields_name)) {//为了兼容库中，要做校验
             $field_template = $template_path_str.'apps/common/view/builder/Fields/'.$field_type.'.html';

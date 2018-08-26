@@ -8,17 +8,16 @@
         <div class="col-xs-6 oh tc media-modal-pic">
 
             {switch name='$info.ext'}
-                {case value='jpg'}
-                    <a href="{$info.src|default='/static/assets/img/noimage.gif'}" id="file-href" target="_blank">
-                        <img src="{$info.src|default='/static/assets/img/noimage.gif'}" id="file-src" alt="{$info.alt|default=''}">
-                    </a>
-                {/case}
                 {case value='mp4'}
                     <video width="320" height="240" controls>
                         <source src="{$info.url}" type="video/mp4">
                         您的浏览器不支持 video 标签。
                     </video>
                 {/case}
+                {default/}
+                    <a href="{$info.src|default='/static/assets/img/noimage.gif'}" id="file-href" target="_blank">
+                        <img src="{$info.src|default='/static/assets/img/noimage.gif'}" id="file-src" alt="{$info.alt|default=''}">
+                    </a>
             {/switch}
         </div>
         <div class="col-xs-6">
