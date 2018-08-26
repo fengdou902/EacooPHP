@@ -117,4 +117,110 @@ EOF;
 
     }
 
+    /**
+     * 添加前台导航菜单
+     * @param  array $data 菜单数据
+     * @param  integer $pid 父级ID
+     * @date   2017-09-15
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function addNavigationMenus($depend_type = '', $depend_flag = '', $data = [], $pid = 0)
+    {
+        if (!empty($data) && is_array($data)) {
+            $navModel = new NavModel;
+            //头部导航
+            if (!empty($data['header'])) {
+                $header_menus = $data['header'];
+                foreach ($header_menus as $key => $menu) {
+                    $menu['position'] = 'header';
+                    $menu['pid'] = $pid;
+                    $menu['depend_type'] = $depend_type;
+                    $menu['depend_flag'] = $depend_flag;
+                    $navModel->allowField(true)->isUpdate(false)->data($menu)->save();
+                    
+                    //添加子菜单
+                    if (!empty($menu['sub_menu'])) {
+                        $this->addNavigationMenus($depend_type,$depend_flag,['header'=>$menu['sub_menu']], $navModel->id);
+                    }
+                }
+                cache('front_header_navs',null);//清空前台导航缓存
+            }
+            
+            //个人中心导航
+            if (!empty($data['my'])) {
+                $my_menus = $data['my'];
+                foreach ($my_menus as $key => $menu) {
+                    $menu['position'] = 'my';
+                    $menu['pid'] = $pid;
+                    $menu['depend_type'] = $depend_type;
+                    $menu['depend_flag'] = $depend_flag;
+                    $navModel->allowField(true)->isUpdate(false)->data($menu)->save();
+                    
+                    //添加子菜单
+                    if (!empty($menu['sub_menu'])) {
+                        $this->addNavigationMenus($depend_type,$depend_flag,['my'=>$menu['sub_menu']], $navModel->id);
+                    }
+                }
+                cache('front_my_navs',null);//清空前台我的缓存
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 设置导航菜单
+     * @param  string $flag_name [description]
+     * @param  boolean $delete [description]
+     * @return [type] [description]
+     * @date   2017-11-02
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public static function setNavigationMenus($depend_type = '', $depend_flag = '', $status='')
+    {
+        try {
+            if (!$depend_type || !$depend_flag || !$status) {
+                throw new \Exception("参数不合法", 1);
+            }
+            $state = 0;
+            switch ($status) {
+                case 'resume'://启用
+                    $state = 1;
+                    break;
+                case 'forbid'://禁用
+                    $state = 0;
+                    break;
+                case 'delete'://删除
+                    $state = 0;
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+
+            $res = false;
+            $map = [
+                'depend_type'=>$depend_type,
+                'depend_flag'=>$depend_flag
+            ];
+            if ($status!='delete') {
+                $res = NavModel::where($map)->update(['status'=>$state]);
+            } elseif($status=='delete') {
+                $res = NavModel::where($map)->delete();
+            }
+            
+            if (false === $res) {
+                return false;
+            } else{
+                cache('front_header_navs',null);//清空前台导航缓存
+                cache('front_my_navs',null);//清空前台我的缓存
+                return true;
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
+        
+    }
+
 }

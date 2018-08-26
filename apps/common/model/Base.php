@@ -112,7 +112,7 @@ class Base extends Model
      * @param  integer $cache 是否启用缓存
      * @return 结果集
      */
-    public static function getListByPage($condition, $fields = true, $order='', $page_size = null,$cache = false)
+    public function getListByPage($condition, $fields = true, $order='', $page_size = null,$cache = false)
     {
         $paged     = input('param.paged',1);//分页值
         if (!$page_size) {
@@ -120,22 +120,11 @@ class Base extends Model
         }
         $page_size = input('param.page_size',$page_size);//每页数量
         $order     = input('param.order',$order);
-        if (is_array($condition)) {
-            $list      = self::where($condition)->field($fields)->order($order)->page($paged,$page_size)->select();
-            $total     = self::where($condition)->count();
-        } elseif ($condition instanceof \Closure) {
-            //闭包条件
-            $query = static::parseQuery($condition,'', $cache);
-            if ($fields!==true && is_string($fields) && $fields!='') {
-                $query->field($fields);
-            }
-            if ($order) {
-                $query->order($order);
-            }
-
-            $list = $query->page($paged,$page_size)->select();
-            $total = $query->count();
+        if ($cache) {
+            $this->cache(true);
         }
+        $list      = $this->where($condition)->field($fields)->order($order)->page($paged,$page_size)->select();
+        $total     = $this->where($condition)->count();
         
         return [$list,$total];
     }
@@ -146,14 +135,12 @@ class Base extends Model
      * @param  string $order 排序
      * @return 结果集
      */
-    public static function getList($condition, $fields = true, $order='create_time desc', $cache = false)
+    public function getList($condition, $fields = true, $order='create_time desc', $cache = false)
     {
-        if (is_array($condition)) {
-            $lists = self::where($condition)->field($fields)->order($order)->select();
-        } elseif ($condition instanceof \Closure) {
-            $query = static::parseQuery($condition,'', $cache);
-            $lists = $query->select();
+        if ($cache) {
+            $this->cache(true);
         }
+        $lists = $this->where($condition)->field($fields)->order($order)->select();
         return $lists;
     }
 
