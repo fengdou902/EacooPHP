@@ -96,7 +96,7 @@ class Admin extends Base
     {
         //检测是否是最新版本
         $eacoo_version = EacooAccredit::getVersion();
-        if ($eacoo_version) {
+        if ($eacoo_version['version']>EACOOPHP_V) {
             $this->assign('eacoo_version',$eacoo_version);
         }
 
