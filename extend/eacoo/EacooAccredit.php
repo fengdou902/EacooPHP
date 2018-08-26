@@ -63,6 +63,55 @@ class EacooAccredit {
         return $token;
     }
 
+
+    /**
+     * 检测云端版本，判断是否有更新
+     * 2018-8-21
+     * yyyvy
+     */
+    public static function isUpdate(){
+        $url = config('eacoo_api_url').'/online_update';
+        $result = curl_get($url);
+        $versions_list = json_decode($result,true);
+
+        $eacoophp_v = EACOOPHP_V;   //当前框架版本号
+        $buile_v = BUILD_VERSION;   //构建版本号
+        $next_buile_v = []; //下一个构建版本号
+
+        $versions_list_count = count($versions_list);   //取版本列表长度
+        //循环出下一个版本号
+        foreach ($versions_list as $key=>$value){
+            //判断框架版本号相同
+            if ($value['versions'] == $eacoophp_v){
+                $build_list_count = count($value['build_version']);   //取构建版本列表长度
+                foreach ($value['build_version'] as $twokey=>$for_version){
+                    if($for_version['version'] == $buile_v){
+                        //判断当前框架版本的构建版本是不是最后一个；
+                        if($twokey < $build_list_count-1){
+                            $updateinfo = $value['build_version'][++$twokey];
+                            $next_buile_v['version'] = $eacoophp_v;
+                            $next_buile_v['build_version'] = $updateinfo['version'];
+                            $next_buile_v['url'] = $updateinfo['url'];
+                        }else{
+                            //构架版本已经是最后一个了，取下一个框架版本的信息
+                            if($key < $versions_list_count-1){
+                                $next_info = $versions_list[++$key];
+                                $next_buile_v['version'] = $next_info['versions'];
+                                $next_buile_v['build_version'] = $next_info['build_version'][0]['version'];
+                                $next_buile_v['url'] = $next_info['build_version'][0]['url'];
+                            }else{
+                                //否则就是没有更新
+                                $next_buile_v = [];
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        return $next_buile_v;
+    }
+
     /**
      * 检测版本，获取云端版本
      * @return [type] [description]

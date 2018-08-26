@@ -35,6 +35,11 @@
         <div id="list1" class="panel-collapse collapse in" role="tabpanel">
           <div class="list-group">
             <a class="list-group-item" href="{:url('user/index/profile')}"><i class="fa fa-edit"></i> 修改信息</a>
+            {notempty name="users_menus"}
+              {volist name="users_menus" id="row"}
+                <a class="list-group-item" href="{$row.depend_type==1?url($row['value']):plugin_url($row['value'])}"><i class="{$row.icon}"></i> {$row.title}</a>
+              {/volist}
+            {/notempty}
             <!--
             <a class="list-group-item" href="/index.php?s=/user_message/index.html"><i class="fa fa-envelope-o"></i> 消息中心</a>
             <a class="list-group-item" href="/index.php?s=/document/mydoc.html"><i class="fa fa-file-word-o"></i> 我的文档</a>
