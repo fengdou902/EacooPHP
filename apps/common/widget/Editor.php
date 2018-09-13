@@ -58,7 +58,8 @@ class Editor extends Base
         if (!isset($attributes['name'])) $attributes['name']='content';//name值
         if (!isset($attributes['is_load_script'])) $attributes['is_load_script']=1;//是否加载脚本
         if (!isset($attributes['picturesModal'])) $attributes['picturesModal']=1;//是否显示多图按钮
-
+        if (!isset($attributes['width'])) $attributes['width']= '100%';//编辑器宽度
+        if (!isset($attributes['height'])) $attributes['height']= '200px';//编辑器高度
         if (!isset($attributes['menus'])) {
             $attributes['menus']="'head', // 标题
                     'bold',  // 粗体

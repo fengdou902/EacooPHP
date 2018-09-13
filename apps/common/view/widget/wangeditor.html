@@ -17,7 +17,7 @@
     <script type="text/javascript" src="__LIBS__/wangeditor/wangEditor.min.js"></script>
     <script type="text/javascript" src="__LIBS__/wangeditor/wangEditor-plugins.js?v=0.0.1"></script>
 {/if}
-<div id="{$id}_editor" style="{$style|default=''}">{notempty name="value"}<p>{$value|default=''}</p>{/notempty}</div>
+<div id="{$id}_editor" style="width: {$width};">{notempty name="value"}<p>{$value|default=''}</p>{/notempty}</div>
 <textarea id="{$id}" name="{$name}" style="display: none;width:{$width|default='100%'};height:{$height|default='300px'};"></textarea>
 
 <!--这里引用jquery和wangEditor.js-->

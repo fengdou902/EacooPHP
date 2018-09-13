@@ -19,6 +19,11 @@
                             您的浏览器不支持 video 标签。
                         </video>
                     {/case}
+                    {case value="mp3"}
+                        <audio src="{$file.url}" controls="controls" loop="loop">
+                            亲 您的浏览器不支持html5的audio标签
+                        </audio>
+                    {/case}
                     {default /}
                         <a href="{$field.value|get_image}" title="点击查看大图">
                             <img src="{$field.value|get_image}">
@@ -30,7 +35,7 @@
 
     </div>
     <div>
-      <span class="btn btn-info ml-10 mt-10 btn-sm" data-url="{:url('admin/Upload/attachmentLayer',['input_id_name'=>$field['id'],'path_type'=>'file','gettype'=>'single'])}" data-gettype="single" onclick="openAttachmentLayer(this);"><i class="fa fa-file-image-o"></i> 选择视频</span>
+      <span class="btn btn-info ml-10 mt-10 btn-sm" data-url="{:url('admin/Upload/attachmentLayer',['input_id_name'=>$field['id'],'path_type'=>'file','gettype'=>'single'])}" data-gettype="single" onclick="openAttachmentLayer(this);"><i class="fa fa-file-image-o"></i> 选择文件</span>
     </div>
 </div>
 </div>
