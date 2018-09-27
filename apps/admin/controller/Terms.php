@@ -49,12 +49,11 @@ class Terms extends Admin {
             }
         }
         $addnew_href = $edit_U ? ['href'=>$edit_U]:[];
-        $builder = builder('List')
-                    ->setMetaTitle('分类管理');
+        $builder = builder('List');
         if (!empty($tab_nav)) {//构建tab
             $builder->setTabNav($tab_nav['tab_list'],$tab_nav['current']);  // 设置页面Tab导航
         }
-        return $builder->addTopButton('addnew',$addnew_href,false)  // 添加新增按钮
+        $content = $builder->addTopButton('addnew',$addnew_href,false)  // 添加新增按钮
                     ->addTopButton('resume')  // 添加启用按钮
                     ->addTopButton('forbid')  // 添加禁用按钮
                     ->addTopButton('recycle') //添加回收按钮
@@ -74,6 +73,9 @@ class Terms extends Admin {
                     ->addRightButton('recycle')// 添加删除按钮
                     ->fetch();
 
+        return Iframe()
+                 ->setMetaTitle('分类管理')  //设置页面标题
+                ->content($content);
     }
 
 	/**
@@ -127,11 +129,10 @@ class Terms extends Admin {
             $p_terms = array_merge([0=>['id'=>0,'title_show'=>'顶级菜单']], $p_terms);
             // 使用FormBuilder快速建立表单页面。
             $builder = builder('Form');
-            $builder->setMetaTitle($title.'分类');  // 设置页面标题
             if (!empty($tab_obj)) {//构建tab
              $builder->setTabNav($tab_obj['tab_list'],$tab_obj['current']);  // 设置页面Tab导航
             }
-            return $builder->addFormItem('term_id', 'hidden', 'ID', 'ID')
+            $content = $builder->addFormItem('term_id', 'hidden', 'ID', 'ID')
                     ->addFormItem('name', 'text', '分类名称', '分类名称','','require')
                     ->addFormItem('slug', 'text', '分类别名', '分类别名','','require')
                     ->addFormItem('taxonomy', 'select', '分类类型', '选择一个分类法',$this->termTaxonomy)
@@ -143,6 +144,10 @@ class Terms extends Admin {
                     //->setAjaxSubmit(false)
                     //->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
+                    
+            return Iframe()
+                ->setMetaTitle($title.'分类')  //设置页面标题
+                ->content($content);
         }
     }
 

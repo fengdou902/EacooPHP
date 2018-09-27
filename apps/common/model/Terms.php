@@ -11,7 +11,9 @@
 namespace app\common\model;
 
 class Terms extends Base {
+    
     protected $resultSetType = 'collection';
+
     /**
      * 获取父分类名称
      * @param  [type] $value [description]

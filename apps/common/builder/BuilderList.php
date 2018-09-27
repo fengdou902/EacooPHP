@@ -15,11 +15,11 @@ namespace app\common\builder;
  * @author 心云间、凝听 <981248356@qq.com>
  */
 class BuilderList extends Builder {
-    private $metaTitle;      // 页面标题
-    private $tips;         // 页面提示文字
+    
     private $topButtonList   = [];   // 顶部工具栏按钮组
     //private $_select         = [];             //添加下拉框
-    private $search          = ['type'=>'basic'];           // 搜索参数配置
+    private $search          = ['type'=>'basic']; // 搜索参数配置
+    private $action_url = '';
     private $tabNav          = [];           // 页面Tab导航
     private $tableColumns    = [];    //表格数据标题
     private $tableDataList   = []; // 表格数据列表
@@ -33,22 +33,98 @@ class BuilderList extends Builder {
     //private $_template;                    // 模版
 
     /**
-     * 设置页面标题
-     * @param $title 标题文本
+     * 添加筛选功能
+     * @param string $title 标题
+     * @param string $name 键名
+     * @param string $type 类型，默认文本
+     * @param string $des 描述
+     * @param        $attr  标签文本
+     * @param string $arrdb 择筛选项数据来源
+     * @param string $arrvalue 筛选数据（包含ID 和value的数组:array(array('id'=>1,'value'=>'系统'),array('id'=>2,'value'=>'项目'),array('id'=>3,'value'=>'机构'));）
      * @return $this
      */
-    public function setMetaTitle($meta_title) {
-        $this->metaTitle = $meta_title;
+    // public function addSelect($title = '筛选', $name = 'key', $arrvalue = null)
+    // {
+    //     $this->_select[] = array('title' => $title, 'name' => $name,'arrvalue' => $arrvalue);
+    //     return $this;
+    // }
+
+    /**
+     * 设置搜索参数
+     * @param  string $type 显示类型(base|custom)
+     * @param  [type] $title [description]
+     * @param  string $url [description]
+     * @date   2018-02-06
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function setSearch($type='basic',$title='请输入关键字', $url='') {
+        if(!$url){
+            $url = url(MODULE_NAME.'/'.CONTROLLER_NAME.'/'.ACTION_NAME);
+        }
+        $this->search = ['type'=>$type,'title' => $title, 'url' => $url];
         return $this;
     }
 
     /**
-     * 设置页面说明
-     * @param $title 标题文本
+     * 设置Tab按钮列表
+     * @param $tab_list Tab列表  array(
+     *                               'title' => '标题',
+     *                               'href' => 'http://www.xxx.cn'
+     *                           )
+     * @param $current 当前tab
      * @return $this
      */
-    public function setPageTips($content,$type='info') {
-        $this->tips = $content;
+    public function setTabNav($tab_list, $current) {
+        $this->tabNav = [
+            'tab_list' => $tab_list,
+            'current' => $current
+        ];
+        return $this;
+    }
+
+    /**
+     * 加一个表格字段
+     */
+    public function keyListItem($name, $title, $type = null, $param = null,$extra_attr=null) {
+
+        $column = [
+            'name'  => $name,
+            'title' => $title,
+            'type'  => $type,
+            'param' => $param,
+            'extra_attr'=>$extra_attr
+        ];
+        $this->tableColumns[] = $column;
+        return $this;
+    }
+
+    /**
+     * 表格数据列表
+     */
+    public function setListData($table_data_list) {
+        //如果请求方式不是ajax，则直接返回对象
+        if (!IS_AJAX) return $this;
+        $this->tableDataList = $table_data_list;
+        return $this;
+    }
+
+    /**
+     * 表格数据列表的主键名称
+     */
+    public function setListPrimaryKey($table_primary_key = 'id') {
+        $this->tablePrimaryKey = $table_primary_key;
+        return $this;
+    }
+
+    /**
+     * 设置提交请求地址
+     * @param  string $url [description]
+     * @date   2018-09-08
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function setActionUrl($url='')
+    {
+        $this->action_url = !empty($url) ? $url : $this->request->url();
         return $this;
     }
     
@@ -135,7 +211,7 @@ class BuilderList extends Builder {
                 // 预定义按钮属性以简化使用
                 $my_attribute['title'] = '删除';
                 $my_attribute['target-form'] = 'ids';
-                $my_attribute['icon'] = 'fa fa-trash';
+                $my_attribute['icon'] = 'fa fa-remove';
                 $my_attribute['class'] = 'btn btn-danger ajax-table-btn confirm btn-sm';
                 $my_attribute['confirm-info'] = '您确定要执行删除操作吗？';
                 $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status'=>'delete']) :  url(
@@ -179,90 +255,6 @@ class BuilderList extends Builder {
             $this->topButtonList[] = $my_attribute;
         } 
         
-        return $this;
-    }
-
-    /**
-     * 添加筛选功能
-     * @param string $title 标题
-     * @param string $name 键名
-     * @param string $type 类型，默认文本
-     * @param string $des 描述
-     * @param        $attr  标签文本
-     * @param string $arrdb 择筛选项数据来源
-     * @param string $arrvalue 筛选数据（包含ID 和value的数组:array(array('id'=>1,'value'=>'系统'),array('id'=>2,'value'=>'项目'),array('id'=>3,'value'=>'机构'));）
-     * @return $this
-     */
-    // public function addSelect($title = '筛选', $name = 'key', $arrvalue = null)
-    // {
-    //     $this->_select[] = array('title' => $title, 'name' => $name,'arrvalue' => $arrvalue);
-    //     return $this;
-    // }
-
-    /**
-     * 设置搜索参数
-     * @param  string $type 显示类型(base|custom)
-     * @param  [type] $title [description]
-     * @param  string $url [description]
-     * @date   2018-02-06
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public function setSearch($type='basic',$title='请输入关键字', $url='') {
-        if(!$url){
-            $url = url(MODULE_NAME.'/'.CONTROLLER_NAME.'/'.ACTION_NAME);
-        }
-        $this->search = ['type'=>$type,'title' => $title, 'url' => $url];
-        return $this;
-    }
-
-    /**
-     * 设置Tab按钮列表
-     * @param $tab_list Tab列表  array(
-     *                               'title' => '标题',
-     *                               'href' => 'http://www.xxx.cn'
-     *                           )
-     * @param $current 当前tab
-     * @return $this
-     */
-    public function setTabNav($tab_list, $current) {
-        $this->tabNav = [
-            'tab_list' => $tab_list,
-            'current' => $current
-        ];
-        return $this;
-    }
-
-    /**
-     * 加一个表格字段
-     */
-    public function keyListItem($name, $title, $type = null, $param = null,$extra_attr=null) {
-
-        $column = [
-            'name'  => $name,
-            'title' => $title,
-            'type'  => $type,
-            'param' => $param,
-            'extra_attr'=>$extra_attr
-        ];
-        $this->tableColumns[] = $column;
-        return $this;
-    }
-
-    /**
-     * 表格数据列表
-     */
-    public function setListData($table_data_list) {
-        //如果请求方式不是ajax，则直接返回对象
-        if (!IS_AJAX) return $this;
-        $this->tableDataList = $table_data_list;
-        return $this;
-    }
-
-    /**
-     * 表格数据列表的主键名称
-     */
-    public function setListPrimaryKey($table_primary_key = 'id') {
-        $this->tablePrimaryKey = $table_primary_key;
         return $this;
     }
 
@@ -372,7 +364,7 @@ class BuilderList extends Builder {
             case 'delete':
                 // 预定义按钮属性以简化使用
                 $my_attribute['title'] = '删除';
-                $my_attribute['icon'] = 'fa fa-trash';
+                $my_attribute['icon'] = 'fa fa-remove';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-danger btn-xs ajax-get confirm':'ajax-get confirm';
                 $my_attribute['confirm-info'] = '您确定要执行删除操作吗？';
                 $my_attribute['href'] = $this->pluginName ? plugin_url('setStatus',['status'=>'delete','ids' => '__data_id__']) :  url(
@@ -536,11 +528,8 @@ class BuilderList extends Builder {
             }
 
             $template_val = [
-                'meta_title'          => $this->metaTitle,// 页面标题
-                'tips'                => $this->tips,// 页面提示说明
-                'show_box_header'     => 1,//是否显示box_header
                 'top_button_list'     => $this->topButtonList,// 顶部工具栏按钮
-                'action_url'          => $this->request->url(),
+                'action_url'          => !empty($this->action_url) ? $this->action_url:$this->request->url(),
                 'search'              => $this->search,// 搜索配置
                 'tab_nav'             => $this->tabNav,// 页面Tab导航
                 'table_columns'       => $this->tableColumns,// 表格的列
@@ -554,7 +543,7 @@ class BuilderList extends Builder {
             $this->assign($template_val);
             
             $templateFile = APP_PATH.'/common/view/builder/'.$template_name.'.html';
-            parent::fetch($templateFile);
+            return parent::fetch($templateFile);
         }
         
     }

@@ -36,8 +36,7 @@ class Link extends Admin{
         // 获取所有链接
         list($data_list,$total) = $this->linkModel->search('title,url')->getListByPage([],true,'sort,create_time desc');
 
-        return builder('List')
-                ->setMetaTitle('友情链接')  // 设置页面标题
+        $content = builder('List')
                 ->addTopButton('addnew',['model'=>'Links'])    // 添加新增按钮
                 ->addTopButton('resume',['model'=>'Links'])  // 添加启用按钮
                 ->addTopButton('forbid',['model'=>'Links'])  // 添加禁用按钮
@@ -56,6 +55,10 @@ class Link extends Admin{
                 ->addRightButton('edit')     // 添加编辑按钮
                 ->addRightButton('delete',['model'=>'Links'])  // 添加删除按钮
                 ->fetch();
+
+        return Iframe()
+                    ->setMetaTitle('友情链接')  // 设置页面标题
+                    ->content($content);
     }
 
     /**
@@ -81,8 +84,7 @@ class Link extends Admin{
                 $info = LinksModel::get($id);
             }
 
-            return builder('Form')
-                    ->setMetaTitle($title.'链接')  // 设置页面标题
+            $return = builder('Form')
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
                     ->addFormItem('title', 'text', '站点名称', '请输入链接站点名称')
                     ->addFormItem('url', 'text', '链接地址', '请填写带http://的全路径')
@@ -94,6 +96,10 @@ class Link extends Admin{
                     ->setFormData($info)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
+
+            return Iframe()
+                    ->setMetaTitle($title.'链接')  // 设置页面标题
+                    ->content($return);
         }
     }
     
@@ -112,10 +118,14 @@ class Link extends Admin{
             foreach ($list as $key => $val) {
                 $list[$key]['title'] = $val['title'];
             }
-            return $builder->setMetaTitle('配置排序')
+            $content = $builder
                     ->setListData($list)
                     ->addButton('submit')->addButton('back')
                     ->fetch();
+
+            return Iframe()
+                    ->setMetaTitle('配置排序')
+                    ->content($content);
         }
     }
 

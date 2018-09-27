@@ -63,8 +63,7 @@ class Menu extends Admin {
             'target-form' =>'ids'
         ];
 
-        return builder('list')
-            ->setMetaTitle('后台菜单管理')
+        $return = builder('list')
             ->addTopBtn('addnew')  // 添加新增按钮
             ->addTopBtn('resume',['model'=>'auth_rule'])  // 添加启用按钮
             ->addTopBtn('forbid',['model'=>'auth_rule'])  // 添加禁用按钮
@@ -94,6 +93,10 @@ class Menu extends Admin {
                 ['key' => 'pid', 'value' =>'0'],
                 ['p_menu' => '无'])
             ->fetch();
+
+        return Iframe()
+                ->setMetaTitle('后台菜单管理')
+                ->content($return);
     }
 
     /**
@@ -141,8 +144,7 @@ class Menu extends Admin {
 
             $extra_html = logic('Auth')->getFormMenuHtml();//获取表单菜单html
 
-            return builder('form')
-                    ->setMetaTitle($title.'菜单')  // 设置页面标题
+            $content = builder('form')
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
                     ->addFormItem('title', 'text', '标题', '用于后台显示的配置标题')
                     ->addFormItem('pid', 'multilayer_select', '上级菜单', '上级菜单',$menus)
@@ -157,6 +159,10 @@ class Menu extends Admin {
                     ->setExtraHtml($extra_html)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
+                    
+            return Iframe()
+                    ->setMetaTitle($title.'菜单')  // 设置页面标题
+                    ->content($content);
         }   
         
     }
@@ -196,10 +202,14 @@ class Menu extends Admin {
             foreach ($list as $key => $val) {
                 $list[$key]['title'] = $val['title'];
             }
-            $builder->setMetaTitle('配置排序')
+            $content = $builder
                     ->setListData($list)
                     ->addButton('submit')->addButton('back')
                     ->fetch();
+
+            return Iframe()
+                    ->setMetaTitle('菜单排序')  // 设置页面标题
+                    ->content($content);
         }
     }
 

@@ -1,6 +1,7 @@
 <?php 
 use think\Route;
 use app\common\builder\Builder;
+use app\common\layout\Iframe;
 use app\admin\model\Modules as ModulesModel;
 use app\admin\model\Plugins as PluginsModel;
 
@@ -17,6 +18,19 @@ function get_sington_object($object_name = '', $class = null)
     
     return $request->__get($object_name);
 
+}
+
+/**
+ * 获取iframe布局实例
+ * @param  string $type 类型（list|form）
+ * @return [type] [description]
+ * @date   2018-02-02
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function Iframe()
+{
+    $builder = new Iframe();
+    return $builder;
 }
 
 /**

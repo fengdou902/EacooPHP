@@ -53,35 +53,45 @@ class Auth extends Admin {
         
         $pid = input('param.pid',0);
 
-        return builder('list')
-            ->setMetaTitle('规则管理')
-            ->setPageTips('用于管理后台的规则项')
-            ->addTopBtn('addnew',array('href'=>url('edit',['pid'=>$pid])))  // 添加新增按钮
-            ->addTopBtn('resume',array('model'=>'auth_rule'))  // 添加启用按钮
-            ->addTopBtn('forbid',array('model'=>'auth_rule'))  // 添加禁用按钮
-            ->addTopBtn('delete',array('model'=>'auth_rule'))  // 添加删除按钮
-            ->setTabNav(logic('Auth')->getTabList(), $depend_flag)  // 设置页面Tab导航
-            ->addTopBtn('sort',['model'=>'auth_rule','href'=>url('Sort',['pid'=>$pid])])  // 添加排序按钮
-            //->setSearch('', url('rule'))
-            ->keyListItem('id','ID')
-            ->keyListItem('title','名称')
-            ->keyListItem('p_menu','上级菜单')
-            ->keyListItem('name', 'URL')
-            ->keyListItem('depend_flag', '来源标识')
-            ->keyListItem('sort', '排序')
-            ->keyListItem('is_menu','菜单','array',[0=>'否',1=>'是'])
-            ->keyListItem('status','状态','status')
-            ->keyListItem('right_button', '操作', 'btn')
-            ->setListPrimaryKey('id')
-            ->setListData($data_list)    // 数据列表
-            ->setListPage($total,20) // 数据列表分页
-            ->setExtraHtml(logic('Auth')->moveMenuHtml())//添加移动按钮html
-            ->addRightButton('edit')      // 添加编辑按钮
-            ->addRightButton('forbid',['model'=>'auth_rule'])// 添加启用禁用按钮
-            ->alterListData(
-                array('key' => 'pid', 'value' =>'0'),
-                array('p_menu' => '无'))
-            ->fetch();
+        $return = builder('list')
+                ->setPageTips('用于管理后台的规则项')
+                ->addTopBtn('addnew',array('href'=>url('edit',['pid'=>$pid])))  // 添加新增按钮
+                ->addTopBtn('resume',array('model'=>'auth_rule'))  // 添加启用按钮
+                ->addTopBtn('forbid',array('model'=>'auth_rule'))  // 添加禁用按钮
+                ->addTopBtn('delete',array('model'=>'auth_rule'))  // 添加删除按钮
+                ->setTabNav(logic('Auth')->getTabList(), $depend_flag)  // 设置页面Tab导航
+                ->addTopBtn('sort',['model'=>'auth_rule','href'=>url('Sort',['pid'=>$pid])])  // 添加排序按钮
+                //->setSearch('', url('rule'))
+                ->keyListItem('id','ID')
+                ->keyListItem('title','名称')
+                ->keyListItem('p_menu','上级菜单')
+                ->keyListItem('name', 'URL')
+                ->keyListItem('depend_flag', '来源标识')
+                ->keyListItem('sort', '排序')
+                ->keyListItem('is_menu','菜单','array',[0=>'否',1=>'是'])
+                ->keyListItem('status','状态','status')
+                ->keyListItem('right_button', '操作', 'btn')
+                ->setListPrimaryKey('id')
+                ->setListData($data_list)    // 数据列表
+                ->setListPage($total,20) // 数据列表分页
+                ->setExtraHtml(logic('Auth')->moveMenuHtml())//添加移动按钮html
+                ->addRightButton('edit')      // 添加编辑按钮
+                ->addRightButton('forbid',['model'=>'auth_rule'])// 添加启用禁用按钮
+                ->alterListData(
+                    array('key' => 'pid', 'value' =>'0'),
+                    array('p_menu' => '无'))
+                ->fetch();
+
+        $searchFields = [
+            ['name'=>'is_menu','type'=>'select','title'=>'是否菜单','options'=>[0=>'否',1=>'是']],
+            ['name'=>'status','type'=>'select','title'=>'状态','options'=>[1=>'正常',2=>'待审核']],
+            ['name'=>'depend_flag','type'=>'text','extra_attr'=>'placeholder="请输入来源标识"'],
+            ['name'=>'keyword','type'=>'text','extra_attr'=>'placeholder="请输入查询关键字"'],
+        ];
+        return Iframe()
+                ->setMetaTitle('规则管理')  // 设置页面标题
+                ->search($searchFields)
+                ->content($return);
     }
 
     /**
@@ -269,11 +279,10 @@ class Auth extends Admin {
     public function role(){
         // 获取所有角色
         list($data_list,$total) = $this->authGroupModel
-            ->search() //添加搜索框
-            ->getListByPage([],true,'id asc');
+                                    ->search() //添加搜索框
+                                    ->getListByPage([],true,'id asc');
 
-        return builder('List')   
-                ->setMetaTitle('角色管理') // 设置页面标题
+        $return = builder('List')
                 ->setPageTips('角色组也是用户组，是对用户划分权限组，可以对用户组进行授权，也可以添加用户到用户组')
                 ->addTopButton('addnew',array('href'=>url('roleEdit')))  // 添加新增按钮
                 ->addTopButton('resume',['model'=>'AuthGroup'])  // 添加启用按钮
@@ -291,6 +300,10 @@ class Auth extends Admin {
                 ->addRightButton('self',['title'=>'权限分配','href'=>url('access',['group_id'=>'__data_id__']),'class'=>'btn btn-info btn-xs'])  
                 ->addRightButton('self',array('title'=>'成员授权','href'=>url('accessUser',array('group_id'=>'__data_id__'))))    
                 ->fetch();
+
+        return Iframe()
+                ->setMetaTitle('角色管理') // 设置页面标题
+                ->content($return);
     }
     
     //角色编辑

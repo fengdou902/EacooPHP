@@ -1,142 +1,130 @@
 {extend name="$_admin_public_base_"/}
-  {block name="style"}
-    <link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
-    <link href="__LIBS__/daterangepicker/daterangepicker-bs3.css" type="text/css" rel="stylesheet">
-    <style type="text/css">
-    #more-method{display: none;}
-    .meta-ext{background-color: #55CCFF;color:#fff;font-size: 12px;font-weight:500;padding:0px 8px 2px;float: right;border-radius: 2px;}
-    .attachment-foot .file-name{white-space:nowrap;width:63%;padding-left: 3px;}
-    .attachment_meta_id{position: absolute;left:15px;bottom: 33px;font-size: 12px;color: #fff;}
-    </style>
-  {/block}
-    {block name="main-top"}
-        
-    {/block}
+{block name="style"}
+<link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<link href="__LIBS__/daterangepicker/daterangepicker-bs3.css" type="text/css" rel="stylesheet">
+<style type="text/css">
+.meta-ext{background-color: #55CCFF;color:#fff;font-size: 12px;font-weight:500;padding:0px 8px 2px;float: right;border-radius: 2px;}
+.attachment-foot .file-name{white-space:nowrap;width:63%;padding-left: 3px;}
+.attachment_meta_id{position: absolute;left:15px;bottom: 33px;font-size: 12px;color: #fff;}
+</style>
+{/block}
 
-  {block name="main"}
+{block name="main"}
+<form class="form" id="search-form" method="get" action="{:url('admin/attachment/index')}">
+    {include file="$search_template_path" /}
+</form>
+<section class="content pt-5">
+<div class="box box-solid eacoo-box">
+{notempty name="tab_nav"}
+    <div class="box-body pb-0">
+        <div class="eacoo-tabs">
+            <div class="">
+                <ul class="nav nav-tabs">
+                    {volist name="tab_nav.tab_list" id="tab"}
+                        <li class="{php}if($tab_nav['current'] == $key) echo 'active';{/php}"><a href="{$tab.href}" {$tab.extra_attr|default=''}>{$tab.title}</a></li>
+                    {/volist}
+                </ul>
+            </div>
+        </div>
+    </div>
+{/notempty}
+<div class="box-body">
   <div class="attachment-wrap">
       
     <!--此页面主体内容-->
     <div class="row mt-10">
         
-      <div class="col-xs-9 col-sm-9 button-list clearfix">   
-         <div class="col-xs-3 col-sm-3 form-group pr-0">
-             <span id="web_uploader_wrapper_attachmentIndex" class="btn btn-info btn-raised btn-sm">
-                 <i class="fa fa-cloud-upload"></i> 上传图片
-             </span>
-             <span id="web_uploader_wrapper_attachmentFile" class="btn btn-info btn-raised btn-sm">
-                 <i class="fa fa-cloud-upload"></i> 上传文件
-             </span>
-         &nbsp;&nbsp;<span class="btn btn-default btn-sm" id="media_batch">批量操作</span></div>
-           <div class="col-xs-9 col-sm-9">
-           <form id="selectForm" method="get" action="{:url('index')}" class="form-choice-url-param form-horizontal">
-              <div class="form-group">
-              <label for="media_type" class="fl control-label">类型:</label>
-              <div class="col-md-2 pl-5 pr-5">                                                
-                <select name="media_type" class="form-control">
-                  <option value="0">选择类型</option>
-                  {php}$media_type = input('get.media_type');{/php}
-                  {volist name="mediaTypeList" id="mediaType"}
-                      <option value="{$key}" {eq name="key" value="$media_type"}selected{/eq}>{$mediaType}</option>
-                  {/volist}
-                </select>
-                </div>
-
-                <div class="col-md-4 pl-0 pr-5 has-feedback">
-                  <input id="choice_date_range" class="form-control pr30" type="text" value="{$choice_date_range|default=''}" placeholder="选择日期" name="choice_date_range">
-                 <span class="fa fa-calendar form-control-feedback" style="right:5px;"></span>
-                </div>
-
-                <label for="term_id"  class="fl control-label">分类:</label>
-                <div class="col-md-3">
-                  <select name="term_id" class="form-control">
-                    <option value="0">全部分类</option>
-                    {php}$term_id = input('get.term_id');{/php}
-                    {volist name="media_cats" id="media_cat"}
-                        <option value="{$media_cat.term_id}" {eq name="media_cat.term_id" value="$term_id"}selected{/eq}>{$media_cat.name}</option>
-                    {/volist}
-                  </select>
-                </div>
-               <span class="btn btn-info btn-sm" id="choiceForm">筛选</span>
-               
+        <div class="col-xs-12 col-sm-12 button-list clearfix">   
+             <div class="col-xs-4 col-sm-4 form-group pr-0 pl-0">
+                 <span id="web_uploader_wrapper_attachmentIndex" class="btn btn-info btn-raised btn-sm">
+                     <i class="fa fa-cloud-upload"></i> 上传图片
+                 </span>
+                 <span id="web_uploader_wrapper_attachmentFile" class="btn btn-info btn-raised btn-sm">
+                     <i class="fa fa-cloud-upload"></i> 上传文件
+                 </span>
+                 
             </div>
-            </form>
-            </div>
-         </div>
-          <!--搜索-->
-          <div class="col-xs-3 col-sm-3 clearfix">
-              <form class="form" method="get" action="{:url('admin/attachment/index')}">
-                  <div class="form-group">
-                      <div class="input-group search-form">
-                          <input type="text" name="keyword" class="search-input form-control" value="{$_GET.keyword|default=""}" placeholder="请输入名称">
-                          <span class="input-group-btn"><button type="button" class="btn btn-default search-btn"><i class="fa fa-search"></i></button></span>
-                      </div>
-                  </div>
-              </form>
-          </div>
-          <!--高级工具-->
-          <div class="col-xs-10 col-sm-10 mb-15 ml-15" id="more-method">
-             <label class="checkbox-toggle color-6 mr-10"><input class="check-all" type="checkbox"> 全选</label><a target-form="ids" class="btn btn-info btn-sm" onclick="move()"><i class="fa fa-exchange"></i> 修改分类</a>&nbsp;<a title="批量删除" target-form="ids" class="btn btn-danger ajax-post confirm btn-sm" model="attachment" href="{:url('attachment/setStatus',['status'=>'delete','model'=>'attachment'])}">批量删除</a>&nbsp;
-          </div>
+            <!--高级工具-->
+              <div class="col-xs-4 col-sm-4 mb-15 ml-15 text-right pull-right" id="more-method">
+                <label class="checkbox-toggle color-6 mr-10"><input class="check-all" type="checkbox"> 全选</label>
+                 <a target-form="ids" class="btn btn-primary btn-sm" onclick="move()"><i class="fa fa-exchange"></i> 修改分类</a>&nbsp;<a title="批量删除" target-form="ids" class="btn btn-danger ajax-post confirm btn-sm" model="attachment" href="{:url('attachment/setStatus',['status'=>'delete','model'=>'attachment'])}">批量删除</a>&nbsp;
+              </div>
+        </div>
+
     </div>
-      <hr/>
-      {notempty name="attachment_list_data"}
-    <div class="row mt-20 ml0 mr0">
-    <ul class="attachment_list">
-       {volist name="attachment_list_data" id="row"}
-         <li class="col-sm-6 col-md-2 col-lg-2 mb-20" data-id="{$row.id}" >
-            <div class="box-style">
-              <div class="thumbnail">   
-                <div class="centered tc">     
-                    <img src="{$row.thumb_src}" alt="" >
-                    <span class="attachment_meta_id fl">[{$row.id}]</span>
-                </div>
-              </div>
-              <div class="attachment-foot">
-                 <span><input type="checkbox" class="ids" name="ids[]" value="{$row.id}"></span><span class="disline oh f13 color-5 file-name">{$row.name}</span><span class="meta-ext">{$row.ext}</span>
-              </div>
-            </div>
-          </li>
-      {/volist}
-      </ul>      
-  </div>
-  {else/}
-  <p class="text-center">暂无结果</p>
-  {/notempty}
-  <div class="tc">{$table_data_page}</div>
+    <hr/>
+    <div class="row mt-20 ml0 mr0" id="attachment-content">
+             
+    </div>
   <!-- Modal Structure -->
-
+    </div>
 </div>
-<div class="modal fade mt100" id="moveModal">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-                <p class="modal-title">移动至</p>
-            </div>
-            <div class="modal-body">
-                <form action="{:url('moveCategory')}" method="post" class="form-move">
-                    <div class="form-group">
-                        <select name="to_cid" class="form-control">
-                          {php}$input_media_cat = input('get.media_cat');{/php}
-                          {volist name="media_cats" id="media_cat"}
-                            <option value="{$media_cat.term_id}" {eq name="media_cat.term_id" value="$input_media_cat"}selected{/eq}>{$media_cat.name}</option>
-                          {/volist}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <input type="hidden" name="ids">
-                        <input type="hidden" name="from_cid" value="{$cid|default='0'}">
-                        <button class="btn btn-primary btn-block submit ajax-post" type="submit" target-form="form-move">确 定</button>
-                    </div>
-                </form>
+    <div class="modal fade mt100" id="moveModal">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+                    <p class="modal-title">移动至</p>
+                </div>
+                <div class="modal-body">
+                    <form action="{:url('moveCategory')}" method="post" class="form-move">
+                        <div class="form-group">
+                            <select name="to_cid" class="form-control">
+                              {php}$input_media_cat = input('get.media_cat');{/php}
+                              {volist name="media_cats" id="media_cat"}
+                                <option value="{$media_cat.term_id}" {eq name="media_cat.term_id" value="$input_media_cat"}selected{/eq}>{$media_cat.name}</option>
+                              {/volist}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="ids">
+                            <input type="hidden" name="from_cid" value="{$cid|default='0'}">
+                            <button class="btn btn-primary btn-block submit ajax-post" type="submit" target-form="form-move">确 定</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+</section>
+
+<script id="attachment_tpl" type="text/html">
+    <ul class="attachment_list" >
+  <% for (var i = 0; i < data.length; i ++) { %>
+   <% var row = data[i]; %>
+   <li class="col-sm-6 col-md-2 col-lg-2 mb-20" data-id="{{@row.id}}" >
+    <div class="box-style">
+      <div class="thumbnail">   
+        <div class="centered tc">     
+            <img src="{{@row.thumb_src}}" alt="" >
+            <span class="attachment_meta_id fl">[{{@row.id}}]</span>
+        </div>
+      </div>
+      <div class="attachment-foot">
+         <span><input type="checkbox" class="ids" name="ids[]" value="{{@row.id}}"></span><span class="disline oh f13 color-5 file-name">{{@row.name}}</span><span class="meta-ext">{{@row.ext}}</span>
+      </div>
+    </div>
+  </li>
+  <% } %>
+  <% if(data.length==0){ %>
+    <div class="tc no-found">
+      <p class="text-center">暂无结果</p>
+    </div>
+  <% } %>
+  </ul> 
+    <% if(page_content){ %>
+    <div class="attachment-page-warp tc">
+        <ul class="pagination">
+            {{@page_content}}
+        </ul>
+    </div>
+    <% } %>
+</script>
 {/block}
 
 {block name="script"}
+<script type="text/javascript" src="__LIBS__/artTemplate/template.js"></script>
 <script type="text/javascript" src="__LIBS__/daterangepicker/moment.min.js"></script>
 <script type="text/javascript" src="__LIBS__/daterangepicker/daterangepicker.js"></script>
 
@@ -287,27 +275,19 @@
         });
 
         //模态框内容
-        $(".attachment_list li").click(function () {
+        $('body').on('click', '.attachment_list li', function(e){
             var $this = $(this);
             var attachmentId = $this.attr('data-id');
             showAttachmentInfo(attachmentId);//显示附件信息
           })
 
-          //筛选应用触发表单提交
-        $('#choiceForm').click(function(){
-            $('#selectForm').submit();
-        }); 
-        //批量操作
-        $('#media_batch').click(function(){
-            $('#more-method').toggle();
-        }); 
-
         //筛选
-      $(document).on('submit', '.form-choice-url-param', function(e){
+        $('body').on('click', '#search', function(e){
             //e.preventDefault();
             var seperator = "&";
-            var form      = $(this).serialize();
-            var action    = $(this).attr('action');
+            var form =$("#search-form");
+            var form_data = form.serializeObject();
+            var action    = form.attr('action');
             if(action == ''){
                 action = location.href;
             }
@@ -315,17 +295,15 @@
             if (EacooPHP.url_model==2) {
                 sep_prefix = '&';
             }
-            var new_location = action+sep_prefix + seperator + form;
-            location.href = new_location;
-
+            loadAttachment(form_data)
             return false;
         });
 
         //icheck
         $('input').iCheck({
-              checkboxClass:'icheckbox_minimal-blue',
-              radioClass:'iradio_minimal-blue',
-              increaseArea:'20%' // optional
+            checkboxClass:'icheckbox_minimal-blue',
+            radioClass:'iradio_minimal-blue',
+            increaseArea:'20%' // optional
         });
         $(".checkbox-toggle,.check-all").click(function () {
               var clicks = $(this).data('clicks');
@@ -341,13 +319,30 @@
               $(this).data("clicks", !clicks);
         });
         $(".checkbox-toggle .iCheck-helper").click(function () {
-              var all_checked=$('.checkbox-toggle>div.icheckbox_minimal-blue').hasClass('checked');
-              if (!all_checked) {
-                $("input[type='checkbox']").iCheck("uncheck");
-              } else{
-                $("input[type='checkbox']").iCheck("check");
-              }
-          });
+            var all_checked=$('.checkbox-toggle>div.icheckbox_minimal-blue').hasClass('checked');
+            if (!all_checked) {
+              $("input[type='checkbox']").iCheck("uncheck");
+            } else{
+               $("input[type='checkbox']").iCheck("check");
+            }
+        });
+
+        /**
+         * 分页
+         * @param  {[type]} ) {    } [description]
+         * @return {[type]} [description]
+         * @date   2018-09-27
+         */
+        $(document).on('click','.attachment-page-warp ul li a', function(event) {
+            event.preventDefault();
+            var $this = $(this);
+            //切换Tab
+            $(".attachment-page-warp ul li").removeClass('active');
+            $this.parent().addClass('active');
+            var paged = $this.data('paged');
+            loadAttachment({paged:paged});
+        })
+
     });   
     
     /**
@@ -397,6 +392,45 @@
               updateAlert('请选择需要移动的附件', 'warning');
           }
       }
-  </script>
 
-  {/block}
+/**
+ * 加载附件列表
+ * @param  {[type]} action_url 请求地址
+ * @return {[type]} [description]
+ * @date   2018-03-09
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function loadAttachment(params) {
+    var defaults = {
+        action_url: url('admin/attachment/index'),
+        paged: 1,
+    };
+    params = $.extend(defaults, params);
+    var action_url = params.action_url;
+    $.get(action_url, params, function (result) {
+        console.log(result);
+        var attachment_list = template('attachment_tpl', result);
+        $('#attachment-content').html(attachment_list);
+    })
+}
+
+loadAttachment();
+
+$.fn.serializeObject = function() {
+    var o = {};
+    var a = this.serializeArray();      
+    $.each(a, function() {          
+        if (o[this.name]) {             
+            if (!o[this.name].push) {                   
+                o[this.name] = [ o[this.name] ];                
+            }               
+            o[this.name].push(this.value || '');            
+        } else {                
+            o[this.name] = this.value || '';            
+        }       
+    });     
+    return o;   
+}
+</script>
+
+{/block}

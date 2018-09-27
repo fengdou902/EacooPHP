@@ -1,11 +1,5 @@
+<input type="text" class="form-control" id="tokeninput_{$field.name}" name="{$field.name}" value="{$field.value|default=''}" {$field.extra_attr|default=''}>
 
-<div class="form-group item_{$field.name} {$field.extra_class|default=''}">
-    <label for="{$field.name}" class="col-md-2 control-label">{$field.title|htmlspecialchars}</label>
-    <div class="col-md-4">
-        <input type="text" class="form-control" id="tokeninput_{$field.name}" name="{$field.name}" value="{$field.value|default=''}" {$field.extra_attr|default=''}>
-    </div>
-    {notempty name="field.description"}<div class="col-md-5 help-block"><i class="fa fa-info-circle color-info1"></i> {$field.description}</div>{/notempty}
-</div>
 <link rel="stylesheet" type="text/css" href="__LIBS__/tokeninput/css/token-input.css">
 <link rel="stylesheet" type="text/css" href="__LIBS__/tokeninput/css/token-input-bootstrap.css">
 <script type="text/javascript" src="__LIBS__/tokeninput/js/jquery.tokeninput.min.js" charset="utf-8"></script>

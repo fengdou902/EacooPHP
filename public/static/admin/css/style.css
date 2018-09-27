@@ -51,6 +51,7 @@ skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar 
 /*.main-header .navbar .nav>li>a,.main-header .logo{font-weight: 500;}*/
 .main-header .logo{/*font-size: 16px;*/}
 .logo .logo-img{width: 80%;margin-top: -3px;}
+
 /*box*/
 .box{box-shadow:none;}
 .eacoo-box .box-header{background: #e3e8eb;}
@@ -88,6 +89,8 @@ skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar 
 .table>thead>tr>th{font-size: bold;color: #333;}
 
 .fixed-table-container{border:none!important;}
+
+.fixed-table-toolbar{overflow: hidden;margin-top: 10px;}
 /*表单form*/
 label.radio-label1,label.checkbox-label1{padding-left: 0;}
 .help-block{font-size: 13px;line-height: 24px;color: #888;padding-left: 0;}
@@ -107,6 +110,8 @@ label.radio-label1,label.checkbox-label1{padding-left: 0;}
 .sidebar-menu>li>.treeview-menu{padding: 10px 5px;}
 
 /* 内容区 */
+.row-content{padding: 15px;padding-bottom:5px;margin-right: auto;margin-left: auto;padding-left: 15px;padding-right: 15px;}
+.row-content .box{margin-bottom: 0;}
 
 /*上传图片组件*/
 .upload-img-box .each img { max-height: 145px;}

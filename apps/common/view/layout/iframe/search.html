@@ -1,0 +1,24 @@
+<section class="row-content pt-5" >
+    <div class="box box-default">
+      <div class="box-header with-border">
+        <h3 class="box-title">高级查询</h3>
+        <div class="box-tools pull-right">
+          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+          </button>
+        </div>
+        <!-- /.box-tools -->
+      </div>
+       <div class="box-body" id="eacoo-toolbar">
+        <div class="form-inline" role="form">
+            {volist name="searchFields" id="field" key="k"}
+                <div class="form-group">
+                    {:action('common/BuilderForm/fieldType',['field'=>$field],'builder')}
+                </div>
+            {/volist}
+            <button type="button" class="btn btn-success" id="search">查询</button>
+        </div>
+
+       </div>
+             
+    </div>
+</section> 

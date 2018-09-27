@@ -10,6 +10,7 @@
 // +----------------------------------------------------------------------
 namespace app\user\admin;
 use app\admin\controller\Admin;
+use app\common\layout\Iframe;
 use app\common\model\User as UserModel;
 
 class User extends Admin {
@@ -28,9 +29,33 @@ class User extends Admin {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function index(){
+        
+        $searchFields = [
+            ['name'=>'status','type'=>'select','title'=>'状态','options'=>[1=>'正常',2=>'待审核']],
+            ['name'=>'sex','type'=>'select','title'=>'性别','options'=>[0=>'未知',1=>'男',2=>'女']],
+            ['name'=>'allow_admin','type'=>'select','options'=>['none'=>'是否允许访问后台',1=>'允许',0=>'不允许']],
+            ['name'=>'reg_time','type'=>'date','extra_attr'=>'placeholder="注册时间"'],
+            ['name'=>'keyword','type'=>'text','extra_attr'=>'placeholder="请输入查询关键字"'],
+        ];
+
+        return (new Iframe())
+                ->setMetaTitle('用户列表')
+                ->search($searchFields)
+                ->content($this->grid());
+    }
+
+    /**
+     * Make a grid builder.
+     * @return [type] [description]
+     * @date   2018-09-08
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function grid()
+    {
         // 获取所有用户
         $condition['status'] = ['egt', '0']; // 禁用和正常状态
         list($data_list,$total) = $this->userModel->search('uid|username|nickname|email')->getListByPage($condition,true,'reg_time desc','',true);
+
         $reset_password = [
             'icon'         => 'fa fa-recycle',
             'title'        => '重置原始密码',
@@ -47,6 +72,7 @@ class User extends Admin {
                 ->addTopButton('delete')  // 添加删除按钮
                 ->addTopButton('self',$reset_password)  // 添加重置按钮
                 //->setSearch('custom','请输入ID/用户名/昵称')
+                ->setActionUrl(url('grid')) //设置请求地址
                 ->keyListItem('uid', 'UID')
                 ->keyListItem('avatar', '头像', 'avatar')
                 ->keyListItem('nickname', '昵称')
@@ -72,60 +98,39 @@ class User extends Admin {
     public function edit($uid = 0) {
         $title = $uid ? "编辑" : "新增";
         if (IS_POST) {
-            $data = input('param.');
-            // 密码为空表示不修改密码
-            if ($data['password'] === '') {
-                $data['password']=123456;
-            }
-            $uid  = isset($data['uid']) && $data['uid']>0 ? intval($data['uid']) : false;
-            if ($uid>0) {
-                $this->validateData($data,'User.edit');
-            } else{
-                $this->validateData($data,'User.add');
-            }
-            
-            
-            // 提交数据
-            //$data里包含主键id，则editData就会更新数据，否则是新增数据
-            $result = $this->userModel->editData($data);
-
-            if ($result) {
-                
-                if ($uid==is_login()) {//如果是编辑状态下
-                    logic('common/User')->updateLoginSession($uid);
-                }
-                $this->success($title.'成功', url('index'));
-            } else {
-                $this->error($this->userModel->getError());
-            }
             
         } else {
-            $info=['sex'=>0,'allow_admin'=>1,'sex'=>0,'status'=>1];
+            $info = [
+                'sex'=>0,
+                'allow_admin'=>1,
+                'sex'=>0,
+                'status'=>1
+            ];
             // 获取账号信息
-            if ($uid!=0) {
+            if ($uid>0) {
                 $info = $this->userModel->get($uid);
                 unset($info['password']);
             }
+            $builder = builder('Form')
+                        ->addFormItem('uid', 'hidden', 'UID', '')
+                        ->addFormItem('nickname', 'text', '昵称', '填写一个有个性的昵称吧','','require')
+                        ->addFormItem('username', 'text', '用户名', '登录账户所用名称','','require')
+                        ->addFormItem('password', 'password', '密码', '新增默认密码123456','','placeholder="留空则不修改密码"')
+                        ->addFormItem('email', 'email', '邮箱', '','','data-rule="email" data-tip="请填写一个邮箱地址"')
+                        ->addFormItem('mobile', 'left_icon_number', '手机号', '',['icon'=>'<i class="fa fa-phone"></i>'],'placeholder="填写手机号"')
+                        ->addFormItem('sex', 'radio', '性别', '',[0=>'保密',1=>'男',2=>'女'])
+                        ->addFormItem('allow_admin', 'select', '是否允许访问后台', '',[0=>'不允许',1=>'允许'])
+                        ->addFormItem('description', 'textarea', '个人说明', '请填写个人说明')
+                        ->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'正常',2=>'待验证'])
+                        ->setFormData($info)//->setAjaxSubmit(false)
+                        ->addButton('submit')
+                        ->addButton('back')    // 设置表单按钮
+                        ->fetch();
 
-            $builder = builder('Form');
-            $builder->setMetaTitle($title.'用户')  // 设置页面标题
-                    ->addFormItem('uid', 'hidden', 'UID', '')
-                    ->addFormItem('nickname', 'text', '昵称', '填写一个有个性的昵称吧','','require')
-                    ->addFormItem('username', 'text', '用户名', '登录账户所用名称','','require')
-                    ->addFormItem('password', 'password', '密码', '新增默认密码123456','','placeholder="留空则不修改密码"')
-                    ->addFormItem('email', 'email', '邮箱', '','','data-rule="email" data-tip="请填写一个邮箱地址"')
-                    ->addFormItem('mobile', 'left_icon_number', '手机号', '',['icon'=>'<i class="fa fa-phone"></i>'],'placeholder="填写手机号"')
-                    ->addFormItem('sex', 'radio', '性别', '',[0=>'保密',1=>'男',2=>'女'])
-                    ->addFormItem('allow_admin', 'select', '是否允许访问后台', '',[0=>'不允许',1=>'允许'])
-                    ->addFormItem('description', 'textarea', '个人说明', '请填写个人说明');
-            if ($uid>0) {
-                $builder->addFormItem('avatar', 'avatar', '头像', '用户头像默认随机分配',['uid'=>$info['uid']],'require');
-            }
-            return $builder
-                    ->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'正常',2=>'待验证'])
-                    ->setFormData($info)//->setAjaxSubmit(false)
-                    ->addButton('submit')->addButton('back')    // 设置表单按钮
-                    ->fetch();
+            return (new Iframe())
+                    ->setMetaTitle($title.'用户')
+                    ->content($builder);
+
         }
     }
     
@@ -222,8 +227,7 @@ class User extends Admin {
             // 获取账号信息
             $info = $this->userModel->get(is_login());
 
-            return builder('form')
-                    ->setMetaTitle('重置密码') // 设置页面标题
+            $content = builder('form')
                     ->addFormItem('uid', 'hidden', 'UID', '')
                     //->addFormItem('oldpassword', 'password', '原密码', '','','','placeholder="填写旧密码"')
                     ->addFormItem('newpassword', 'password', '新密码', '','','placeholder="填写新密码"')
@@ -232,6 +236,10 @@ class User extends Admin {
                     //->setAjaxSubmit(false)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
+
+            return (new Iframe())
+                    ->setMetaTitle('重置密码') // 设置页面标题
+                    ->content($content);
         }
     }
 

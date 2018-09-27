@@ -16,8 +16,6 @@ namespace app\common\builder;
  */
 class BuilderForm extends Builder
 {
-    private $metaTitle;    // 页面标题
-    private $tips;         // 页面子标题
     private $tabNav     = [];     // 页面Tab导航
     private $groupTabNav=[]; //页面Tab分组
     private $postUrl;              // 表单提交地址
@@ -27,26 +25,6 @@ class BuilderForm extends Builder
     private $formData   = [];   // 表单数据
     private $extraHtml;            // 额外功能代码
     private $ajaxSubmit = true;    // 是否ajax提交
-
-    /**
-     * 设置页面标题
-     * @param $title 标题文本
-     * @return $this    
-     */
-    public function setMetaTitle($meta_title) {
-        $this->metaTitle = $meta_title;
-        return $this;
-    }
-
-    /**
-     * 设置页面说明
-     * @param $title 标题文本
-     * @return $this
-     */
-    public function setPageTips($content, $type='info') {
-        $this->tips = $content;
-        return $this;
-    }
 
     /**
      * 设置Tab按钮列表
@@ -167,7 +145,7 @@ class BuilderForm extends Builder
                     $title ='确定';
                 }
                 
-                $ajax_submit='';
+                $ajax_submit = '';
                 if ($this->ajaxSubmit==true) {
                     $ajax_submit='ajax-post';
                 }
@@ -271,15 +249,13 @@ class BuilderForm extends Builder
         if (empty($this->buttonList)) {
             $this->addButton('submit')->addButton('back');
         }
+
         //编译按钮的html属性
         foreach ($this->buttonList as &$button) {
             $button['attr'] = $this->compileHtmlAttr($button['attr']);
         }
 
         $template_val = [
-            'meta_title'      => $this->metaTitle,//页面标题
-            'show_box_header' => 1,//是否显示box_header
-            'tips'            => $this->tips,//页面提示说明
             'tab_nav'         => $this->tabNav,// 页面Tab导航
             'grouptabNav'     => $this->groupTabNav,//页面Tab分组
             'post_url'        => $this->postUrl,//表单提交地址
@@ -290,7 +266,7 @@ class BuilderForm extends Builder
         $this->assign($template_val);
 
         $templateFile = APP_PATH.'/common/view/builder/'.$template_name.'.html';
-        parent::fetch($templateFile);
+        return parent::fetch($templateFile);
     }
 
     /**
@@ -300,7 +276,7 @@ class BuilderForm extends Builder
      * @date   2017-10-20
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function fieldType($field=[])
+    public function fieldType($field = [])
     {
         if (!is_array($field)) {
             $field = $field->toArray();
@@ -316,10 +292,9 @@ class BuilderForm extends Builder
         $field_type = $field['type'];
         if (in_array($field_type, $fields_name)) {//为了兼容库中，要做校验
             $field_template = $template_path_str.'apps/common/view/builder/Fields/'.$field_type.'.html';
-            parent::fetch($field_template);
+            return parent::fetch($field_template);
         } else{
             hook('FormBuilderExtend', ['field' => $field]);
-        }
-        
+        }  
     }
 }

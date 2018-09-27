@@ -83,7 +83,7 @@ artTemplate(JS模版引擎),artDialog(弹窗),datetimepicker(日期),echarts(图
 官网：[https://www.eacoophp.com](https://www.eacoophp.com)
 QQ群: 436491685
 ### 演示地址
-[https://demo1.eacoophp.com/admin](https://demo1.eacoophp.com/admin)  
+[http://demo1.eacoophp.com/admin](http://demo1.eacoophp.com/admin)  
 账号：admin  
 密码：123456 
 

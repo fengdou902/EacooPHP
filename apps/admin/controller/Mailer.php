@@ -100,8 +100,7 @@ class Mailer extends Admin{
             
             $info['template_content'] = $template_content;
 
-            return builder('Form')
-                    ->setMetaTitle('邮箱模板')  // 设置页面标题
+            $return = builder('Form')
             		->setTabNav($this->tabList, $template_type)  // 设置Tab按钮列表
                     ->addFormItem('active', 'radio', '邮箱激活', '',[1=>'开启',0=>'关闭'])
                     ->addFormItem('subject', 'text', '邮件主题', '')
@@ -110,6 +109,10 @@ class Mailer extends Admin{
                     ->setFormData($info)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
+
+            return Iframe()
+                    ->setMetaTitle('邮箱模板')  // 设置页面标题
+                    ->content($return);
         }
     }
 

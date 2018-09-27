@@ -37,8 +37,8 @@ class Navigation extends Admin {
             'onclick' =>'move_menu_position()'
         ];
         $total = $this->navModel->count();
-        return builder('List')
-                ->setMetaTitle('前台导航管理')
+
+        $content = builder('List')
                 ->addTopBtn('addnew')  // 添加新增按钮
                 ->addTopBtn('resume',['model'=>'Nav'])  // 添加启用按钮
                 ->addTopBtn('forbid',['model'=>'Nav'])  // 添加禁用按钮
@@ -62,6 +62,10 @@ class Navigation extends Admin {
                 ->setExtraHtml(logic('Navigation')->moveMenuHtml())//添加移动按钮html
                 ->addRightButton('edit')      // 添加编辑按钮
                 ->fetch();
+
+        return Iframe()
+                ->setMetaTitle('前台导航管理')  // 设置页面标题
+                ->content($content);
     }
 
     /**
@@ -110,8 +114,7 @@ class Navigation extends Admin {
                 $menus = $tree_obj->toFormatTree($menus,'title');
             }
             $menus = array_merge([0=>['id'=>0,'title_show'=>'顶级菜单']], $menus);
-            return builder('Form')
-                    ->setMetaTitle($title.'导航菜单')  // 设置页面标题
+            $content = builder('Form')
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
                     ->addFormItem('title', 'text', '标题', '用于前台显示的导航标题')
                     ->addFormItem('pid', 'multilayer_select', '上级菜单', '上级菜单',$menus)
@@ -126,6 +129,10 @@ class Navigation extends Admin {
                     ->setFormData($info)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
+
+            return Iframe()
+                    ->setMetaTitle($title.'导航菜单')  // 设置页面标题
+                    ->content($content);
         }   
         
     }
@@ -176,11 +183,15 @@ class Navigation extends Admin {
             foreach ($list as $key => $val) {
                 $list[$key]['title'] = $val['title'];
             }
-            return $builder->setMetaTitle('配置排序')
+            $content = $builder
                     ->setListData($list)
                     ->addButton('submit')
                     ->addButton('back')
                     ->fetch();
+
+            return Iframe()
+                    ->setMetaTitle('导航排序')  // 设置页面标题
+                    ->content($content);
         }
     }
 }

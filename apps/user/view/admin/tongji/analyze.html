@@ -1,64 +1,70 @@
-  {extend name="../apps/admin/view/public/base.html"/}
-  {block name="style"}
-  <link href="__LIBS__/daterangepicker/daterangepicker-bs3.css" type="text/css" rel="stylesheet">
-  {/block}
+{extend name="../apps/admin/view/public/base.html"/}
+{block name="style"}
+<link href="__LIBS__/daterangepicker/daterangepicker-bs3.css" type="text/css" rel="stylesheet">
+{/block}
 
-  {block name="main"}
-    <div class="row">
+{block name="main"}
+<section class="content pt-5">
+<div class="box box-solid eacoo-box">
+    <div class="box-body">
+        <div class="row">
 
-      <div class="col-md-10 mt-10">
-        <form action="" method="post">                
-          <div class="col-xs-5">         
-              <div class="input-group">
-                <div class="input-group-addon">
-                    选择时间  <i class="fa fa-calendar"></i>
-                </div>
-                <input type="text" class="form-control pull-right" name="timegap" value="{$timegap}" id="start_time">
+          <div class="col-md-10 mt-10">
+            <form action="" method="post">                
+              <div class="col-xs-5">         
+                  <div class="input-group">
+                    <div class="input-group-addon">
+                        选择时间  <i class="fa fa-calendar"></i>
+                    </div>
+                    <input type="text" class="form-control pull-right" name="timegap" value="{$timegap}" id="start_time">
+                  </div>
               </div>
-          </div>
-            <div class="col-xs-1"><button class="btn btn-info" type="submit">确定</button></div>
-          </form>
+                <div class="col-xs-1"><button class="btn btn-info" type="submit">确定</button></div>
+              </form>
+            </div>
+
+            <div class="col-md-12 mt-20">
+              <div class="col-sm-3 col-xs-6">
+                今日新增会员：{$user.today}
+              </div>
+                <div class="col-sm-3 col-xs-6">
+                本月新增会员：{$user.month}
+              </div>
+                <div class="col-sm-3 col-xs-6">
+                会员总数：{$user.total}
+              </div>
+                <div class="col-sm-3 col-xs-6">
+                会员余额总额：{$user.user_money}
+              </div>
+            </div>
+
+            <div class="col-md-12 mt-20 mb-20">
+              <div class="col-sm-3 col-xs-6">
+                匿名会员购物总额：
+              </div>
+              <div class="col-sm-3 col-xs-6">
+                匿名会员订单数：
+              </div>
+              <div class="col-sm-3 col-xs-6">
+                匿名会员评价订单额：
+              </div>
+              <div class="col-sm-3 col-xs-6">
+                有单会员数：{$user.hasorder}
+              </div>
+            </div>
         </div>
 
-        <div class="col-md-12 mt-20">
-          <div class="col-sm-3 col-xs-6">
-            今日新增会员：{$user.today}
-          </div>
-            <div class="col-sm-3 col-xs-6">
-            本月新增会员：{$user.month}
-          </div>
-            <div class="col-sm-3 col-xs-6">
-            会员总数：{$user.total}
-          </div>
-            <div class="col-sm-3 col-xs-6">
-            会员余额总额：{$user.user_money}
-          </div>
-        </div>
-
-        <div class="col-md-12 mt-20 mb-20">
-          <div class="col-sm-3 col-xs-6">
-            匿名会员购物总额：
-          </div>
-          <div class="col-sm-3 col-xs-6">
-            匿名会员订单数：
-          </div>
-          <div class="col-sm-3 col-xs-6">
-            匿名会员评价订单额：
-          </div>
-          <div class="col-sm-3 col-xs-6">
-            有单会员数：{$user.hasorder}
-          </div>
+        <hr>
+        <div class="chart mt-20">
+          <div id="statistics" style="height: 400px;"></div>
         </div>
     </div>
+</div>
+</section>
+{/block}
 
-  <hr>
-  <div class="chart mt-20">
-      <div id="statistics" style="height: 400px;"></div>
-  </div>
-  {/block}
-
-  {block name="script"}
-  <script src="__LIBS__/echarts/echarts.common.min.js" type="text/javascript"></script>
+{block name="script"}
+<script src="__LIBS__/echarts/echarts.common.min.js" type="text/javascript"></script>
 <!--   <script src="__LIBS__/echarts/macarons.js"></script>
   <script src="__LIBS__/echarts/china.js"></script> -->
 

@@ -19,6 +19,8 @@ use think\Exception;
  */
 class Builder extends Base {
 
+    protected $metaTitle; // 页面标题
+    protected $tips;      // 页面标题
     protected $pluginName;
     protected $preQueryConnector;
 
@@ -32,6 +34,7 @@ class Builder extends Base {
         //参数前缀连接符
         $this->preQueryConnector = SERVER_SOFTWARE_TYPE=='nginx' ? '&' : '?';
     }
+
     /**
      * 开启Builder
      * @param  string $type 构建器名称
@@ -50,32 +53,9 @@ class Builder extends Base {
         if (!class_exists($class)) {
             throw new \Exception($type . '构建器不存在', 100002);
         }
+
         return new $class;
 
-    }
-
-    /**
-     * 模版输出
-     * @param  string $template 模板文件名
-     * @param  array  $vars         模板输出变量
-     * @param  array  $replace      模板替换
-     * @param  array  $config       模板参数
-     * @return [type]               [description]
-     */
-    public function fetch($template='',$vars = [], $replace = [], $config = []) {
-        if (PUBLIC_RELATIVE_PATH=='') {
-            $template_path_str = '../';
-        } else{
-            $template_path_str = './';
-        }
-        $this->assign('template_path_str',$template_path_str);
-        $this->assign('_builder_style_', $template_path_str.'apps/common/view/builder/style.html');  // 页面样式
-        $this->assign('_builder_javascript_', $template_path_str.'apps/common/view/builder/javascript.html');  // 页面样式
-        //显示页面
-        if ($template!='') {
-            echo parent::fetch($template,$vars,$replace,$config);
-        }
-        
     }
 
     protected function compileHtmlAttr($attr) {
@@ -88,6 +68,58 @@ class Builder extends Base {
         }
         $result = implode(' ', $result);
         return $result;
+    }
+
+    /**
+     * 设置页面标题
+     * @param $title 标题文本
+     * @return $this
+     */
+    public function setMetaTitle($meta_title) {
+        $this->metaTitle = $meta_title;
+        return $this;
+    }
+
+    /**
+     * 设置页面说明
+     * @param $title 标题文本
+     * @return $this
+     */
+    public function setPageTips($content,$type='info') {
+        $this->tips = $content;
+        return $this;
+    }
+
+    /**
+     * 模版输出
+     * @param  string $template 模板文件名
+     * @param  array  $vars         模板输出变量
+     * @param  array  $replace      模板替换
+     * @param  array  $config       模板参数
+     * @return [type]               [description]
+     */
+    public function fetch($template = '',$vars = [], $replace = [], $config = []) {
+        if (PUBLIC_RELATIVE_PATH == '') {
+            $template_path_str = '../';
+        } else{
+            $template_path_str = './';
+        }
+
+        $this->assign('template_path_str',$template_path_str);
+        $this->assign('_builder_style_', $template_path_str.'apps/common/view/builder/style.html');  // 页面样式
+        $this->assign('_builder_javascript_', $template_path_str.'apps/common/view/builder/javascript.html');  // 页面样式
+        
+        $template_vars = [
+            'show_box_header' => 1,//是否显示box_header
+            'meta_title'      => $this->metaTitle,// 页面标题
+            'tips'            => $this->tips,// 页面提示说明
+        ];
+        $this->assign($template_vars);
+        //显示页面
+        if ($template!='') {
+            return parent::fetch($template,$vars,$replace,$config);
+        }
+
     }
 }
 

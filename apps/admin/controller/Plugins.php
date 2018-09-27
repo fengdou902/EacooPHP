@@ -131,14 +131,16 @@ class Plugins extends Admin {
                 $this->assign('custom_config', $this->fetch($plugin['plugin_path'].$plugin['custom_config']));
                 return $this->fetch($plugin['plugin_path'].$plugin['custom_config']);
             } else {
-                return builder('Form')
+                $content = builder('Form')
+                            ->setPostUrl(url('config')) //设置表单提交地址
+                            ->addFormItem('id', 'hidden', 'ID', 'ID')
+                            ->setExtraItems($options) //直接设置表单数据
+                            ->setFormData($plugin)
+                            ->addButton('submit')->addButton('back')    // 设置表单按钮
+                            ->fetch();
+                return Iframe()
                         ->setMetaTitle('设置-'.$plugin['title'])  //设置页面标题
-                        ->setPostUrl(url('config')) //设置表单提交地址
-                        ->addFormItem('id', 'hidden', 'ID', 'ID')
-                        ->setExtraItems($options) //直接设置表单数据
-                        ->setFormData($plugin)
-                        ->addButton('submit')->addButton('back')    // 设置表单按钮
-                        ->fetch();
+                        ->content($content);
             }
         }
     }

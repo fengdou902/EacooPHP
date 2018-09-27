@@ -4,9 +4,12 @@
   
   </style>
 {/block}
-{block name="main-top"}
-{:logic('admin/AppStore')->getAppStoreTabs('plugin')}
-  <div class="box box-solid">
+
+{block name="main"}
+<section class="content pt-5">
+<div class="box box-solid eacoo-box">
+    {:logic('admin/AppStore')->getAppStoreTabs('plugin')}
+    <div class="box box-solid">
     <div class="box-header with-border">
       <h3 class="box-title">温馨提示</h3>
       <div class="box-tools">
@@ -21,33 +24,33 @@
 
     </div>
     <!-- /.box-body -->
-  </div>
-{/block}
-
-{block name="main"} 
-    <div class="eacoo-tabs builder-form-tabs">
-        <ul class="nav nav-tabs">
-            {volist name="tab_list" id="tab"}
-                <li class="{php}if($from_type == $key) echo 'active';{/php}"><a class="reset-appstore-conent" href="{$tab.href}" {$tab.extra_attr|default=''}>{$tab.title}</a></li>
-            {/volist}
-        </ul>
-        <div class="form-group"></div>
     </div>
-
-   	<div class="builder-toolbar mt-10 oh">
-
-         <div class="col-xs-12 col-sm-12 button-list clearfix">
-            <button class="btn btn-info btn-sm " id="app-localupload"><i class="fa fa-cloud-upload"></i> 上传安装</button>
-            <a class="btn btn-success btn-sm ajax-get" href="{:url('admin/Plugins/refresh')}"><i class="fa fa-refresh"></i> 刷新缓存</a>
-            <button class="btn btn-default btn-sm" id="eacoo-userinfo" ><i class="fa fa-user"></i> 会员信息</button>
+    <div class="box-body">
+        <div class="eacoo-tabs builder-form-tabs">
+            <ul class="nav nav-tabs">
+                {volist name="tab_list" id="tab"}
+                    <li class="{php}if($from_type == $key) echo 'active';{/php}"><a class="reset-appstore-conent" href="{$tab.href}" {$tab.extra_attr|default=''}>{$tab.title}</a></li>
+                {/volist}
+            </ul>
+            <div class="form-group"></div>
         </div>
-      
-    </div>
-    
-    <div class="builder formbuilder-box panel-body" id="appstore-content">
-        
-    </div>
 
+       	<div class="builder-toolbar mt-10 oh">
+
+             <div class="col-xs-12 col-sm-12 button-list clearfix">
+                <button class="btn btn-info btn-sm " id="app-localupload"><i class="fa fa-cloud-upload"></i> 上传安装</button>
+                <a class="btn btn-success btn-sm ajax-get" href="{:url('admin/Plugins/refresh')}"><i class="fa fa-refresh"></i> 刷新缓存</a>
+                <button class="btn btn-default btn-sm" id="eacoo-userinfo" ><i class="fa fa-user"></i> 会员信息</button>
+            </div>
+          
+        </div>
+        
+        <div class="builder formbuilder-box panel-body" id="appstore-content">
+            
+        </div>
+    </div>
+</div>
+</section>
 <script id="appstore_tpl" type="text/html">
 <div class="row" >
   <% for (var i = 0; i < data.length; i ++) { %>

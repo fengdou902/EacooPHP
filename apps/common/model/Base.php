@@ -15,6 +15,8 @@ use think\Request;
 
 class Base extends Model
 {
+    protected $conditions = [];//查询条件
+
     /**
      * 新增或编辑数据
      * @param  array/object  $data 来源数据
@@ -35,7 +37,7 @@ class Base extends Model
             $res = $this->save($data,[$pk=>$data[$pk]]);
         } else{
             //如果不存在主键，则新增数据
-            $res = $this->isUpdate(false)->data($data)->save();
+            $res = $this->isUpdate(false)->data($data,true)->save();
         }
         if (!$res) {
             if (!$this->getError()) {
@@ -77,26 +79,51 @@ class Base extends Model
     }
 
     /**
-     * 设置搜索
+     * 设置搜索，兼容高级查询
      * @param  [type] $condition 字段名（多个字段用|分开）
      * @param  string $rule 匹配规则
      * @return [type] [description]
      * @date   2018-02-06
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function search($condition='title',$rule='%[KEYWORD]%')
+    public function search($setting = [])
     {
-        if (is_string($condition)) {
+        $params = input();
+        unset($params['paged']);
+        unset($params['page_size']);
+        unset($params['_']);
+        $rule='%[KEYWORD]%';
+        if (is_array($setting)) {
             if (strpos($rule, '[KEYWORD]')!==false) {
-                $keyword     = input('param.keyword',false);//关键字
-                if (!empty($keyword)) {
+                
+                if (isset($params['keyword']) && !empty($params['keyword'])) {
+                    $keyword = $params['keyword'];
                     $rule = str_replace('[KEYWORD]', $keyword, $rule);
-                    $this->where($condition,'like',$rule);
+                    $keyword_condition = isset($setting['keyword_condition']) ? $setting['keyword_condition']:'title';
+                    $this->conditions[$keyword_condition] = ['like',$rule];
                 }
             }
-        } elseif ($condition instanceof \Closure) {
-            call_user_func_array($condition, [ & $this]);
+            unset($setting['keyword_condition']);
+            
+            if (!empty($setting)) {
+                $params = array_intersect_key($params,$setting);
+            }
+            
+        } elseif(is_string($setting)){
+            if (strpos($rule, '[KEYWORD]')!==false) {
+                
+                if (isset($params['keyword'])) {
+                    $keyword = $params['keyword'];
+                    $rule = str_replace('[KEYWORD]', $keyword, $rule);
+                    $keyword_condition = !empty($setting) ? $setting:'title';
+                    $this->conditions[$keyword_condition] = ['like',$rule];
+                }
+            }
+            
         }
+        unset($params['keyword']);
+        $params = array_filter($params);
+        $this->conditions = array_merge($this->conditions,$params);
         
         return $this;
         
@@ -114,6 +141,8 @@ class Base extends Model
      */
     public function getListByPage($condition, $fields = true, $order='', $page_size = null,$cache = false)
     {
+        $this->conditions = array_merge($condition,$this->conditions);
+
         $paged     = input('param.paged',1);//分页值
         if (!$page_size) {
             $page_size = config('admin_page_size');
@@ -123,8 +152,11 @@ class Base extends Model
         if ($cache) {
             $this->cache(true);
         }
-        $list      = $this->where($condition)->field($fields)->order($order)->page($paged,$page_size)->select();
-        $total     = $this->where($condition)->count();
+        if (!empty($this->conditions)) {
+            $this->where($this->conditions);
+        }
+        $list  = $this->field($fields)->order($order)->page($paged,$page_size)->select();
+        $total = $this->count();
         
         return [$list,$total];
     }
@@ -137,10 +169,11 @@ class Base extends Model
      */
     public function getList($condition, $fields = true, $order='create_time desc', $cache = false)
     {
+        $this->conditions = array_merge($condition,$this->conditions);
         if ($cache) {
             $this->cache(true);
         }
-        $lists = $this->where($condition)->field($fields)->order($order)->select();
+        $lists = $this->where($this->conditions)->field($fields)->order($order)->select();
         return $lists;
     }
 

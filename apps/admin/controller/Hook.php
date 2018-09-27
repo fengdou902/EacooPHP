@@ -33,9 +33,7 @@ class Hook extends Admin {
         $this->assign('page_config',['back'=>true]);
 
         list($data_list,$total) = $this->hooksModel->search('name|description')->getListByPage([],true,'create_time desc',20);
-        return builder('List')
-                ->setMetaTitle('钩子列表')  // 设置页面标题
-                ->setPageTips('钩子是基于行为实现，通过监听行为，可以对钩子挂的功能进行触发调用。')
+        $return = builder('List')
                 ->addTopButton('addnew',array('href'=>url('edit'),'title'=>'新增钩子','class'=>'btn bg-purple btn-sm margin'))    // 添加新增按钮
                 ->keyListItem('id', 'ID')
                 ->keyListItem('name', '名称')
@@ -47,6 +45,11 @@ class Hook extends Admin {
                 ->addRightButton('edit')           // 添加编辑按钮
                 ->addRightButton('delete',['href'=>url('del',['id'=>'__data_id__']),'model'=>'Hooks'])  // 添加删除按钮
                 ->fetch();
+
+        return Iframe()
+                ->setMetaTitle('钩子列表')  // 设置页面标题
+                ->setPageTips('钩子是基于行为实现，通过监听行为，可以对钩子挂的功能进行触发调用。')
+                ->content($return);
     }
 
     /**
@@ -80,17 +83,21 @@ class Hook extends Admin {
             if ($id!=0) {
                 $info = HooksModel::get($id);
             }
-            $builder = builder('Form');
-            $builder->setMetaTitle($title.'钩子'); // 设置页面标题
-                if ($id!=0) {
-                    $builder->addFormItem('id', 'hidden', 'ID', '');
-                }
-            return $builder->addFormItem('name', 'text', '名称', '需要在程序中先添加钩子，否则无效')
+            $builder = builder('Form')
+                        ->setPageTips('钩子是基于行为实现，通过监听行为，可以对钩子挂的功能进行触发调用。');
+            if ($id>0) {
+                $builder->addFormItem('id', 'hidden', 'ID', '');
+            }
+            $return = $builder->addFormItem('name', 'text', '名称', '需要在程序中先添加钩子，否则无效')
                     ->addFormItem('description', 'textarea', '描述', '钩子的描述信息')
                     ->addFormItem('type', 'radio', '类型', '钩子类型',config('hooks_type'))
                     ->setFormData($info)
                     ->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
+
+            return Iframe()
+                    ->setMetaTitle($title.'钩子') // 设置页面标题
+                    ->content($return);
         }
     }
     

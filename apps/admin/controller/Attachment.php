@@ -33,98 +33,115 @@ class Attachment extends Admin {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function index($term_id=0){
-
-        $this->assign(['meta_title'=>'附件管理','show_box_header'=>1]);
-        $this->assign('page_config',['self'=>'来源：<div class="btn-group mr-20">
-                  <button type="button" onclick="javascript:location.href=\''.url('admin/Attachment/index').'\'" class="btn btn-default btn-flat">默认</button>
-                  <button type="button" class="btn btn-default btn-flat dropdown-toggle" data-toggle="dropdown">
-                    <span class="caret"></span>
-                    <span class="sr-only">Toggle Dropdown</span>
-                  </button>
-                  <ul class="dropdown-menu" role="menu">
-                    <li><a href="'.url('admin/Attachment/index',['path_type'=>0]).'">默认</a></li>
-                    
-                  </ul>
-                </div>']);
-        // 搜索
-        $keyword = input('param.keyword');
-        if ($keyword) {
-            $this->attachmentModel->where('id|name','like','%'.$keyword.'%');
-        }
-
-        $attachment_options = config('attachment_options');//附件配置选项（来自附件设置）
-        $this->assign('mediaTypeList',[
-                1=>'图像',
-                2=>'音频',
-                3=>'视频',
-                4=>'文件',
-            ]);//媒体类型列表
-
         $path_type = input('param.path_type',false);//路径类型
-        if ($path_type) {
-            $map['path_type'] = $path_type;
-        } else {
-            $map['path_type'] = ['in','picture,file,wechat'];
-        }
-        //筛选start
-        if ($term_id>0) {
-            //$media_ids = TermRelationships::where(['term_id'=>$term_id,'table'=>'attachment'])->select();
-            $media_ids = TermRelationshipsModel::where(['term_id'=>$term_id,'table'=>'attachment'])->column('object_id');
-            if(count($media_ids)){
-                //$media_ids = array_column($media_ids,'object_id');
-                $map['id'] = ['in',$media_ids];
-            } else{
-                $map['id']  = 0;
+        if (IS_AJAX) {
+            // 搜索
+            $keyword = input('param.keyword');
+            if ($keyword) {
+                $this->attachmentModel->where('id|name','like','%'.$keyword.'%');
             }
-        }
 
-        $media_type = input('param.media_type',false,'intval');
-        if ($media_type>0) {
-            switch ($media_type) {
-                case 1:
-                    $map['ext']=array('in','jpg,jpeg,png,gif');
-                    break;
-                case 2:
-                    $map['ext']=array('in','mp3,wav,wma,ogg');
-                    break;
-                case 3:
-                    $map['ext']=array('in','mp4,rm,rmvb,wmv,avi,3gp,mkv');
-                    break;
-                case 4:
-                    $map['ext']=array('in','doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,7z,b2z');
-                    break;
-                default:
-                    # code...
-                    break;
+            $attachment_options = config('attachment_options');//附件配置选项（来自附件设置）
+
+            if ($path_type) {
+                $map['path_type'] = $path_type;
+            } else {
+                $map['path_type'] = ['in','picture,file,wechat'];
             }
+            //筛选start
+            if ($term_id>0) {
+                //$media_ids = TermRelationships::where(['term_id'=>$term_id,'table'=>'attachment'])->select();
+                $media_ids = TermRelationshipsModel::where(['term_id'=>$term_id,'table'=>'attachment'])->column('object_id');
+                if(count($media_ids)){
+                    //$media_ids = array_column($media_ids,'object_id');
+                    $map['id'] = ['in',$media_ids];
+                } else{
+                    $map['id']  = 0;
+                }
+            }
+
+            $media_type = input('param.media_type',false,'intval');
+            if ($media_type>0) {
+                switch ($media_type) {
+                    case 1:
+                        $map['ext']=array('in','jpg,jpeg,png,gif');
+                        break;
+                    case 2:
+                        $map['ext']=array('in','mp3,wav,wma,ogg');
+                        break;
+                    case 3:
+                        $map['ext']=array('in','mp4,rm,rmvb,wmv,avi,3gp,mkv');
+                        break;
+                    case 4:
+                        $map['ext']=array('in','doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,7z,b2z');
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+            $choice_date_range = input('param.choice_date_range',false);
+            if (!empty($choice_date_range)) {//日期筛选
+                $choice_date_range                 = explode('—', $choice_date_range);
+                $choice_from_date                  = strtotime(str_replace('/','-', $choice_date_range[0]).' 00:00:00');
+                $choice_to_date                    = strtotime(str_replace('/','-', $choice_date_range[1]).' 24:00:00');
+                $map['create_time']                = [['gt',$choice_from_date],['lt',$choice_to_date]];
+                $attachment_options['page_number'] = 1000;//防止分页
+            }
+            //筛选end
+            $map['status'] = 1;
+            $page_number = $attachment_options['page_number']? $attachment_options['page_number']:24;
+
+            $search = [
+                'keyword_condition'=>'name',
+            ];
+            $search = array_merge($search,$map);
+            list($data_list,$total) = $this->attachmentModel->search($search)->getListByPage($map,true,'sort asc,create_time desc,update_time desc',$page_number);
+            foreach ($data_list as $key => &$row) {
+                $row['thumb_src'] = $row['thumb_src'];
+            }
+
+            $paged = input('param.paged',1);
+            $return = [
+                'code'         => 1,
+                'msg'          => '附件列表成功',
+                'data'         => $data_list,
+                'page_content' => logic('admin/Attachment')->getPaginationHtml($paged,$total,$page_number)
+            ];
+            return json($return);
+        } else{
+            $this->assign(['meta_title'=>'附件管理','show_box_header'=>1]);
+            //$this->assign('attachment_list_data',$file_list);//附件列表数据
+            //$this->assign('table_data_page',$file_list->render());
+            $this->assign('path_type',$path_type);
+
+            //获取分类数据
+            $media_cats = model('terms')->getList(['taxonomy'=>'media_cat']);
+            $this->assign('media_cats',$media_cats);
+
+            //设置tab_nav
+            $tab_list = AttachmentLogic::getTabList();
+            $this->assign('tab_nav',['tab_list'=>$tab_list,'current'=>'index']);
+
+            //添加高级查询
+            $searchFields = [
+                ['name'=>'path_type','type'=>'select','title'=>'来源','options'=>[0=>'默认']],
+                ['name'=>'media_type','type'=>'select','title'=>'类型','options'=>[
+                    1=>'图像',
+                    2=>'音频',
+                    3=>'视频',
+                    4=>'文件',
+                ]],
+                ['name'=>'term_id','type'=>'select','title'=>'分类','options'=>model('terms')->where(['taxonomy'=>'media_cat'])->column('name','term_id')],//获取分类数据
+                ['name'=>'choice_date_range','type'=>'text','extra_attr'=>'placeholder="选择日期" id="choice_date_range"'],
+                ['name'=>'keyword','type'=>'text','extra_attr'=>'placeholder="请输入查询关键字"'],
+            ];
+            $this->assign('searchFields',$searchFields);
+            $this->assign('search_template_path',APP_PATH.'/common/view/layout/iframe/search.html');
+
+            return $this->fetch();
         }
-        $choice_date_range = input('param.choice_date_range',false);
-        if (!empty($choice_date_range)) {//日期筛选
-            $this->assign('choice_date_range',$choice_date_range);
-            $choice_date_range                 = explode('—', $choice_date_range);
-            $choice_from_date                  = strtotime(str_replace('/','-', $choice_date_range[0]).' 00:00:00');
-            $choice_to_date                    = strtotime(str_replace('/','-', $choice_date_range[1]).' 24:00:00');
-            $map['create_time']                = [['gt',$choice_from_date],['lt',$choice_to_date]];
-            $attachment_options['page_number'] = 1000;//防止分页
-        }
-        //筛选end
-        $map['status'] = 1;
-        $page_number = $attachment_options['page_number']? $attachment_options['page_number']:24;
 
-        $file_list = $this->attachmentModel->where($map)->order('sort asc,create_time desc,update_time desc')->paginate($page_number);
-
-        $this->assign('attachment_list_data',$file_list);//附件列表数据
-        $this->assign('table_data_page',$file_list->render());
-        $this->assign('path_type',$path_type);
-
-        //获取分类数据
-        $media_cats = model('terms')->getList(['taxonomy'=>'media_cat']);
-        $this->assign('media_cats',$media_cats);
-
-        //设置tab_nav
-        $tab_list = AttachmentLogic::getTabList();
-        $this->assign('tab_nav',['tab_list'=>$tab_list,'current'=>'index']);
-    	return $this->fetch();
     }
 
     /**
@@ -255,21 +272,18 @@ class Attachment extends Admin {
         list($data_list,$total) = model('common/Terms')->search('name,slug')->getListByPage($map,true,'sort desc,create_time desc',15);
         if (!empty($data_list)) {
             foreach ($data_list as $key => &$row) {
-                $row['parent'] = $row['parent'];
                 $row['object_count'] = logic('common/Terms')->termRelationCount($row['term_id'],'attachment');
             }
         }
-        $total =15;
+
         //获取tab_list
         $tab_list = AttachmentLogic::getTabList();
-        return builder('List')
-                    ->setMetaTitle('附件分类')
+        $return = builder('List')
                     ->setTabNav($tab_list,'category')  // 设置页面Tab导航
                     ->addTopButton('addnew',['href'=>url('categoryEdit')])  // 添加新增按钮
                     ->addTopButton('resume')  // 添加启用按钮
                     ->addTopButton('forbid')  // 添加禁用按钮
                     ->addTopButton('recycle') //添加回收按钮
-                    ->setSearch()
                     ->keyListItem('term_id', 'ID')
                     ->keyListItem('name', '名称','link',url('index',['term_id'=>'__data_id__']))//约定分类对象
                     ->keyListItem('slug', '别名')
@@ -280,11 +294,14 @@ class Attachment extends Admin {
                     ->keyListItem('right_button', '操作', 'btn')
                     ->setListPrimaryKey('term_id')
                     ->setListData($data_list)    // 数据列表
-                    ->setListPage($total,15) // 数据列表分页
+                    ->setListPage($total) // 数据列表分页
                     ->addRightButton('edit',['href'=>url('categoryEdit',['term_id'=>'__data_id__'])])// 添加编辑按钮
                     ->addRightButton('recycle')// 添加删除按钮
                     ->fetch();
-
+                    
+        return Iframe()
+                ->setMetaTitle('附件分类')  // 设置页面标题
+                ->content($return);
     }
 
     /**
@@ -313,7 +330,7 @@ class Attachment extends Admin {
         $tab_list = AttachmentLogic::getTabList();
         $tab_list['attachment_option']=['title'=>'设置','href'=>url('setting')];
         unset($tab_list['setting']);
-        \think\Loader::action('admin/Config/attachmentOption',[$tab_list]);
+        return \think\Loader::action('admin/Config/attachmentOption',[$tab_list]);
     }
 
     /**

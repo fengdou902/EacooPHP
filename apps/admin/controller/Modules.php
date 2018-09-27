@@ -117,7 +117,7 @@ class Modules extends Admin {
                 $this->assign('custom_config', $this->fetch($app['plugin_path'].$app['custom_config']));
                 return $this->fetch($app['plugin_path'].$app['custom_config']);
             } else {
-                return builder('Form')
+                $content = builder('Form')
                         ->setMetaTitle('设置-'.$app['title'])  //设置页面标题
                         ->setPostUrl(url('config')) //设置表单提交地址
                         ->addFormItem('id', 'hidden', 'ID', 'ID')
@@ -125,6 +125,9 @@ class Modules extends Admin {
                         ->setFormData($app)
                         ->addButton('submit')->addButton('back')    // 设置表单按钮
                         ->fetch();
+                return Iframe()
+                        ->setMetaTitle('设置-'.$app['title'])  //设置页面标题
+                        ->content($content);
             }
         }
     }

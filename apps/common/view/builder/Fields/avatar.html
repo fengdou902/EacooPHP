@@ -8,30 +8,25 @@
   }
 {/php}
 <div class="row">
-    <div class="form-group controls item_{$field.name} {$field.extra_class|default=''}">
-    <label for="{$field.name}" class="col-md-2 control-label">{$field.title}</label>
-    <div class="col-md-6" style="padding-bottom: 5px;"><span class="btn btn-info ml-10 btn-sm" id="upload_avatar_{$field.name}"><i class="fa fa-upload"></i> 上传头像</span>{notempty name="field.description"}<span class="color-red f12 ml-10">{$field.description}</span>{/notempty}
-      
-        <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field.value}"/>
+    <span class="btn btn-info ml-10 btn-sm" id="upload_avatar_{$field.name}"><i class="fa fa-upload"></i> 上传头像</span>{notempty name="field.description"}<span class="color-red f12 ml-10">{$field.description}</span>{/notempty}
+  
+    <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field.value}"/>
 
-        <div class="upload-avatar-box tc popup-avatar img-thumbnail pr">
-            <div class="each">
-            <i data-avatarid="{$field.name}" class="removeAvatar fa fa-times-circle remove-attachment"></i> 
-            {empty name="field.value"}
-                <img src="__PUBLIC__/img/default-avatar.png">
-            {else /} 
-                <a href="{$field.value|cdn_img_url}" title="点击查看大图">
-                    <img src="{$field.value|cdn_img_url}">
-                </a>
-                 
-            {/empty}
-            </div>
-
-        </div>
-
+    <div class="upload-avatar-box tc popup-avatar img-thumbnail pr">
+        <div class="each">
+        <i data-avatarid="{$field.name}" class="removeAvatar fa fa-times-circle remove-attachment"></i> 
+        {empty name="field.value"}
+            <img src="__PUBLIC__/img/default-avatar.png">
+        {else /} 
+            <a href="{$field.value|cdn_img_url}" title="点击查看大图">
+                <img src="{$field.value|cdn_img_url}">
+            </a>
+             
+        {/empty}
         </div>
 
     </div>
+
     {present name="webuploader"}{if condition="$webuploader"}
         <link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
         <script type="text/javascript" charset="utf-8" src="__LIBS__/webuploader/js/webuploader.min.js"></script>

@@ -29,4 +29,38 @@ class Attachment extends AdminLogic {
             ];
         return $tab_list;
 	}
+
+    /**
+     * 获取分页
+     * @param  integer $paged [description]
+     * @param  integer $total [description]
+     * @param  [type] $page_size [description]
+     * @return [type] [description]
+     * @date   2018-03-09
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function getPaginationHtml($paged =1,$total=0,$page_size=12)
+    {
+        $page_num = $total/$page_size;
+        $html = '';
+        if ($page_num>1) {
+            $pre_pn = $paged-1;
+            $html .= '<li class="page-pre"><a href="#" data-paged="'.$pre_pn.'">‹</a></li>';
+            for ($i=0; $i < $page_num; $i++) { 
+                $as = '';
+                $pn = $i+1;
+                if ($paged==$pn) {
+                    $as = 'active';
+                }
+                $html .= '<li class="page-number '.$as.'"><a href="#" data-paged="'.$pn.'">'.$pn.'</a></li>';
+            }
+            $next_pn = $paged+1;
+            if ($next_pn>$page_num+1) {
+                $next_pn = $paged;
+            }
+            $html .= '<li class="page-next"><a href="#" data-paged="'.$next_pn.'">›</a></li>';
+        }
+        
+        return $html;
+    }
 }

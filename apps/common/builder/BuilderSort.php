@@ -125,7 +125,7 @@ class BuilderSort extends Builder {
         $this->assign('buttonList', $this->_buttonList);
         $this->assign('post_url', $this->_post_url);
         $templateFile = APP_PATH.'/common/view/builder/'.$template_name.'.html';
-        parent::fetch($templateFile);
+        return parent::fetch($templateFile);
     }
 
     /**

@@ -8,33 +8,26 @@
       $path_type=isset($field['options']['path_type'])? $field['options']['path_type']:'picture';
       $is_sql=isset($field['options']['is_sql'])? $field['options']['is_sql']:'close';
 {/php}
-<div class="form-group controls item_{$field.id} {$field.extra_class|default=''}">
-    <label for="{$field.id}" class="col-md-2 control-label">{$field.title}</label>
-    <div class="col-md-6" style="padding-bottom: 5px;">
-        
-        <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field.value|default=''}"/>
-        <div>
-            <span id="upload_img_{$field.id}" class="btn btn-info btn-sm ml-10 mt-10"><i class="fa fa-cloud-upload"></i> 上传图片</span>
-        </div>
-        <div class="upload-img-box tc popup-gallery fl img-thumbnail pr">
-            <div class="each">
-             
-            {empty name="field.value"}
-                <img src="{php} echo get_image(0);{/php}">
-            {else /} 
-                <i onclick="admin_image.removeImage($(this),'{$field.value}')" class="fa fa-times-circle remove-attachment"></i>
-                <a href="{eq name="is_sql" value="on"}{$field.value|get_image}{else/}{$field.value}{/eq}" title="点击查看大图">
-                    <img src="{eq name="is_sql" value="on"}{$field.value|get_image}{else/}{$field.value}{/eq}">
-                </a>
-            {/empty}
-            </div>
 
-        </div>
-        {notempty name="field.description"}<div class="help-block col-md-6 pl-10 fn">{$field.description}</div>{/notempty}
-        
+<input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field.value|default=''}"/>
+<div>
+    <span id="upload_img_{$field.id}" class="btn btn-info btn-sm ml-10 mt-10"><i class="fa fa-cloud-upload"></i> 上传图片</span>
+</div>
+<div class="upload-img-box tc popup-gallery fl img-thumbnail pr">
+    <div class="each">
+     
+    {empty name="field.value"}
+        <img src="{php} echo get_image(0);{/php}">
+    {else /} 
+        <i onclick="admin_image.removeImage($(this),'{$field.value}')" class="fa fa-times-circle remove-attachment"></i>
+        <a href="{eq name="is_sql" value="on"}{$field.value|get_image}{else/}{$field.value}{/eq}" title="点击查看大图">
+            <img src="{eq name="is_sql" value="on"}{$field.value|get_image}{else/}{$field.value}{/eq}">
+        </a>
+    {/empty}
     </div>
 
 </div>
+
 {present name="webuploader"}{if condition="$webuploader"}
     <link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" charset="utf-8" src="__LIBS__/webuploader/js/webuploader.min.js"></script>

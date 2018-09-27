@@ -34,6 +34,7 @@ class Dashboard extends Admin
         $product_info = logic('index')->getInstallAccreditInfo();
         $server_info = [
                 '产品型号'    =>$product_info.'<a class="btn btn-xs btn-default ajax-get f15 ml-10" href="'.url('admin/index/refreshAccreditInfo').'"><i class="fa fa-refresh"></i></a>',
+                '编译版本'    => '<span class="text-warning">'.BUILD_VERSION.'</span>',
                 '操作系统'    => PHP_OS,
                 '运行环境'    => $_SERVER["SERVER_SOFTWARE"],
                 'PHP运行方式' => php_sapi_name(),

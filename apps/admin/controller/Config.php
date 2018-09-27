@@ -50,8 +50,7 @@ class Config extends Admin {
         $extra_html = $this->moveGroupHtml($config_group_list,$group);//添加移动按钮html
         // 使用Builder快速建立列表页面。
 
-        return builder('list')
-                ->setMetaTitle('配置列表')  // 设置页面标题
+        $return = builder('list')
                 ->setPageTips('调用方式，如：<code>config("web_site_statistics")</code>，即可调用站点统计的配置信息')
                 ->addTopButton('addnew',['href'=>url('edit',['group_id'=>$group])])   // 添加新增按钮
                 //->addTopButton('resume',array('title'=>'显示'))   // 添加启用按钮
@@ -75,6 +74,10 @@ class Config extends Admin {
                 ->addRightButton('edit')           // 添加编辑按钮
                 ->addRightButton('delete')         // 添加删除按钮
                 ->fetch();
+
+        return Iframe()
+                ->setMetaTitle('配置列表') // 设置页面标题
+                ->content($return);
     }
 
     /**
@@ -116,13 +119,12 @@ class Config extends Admin {
             $sub_group = logic('Config')->getSubGroup($group_id);
 
             $builder = builder('form')
-                    ->setMetaTitle($title.'配置')  // 设置页面标题
                     ->addFormItem('id', 'hidden', 'ID', 'ID')
                     ->addFormItem('group', 'select', '配置分组', '配置所属的分组', config('config_group_list'));
             if (!empty($sub_group['sub_group'])) {
                 $builder->addFormItem('sub_group','select','配置子分组','先对大分组创建一个子分组，一般不填写',$sub_group['sub_group']);
             }
-            return $builder->addFormItem('type', 'select', '配置类型', '配置类型的分组',config('form_item_type'))
+            $content = $builder->addFormItem('type', 'select', '配置类型', '配置类型的分组',config('form_item_type'))
                     ->addFormItem('name', 'text', '配置名称', '配置名称')
                     ->addFormItem('title', 'text', '配置标题', '配置标题')
                     ->addFormItem('value', 'textarea', '配置值', '配置值')
@@ -135,6 +137,9 @@ class Config extends Admin {
                     ->setFormData($info)
                     //->addButton('submit')->addButton('back')    // 设置表单按钮
                     ->fetch();
+            return Iframe()
+                ->setMetaTitle($title.'配置')  // 设置页面标题
+                ->content($content);
         }
     }
 
@@ -159,14 +164,16 @@ class Config extends Admin {
             
         }
 
-        return builder('form')
-                ->setMetaTitle('系统设置')       // 设置页面标题
+        $content = builder('form')
                 ->setPageTips('调用方式，如：<code>config("配置名")</code>，即可调用站点统计的配置信息')
                 ->setTabNav($tab_list, $group)  // 设置Tab按钮列表
                 ->setExtraItems($data_list)     // 直接设置表单数据
                 ->addButton('submit','确认',url('groupSave'))
                 ->addButton('back') // 设置表单按钮
                 ->fetch();
+        return Iframe()
+                ->setMetaTitle('系统设置')  // 设置页面标题
+                ->content($content);
     }
 
     /**
@@ -242,6 +249,7 @@ class Config extends Admin {
                     $data[$field] = array_merge($data[$field],json_decode($field_value,true));
                 }
             }
+
             $options = [
                 'cache'=>[
                     'type'=>'group',
@@ -387,17 +395,23 @@ class Config extends Admin {
                     ],
                 ],
         ];
+
         $options = logic('common/Config')->buildFormByFiled($options,$data);
         $tab_list = logic('admin/Config')->getTabList();
-        return builder('Form')
+        $content = builder('Form')
                 ->setMetaTitle('高级设置')  //设置页面标题
                 ->setPageTips('调用方式，如：<code>config("配置名")</code>，即可调用站点统计的配置信息')
                 ->setTabNav($tab_list,'advanced')  // 设置页面Tab导航
                 ->setExtraItems($options) //直接设置表单数据
                 //->setFormData($data)
                 //->setAjaxSubmit(false)
-                ->addButton('submit')->addButton('back')    // 设置表单按钮
+                ->addButton('submit')
+                ->addButton('back')    // 设置表单按钮
                 ->fetch();
+
+            return Iframe()
+                ->setMetaTitle('高级设置')  // 设置页面标题
+                ->content($content);
         }
     }
 
@@ -443,8 +457,7 @@ class Config extends Admin {
                 $info['water_img'] = './logo.png';
             }
             //自定义表单项
-            return builder('Form')
-                    ->setMetaTitle('多媒体设置')  // 设置页面标题
+            $content = builder('Form')
                     ->setPageTips('调用方式，如：<code>config("配置名")</code>，即可调用站点统计的配置信息')
                     ->setTabNav($tab_list,'attachment_option')  // 设置页面Tab导航
                     ->addFormItem('driver', 'select', '上传驱动', '选择上传驱动插件用于七牛云、又拍云等第三方文件上传的扩展',upload_drivers())
@@ -471,6 +484,10 @@ class Config extends Admin {
                     //->setAjaxSubmit(false)
                     ->addButton('submit')    // 设置表单按钮
                     ->fetch();
+
+            return Iframe()
+                ->setMetaTitle('多媒体设置')  // 设置页面标题
+                ->content($content);
         }
     }
 
@@ -500,7 +517,7 @@ class Config extends Admin {
         $map['status'] = ['egt', '0'];  // 禁用和正常状态
         $map['group']  = 6;//6是大分组网站信息
         $map['sub_group'] = $sub_group;
-        $data_list = $this->configModel->getList($map,'*','sort asc,id asc');
+        $data_list = $this->configModel->getList($map,true,'sort asc,id asc');
 
         // 设置Tab导航数据列表
         $config_subgroup_list = config('website_group');  // 获取配置分组
@@ -511,21 +528,24 @@ class Config extends Admin {
 
         // 构造表单名、解析options
         foreach ($data_list as &$data) {
-            $data['name']    = 'config['.$data['name'].']';
+            $data['name']        = 'config['.$data['name'].']';
             $data['description'] = $data['remark'];
-            $data['confirm'] = $data['extra_class'] = $data['extra_attr']='';
-            $data['options'] = parse_config_attr($data['options']);
+            $data['confirm']     = $data['extra_class'] = $data['extra_attr']='';
+            $data['options']     = parse_config_attr($data['options']);
         }
 
         // 使用FormBuilder快速建立表单页面。
 
-        return builder('form')
-                ->setMetaTitle('网站设置')       // 设置页面标题
+        $content = builder('form')
                 ->SetTabNav($tab_list, $sub_group)  // 设置Tab按钮列表
                 ->setPostUrl(url('groupSave'))    // 设置表单提交地址
                 ->setExtraItems($data_list)     // 直接设置表单数据
                 ->addButton('submit','确认',url('groupSave'))->addButton('back')    // 设置表单按钮
                 ->fetch();
+
+        return Iframe()
+                ->setMetaTitle('网站设置')  // 设置页面标题
+                ->content($content);
     }
 
     /**
