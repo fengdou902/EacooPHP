@@ -34,15 +34,19 @@
                         <form action="{$post_url|default=''}" method="post" class="form-builder form-horizontal" data-validator-option="{theme:'bootstrap', timely:2, stopOnError:true}">
                         <fieldset>
                             {volist name="fieldList" id="field" key="k"}
-                                <div class="form-group item_{$field.name|default=''} {$field.extra_class|default=''}">
-                                    <label for="{$field.name|default=''}" class="col-md-2 control-label">{$field.title|default=""}</label>
-                                    <div class="col-md-4">
-                                    {:action('common/BuilderForm/fieldType',['field'=>$field],'builder')}
+                                {php}if(!in_array($field['type'],['group','section','self_html'])){{/php}
+                                    <div class="form-group item_{$field.name|default=''} {$field.extra_class|default=''}">
+                                        <label for="{$field.name|default=''}" class="col-md-2 control-label">{$field.title|default=""}</label>
+                                        <div class="{$field.extra.field_body_class|default='col-md-4'}" {$field.extra.field_body_extra|default=''}>
+                                        {:action('common/BuilderForm/fieldType',['field'=>$field],'builder')}
+                                        </div>
+                                        {notempty name="field.description"}
+                                            <div class="{$field.extra.field_help_block_class|default='col-md-5'} help-block"><i class="fa fa-info-circle color-info1"></i> {$field.description|default=""}</div>
+                                        {/notempty}
                                     </div>
-                                    {notempty name="field.description"}
-                                        <div class="col-md-5 help-block"><i class="fa fa-info-circle color-info1"></i> {$field.description|default=""}</div>
-                                    {/notempty}
-                                </div>
+                                {php}}else{{/php}
+                                    {:action('common/BuilderForm/fieldType',['field'=>$field],'builder')}
+                                {php}}{/php}
                             {/volist}
                             <hr/>
                             <div class="form-group">
@@ -70,58 +74,49 @@
 
 </section> 
 
-{block name="script"}
-
-    {present name="colorPicker"}
-        {if condition="$colorPicker"}
-            <script type="text/javascript" src="__ADMIN_JS__/jquery.simple-color.js"></script>
-            <script>
-                $(function(){
-                    $('.simple_color_callback').simpleColor({
-                        boxWidth:20,
-                        cellWidth: 20,
-                        cellHeight: 20,
-                        chooserCSS:{ 'z-index': 500 },
-                        displayCSS: { 'border': 0 ,
-                            'width': '32px',
-                            'height': '32px',
-                            'margin-top': '-32px'
-                        },
-                        onSelect: function(hex, element) {
-                            $('#tw_color').val('#'+hex);
-                        }
-                    });
-                    $('.simple_color_callback').show();
-                    $('.simpleColorContainer').css('margin-left','105px');
-                    $('.simpleColorDisplay').css('border','1px solid #DFDFDF');
+{present name="colorPicker"}
+    {if condition="$colorPicker"}
+        <script type="text/javascript" src="__ADMIN_JS__/jquery.simple-color.js"></script>
+        <script>
+            $(function(){
+                $('.simple_color_callback').simpleColor({
+                    boxWidth:20,
+                    cellWidth: 20,
+                    cellHeight: 20,
+                    chooserCSS:{ 'z-index': 500 },
+                    displayCSS: { 'border': 0 ,
+                        'width': '32px',
+                        'height': '32px',
+                        'margin-top': '-32px'
+                    },
+                    onSelect: function(hex, element) {
+                        $('#tw_color').val('#'+hex);
+                    }
                 });
-                var setColorPicker=function(obj){
-                    var color=$(obj).val();
-                    $(obj).parents('.color-picker').find('.simpleColorDisplay').css('background',color);
-                }
-            </script>
-        {/if}
-    {/present}   
-    
-    {present name="load_select2"}
-        {if condition="$load_select2"}
-        <link rel="stylesheet" type="text/css" href="__LIBS__/select2/css/select2.min.css">
-        <link rel="stylesheet" type="text/css" href="__LIBS__/select2/css/select2-bootstrap.min.css">
-        <script type="text/javascript" src="__LIBS__/select2/js/select2.min.js" charset="utf-8"></script>
-        {/if}
-    {/present}
-    {present name="magnific_popup"}
-        {if condition="$magnific_popup"}
-            <link type="text/css" rel="stylesheet" href="__LIBS__/magnific/magnific-popup.css"/>
-            <script type="text/javascript" src="__LIBS__/magnific/jquery.magnific-popup.min.js"></script>
-        {/if}
-    {/present}
-    <script type="text/javascript">
-        //icheck
-        $('input').iCheck({
-              checkboxClass:'icheckbox_minimal-blue',
-              radioClass:'iradio_minimal-blue',
-              increaseArea:'20%' // optional
-        });
-    </script>
-{/block}
+                $('.simple_color_callback').show();
+                $('.simpleColorContainer').css('margin-left','105px');
+                $('.simpleColorDisplay').css('border','1px solid #DFDFDF');
+            });
+            var setColorPicker=function(obj){
+                var color=$(obj).val();
+                $(obj).parents('.color-picker').find('.simpleColorDisplay').css('background',color);
+            }
+        </script>
+    {/if}
+{/present}   
+
+{present name="load_select2"}
+    {if condition="$load_select2"}
+    <link rel="stylesheet" type="text/css" href="__LIBS__/select2/css/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="__LIBS__/select2/css/select2-bootstrap.min.css">
+    <script type="text/javascript" src="__LIBS__/select2/js/select2.min.js" charset="utf-8"></script>
+    {/if}
+{/present}
+{present name="magnific_popup"}
+    {if condition="$magnific_popup"}
+        <link type="text/css" rel="stylesheet" href="__LIBS__/magnific/magnific-popup.css"/>
+        <script type="text/javascript" src="__LIBS__/magnific/jquery.magnific-popup.min.js"></script>
+    {/if}
+{/present}
+
+{include file="$_builder_javascript_" /}

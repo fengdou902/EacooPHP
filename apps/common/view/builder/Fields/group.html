@@ -4,7 +4,15 @@
     	<h3 class="form-section">{$field.title}{notempty name="field.description"}<small>{$field.description|default=''}</small> {/notempty}</h3>
     	<div class="col-md-offset-1 col-md-11">
     		{volist name="field.options" id="field" key="group_k"}
-	            {:action('common/BuilderForm/fieldType',['field'=>$field],'builder')}
+                <div class="form-group item_{$field.name|default=''} {$field.extra_class|default=''}">
+                    <label for="{$field.name|default=''}" class="col-md-2 control-label">{$field.title|default=""}</label>
+                    <div class="{$field.extra.field_body_class|default='col-md-4'}" {$field.extra.field_body_extra|default=''}>
+    	               {:action('common/BuilderForm/fieldType',['field'=>$field],'builder')}
+                    </div>
+                    {notempty name="field.description"}
+                        <div class="{$field.extra.field_help_block_class|default='col-md-5'} help-block"><i class="fa fa-info-circle color-info1"></i> {$field.description|default=""}</div>
+                    {/notempty}
+                </div>
 	            {/*:hook('FormBuilderExtend', array('form' => $tab_form, 'type' => tab_))*/}
 	        {/volist}
     	</div>

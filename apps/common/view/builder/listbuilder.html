@@ -1,4 +1,6 @@
 {include file="$_builder_style_" /}
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="__LIBS__/bootstrap-table/bootstrap-table.min.css">
 <section class="content pt-5">
       <div class="box box-solid eacoo-box">
         {present name="show_box_header"}
@@ -35,7 +37,7 @@
                         <div class="row">
 
                             <div class="builder-table col-sm-12">
-                                <div id="builder-toolbar" class="toolbar mb-10">
+                                <div id="builder-toolbar" class="toolbar">
                                    
                                     <!-- 工具栏按钮 -->
                                     {notempty name="top_button_list"}
@@ -44,29 +46,6 @@
                                             <a {present name="row.attribute" }{$row.attribute}{/present}>{notempty name="row.icon"}<i class="{$row.icon|default=''}"></i>{/notempty} {$row.title}</a>&nbsp;
                                         {/volist}
                                        <!-- </div>-->
-                                    {/notempty}
-                                    {notempty name="selects"}
-                                        <form id="selectForm" method="get" action="{$action_url|default=$default_url}" class="form-dont-clear-url-param form-inline ml-20">            
-                                            {volist name="selects" id="select"}
-                                            <div class="form-group">    
-                                                {notempty name="select.title"}
-                                                    <label for="{$select['name']}"  class=" pr-0">{$select.title}:</label>          
-                                                {/notempty}
-
-                                                <select name="{$select['name']}" data-role="select_text" class="form-control pl-20">
-                                                    {php}$list_builder_selected = input('get.'.$select['name']);{/php}
-
-                                                    {volist name="select['arrvalue']" id="svo"}
-                                                        {php}if(is_array($svo)):{/php}
-                                                            <option value="{$svo.id}" {eq name="svo.id" value="$list_builder_selected"}selected{/eq}>{$svo.value}</option>
-                                                        {php}else:{/php}
-                                                            <option value="{$key}" {eq name="key" value="$list_builder_selected"}selected{/eq}>{$svo}</option>
-                                                        {php}endif;{/php}
-                                                    {/volist}
-                                                </select>
-                                                </div>
-                                            {/volist}
-                                        </form>
                                     {/notempty}
                                                     
                                     {eq name="search.type" value="custom"}
@@ -123,6 +102,7 @@
 <script src="__LIBS__/bootstrap-table/extensions/export/bootstrap-table-export.min.js"></script>
 <!-- Latest compiled and minified Locales -->
 <script src="__LIBS__/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+
 <script type="text/javascript">
     var $table = $('#builder-table');
     $table.bootstrapTable({

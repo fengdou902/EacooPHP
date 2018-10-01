@@ -25,6 +25,7 @@ class BuilderForm extends Builder
     private $formData   = [];   // 表单数据
     private $extraHtml;            // 额外功能代码
     private $ajaxSubmit = true;    // 是否ajax提交
+    protected $fieldsItemsList = ['text','number','info','section','date','datetime','daterange','hidden','readonly','password','left_icon_text','right_icon_text','left_icon_number','right_icon_number','textarea','ueditor','wangeditor','radio','checkbox','select','select2','select_multiple','tags','multilayer_select','email','group','icon','avatar','picture','pictures','image','file','files','repeater','self','self_html','tab'];
 
     /**
      * 设置Tab按钮列表
@@ -105,6 +106,7 @@ class BuilderForm extends Builder
             'extra_class' => $extra_class
         ];
         $this->formItems[] = $item;
+        
         return $this;
     }
 
@@ -221,6 +223,67 @@ class BuilderForm extends Builder
        if (!empty($this->extraItems)) {
            $this->formItems = array_merge($this->formItems, $this->extraItems);
        }
+
+       //过来表单项
+       foreach ($this->formItems as $key => &$item) {
+           if (!in_array($item['type'], $this->fieldsItemsList)) {
+                unset($this->formItems[$key]);
+                continue;
+            }
+            switch ($item['type']) {
+                case 'hidden':
+                    $item['extra_class']='hide';
+                    break;
+                case 'picture':
+                    $item['extra']=[
+                        'field_body_class'=>'col-md-6',
+                        'field_help_block_class'=>'col-md-6 col-md-offset-2 hide',
+                        'field_body_extra'=>'style="padding-bottom: 5px;padding-left: 5px;"'
+                    ];
+                    break;
+                case 'repeater':
+                    $item['extra']=[
+                        'field_body_class'=>'col-md-10',
+                        'field_help_block_class'=>'col-md-6 col-md-offset-2',
+                    ];
+                    break;
+                case 'wangeditor':
+                    $item['extra']=[
+                        'field_body_class'=>'col-md-10',
+                        'field_help_block_class'=>'col-md-6 col-md-offset-2',
+                    ];
+                    break;
+                case 'ueditor':
+                    $item['extra']=[
+                        'field_body_class'=>'col-md-10',
+                        'field_help_block_class'=>'col-md-6 col-md-offset-2',
+                    ];
+                    break;
+                case 'radio':
+                    $item['extra']=[
+                        'field_body_class'=>'col-md-8',
+                        'field_help_block_class'=>'col-md-8 col-md-offset-2',
+                    ];
+                    break;
+                case 'textarea':
+                    $item['extra']=[
+                        'field_body_class'=>'col-md-6',
+                        'field_help_block_class'=>'col-md-6 col-md-offset-2',
+                    ];
+                    break;
+                case 'self':
+                    $item['extra']=[
+                        'field_body_class'=>'col-md-10',
+                        'field_help_block_class'=>'hide',
+                    ];
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+       }
+       
         //设置post_url默认值
         $this->postUrl=$this->postUrl? $this->postUrl : $this->url;
         //编译表单值
@@ -281,16 +344,12 @@ class BuilderForm extends Builder
         if (!is_array($field)) {
             $field = $field->toArray();
         }
-        $this->assign('field',$field);
-        if (PUBLIC_RELATIVE_PATH=='') {
-            $template_path_str = '../';
-        } else{
-            $template_path_str = './';
-        }
-
-        $fields_name = ['text','number','info','section','date','datetime','hidden','readonly','password','left_icon_text','right_icon_text','left_icon_number','right_icon_number','textarea','ueditor','wangeditor','radio','checkbox','select','select2','select_multiple','tags','multilayer_select','email','group','icon','avatar','picture','pictures','image','file','files','repeater','self','self_html','tab'];
+        
+        $template_path_str = '../';
         $field_type = $field['type'];
-        if (in_array($field_type, $fields_name)) {//为了兼容库中，要做校验
+
+        $this->assign('field',$field);
+        if (in_array($field_type, $this->fieldsItemsList)) {//为了兼容库中，要做校验
             $field_template = $template_path_str.'apps/common/view/builder/Fields/'.$field_type.'.html';
             return parent::fetch($field_template);
         } else{

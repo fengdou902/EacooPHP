@@ -99,11 +99,7 @@ class Builder extends Base {
      * @return [type]               [description]
      */
     public function fetch($template = '',$vars = [], $replace = [], $config = []) {
-        if (PUBLIC_RELATIVE_PATH == '') {
-            $template_path_str = '../';
-        } else{
-            $template_path_str = './';
-        }
+        $template_path_str = '../';
 
         $this->assign('template_path_str',$template_path_str);
         $this->assign('_builder_style_', $template_path_str.'apps/common/view/builder/style.html');  // 页面样式

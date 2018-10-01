@@ -519,7 +519,7 @@ class BuilderList extends Builder {
                     $button['attribute'] = $this->compileHtmlAttr($button);
                 }
             }
-            // $this->assign('selects',  $this->_select); //加入筛选select
+
             //表格列
             $table_column_fields = [];
             foreach ($this->tableColumns as $key => $val) {
@@ -630,7 +630,10 @@ class BuilderList extends Builder {
                 //dump('debug');
             }
             $result[$column['name']] = $data[$column['name']];
-            switch ($column['type']) {
+
+            $column_type_str = explode('_', $column['type']);
+            $column_type = $column_type_str[0];
+            switch ($column_type) {
                 case 'status':
                     switch($data[$column['name']]){
                         case -1:
@@ -656,6 +659,22 @@ class BuilderList extends Builder {
                             $data[$column['name']] = '<span class="fa fa-check text-success"></span>';
                             break;
                     }
+                    break;
+                case 'label':
+                    if (isset($column_type_str[1])) {
+                        switch($column_type_str[1]){
+                            case 'bool':
+                                if ($data[$column['name']]=='否') {
+                                    $data[$column['name']] = '<label class="label label-default">'.$data[$column['name']].'</label>';
+                                } elseif ($data[$column['name']]=='是') {
+                                    $data[$column['name']] = '<label class="label label-success">'.$data[$column['name']].'</label>';
+                                }
+                                break;
+                            default:
+                                $data[$column['name']] = '<label class="label label-'.$column_type_str[1].'">'.$data[$column['name']].'</label>';
+                        }
+                    }
+                    
                     break;
                 case 'byte':
                     $data[$column['name']] = format_bytes($data[$column['name']]);
