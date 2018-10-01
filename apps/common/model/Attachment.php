@@ -21,6 +21,11 @@ class Attachment extends Base {
         return is_login();
     }
 
+    protected function setAdminUidAttr($value)
+    {
+        return is_admin_login();
+    }
+
     // protected function setCreateTimeAttr($value)
     // {
     //     return time();

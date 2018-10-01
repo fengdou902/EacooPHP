@@ -90,7 +90,7 @@ skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar 
 
 .fixed-table-container{border:none!important;}
 
-.fixed-table-toolbar{overflow: hidden;margin-top: 10px;}
+.fixed-table-toolbar{overflow: hidden;}
 /*表单form*/
 label.radio-label1,label.checkbox-label1{padding-left: 0;}
 .help-block{font-size: 13px;line-height: 24px;color: #888;padding-left: 0;}

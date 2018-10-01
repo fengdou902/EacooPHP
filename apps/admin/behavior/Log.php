@@ -39,10 +39,10 @@ class Log {
 			if (is_array($params)) {
 	            $params = json_encode($params);
 	        }
-			$uid    = is_login();
+			$uid    = is_admin_login();
 			$remark = $info['title'];
 	        // 保存日志
-	        return $res = logic('common/Action')->recordLog($info['id'],$uid,$params,$remark);
+	        return $res = logic('common/Action')->recordLog($info['id'],$uid,$params,$remark,1);
 		}
 		
 	}

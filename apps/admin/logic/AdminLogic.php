@@ -31,8 +31,8 @@ class AdminLogic extends BaseLogic {
 	protected function initialize()
     {
         parent::initialize();
-        $this->currentUser = session('user_login_auth');
-        $this->uid = is_login();
+        $this->currentUser = session('admin_login_auth');
+        $this->uid = is_admin_login();
     }
 
     /**
@@ -45,7 +45,7 @@ class AdminLogic extends BaseLogic {
     {
         if (config('admin_allow_login_many')==1) {
             return true;
-        } elseif (session('activation_auth_sign') == model('User')->where('uid',is_login())->value('activation_auth_sign')) {
+        } elseif (session('activation_auth_sign') == model('admin/AdminUser')->where('uid',is_admin_login())->value('activation_auth_sign')) {
             return true;
         }
         return false;

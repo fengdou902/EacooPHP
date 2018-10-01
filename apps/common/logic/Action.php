@@ -24,7 +24,7 @@ class Action extends Base {
      * @date   2017-10-03
      * @author 心云间、凝听 <981248356@qq.com>
      */
-	public function recordLog($action_id = 0, $uid = 0, $data = [], $remark = '')
+	public function recordLog($action_id = 0, $is_admin, $uid = 0, $data = [], $remark = '')
 	{
 		if ($uid>0) {
 			$request = Request::instance();
@@ -32,6 +32,7 @@ class Action extends Base {
 			$data = [
 				'action_id'      => $action_id,
 				'uid'            => $uid,
+                'is_admin'       => $is_admin,
 				'nickname'       => $username,
 				'request_method' => $request->method(),
 				'url'            => $request->url(),

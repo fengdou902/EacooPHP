@@ -45,7 +45,7 @@ return [
     // 数据集返回类型
     'resultset_type' => 'array',
     // 自动写入时间戳字段
-    'auto_timestamp' => true,
+    'auto_timestamp' => 'datetime',
     // 是否需要进行SQL性能分析
     'sql_explain'    => false,
     // 是否需要断连重连

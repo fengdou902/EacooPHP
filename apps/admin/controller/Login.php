@@ -11,7 +11,7 @@
 namespace app\admin\controller;
 use app\common\controller\Base;
 
-use app\common\logic\User as UserLogic;
+use app\admin\logic\AdminUser as AdminUserLogic;
 use think\captcha\Captcha;
 use think\Url;
 
@@ -31,7 +31,7 @@ class Login extends Base
      * 后台登录
      */
     public function index(){ 
-        if(session('user_login_auth')) $this->redirect('admin/index/index');
+        if(is_admin_login()) $this->redirect('admin/index/index');
 
         if (IS_POST) {
           $data = $this->request->param();
@@ -46,13 +46,9 @@ class Login extends Base
               exit;
           }
 
-          $login = model('common/User')->where(['username|email|mobile' => $data['username'],'status'=>1])->field('allow_admin')->find();
+          $login = model('AdminUser')->where(['username|email|mobile' => $data['username'],'status'=>1])->value('uid');
 
-          if (!empty($login)) {
-              if ($login['allow_admin']!=1) {
-                $this->error('该用户不允许登录后台');
-              }
-           } else{
+          if (empty($login)) {
               $this->error('该用户不存在或禁用');
            }
 
@@ -62,7 +58,7 @@ class Login extends Base
             }
             $rememberme = $data['rememberme']==1 ? true : false;
 
-            $result = UserLogic::login($data['username'],$data['password'], $rememberme);
+            $result = AdminUserLogic::login($data['username'],$data['password'], $rememberme);
             if ($result['code']==1) {
                 $uid = !empty($result['data']['uid']) ? $result['data']['uid']:0;
                 $this->success('登录成功！',url('admin/index/index'));

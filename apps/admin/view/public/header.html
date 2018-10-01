@@ -106,7 +106,7 @@
                 <img src="{$current_user.avatar|root_full_path|default='/static/assets/img/default-avatar.png'}" class="img-circle" alt="User Image">
                 <p>
                   {$current_user.nickname} - {/*$current_user.role_name*/}
-                  <small>注册时间：{$current_user.reg_time}</small>
+                  <small>注册时间：{$current_user.create_time}</small>
                 </p>
               </li>
               <!-- Menu Body -->
@@ -127,8 +127,8 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="{:url('user/user/profile',array('uid'=>$current_user['uid']))}" class="btn btn-default btn-flat opentab" tab-name="navtab-collapse-profile">个人资料</a>
-                  <a href="{:url('user/user/resetPassword',['uid'=>$current_user['uid']])}" class="btn btn-default btn-flat opentab" tab-name="navtab-collapse-resetPassword">修改密码</a>
+                  <a href="{:url('admin/AdminUser/profile',array('uid'=>$current_user['uid']))}" class="btn btn-default btn-flat opentab" tab-name="navtab-collapse-profile">个人资料</a>
+                  <a href="{:url('admin/AdminUser/resetPassword',['uid'=>$current_user['uid']])}" class="btn btn-default btn-flat opentab" tab-name="navtab-collapse-resetPassword">修改密码</a>
                 </div>
                 <div class="pull-right">
                   <a href="javascript:void(0);" class="loginout btn btn-default btn-flat">退出</a>

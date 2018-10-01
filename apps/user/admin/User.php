@@ -31,10 +31,11 @@ class User extends Admin {
     public function index(){
         
         $searchFields = [
-            ['name'=>'status','type'=>'select','title'=>'状态','options'=>[1=>'正常',2=>'待审核']],
+            ['name'=>'reg_time_range','type'=>'daterange','extra_attr'=>'placeholder="注册时间"'],
+            ['name'=>'status','type'=>'select','title'=>'状态','options'=>[1=>'正常',0=>'禁用']],
             ['name'=>'sex','type'=>'select','title'=>'性别','options'=>[0=>'未知',1=>'男',2=>'女']],
-            ['name'=>'allow_admin','type'=>'select','options'=>['none'=>'是否允许访问后台',1=>'允许',0=>'不允许']],
-            ['name'=>'reg_time','type'=>'date','extra_attr'=>'placeholder="注册时间"'],
+            ['name'=>'is_lock','type'=>'select','title'=>'是否锁定','options'=>[0=>'否',1=>'是']],
+            ['name'=>'actived','type'=>'select','title'=>'激活','options'=>[0=>'否',1=>'是']],
             ['name'=>'keyword','type'=>'text','extra_attr'=>'placeholder="请输入查询关键字"'],
         ];
 
@@ -52,9 +53,10 @@ class User extends Admin {
      */
     public function grid()
     {
+        $search_setting = $this->buildModelSearchSetting();
         // 获取所有用户
         $condition['status'] = ['egt', '0']; // 禁用和正常状态
-        list($data_list,$total) = $this->userModel->search('uid|username|nickname|email')->getListByPage($condition,true,'reg_time desc','',true);
+        list($data_list,$total) = $this->userModel->search($search_setting)->getListByPage($condition,true,'reg_time desc');
 
         $reset_password = [
             'icon'         => 'fa fa-recycle',
@@ -81,8 +83,9 @@ class User extends Admin {
                 ->keyListItem('email', '邮箱')
                 ->keyListItem('mobile', '手机号')
                 ->keyListItem('reg_time', '注册时间')
-                ->keyListItem('allow_admin', '允许登录后台','status')
-                ->keyListItem('status_text', '状态')
+                ->keyListItem('lock_text', '锁定','label_bool')
+                ->keyListItem('actived', '激活','bool')
+                ->keyListItem('status_text', '状态','status')
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListPrimaryKey('uid')
                 ->setListData($data_list)    // 数据列表
@@ -98,7 +101,32 @@ class User extends Admin {
     public function edit($uid = 0) {
         $title = $uid ? "编辑" : "新增";
         if (IS_POST) {
+            $data = input('param.');
+            // 密码为空表示不修改密码
+            if ($data['password'] === '') {
+                $data['password']=123456;
+            }
+            $uid  = isset($data['uid']) && $data['uid']>0 ? intval($data['uid']) : false;
+            if ($uid>0) {
+                $this->validateData($data,'User.edit');
+            } else{
+                $this->validateData($data,'User.add');
+            }
             
+            
+            // 提交数据
+            //$data里包含主键id，则editData就会更新数据，否则是新增数据
+            $result = $this->userModel->editData($data);
+
+            if ($result) {
+                
+                if ($uid==is_login()) {//如果是编辑状态下
+                    logic('common/User')->updateLoginSession($uid);
+                }
+                $this->success($title.'成功', url('index'));
+            } else {
+                $this->error($this->userModel->getError());
+            }
         } else {
             $info = [
                 'sex'=>0,
@@ -111,7 +139,7 @@ class User extends Admin {
                 $info = $this->userModel->get($uid);
                 unset($info['password']);
             }
-            $builder = builder('Form')
+            $content = builder('Form')
                         ->addFormItem('uid', 'hidden', 'UID', '')
                         ->addFormItem('nickname', 'text', '昵称', '填写一个有个性的昵称吧','','require')
                         ->addFormItem('username', 'text', '用户名', '登录账户所用名称','','require')
@@ -129,11 +157,43 @@ class User extends Admin {
 
             return (new Iframe())
                     ->setMetaTitle($title.'用户')
-                    ->content($builder);
+                    ->content($content);
 
         }
     }
     
+    /**
+     * 构建模型搜索查询条件
+     * @return [type] [description]
+     * @date   2018-09-30
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    private function buildModelSearchSetting()
+    {
+        //时间范围
+        $timegap = input('reg_time_range');
+        $extend_conditions = [];
+        if($timegap){
+            $gap = explode('—', $timegap);
+            $reg_begin = $gap[0];
+            $reg_end = $gap[1];
+
+            $extend_conditions =[
+                'reg_time'=>['between',[$reg_begin.' 00:00:00',$reg_end.' 23:59:59']]
+            ];
+        }
+        //自定义查询条件
+        $search_setting = [
+            'keyword_condition'=>'uid|username|nickname|email',
+            //忽略数据库不存在的字段
+            'ignore_keys' => ['reg_time_range'],
+            //扩展的查询条件
+            'extend_conditions'=>$extend_conditions
+        ];
+
+        return $search_setting;
+    }
+
     /**
      * 个人资料
      * @param  integer $uid [description]
@@ -255,6 +315,12 @@ class User extends Admin {
         }else{
             if($ids === '1') {
                 $this->error('超级管理员不允许操作');
+            }
+        }
+        if (!empty($ids)) {
+            foreach ($ids as $key => $uid) {
+                //清理缓存
+                cache('User_info_'.$uid, null);
             }
         }
         parent::setStatus($model);

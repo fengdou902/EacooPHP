@@ -1,0 +1,110 @@
+{extend name="$_admin_public_base_"/}
+{block name="style"}{/block}
+
+{block name="main"}
+<section class="content pt-5">
+    <div class="box box-solid eacoo-box">
+        <div class="box-body">
+        <div class="eacoo-tabs builder-form-tabs">
+            <ul class="nav nav-tabs">
+                <li class=""><a href="{:url('edit',['group_id'=>$group_id])}">角色信息</a></li>
+                <li class="active"><a href="{:url('access',['group_id'=>$group_id])}">权限分配</a></li>
+                <li class=""><a href="{:url('accessUser',['group_id'=>$group_id])}">成员授权</a></li>
+            </ul>
+        </div>
+      
+        <div class="builder formbuilder-box panel-body">
+
+        <div class="row">    
+
+            <div class="col-md-7 col-md-offset-1">      
+
+                    <div id="tab2" class="tab-pane">
+                    <form action="" method="post" class="form-builder form-horizontal responsive" >
+                        <div class="form-group">
+                            <div class="auth">
+                                {volist name="auth_rules_list" id="vo"}
+                                    {php} $depend_name = $vo['depend_flag']; {/php}
+                                    <div class="{$depend_name}">
+                                        <div class="ud-control ud-checkbox">
+                                            <label class="checkbox-label checkbox-inline">
+                                                <input type="checkbox" name="menu_auth[]" data-depend-name="{$depend_name}" {php} if(in_array($vo['id'], $menu_auth_rules)) echo "checked";{/php} value="{$vo.id}">
+                                                <span class="ud-control-indicator"></span>
+                                                <span> {$vo.title}</span>
+                                            </label>
+                                            <div class="auth{$vo.id}" style="padding-left: 25px;margin-top: 10px;">
+                                                {notempty name="vo._child"}
+                                                {volist name="vo._child" id="vo2"}
+                                                    <label class="checkbox-label checkbox-inline">
+                                                        <input type="checkbox" name="menu_auth[]" data-depend-name="{$depend_name}" {php}if(in_array($vo2['id'], $menu_auth_rules)) echo "checked";{/php} value="{$vo2.id}">
+                                                        <span class="ud-control-indicator"></span>
+                                                        <span> {$vo2.title}</span>
+                                                    </label>
+                                                    <div class="auth{$vo2.id}" style="padding-left: 25px;margin-top: 10px;">
+                                                    {notempty name="vo2._child"}
+                                                        {foreach name="vo2._child" item="vo3"}
+                                                            <label class="checkbox-label checkbox-inline">
+                                                                <input type="checkbox" name="menu_auth[]" data-depend-name="{$depend_name}" {php}if(in_array($vo3['id'], $menu_auth_rules)) echo "checked";{/php} value="{$vo3.id}">
+                                                                <span class="ud-control-indicator"></span>
+                                                                <span> {$vo3.title}</span>
+                                                            </label>
+                                                            {notempty name="vo3._child"}
+                                                                <div class="auth{$vo3.id}" style="padding-left: 25px;margin-top: 10px;margin-bottom: 10px;">
+                                                                    {volist name="vo3._child" id="vo4"}
+                                                                        {notempty name="vo4._child"}
+                                                                            <label class="checkbox-inline" style="display: block;margin-top: 10px;margin-left: 0px;">
+                                                                                <input type="checkbox" name="menu_auth[]" data-depend-name="{$depend_name}" {php}if(in_array($vo4['id'], $menu_auth_rules)) echo "checked";{/php} value="{$vo4.id}">
+                                                                                <span class="ud-control-indicator"></span>
+                                                                                <span> {$vo4.title}</span>
+                                                                            </label>
+                                                                        {else /}
+                                                                             <label class="checkbox-inline">
+                                                                                <input type="checkbox" name="menu_auth[]" data-depend-name="{$depend_name}" {php}if(in_array($vo4['id'], $menu_auth_rules)) echo "checked";{/php} value="{$vo4.id}">
+                                                                                <span class="ud-control-indicator"></span>
+                                                                                <span> {$vo4.title}</span>
+                                                                            </label>
+                                                                        {/notempty}
+                                                                        
+                                                                    {/volist}
+                                                                </div>
+                                                            {/notempty}
+                                                        {/foreach}
+                                                    {/notempty}
+                                                    </div>
+                                                {/volist}
+                                                {/notempty}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                {/volist}
+                                
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-offset-2 tc">
+                                 <div class="col-md-3"><button class="btn btn-block btn-primary submit ajax-post" type="submit" target-form="form-builder">确认</button></div>  &nbsp;
+                                <div class="col-md-3"><button class="btn bg-aqua btn-block return" onclick="javascript:history.back(-1);return false;"><i class="fa fa-mail-reply"></i> 返回</button></div>
+                          </div>
+                        </div>
+                    </form>
+                    </div>
+                        
+                </div>    
+       </div><!--row-->
+     </div>
+    </div>
+</div>
+</section>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+    $(function(){
+        //遍历选中当前权限的子权限
+        $('.auth input[type="checkbox"]').on('change',function(){
+            $('.'+$(this).attr('data-depend-name')+' .auth'+$(this).val()).find('input').prop('checked',this.checked);
+        });
+    });
+</script>
+{/block}

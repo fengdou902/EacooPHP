@@ -242,6 +242,24 @@ function rand_string($len=6,$type='',$addChars='') {
 }
 
 /**
+ * 数据签名认证
+ * @param  array $data 被认证的数据
+ * @return string       签名
+ * @author 麦当苗儿 <zuojiazi@vip.qq.com>
+ */
+function data_auth_sign($data)
+{
+    //数据类型检测
+    if (!is_array($data)) {
+        $data = (array)$data;
+    }
+    ksort($data); //排序
+    $code = http_build_query($data); //url编码并生成query字符串
+    $sign = sha1($code); //生成签名
+    return $sign;
+}
+
+/**
  * 生成随机字符串
  * @param int       $length  要生成的随机字符串长度
  * @param string    $type    随机码类型：0，数字+大写字母；1，数字；2，小写字母；3，大写字母；4，特殊字符；-1，数字+大小写字母+特殊字符

@@ -13,7 +13,6 @@ namespace app\common\model;
 class TermRelationships extends Base {
 
 	// 定义时间戳字段名
-    protected $createTime = false;
     protected $updateTime = false;    
 
 }

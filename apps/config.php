@@ -39,7 +39,8 @@ $config = [
         APP_PATH . 'functions/request.php',
         APP_PATH . 'functions/attachment.php', 
         APP_PATH . 'functions/role.php',
-        APP_PATH . 'functions/term.php', 
+        APP_PATH . 'functions/term.php',
+        APP_PATH . 'functions/admin.php',
         APP_PATH . 'functions/user.php',
         APP_PATH . 'custom_function.php',
         THINK_PATH . 'helper' . EXT

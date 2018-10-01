@@ -44,9 +44,9 @@ class Attachment extends Admin {
             $attachment_options = config('attachment_options');//附件配置选项（来自附件设置）
 
             if ($path_type) {
-                $map['path_type'] = $path_type;
+                $extend_conditions['path_type'] = $path_type;
             } else {
-                $map['path_type'] = ['in','picture,file,wechat'];
+                $extend_conditions['path_type'] = ['in','picture,file,wechat'];
             }
             //筛选start
             if ($term_id>0) {
@@ -54,9 +54,9 @@ class Attachment extends Admin {
                 $media_ids = TermRelationshipsModel::where(['term_id'=>$term_id,'table'=>'attachment'])->column('object_id');
                 if(count($media_ids)){
                     //$media_ids = array_column($media_ids,'object_id');
-                    $map['id'] = ['in',$media_ids];
+                    $extend_conditions['id'] = ['in',$media_ids];
                 } else{
-                    $map['id']  = 0;
+                    $extend_conditions['id']  = 0;
                 }
             }
 
@@ -64,16 +64,16 @@ class Attachment extends Admin {
             if ($media_type>0) {
                 switch ($media_type) {
                     case 1:
-                        $map['ext']=array('in','jpg,jpeg,png,gif');
+                        $extend_conditions['ext']=array('in','jpg,jpeg,png,gif');
                         break;
                     case 2:
-                        $map['ext']=array('in','mp3,wav,wma,ogg');
+                        $extend_conditions['ext']=array('in','mp3,wav,wma,ogg');
                         break;
                     case 3:
-                        $map['ext']=array('in','mp4,rm,rmvb,wmv,avi,3gp,mkv');
+                        $extend_conditions['ext']=array('in','mp4,rm,rmvb,wmv,avi,3gp,mkv');
                         break;
                     case 4:
-                        $map['ext']=array('in','doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,7z,b2z');
+                        $extend_conditions['ext']=array('in','doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,7z,b2z');
                         break;
                     default:
                         # code...
@@ -85,17 +85,19 @@ class Attachment extends Admin {
                 $choice_date_range                 = explode('—', $choice_date_range);
                 $choice_from_date                  = strtotime(str_replace('/','-', $choice_date_range[0]).' 00:00:00');
                 $choice_to_date                    = strtotime(str_replace('/','-', $choice_date_range[1]).' 24:00:00');
-                $map['create_time']                = [['gt',$choice_from_date],['lt',$choice_to_date]];
+                $extend_conditions['create_time']                = [['gt',$choice_from_date],['lt',$choice_to_date]];
                 $attachment_options['page_number'] = 1000;//防止分页
             }
             //筛选end
             $map['status'] = 1;
             $page_number = $attachment_options['page_number']? $attachment_options['page_number']:24;
 
+            //搜索条件
             $search = [
-                'keyword_condition'=>'name',
+                'keyword_condition' =>'name',
+                'ignore_keys'       =>['action_url'],
+                'extend_conditions' =>$extend_conditions
             ];
-            $search = array_merge($search,$map);
             list($data_list,$total) = $this->attachmentModel->search($search)->getListByPage($map,true,'sort asc,create_time desc,update_time desc',$page_number);
             foreach ($data_list as $key => &$row) {
                 $row['thumb_src'] = $row['thumb_src'];

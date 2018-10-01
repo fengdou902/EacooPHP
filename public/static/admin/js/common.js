@@ -49,7 +49,6 @@
             }
         }
 
-
     });
 
     //ajax post submit请求
@@ -62,7 +61,7 @@
         if (($this.attr('type') == 'submit') || (target = $this.attr('href')) || (target = $this.attr('url'))) {
             form = $('.' + target_form);
             if (form.get(0) == undefined) {
-                updateAlert('没有可操作数据。','danger');
+                updateAlert('没有可操作数据。','error');
                 return false;
             } else if (form.get(0).nodeName == 'FORM') {
                 if ($this.attr('url') !== undefined) {
@@ -93,7 +92,7 @@
                 parent.layer.confirm(confirm_info, {offset: 't',icon: 3, title:'询问',shadeClose: true,shade: 0.5,}, function(e){
                     parent.layer.close(e);
                     if(query=='' && $(this).attr('hide-data') != 'true'){
-                        updateAlert('请勾选操作对象。','danger','注意');
+                        updateAlert('请勾选操作对象。','warning','注意');
                         return false;
                     }
                     $this.addClass('disabled').prop('disabled', true);
@@ -105,7 +104,7 @@
                 });
             } else{
                 if(query=='' && $(this).attr('hide-data') != 'true'){
-                    updateAlert('请勾选操作对象。','danger','注意');
+                    updateAlert('请勾选操作对象。','warning','注意');
                     return false;
                 }
                 $this.addClass('disabled').prop('disabled', true);
@@ -133,7 +132,7 @@ function handleBuilderListAjaxEvent(object) {
     var getSelectRows = $table.bootstrapTable('getSelections');
     var row_len = getSelectRows.length;
     if (row_len<1) {
-        updateAlert('没有可操作数据。','danger');
+        updateAlert('没有可操作数据。','error');
         return false;
     }
     var result=[];
@@ -295,7 +294,6 @@ window.updateAlert = function (message,type,title) {
         switch(type){
             case 'success': title = "提示";toastr.success(message,title); break;
             case 'warning': title = "注意";toastr.warning(message,title); break;
-            case 'danger':  title = "错误";toastr.danger(message,title); break;
             case 'error':   title = "错误";toastr.error(message,title); break;
             default:        title = "提示"; break;
         }

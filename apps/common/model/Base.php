@@ -48,7 +48,7 @@ class Base extends Model
     }
 
     /**
-     * 编辑列
+     * 编辑行
      * @param  [type] $data [description]
      * @param  [type] $map [description]
      * @param  [type] $msg [description]
@@ -106,7 +106,17 @@ class Base extends Model
             unset($setting['keyword_condition']);
             
             if (!empty($setting)) {
-                $params = array_intersect_key($params,$setting);
+                //忽略请求参数中的部分keys，通常是数据库中不存在的字段
+                if (isset($setting['ignore_keys']) && is_array($setting['ignore_keys'])) {
+                    foreach ($setting['ignore_keys'] as $key => $igkey) {
+                        unset($params[$igkey]);
+                    }
+                }
+
+                //扩展的请求参数值
+                if (isset($setting['extend_conditions']) && is_array($setting['extend_conditions']) && !empty($setting['extend_conditions'])) {
+                    $params = array_merge($params,$setting['extend_conditions']);
+                }
             }
             
         } elseif(is_string($setting)){
@@ -122,7 +132,12 @@ class Base extends Model
             
         }
         unset($params['keyword']);
-        $params = array_filter($params);
+        $params = array_filter($params,function($val){
+            if ($val!=='') {
+                return true;
+            }
+            return false;
+        });
         $this->conditions = array_merge($this->conditions,$params);
         
         return $this;
@@ -139,9 +154,11 @@ class Base extends Model
      * @param  integer $cache 是否启用缓存
      * @return 结果集
      */
-    public function getListByPage($condition, $fields = true, $order='', $page_size = null,$cache = false)
+    public function getListByPage($condition = [], $fields = true, $order='', $page_size = null,$cache = false)
     {
-        $this->conditions = array_merge($condition,$this->conditions);
+        if (!empty($condition)) {
+            $this->conditions = array_merge($condition,$this->conditions);
+        }
 
         $paged     = input('param.paged',1);//分页值
         if (!$page_size) {
@@ -152,13 +169,11 @@ class Base extends Model
         if ($cache) {
             $this->cache(true);
         }
-        if (!empty($this->conditions)) {
-            $this->where($this->conditions);
-        }
-        $list  = $this->field($fields)->order($order)->page($paged,$page_size)->select();
-        $total = $this->count();
-        
-        return [$list,$total];
+
+        $data_list  = $this->where($this->conditions)->field($fields)->order($order)->page($paged,$page_size)->select();
+        $total = $this->where($this->conditions)->count();
+
+        return [$data_list,$total];
     }
 
     /**

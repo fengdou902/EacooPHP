@@ -13,13 +13,11 @@ namespace app\admin\controller;
 use app\admin\model\AuthRule as AuthRuleModel;
 use app\admin\model\AuthGroup as AuthGroupModel;
 use app\admin\model\AuthGroupAccess as AuthGroupAccessModel;
-use app\common\model\User as UserModel;
 
 class Menu extends Admin {
 
     protected $authRuleModel;
     protected $authGroupModel;
-    protected $userModel;
 
     function _initialize()
     {
@@ -27,7 +25,6 @@ class Menu extends Admin {
 
         $this->authRuleModel  = new AuthRuleModel();
         $this->authGroupModel = new AuthGroupModel();
-        $this->userModel     = new UserModel;
 
     }
 

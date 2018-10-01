@@ -73,7 +73,7 @@ class Config {
             if (is_dir($theme_public_path)) {
                 $ec_config['theme_public']  = $theme_public_path;
 
-                $theme_static_public_path = PUBLIC_RELATIVE_PATH.'/themes/'.$current_theme.'/'.'public/';
+                $theme_static_public_path = '/themes/'.$current_theme.'/'.'public/';
                 $ec_config['view_replace_str']['__THEME_PUBLIC__']= $theme_static_public_path;
                 $ec_config['view_replace_str']['__THEME_IMG__']   = $theme_static_public_path.'img';
                 $ec_config['view_replace_str']['__THEME_CSS__']   = $theme_static_public_path.'css';
@@ -111,7 +111,7 @@ class Config {
         }
 
         //各模块静态资源路径
-        $static_path = PUBLIC_RELATIVE_PATH.'/static/'.MODULE_NAME;
+        $static_path = '/static/'.MODULE_NAME;
         $ec_config['view_replace_str']['__MODULE_STATIC__']    = $static_path;
         $ec_config['view_replace_str']['__MODULE_IMG__']    = $static_path.'/img';
         $ec_config['view_replace_str']['__MODULE_CSS__']    = $static_path.'/css';

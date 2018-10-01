@@ -9,7 +9,6 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 use app\common\logic\User as UserLogic;
-use app\admin\logic\AuthGroupAccess as AuthGroupAccessLogic;
 use app\common\logic\Action as ActionLogic;
 
 /**
@@ -19,66 +18,6 @@ use app\common\logic\Action as ActionLogic;
  */
 function is_login() {
 	return UserLogic::isLogin();
-}
-
-/**
- * 检测用户是否为管理员
- * @return boolean true-管理员，false-非管理员
- * @author 心云间、凝听 <981248356@qq.com>
- */
-function is_administrator($uid = null) {
-	$uid = is_null($uid) ? is_login() : $uid;
-    if ($uid==1) {
-        return true;
-    } elseif ($uid>1) {
-        if (in_array($uid, get_administrators())) {
-            return true;
-        }
-    }
-    return false;
-}
-
-/**
- * 检测用户是否允许登录后台
- * @return boolean true-允许，false-不允许
- * @author yyyvy <76836785@qq.com>
- */
-function is_allow_admin($uid = null) {
-    $uid = is_null($uid) ? is_login() : $uid;
-    $result = get_user_info($uid);
-    if ($result['allow_admin'] == 1) {
-        return true;
-    } else {
-        return false;
-    }
-
-}
-
-/**
- * 获取超级管理员用户
- * @return [type] [description]
- * @date   2017-10-17
- * @author 心云间、凝听 <981248356@qq.com>
- */
-function get_administrators()
-{
-    return AuthGroupAccessLogic::groupUserUids(1);
-}
-
-/**
- * 获取用户组信息
- * @param  string $uid [description]
- * @return [type] [description]
- * @date   2017-10-17
- * @author 心云间、凝听 <981248356@qq.com>
- */
-function get_user_groups($uid='')
-{
-    if ($uid>0) {
-        $auth = new \org\util\Auth();
-        return $auth->getGroups($uid);
-    }
-    return false;
 }
 
 /**
@@ -110,24 +49,6 @@ function get_nickname($uid=0)
 }
 
 /**
- * 数据签名认证
- * @param  array $data 被认证的数据
- * @return string       签名
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
- */
-function data_auth_sign($data)
-{
-    //数据类型检测
-    if (!is_array($data)) {
-        $data = (array)$data;
-    }
-    ksort($data); //排序
-    $code = http_build_query($data); //url编码并生成query字符串
-    $sign = sha1($code); //生成签名
-    return $sign;
-}
-
-/**
  * 行为日志记录
  * @param  integer $uid 用户ID
  * @param  array $data 数据
@@ -136,7 +57,7 @@ function data_auth_sign($data)
  * @date   2017-10-03
  * @author 心云间、凝听 <981248356@qq.com>
  */
-function action_log($action_id = 0, $uid = 0, $data = [], $remark = '')
+function action_log($action_id = 0, $uid = 0, $data = [], $remark = '',$is_admin = 0)
 {
     if ($uid >0 ) {
         $action_log_model = new ActionLogic;
@@ -144,6 +65,6 @@ function action_log($action_id = 0, $uid = 0, $data = [], $remark = '')
             $data = json_encode($data);
         }
         // 保存日志
-        return $res = $action_log_model->recordLog($action_id ,$uid,$data,$remark);
+        return $res = $action_log_model->recordLog($action_id ,$uid,$data,$remark,$is_admin);
     }
 }

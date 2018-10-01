@@ -48,9 +48,24 @@ class User extends Base
         
     }
 
+    //是否锁定
+    public function getLockTextAttr($value,$data)
+    {
+        $status = [ 1 => '是', 0 => '否'];
+        return isset($status[$data['is_lock']]) ? $status[$data['is_lock']] : '未知';
+    }
+
+    //是否激活
+    public function getActivedTextAttr($value,$data)
+    {
+        $status = [ 1 => '是', 0 => '否'];
+        return isset($status[$data['is_lock']]) ? $status[$data['is_lock']] : '未知';
+    }
+
+    //状态
     public function getStatusTextAttr($value,$data)
     {
-        $status = [ 1 => '正常', -1 => '删除', 0 => '禁用', 2 => '待审核', 3 => '草稿'];
+        $status = [ 1 => '正常', -1 => '删除', 0 => '禁用'];
         return isset($status[$data['status']]) ? $status[$data['status']] : '未知';
     }
 

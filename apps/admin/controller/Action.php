@@ -21,14 +21,13 @@ class Action extends Admin {
 	 */
 	public function index() {
 
-        $searchFields = [
-            ['name'=>'depend_type','type'=>'select','title'=>'来源类型','options'=>[0=>'未知',1=>'模块',2=>'插件',3=>'主题']],
-            ['name'=>'status','type'=>'select','title'=>'状态','options'=>[1=>'正常',2=>'待审核']],
-            ['name'=>'keyword','type'=>'text','extra_attr'=>'placeholder="请输入查询关键字"'],
-        ];
         return Iframe()
                 ->setMetaTitle('用户行为')  // 设置页面标题
-                ->search($searchFields)
+                ->search([
+                    ['name'=>'depend_type','type'=>'select','title'=>'来源类型','options'=>[0=>'未知',1=>'模块',2=>'插件',3=>'主题']],
+                    ['name'=>'status','type'=>'select','title'=>'状态','options'=>[1=>'正常',2=>'待审核']],
+                    ['name'=>'keyword','type'=>'text','extra_attr'=>'placeholder="请输入查询关键字"'],
+                ])
                 ->content($this->grid());
 	}
 

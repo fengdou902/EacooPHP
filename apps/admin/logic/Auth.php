@@ -13,7 +13,7 @@ namespace app\admin\logic;
 use app\admin\model\AuthRule as AuthRuleModel;
 use app\admin\model\AuthGroup as AuthGroupModel;
 use app\admin\model\AuthGroupAccess as AuthGroupAccessModel;
-use app\common\model\User as UserModel;
+use app\admin\model\AdminUser as AdminUserModel;
 
 use eacoo\Tree;
 
@@ -29,7 +29,7 @@ class Auth extends AdminLogic {
 
         $this->authRuleModel  = new AuthRuleModel;
         $this->authGroupModel = new AuthGroupModel;
-        $this->userModel      = new UserModel;
+        $this->userModel      = new AdminUserModel;
 
     }
     
@@ -539,7 +539,7 @@ EOF;
     public function removeFromGroup(){
         $uid = input('param.uid');
         $gid = input('param.group_id');
-        if( $uid==is_login()){
+        if( $uid==is_admin_login()){
             $this->error('不允许解除自身授权');
         }
         if( empty($uid) || empty($gid) ){

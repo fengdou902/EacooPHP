@@ -49,7 +49,7 @@ $(function () {
       if (install_method=='upgrade') {
           var layer_btns = ['立即升级','仅下载覆盖'];
       } else if(install_method=='install') {
-          var layer_btns = ['直接安装','仅下载'];
+          var layer_btns = ['立即安装','仅下载'];
       } else{
           var layer_btns = [];
       };
@@ -63,6 +63,7 @@ $(function () {
         content:EacooPHP.eacoo_api_url+'/appstore/appinfo?install_method='+install_method+'&type='+app_type+'&name='+name+'&epv='+EacooPHP.eacoophp_version,
         resize: false,
         btn: layer_btns,
+        btnAlign:'c',
         yes: function(index, layero){
             onlineInstall(name,app_type,install_method,0);
         },

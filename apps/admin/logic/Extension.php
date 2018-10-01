@@ -45,7 +45,7 @@ class Extension extends AdminLogic {
         ];
         $this->cloudService = new Cloud($option);
         $this->hooksModel  = new HooksModel();
-        $this->uid = is_login();
+        $this->uid = is_admin_login();
     }
 
     /**

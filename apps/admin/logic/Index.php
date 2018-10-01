@@ -28,7 +28,7 @@ class Index extends AdminLogic {
     public function getAdminSidebarMenu()
     {
         try {
-            $uid = is_login();
+            $uid = is_admin_login();
             if (!$uid) {
                 throw new \Exception("暂未登录", 0);
                 
@@ -95,8 +95,7 @@ class Index extends AdminLogic {
      */
     public static function clearCache()
     {
-        
-        cache('admin_sidebar_menus_'.is_login(),null);//清空后台菜单缓存
+        cache('admin_sidebar_menus_'.is_admin_login(),null);//清空后台菜单缓存
         cache('DB_CONFIG_DATA',null);
         
     }

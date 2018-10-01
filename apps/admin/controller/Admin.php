@@ -11,9 +11,7 @@
 namespace app\admin\controller;
 use app\common\controller\Base;
 
-use app\common\model\User as UserModel;
 use app\admin\logic\AdminLogic;
-
 use eacoo\EacooAccredit;
 
 use think\Cookie;
@@ -24,34 +22,31 @@ class Admin extends Base
         parent::_initialize();
         //初始化
         $this->initConfig();
-
-        if( !is_login()){
+        
+        if( !is_admin_login()){
             // 还没登录 跳转到登录页面
             $this->redirect('admin/login/index');
         } else {
-            $this->currentUser = session('user_login_auth');
+            $this->currentUser = session('admin_login_auth');
 
-            if(!is_allow_admin()){
-                $this->error('该用户不允许登录后台','/');
-            }
-        }
-
-        if (!in_array($this->urlRule,['admin/login/index', 'admin/index/logout'])) {
-            // 检测系统权限
-            if(!is_administrator()){
-                if (config('admin_allow_ip')) {
-                    // 检查IP地址访问
-                    if (!in_array($this->ip, explode(',', config('admin_allow_ip')))) {
-                        $this->error('403:禁止访问');
+            if (!in_array($this->urlRule,['admin/login/index', 'admin/index/logout'])) {
+                // 检测系统权限
+                if(!is_administrator()){
+                    if (config('admin_allow_ip')) {
+                        // 检查IP地址访问
+                        if (!in_array($this->ip, explode(',', config('admin_allow_ip')))) {
+                            $this->error('403:禁止访问');
+                        }
                     }
+                    $this->checkAuth();
                 }
-                $this->checkAuth();
+                
             }
-            
-        }
-        //校验是否同时后台在线多个用户
-        if (!AdminLogic::checkAllowLoginByTime()) {
-            $this->error('您的帐号正在别的地方登录!',url('admin/login/logout'));
+
+            //校验是否同时后台在线多个用户
+            if (!AdminLogic::checkAllowLoginByTime()) {
+                $this->error('您的帐号正在别的地方登录!',url('admin/login/logout'));
+            }
         }
 
         if(!IS_AJAX){
@@ -63,12 +58,8 @@ class Admin extends Base
             if (isset($collect_menus[$this->request->url()])) {
                 $this->assign('is_menu_collected',1);
             }
-            if (PUBLIC_RELATIVE_PATH=='') {
-                $template_path_str = '../';
-            } else{
-                $template_path_str = './';
-            }
 
+            $template_path_str = '../';
             $_admin_public_base = '';
             if ($this->request->param('load_type')=='iframe') {
                 $_admin_public_base = $template_path_str.'apps/admin/view/public/layerbase.' .config('template.view_suffix');
@@ -133,7 +124,7 @@ class Admin extends Base
         $model_primary_key = $model->getPk();
         $map[$model_primary_key] = ['in',$ids];
         if ($script) {
-            $map['uid'] = ['eq', is_login()];
+            $map['uid'] = ['eq', is_admin_login()];
         }
         switch ($status) {
             case 'forbid' :  // 禁用条目
@@ -195,7 +186,6 @@ class Admin extends Base
                 );
                 break;
             case 'delete'  :  // 删除条目
-                //action_log(0, is_login(), ['param'=>$this->request->param()],'删除操作');
                 $result = $model->where($map)->delete();
                 if ($result) {
                     $this->success('删除成功，不可恢复！');
@@ -275,7 +265,7 @@ class Admin extends Base
         $auth = new \org\util\Auth();
         $name = $this->urlRule;
         //当前用户id
-        $uid = is_login();
+        $uid = is_admin_login();
         //执行check的模式
         $mode = 'url';
         //'or' 表示满足任一条规则即通过验证;

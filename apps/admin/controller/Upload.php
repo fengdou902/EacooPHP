@@ -114,7 +114,7 @@ class Upload extends Admin {
 
         $widget_show_type = config('attachment_options.widget_show_type');//附件选择器显示类型(0:所有，1:作者)
         if (intval($widget_show_type)==1) {
-          $map['uid'] = is_login();
+          $map['uid'] = is_admin_login();
         }
         //分类
         if (!empty($data['cat']) && $data['cat']>0) {
