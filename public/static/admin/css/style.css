@@ -90,7 +90,6 @@ skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar 
 
 .fixed-table-container{border:none!important;}
 
-.fixed-table-toolbar{overflow: hidden;}
 /*表单form*/
 label.radio-label1,label.checkbox-label1{padding-left: 0;}
 .help-block{font-size: 13px;line-height: 24px;color: #888;padding-left: 0;}
@@ -119,7 +118,7 @@ label.radio-label1,label.checkbox-label1{padding-left: 0;}
 .remove-attachment:hover{color: #DD0000;box-shadow: inset 0 1px 1px red, 0 0 8px red;}
 
 .webuploader-pick{border: none!important;padding: 0!important;}
-.popup-gallery img{max-width: 100%;}
+.popup-gallery img{max-width: 100%;max-height: 100%;}
 
 .upload-img-box{display:block;width: 200px;height: 156px;margin-top: 10px;margin-left:10px;max-width: none;}
 .upload-img-box a{line-height: 143px;}
@@ -136,7 +135,7 @@ label.radio-label1,label.checkbox-label1{padding-left: 0;}
 /*.media-li{width:128px;height: 156px;padding: 2px;}*/
 .media-li:hover,.attachment_list .box-style:hover{ box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15) !important; }
 .attachment_list .thumbnail{height: 130px;border:none;}
-.attachment_list .thumbnail img{width:100%;height: 100%;max-height: 163px;}
+.attachment_list .thumbnail img{width:100%;height: 100%;max-height: 146px;}
 .attachment_list .attachment-foot{padding: 3px;white-space:nowrap;overflow: hidden;}
 /*弹框附件widget*/
 #attachmentInfoModal{}

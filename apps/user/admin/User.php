@@ -29,19 +29,17 @@ class User extends Admin {
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function index(){
-        
-        $searchFields = [
-            ['name'=>'reg_time_range','type'=>'daterange','extra_attr'=>'placeholder="注册时间"'],
-            ['name'=>'status','type'=>'select','title'=>'状态','options'=>[1=>'正常',0=>'禁用']],
-            ['name'=>'sex','type'=>'select','title'=>'性别','options'=>[0=>'未知',1=>'男',2=>'女']],
-            ['name'=>'is_lock','type'=>'select','title'=>'是否锁定','options'=>[0=>'否',1=>'是']],
-            ['name'=>'actived','type'=>'select','title'=>'激活','options'=>[0=>'否',1=>'是']],
-            ['name'=>'keyword','type'=>'text','extra_attr'=>'placeholder="请输入查询关键字"'],
-        ];
 
         return (new Iframe())
                 ->setMetaTitle('用户列表')
-                ->search($searchFields)
+                ->search([
+                    ['name'=>'reg_time_range','type'=>'daterange','extra_attr'=>'placeholder="注册时间"'],
+                    ['name'=>'status','type'=>'select','title'=>'状态','options'=>[1=>'正常',0=>'禁用']],
+                    ['name'=>'sex','type'=>'select','title'=>'性别','options'=>[0=>'未知',1=>'男',2=>'女']],
+                    ['name'=>'is_lock','type'=>'select','title'=>'是否锁定','options'=>[0=>'否',1=>'是']],
+                    ['name'=>'actived','type'=>'select','title'=>'激活','options'=>[0=>'否',1=>'是']],
+                    ['name'=>'keyword','type'=>'text','extra_attr'=>'placeholder="请输入查询关键字"'],
+                ])
                 ->content($this->grid());
     }
 
@@ -130,8 +128,8 @@ class User extends Admin {
         } else {
             $info = [
                 'sex'=>0,
-                'allow_admin'=>1,
                 'sex'=>0,
+                'is_lock'=>0,
                 'status'=>1
             ];
             // 获取账号信息
@@ -147,9 +145,9 @@ class User extends Admin {
                         ->addFormItem('email', 'email', '邮箱', '','','data-rule="email" data-tip="请填写一个邮箱地址"')
                         ->addFormItem('mobile', 'left_icon_number', '手机号', '',['icon'=>'<i class="fa fa-phone"></i>'],'placeholder="填写手机号"')
                         ->addFormItem('sex', 'radio', '性别', '',[0=>'保密',1=>'男',2=>'女'])
-                        ->addFormItem('allow_admin', 'select', '是否允许访问后台', '',[0=>'不允许',1=>'允许'])
                         ->addFormItem('description', 'textarea', '个人说明', '请填写个人说明')
-                        ->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'正常',2=>'待验证'])
+                        ->addFormItem('is_lock', 'radio', '是否锁定', '',[0=>'否',1=>'是'])
+                        ->addFormItem('status', 'radio', '状态', '',[1=>'正常',0=>'禁用'])
                         ->setFormData($info)//->setAjaxSubmit(false)
                         ->addButton('submit')
                         ->addButton('back')    // 设置表单按钮

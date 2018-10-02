@@ -8,95 +8,95 @@
     $path_type = isset($field['options']['path_type'])? $field['options']['path_type'] : 'attachment';
     $is_sql    = isset($field['options']['is_sql'])? $field['options']['is_sql'] : 'close';
 {/php}
-<div class="form-group controls item_{$field.name} {$field.extra_class|default=''}">
-    <label for="{$field.name}" class="col-md-2 control-label">{$field.title|htmlspecialchars}</label>
-    <div class="col-md-6" style="padding-bottom: 5px;">
-        <span class="btn btn-info ml-10 btn-sm" id="upload_files_{$field.id}"><i class="fa fa-file"></i> 选择多文件</span>
-        {notempty name="field.description"}<span class="color-red f12 ml-10">{$field.description}</span>{/notempty}
-    </div>
-    <div id="{$field.name}-files-box" class="uploader-list col-md-6 col-md-offset-2 img-box {notempty name="field.value"}gallery-box-bg{/notempty}">
-        <ul class="list-group">
-           {notempty name="field.value"}
-                {php}
-                    if (is_array($field['value'])) {
-                        $files = $field['value'];
-                    } else {
-                        $files = explode(',',$field['value']);
-                    }
 
-                {/php}
-                {foreach name="files" item="vo"}
-                    {notempty name="vo"}
-                        {php}
-                            $file_info = get_attachment_info($vo);
-                        {/php}
-                        <li class="list-group-item">
-                            <i class="fa fa-times-circle remove-attachment"></i> <a href="{$file_info.path|default=''}">{$file_info.name|default=''}</a>
-                            <input class="attach" type="hidden" name="{$field.name}[]" value="{$vo|default=''}"/>
-                        </li>
-                    {/notempty}
-                {/foreach}
-            {/notempty}
-        </ul>
-    </div>
-    </div>
-    {present name="webuploader"}{if condition="$webuploader"}
-    <link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
-    <script type="text/javascript" charset="utf-8" src="__LIBS__/webuploader/js/webuploader.min.js"></script>
-{/if}{/present}
-    <script>
-    //本地上传(分开写为了好控制)
-    $(function () {
-            var uploader_{$field.name}= WebUploader.create({
-                // 选完文件后，是否自动上传。
-                auto: true,
-                duplicate: true,// 同一文件是否可以重复上传
-                // swf文件路径
-                swf: '__PUBLIC__/lib/webuploader/Uploader.swf',
-                // 文件接收服务端。
-                server: "{:url('admin/Upload/upload',['path_type'=>$path_type,'type'=>'file','is_sql'=>$is_sql])}",
-                //验证文件总数量, 超出则不允许加入队列
-                fileNumLimit: 5,
-                // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
-                resize: false, 
-                // 验证单个文件大小是否超出限制, 超出则不允许加入队列 
-                fileSingleSizeLimit:{php}echo intval(config('attachment_options.file_max_size')) ? : 50*1024*1024;{/php},  
-                // 内部根据当前运行是创建，可能是input元素，也可能是flash.
-
-                //选择文件的按钮
-                pick: '#upload_files_{$field.id}',
-                // 只允许选择图片文件
-                accept:{title:'Files',extensions:'doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,bz2,7z'}
-            });
-            uploader_{$field.name}.on('fileQueued', function (file) {
-                uploader_{$field.name}.upload();
-            });
-            /*上传成功**/
-            uploader_{$field.name}.on('uploadSuccess', function (file, result) {
-                if (result.code==1) {
-                    var data = result.data;
-                    var append_string='<li class="list-group-item"><i class="fa fa-file"></i> <a href="'+data.path+'">'+data.name+'</a><i class="fa fa-times-circle remove-attachment"></i><input class="attach" type="hidden" name="{$field.name}[]" value="'+data.path+'"></li>';
-                    $("#{$field.name}-files-box ul").prepend(append_string);
-                    $("#{$field.name}-files-box").addClass('gallery-box-bg');
-                    uploader_{$field.name}.reset();
+<div class="files-row">
+    <span class="btn btn-info ml-10 btn-sm" id="upload_files_{$field.id}"><i class="fa fa-file"></i> 选择多文件</span>
+    {notempty name="field.description"}<span class="color-red f12 ml-10">{$field.description}</span>{/notempty}
+</div>
+<div id="{$field.name}-files-box" class="uploader-list col-md-8 mt-10 img-box {notempty name="field.value"}gallery-box-bg{/notempty}">
+    <ul class="list-group">
+       {notempty name="field.value"}
+            {php}
+                if (is_array($field['value'])) {
+                    $files = $field['value'];
                 } else {
-                    updateAlert(result.msg);
-                    setTimeout(function () {   
-                        $(this).removeClass('disabled').prop('disabled', false);
-                    }, 1500);
+                    $files = explode(',',$field['value']);
                 }
-            });
 
-            // 删除文件
-            $('body').on('click', '#{$field.name}-gallery-box .remove-attachment', function() {
-                var ready_for_remove_id = $(this).closest('.thumbnail').find('img').attr('data-id'); //获取待删除的图片ID
-                if (!ready_for_remove_id) {
-                    updateAlert('错误', 'danger');
-                }
-                var current_picture_ids = $('#{$field.name}').val().split(","); //获取当前图集以逗号分隔的ID并转换成数组
-                current_picture_ids.splice($.inArray(ready_for_remove_id,current_picture_ids),1); //从数组中删除待删除的图片ID
-                $('#{$field.name}').val(current_picture_ids.join(',')) //删除后覆盖原input的值
-                $(this).closest('.col-md-3').remove(); //删除图片预览图
-            });
-        })
-    </script>
+            {/php}
+            {foreach name="files" item="vo"}
+                {notempty name="vo"}
+                    {php}
+                        $file_info = get_attachment_info($vo);
+                    {/php}
+                    <li class="list-group-item">
+                        <i class="fa fa-file"></i> <a href="{$file_info.path|default=''}">{$file_info.name|default=''}</a><i class="fa fa-times-circle remove-attachment"></i>
+                        <input class="attach" type="hidden" name="{$field.name}[]" value="{$vo|default=''}"/>
+                    </li>
+                {/notempty}
+            {/foreach}
+        {/notempty}
+    </ul>
+</div>
+
+{present name="webuploader"}
+{if condition="$webuploader"}
+<link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" charset="utf-8" src="__LIBS__/webuploader/js/webuploader.min.js"></script>
+{/if}{/present}
+<script>
+//本地上传(分开写为了好控制)
+$(function () {
+        var uploader_{$field.name}= WebUploader.create({
+            // 选完文件后，是否自动上传。
+            auto: true,
+            duplicate: true,// 同一文件是否可以重复上传
+            // swf文件路径
+            swf: '__PUBLIC__/lib/webuploader/Uploader.swf',
+            // 文件接收服务端。
+            server: "{:url('admin/Upload/upload',['path_type'=>$path_type,'type'=>'file','is_sql'=>$is_sql])}",
+            //验证文件总数量, 超出则不允许加入队列
+            fileNumLimit: 5,
+            // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+            resize: false, 
+            // 验证单个文件大小是否超出限制, 超出则不允许加入队列 
+            fileSingleSizeLimit:{php}echo intval(config('attachment_options.file_max_size')) ? : 50*1024*1024;{/php},  
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+
+            //选择文件的按钮
+            pick: '#upload_files_{$field.id}',
+            // 只允许选择图片文件
+            accept:{title:'Files',extensions:'doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,bz2,7z'}
+        });
+        uploader_{$field.name}.on('fileQueued', function (file) {
+            uploader_{$field.name}.upload();
+        });
+        /*上传成功**/
+        uploader_{$field.name}.on('uploadSuccess', function (file, result) {
+            if (result.code==1) {
+                var data = result.data;
+                var append_string='<li class="list-group-item"><i class="fa fa-file"></i> <a href="'+data.path+'">'+data.name+'</a><i class="fa fa-times-circle remove-attachment"></i><input class="attach" type="hidden" name="{$field.name}[]" value="'+data.path+'"></li>';
+                $("#{$field.name}-files-box ul").prepend(append_string);
+                $("#{$field.name}-files-box").addClass('gallery-box-bg');
+                uploader_{$field.name}.reset();
+            } else {
+                updateAlert(result.msg);
+                setTimeout(function () {   
+                    $(this).removeClass('disabled').prop('disabled', false);
+                }, 1500);
+            }
+        });
+
+        // 删除文件
+        $('body').on('click', '#{$field.name}-gallery-box .remove-attachment', function() {
+            var ready_for_remove_id = $(this).closest('.thumbnail').find('img').attr('data-id'); //获取待删除的图片ID
+            if (!ready_for_remove_id) {
+                updateAlert('错误', 'danger');
+            }
+            var current_picture_ids = $('#{$field.name}').val().split(","); //获取当前图集以逗号分隔的ID并转换成数组
+            current_picture_ids.splice($.inArray(ready_for_remove_id,current_picture_ids),1); //从数组中删除待删除的图片ID
+            $('#{$field.name}').val(current_picture_ids.join(',')) //删除后覆盖原input的值
+            $(this).closest('.col-md-3').remove(); //删除图片预览图
+        });
+    })
+</script>

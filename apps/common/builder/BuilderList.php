@@ -506,7 +506,7 @@ class BuilderList extends Builder {
 
             }
 
-            //setAppLog('$params=>'.var_export(input('param.'),true).';','builder_list','debug');
+            //setAppLog('$params=>'.var_export(input('param.'),true).';','debug');
             $total  = $this->tableDataPage['total'];
             $list   = $this->tableDataList;
             $result = ["total" => $total, "rows" => $list];

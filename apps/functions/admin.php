@@ -78,3 +78,35 @@ function get_adminuser_info($uid) {
     return false;
     
 }
+
+/**
+ * 获取当前用户登录的角色的标识
+ * @return int 角色id
+  * @return 
+ */
+function get_admin_role($field='id')
+{
+    $user = session('admin_login_auth');
+    if (empty($user)) {
+        return 0;
+    } else {
+        if ($field=='id') {
+            return session('admin_activation_auth_sign') == data_auth_sign($user) ? $user['auth_group'] : 0;
+        } else{
+            $role_info = [];
+            if (session('admin_activation_auth_sign') == data_auth_sign($user)) {
+                if (!empty($user['auth_group'])) {
+                    foreach ($user['auth_group'] as $key => $val) {
+                        $role_info[] = db('AuthGroup')->where(['id'=>$key])->field($field)->find();
+                    }
+                }
+                
+                
+            }
+            
+        }
+        
+    }
+    return $role_info;
+}
+

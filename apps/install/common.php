@@ -221,11 +221,11 @@ function register_administrator($db, $prefix, $admin){
 
 	$password = encrypt($admin['password']);
 	
-	$sql = "INSERT INTO `[PREFIX]users` (`uid`,`username`,`password`,`nickname`,`email`, `avatar`,`sex`,`birthday`,`score`,`allow_admin`,`reg_time`,`last_login_ip`,`last_login_time`,`status`) VALUES ".
-		   "('1', '[NAME]', '[PASS]', '创始人', '[EMAIL]','http://img.eacoomall.com/images/static/assets/img/default-avatar.png', '0', '0', '0', '1', '[TIME]', '[IP]','[TIME]', '1');";
+	$sql = "INSERT INTO `[PREFIX]admin` (`uid`,`username`,`password`,`nickname`,`email`, `avatar`,`bind_uid`,`sex`,`create_time`,`update_time`,`last_login_ip`,`last_login_time`,`status`) VALUES ".
+		   "('1', '[NAME]', '[PASS]', '创始人', '[EMAIL]','http://cdn.eacoo.xin/attachment/static/assets/img/default-avatar.png',1, '0', '[TIME]','[TIME]', '[IP]','[TIME]', '1');";
 	$sql = str_replace(
 		['[PREFIX]', '[NAME]','[PASS]','[EMAIL]','[TIME]', '[IP]'],
-		[$prefix, $admin['username'],$password, $admin['email'], time(), get_client_ip(1)],
+		[$prefix, $admin['username'],$password, $admin['email'], date('Y-m-d H:i:s'), get_client_ip(1)],
 		$sql);
 	$db->execute($sql);
 	show_msg('创始人帐号注册完成！');

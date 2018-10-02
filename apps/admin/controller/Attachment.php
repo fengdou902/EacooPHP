@@ -95,7 +95,7 @@ class Attachment extends Admin {
             //搜索条件
             $search = [
                 'keyword_condition' =>'name',
-                'ignore_keys'       =>['action_url'],
+                'ignore_keys'       =>['action_url','media_type','term_id','choice_date_range'],
                 'extend_conditions' =>$extend_conditions
             ];
             list($data_list,$total) = $this->attachmentModel->search($search)->getListByPage($map,true,'sort asc,create_time desc,update_time desc',$page_number);

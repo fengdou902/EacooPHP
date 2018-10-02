@@ -87,7 +87,7 @@ class Upload {
 
 			return $return;
 		} catch (\Exception $e) {
-			setAppLog($e->getMessage(),'Upload','error');
+			setAppLog($e->getMessage(),'error');
 			$return = [
 					'code' =>$e->getCode(),
 					'msg'  =>$e->getMessage(),

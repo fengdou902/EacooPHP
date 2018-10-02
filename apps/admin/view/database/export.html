@@ -91,7 +91,7 @@
             $.post(
                 $form.attr("action"),
                 $form.serialize(),
-                function(data){console.debug(data);
+                function(data){
                     if(data.code==1){
                         var info = data.data;
                         tables = info.tables;
@@ -99,7 +99,7 @@
                         backup(info.tab);
                         window.onbeforeunload = function(){ return "正在备份数据库，请不要关闭！" }
                     } else {
-                        updateAlert(data.msg,'danger');
+                        updateAlert(data.msg,'error');
                         $export.parent().children().removeClass("disabled");
                         $export.html("立即备份");
                         setTimeout(function(){
@@ -144,33 +144,6 @@
             $form.find("input[value=" + tables[id] + "]").closest("tr").find(".info").html(msg);
         }
 
-        //icheck
-        $('input').iCheck({
-              checkboxClass:'icheckbox_minimal-blue',
-              radioClass:'iradio_minimal-blue',
-              increaseArea:'20%' // optional
-        });
-        $(".checkbox-toggle,.check-all").click(function () {
-              var clicks = $(this).data('clicks');
-              if (clicks) {
-                //Uncheck all checkboxes
-                $("input[type='checkbox']").iCheck("uncheck");
-                $(".fa", this).removeClass("fa-check-square-o").addClass('fa-square-o');
-              } else {
-                //Check all checkboxes
-                $("input[type='checkbox']").iCheck("check");
-                $(".fa", this).removeClass("fa-square-o").addClass('fa-check-square-o');
-              }
-              $(this).data("clicks", !clicks);
-        });
-        $(".checkbox-toggle .iCheck-helper").click(function () {
-              var all_checked=$('.checkbox-toggle>div.icheckbox_minimal-blue').hasClass('checked');
-              if (!all_checked) {
-                $("input[type='checkbox']").iCheck("uncheck");
-              } else{
-                $("input[type='checkbox']").iCheck("check");
-              }
-          });
     })(jQuery);
 </script>
 {/block}

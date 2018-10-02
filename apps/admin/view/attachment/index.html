@@ -299,34 +299,6 @@
             return false;
         });
 
-        //icheck
-        $('input').iCheck({
-            checkboxClass:'icheckbox_minimal-blue',
-            radioClass:'iradio_minimal-blue',
-            increaseArea:'20%' // optional
-        });
-        $(".checkbox-toggle,.check-all").click(function () {
-              var clicks = $(this).data('clicks');
-              if (clicks) {
-                //Uncheck all checkboxes
-                $("input[type='checkbox']").iCheck("uncheck");
-                $(".fa", this).removeClass("fa-check-square-o").addClass('fa-square-o');
-              } else {
-                //Check all checkboxes
-                $("input[type='checkbox']").iCheck("check");
-                $(".fa", this).removeClass("fa-square-o").addClass('fa-check-square-o');
-              }
-              $(this).data("clicks", !clicks);
-        });
-        $(".checkbox-toggle .iCheck-helper").click(function () {
-            var all_checked=$('.checkbox-toggle>div.icheckbox_minimal-blue').hasClass('checked');
-            if (!all_checked) {
-              $("input[type='checkbox']").iCheck("uncheck");
-            } else{
-               $("input[type='checkbox']").iCheck("check");
-            }
-        });
-
         /**
          * 分页
          * @param  {[type]} ) {    } [description]

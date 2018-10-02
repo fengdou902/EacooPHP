@@ -19,11 +19,11 @@
                 {volist name="user_list" id="data"}
                     <div class="col-xs-6 col-sm-3 col-md-3 homebox">
                         <div class="card">
-                            <a class="img-circlea" href="{:URL('user/index/home',['uid'=>$data['uid']])}">
+                            <a class="img-circlea" href="{:url('user/index/info',['uid'=>$data['uid']])}">
                                 <img src="{$data.avatar}" alt="{$data.nickname}" class="avatar">
                             </a>
                             <div class="card-heading">
-                                <a href="{:URL('/user/index/home',['uid'=>$data['uid']])}">
+                                <a href="{:url('/user/index/info',['uid'=>$data['uid']])}">
                                     {$data.nickname}</strong>
                                 </a>
                             </div>

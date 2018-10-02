@@ -25,7 +25,7 @@ class BuilderForm extends Builder
     private $formData   = [];   // 表单数据
     private $extraHtml;            // 额外功能代码
     private $ajaxSubmit = true;    // 是否ajax提交
-    protected $fieldsItemsList = ['text','number','info','section','date','datetime','daterange','hidden','readonly','password','left_icon_text','right_icon_text','left_icon_number','right_icon_number','textarea','ueditor','wangeditor','radio','checkbox','select','select2','select_multiple','tags','multilayer_select','email','group','icon','avatar','picture','pictures','image','file','files','repeater','self','self_html','tab'];
+    protected $fieldsItemsList = ['text','number','url','info','section','date','datetime','daterange','hidden','readonly','password','left_icon_text','right_icon_text','left_icon_number','right_icon_number','textarea','ueditor','wangeditor','radio','checkbox','select','select2','select_multiple','tags','multilayer_select','email','group','icon','avatar','picture','pictures','image','file','files','repeater','self','self_html','tab'];
 
     /**
      * 设置Tab按钮列表
@@ -239,6 +239,20 @@ class BuilderForm extends Builder
                         'field_body_class'=>'col-md-6',
                         'field_help_block_class'=>'col-md-6 col-md-offset-2 hide',
                         'field_body_extra'=>'style="padding-bottom: 5px;padding-left: 5px;"'
+                    ];
+                    break;
+                case 'pictures':
+                    $item['extra']=[
+                        'field_body_class'=>'col-md-8',
+                        'field_help_block_class'=>'col-md-6 col-md-offset-2 hide',
+                        'field_body_extra'=>'style="padding-bottom: 5px;padding-left: 5px;"'
+                    ];
+                    break;
+                case 'files':
+                    $item['extra']=[
+                        'field_body_class'=>'col-md-6',
+                        'field_help_block_class'=>'col-md-6 col-md-offset-2 hide',
+                        'field_body_extra'=>''
                     ];
                     break;
                 case 'repeater':

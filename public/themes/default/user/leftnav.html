@@ -2,7 +2,7 @@
   <div class="panel panel-default avatar-box">
     <div class="panel-heading text-center">
       <h3 class="panel-title">
-        <a href="{:URL('user/index/home',['uid'=>$current_user['uid']])}">
+        <a href="{:url('user/index/home',['uid'=>$current_user['uid']])}">
           <img class="img-circle" src="{$current_user.avatar}" style="width:120px;height:120px;">
         </a>
       </h3>
@@ -34,7 +34,7 @@
         </div>
         <div id="list1" class="panel-collapse collapse in" role="tabpanel">
           <div class="list-group">
-            <a class="list-group-item" href="{:url('user/index/profile')}"><i class="fa fa-edit"></i> 修改信息</a>
+            <a class="list-group-item" href="{:url('user/personal/profile')}"><i class="fa fa-edit"></i> 修改信息</a>
             {notempty name="users_menus"}
               {volist name="users_menus" id="row"}
                 <a class="list-group-item" href="{$row.depend_type==1?url($row['value']):plugin_url($row['value'])}"><i class="{$row.icon}"></i> {$row.title}</a>

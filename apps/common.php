@@ -211,25 +211,50 @@ function eacoo_url($url, $param=[],$type=1)
 /**
  * 设置日志记录
  * @param  string $content 日志内容
- * @param  string $scene_name 场景类型名
- * @param  string $type 内容类型：如：info,error,debug
+ * @param  string $level 内容类型：如：info,error,debug
+ * @param  string $action_name 操作名
+ * @param  string $scene_name 场景名，默认控制器名
+ * @param  string $module_name 模块名
  * @date   2017-11-06
  * @author 心云间、凝听 <981248356@qq.com>
  */
-function setAppLog($content='', $scene_name='default', $type='info')
+function setAppLog($content='',$level='info', $action_name='', $scene_name='', $module_name='' )
 {
+    if (empty($content)) {
+        return false;
+    }
     if (is_array($content)) {
         $content = var_export($content,true);
     }
+
+    if (!$action_name) {
+        $action_name = defined('ACTION_NAME') ? ACTION_NAME : 'unknown';
+    }
+
+    if (!$scene_name) {
+        $scene_name = defined('CONTROLLER_NAME') ? CONTROLLER_NAME : 'unknown';
+    }
+
+    if (!$module_name) {
+        $module_name = defined('MODULE_NAME') ? MODULE_NAME : 'unknown';
+    }
+
     $now = date('Y-m-d H:i:s');
     $remote  = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
     $method  = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'CLI';
     $uri     = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-    $base_message = "---------------------------------------------------------------\r\n[{$now}] {$remote} {$method} {$uri}\r\n";
-    $file = RUNTIME_PATH."applog".DS.$scene_name.DS.$type.'_'.date('Ymd',time()).".log";
+
+    $data = [
+            'type'      => 'custom',
+            'content'   => $content,
+            'remote'    => $remote,
+            'method'    => $method,
+            'uri'       => $uri
+        ];
+    $log_content = "[".date('Y-m-d H:i:s')."] ".strtoupper($level).": ".json_encode($data)."\n";
+    $file = RUNTIME_PATH."applog".DS.$module_name.DS.$scene_name.DS.$action_name.'_'.date('Ymd',time()).".log";
     $path = dirname($file);
     !is_dir($path) && mkdir($path, 0755, true);
-    $content = $content." \r\n";
-    file_put_contents($file,$base_message.$content,FILE_APPEND|LOCK_EX);
+    file_put_contents($file,$log_content,FILE_APPEND|LOCK_EX);
     return true;
 }

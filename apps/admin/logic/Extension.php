@@ -349,8 +349,8 @@ class Extension extends AdminLogic {
                         @rmdirs($_static_path);//防止路径报错，前先清理静态资源目录
                     }
                     
-                    if (!rename($static_path,$_static_path)) {
-                        setAppLog('应用静态资源移动失败'.PUBLIC_PATH.'static'.$type_path.'/'.$name,'Extension','error');
+                    if (!copy($static_path,$_static_path)) {
+                        setAppLog('应用静态资源移动失败'.PUBLIC_PATH.'static'.$type_path.'/'.$name,'error');
                     } 
                 }
  
@@ -365,7 +365,7 @@ class Extension extends AdminLogic {
             }
             return ['code'=>1,'msg'=>'安装成功','data'=>''];
         } catch (\Exception $e) {
-            setAppLog($e,'Extension','install_error');
+            setAppLog($e,'error');
             //卸载安装的数据库
             $sql_file = $this->appExtensionPath.'install/uninstall.sql';
             if(is_file($sql_file) && isset($info['database_prefix'])) Sql::executeSqlByFile($sql_file, $info['database_prefix']);
@@ -407,7 +407,7 @@ class Extension extends AdminLogic {
         if (is_dir($_static_path)) {
             @rmdirs($_static_path);//升级前先清理静态资源目录
             if(is_writable(PUBLIC_PATH.'static/'.$type_path) && is_writable($this->appsPath.$name)){
-                if (!rename($_static_path,$static_path)) {
+                if (!copy($_static_path,$static_path)) {
                     setAppLog('静态资源移动失败：'.$static_path.'移动到'.$_static_path,'error');
                 } 
             }

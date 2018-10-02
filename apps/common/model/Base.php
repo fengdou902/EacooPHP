@@ -89,7 +89,15 @@ class Base extends Model
     public function search($setting = [])
     {
         $params = input();
+        //是否来源插件url
+        if (input('?param._plugin')) {
+            unset($params['_plugin']);
+            unset($params['_controller']);
+            unset($params['_action']);
+        }
         unset($params['paged']);
+        unset($params['order']);
+        unset($params['sort_name']);
         unset($params['page_size']);
         unset($params['_']);
         $rule='%[KEYWORD]%';
@@ -132,6 +140,7 @@ class Base extends Model
             
         }
         unset($params['keyword']);
+        
         $params = array_filter($params,function($val){
             if ($val!=='') {
                 return true;

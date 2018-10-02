@@ -278,10 +278,9 @@ class Plugins extends Admin {
                             throw new \Exception($error_msg.'目录写入权限不足',0);
                         }
 
-                        $static_path = PLUGIN_PATH.$name.'/static';
-                        if (!rename($_static_path,$static_path)) {
-                            trace('插件静态资源移动失败：'.'public/static/plugins/'.$name.'->'.$static_path,'error');
-                        }
+                        // if (!rmdirs($_static_path)) {
+                        //     trace('插件静态资源删除失败：'.$_static_path,'error');
+                        // }
                     }
                     
                 }

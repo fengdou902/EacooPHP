@@ -140,8 +140,9 @@ class Action extends Admin {
 	 * @author 心云间、凝听 <981248356@qq.com>
 	 */
 	public function log() {
+        $search_setting = $this->buildLogSearchSetting();
 
-		list($data_list,$total) = model('actionLog')->getListByPage([],true,'create_time desc');
+		list($data_list,$total) = model('actionLog')->search($search_setting)->getListByPage([],true,'create_time desc');
 		if (!empty($data_list)) {
 			foreach ($data_list as $key => &$row) {
 				$row['action_name']=$row->action_name;
@@ -153,10 +154,11 @@ class Action extends Admin {
         		->addTopButton('self', ['title'=>'清空日志','href'=>url('clearLog'),'class'=>'btn btn-warning btn-sm ajax-get confirm','icon'=>'fa fa-trash','hide-data'=>'true']) //清空
                 ->addTopButton('delete',['href'=>url('admin/Action/dellog')])  // 添加禁用按钮
         		->keyListItem('action_name','行为标识')
+                ->keyListItem('remark','备注')
                 ->keyListItem('url','URL')
                 ->keyListItem('request_method','请求类型')
                 ->keyListItem('nickname','执行者')
-                ->keyListItem('remark','备注')
+                ->keyListItem('is_admin','后台操作','array',[1=>'是',0=>'否'])
                 ->keyListItem('ip','IP')
                 ->keyListItem('create_time','执行时间')
                 ->keyListItem('right_button', '操作', 'btn')
@@ -167,10 +169,50 @@ class Action extends Admin {
                 ->addRightButton('delete')  // 添加删除按钮
                 ->fetch();
 
+        $action_name_list = db('action')->where('status',1)->column('name','id');
         return Iframe()
                 ->setMetaTitle('行为日志')  // 设置页面标题
+                ->search([
+                    ['name'=>'action_id','type'=>'select','title'=>'行为标识','options'=>$action_name_list],
+                    ['name'=>'request_method','type'=>'select','title'=>'请求类型','options'=>['POST'=>'POST','GET'=>'GET']],
+                    ['name'=>'is_admin','type'=>'select','title'=>'是否后台','options'=>[1=>'是',0=>'否']],
+                    ['name'=>'create_time_range','type'=>'daterange','extra_attr'=>'placeholder="执行时间"'],
+                    ['name'=>'keyword','type'=>'text','extra_attr'=>'placeholder="请输入查询关键字"'],
+                ])
                 ->content($return);
 	}
+
+    /**
+     * 构建模型搜索查询条件
+     * @return [type] [description]
+     * @date   2018-09-30
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    private function buildLogSearchSetting()
+    {
+        //时间范围
+        $timegap = input('create_time_range');
+        $extend_conditions = [];
+        if($timegap){
+            $gap = explode('—', $timegap);
+            $reg_begin = $gap[0];
+            $reg_end = $gap[1];
+
+            $extend_conditions =[
+                'create_time'=>['between',[$reg_begin.' 00:00:00',$reg_end.' 23:59:59']]
+            ];
+        }
+        //自定义查询条件
+        $search_setting = [
+            'keyword_condition'=>'url|data|remark',
+            //忽略数据库不存在的字段
+            'ignore_keys' => ['create_time_range'],
+            //扩展的查询条件
+            'extend_conditions'=>$extend_conditions
+        ];
+
+        return $search_setting;
+    }
 
 	/**
 	 * 查看行为日志

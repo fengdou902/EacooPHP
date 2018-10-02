@@ -257,10 +257,9 @@ class Modules extends Admin {
 	            $_static_path = PUBLIC_PATH.'static/'.$name;
 	            if (is_dir($_static_path)) {
 	                if(is_writable(PUBLIC_PATH.'static') && is_writable(APP_PATH.$name)){
-	                	$static_path = APP_PATH.$name.'/static';
-	                    if (!rename($_static_path,$static_path)) {
-	                        trace('模块静态资源移动失败：'.'public/static/'.$name.'->'.$static_path,'error');
-	                    } 
+	                    // if (!rmdirs($_static_path)) {
+	                    //     trace('模块静态资源删除失败：'.$_static_path,'error');
+	                    // } 
 	                } else{
 	                    ModuleModel::where('name',$name)->setField('status',0);
 	                    $this->error('卸载失败，原因：模块静态资源目录不可写');

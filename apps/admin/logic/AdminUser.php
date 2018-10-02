@@ -181,8 +181,8 @@ class AdminUser extends BaseLogic
             // 记住登录
             if ($rememberme) {
                 $signin_token = $user['username'].$user['uid'].$auth_login['last_login_time'];
-                cookie('uid', $user['uid'], 24 * 3600 * 7);
-                cookie('signin_token', data_auth_sign($signin_token), 24 * 3600 * 7);
+                cookie('admin_uid', $user['uid'], 24 * 3600 * 7);
+                cookie('admin_signin_token', data_auth_sign($signin_token), 24 * 3600 * 7);
             }
 
             return true;
@@ -246,7 +246,7 @@ class AdminUser extends BaseLogic
 
         $auth_login_sign = data_auth_sign($auth_login);
         session('admin_login_auth', $auth_login);
-        session('activation_auth_sign', $auth_login_sign);
+        session('admin_activation_auth_sign', $auth_login_sign);
         cache('AdminUserInfo_'.$user['uid'],null);
         return [
             'auth_login'      =>$auth_login,
@@ -263,11 +263,11 @@ class AdminUser extends BaseLogic
         $user = session('admin_login_auth');
         if (empty($user)) {
             // 判断是否记住登录
-            if (cookie('?uid') && cookie('?signin_token')) {
-                $user = self::get(cookie('uid'));
+            if (cookie('?admin_uid') && cookie('?admin_signin_token')) {
+                $user = self::get(cookie('admin_uid'));
                 if ($user) {
                     $signin_token = data_auth_sign($user->username.$user->uid.$user->last_login_time);
-                    if (cookie('signin_token') == $signin_token) {
+                    if (cookie('admin_signin_token') == $signin_token) {
                         // 自动登录
                         self::autoLogin($user, true);
                         return $user->uid;
@@ -276,7 +276,7 @@ class AdminUser extends BaseLogic
             };
             return 0;
         } else{
-            return session('activation_auth_sign') == data_auth_sign($user) ? $user['uid'] : 0;
+            return session('admin_activation_auth_sign') == data_auth_sign($user) ? $user['uid'] : 0;
         }
     }
 

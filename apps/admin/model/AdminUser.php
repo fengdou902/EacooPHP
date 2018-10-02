@@ -31,6 +31,12 @@ class AdminUser extends Base
         
     }
 
+    public function setLastLoginIpAttr($value)
+    {
+        return request()->ip();
+        
+    }
+
     public function getStatusTextAttr($value,$data)
     {
         $status = [ 1 => '正常', -1 => '删除', 0 => '禁用', 2 => '待审核', 3 => '草稿'];

@@ -85,4 +85,36 @@ class Home extends Base {
 
         return '<li><a href="'.url('home/index/index').'"><i class="fa fa-dashboard"></i> 首页</a></li>'.$crumbs;
     }
+
+    /**
+     * 模版输出
+     * @param  string $templateFile 模板文件名
+     * @param  array  $vars         模板输出变量
+     * @param  array  $replace      模板替换
+     * @param  array  $config       模板参数
+     * @param  array  $render       是否渲染内容
+     * @return [type]               [description]
+     */
+    public function fetch($template='', $vars = [], $replace = [], $config = [] ,$render=false) {
+        
+        if (!is_file($template)) {
+            
+            if (!$template) {
+                $template_name = CONTROLLER_NAME.'/'.ACTION_NAME;
+            } else{
+                $template_name = CONTROLLER_NAME.'/'.$template;
+            }
+            // 当前模版文件
+            $template = config('template.view_path').strtolower($template_name).'.'.config('template.view_suffix'); //当前主题模版是否存在
+            if (!is_file($template)) {
+                $template = APP_PATH.MODULE_NAME. '/view/'. strtolower($template_name) . '.' .config('template.view_suffix');
+                if (!is_file($template)) {
+                    throw new \Exception('模板不存在：'.$template, 5001);
+                }
+            }
+            
+        }
+
+        return $this->view->fetch($template, $vars, $replace, $config, $render);
+    }
 }

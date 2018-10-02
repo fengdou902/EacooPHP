@@ -38,6 +38,12 @@ class User extends Base
         
     }
 
+    public function setLastLoginIpAttr($value)
+    {
+        return request()->ip();
+        
+    }
+
     public function setPasswordAttr($value)
     {
         if (!empty($value)) {
@@ -85,7 +91,7 @@ class User extends Base
      */
     public function getRegTimestampAttr($value,$data)
     {
-        $timestamp = $data['reg_time'];
+        $timestamp = strtotime($data['reg_time']);
         //判断是否是时间戳
         // if(strtotime(date('m-d-Y H:i:s',$timestamp)) != $timestamp) {
         //     $timestamp = strtotime($timestamp);

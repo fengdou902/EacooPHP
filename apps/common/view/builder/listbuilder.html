@@ -107,6 +107,7 @@
     var $table = $('#builder-table');
     $table.bootstrapTable({
         url:'{$action_url|default=''}',
+        //checkboxHeader:false,
         //method: 'get',  //请求方式（*）
         cache: false,  //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
         striped: false,  //表格显示条纹  
@@ -163,6 +164,8 @@
         $("#search").click(function () {
             $table.bootstrapTable('refresh');
         });
+        //添加复选框
+        $(".builder-table .checkbox-toggle>.th-inner").html('<input type="checkbox"/>');
     });
 </script>
 {include file="$_builder_javascript_" /}

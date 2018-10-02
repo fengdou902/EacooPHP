@@ -15,7 +15,7 @@ class User extends Base
 {
     // 设置数据表（不含前缀）
     protected $name = 'users';
-    
+
     /**
      * 用户信息
      * @param  integer $uid [description]
@@ -30,24 +30,12 @@ class User extends Base
             if ($info) {
                 $info           = $info->toArray();
                 $info['avatar'] = path_to_url($info['avatar']);
-                $result         = self::extendInfo($info);
-                $result         = array_merge($info,$result);
+                $result = $info;
                 cache('User_info_'.$uid, $result,3600);
             }
        }
 
        return $result;
-    }
-
-    /**
-     * 置扩展信息
-     * @param  array  $result [description]
-     * @return [type]         [description]
-     */
-    protected static function extendInfo($result=[])
-    {
-        $result['auth_group'] = model('admin/auth_group_access')->userGroupInfo($result['uid']);
-        return $result;
     }
 
     /**
