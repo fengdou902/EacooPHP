@@ -375,10 +375,11 @@ class Plugins extends Admin {
         $total = 20;
         $store_data = cache('eacoo_appstore_plugins_'.$paged);
         if (empty($store_data) || !$store_data) {
-            $url        = config('eacoo_api_url').'/api/appstore/plugins';
+            $url        = config('eacoo_api_url').'/api/appstore/apps';
             $params = [
-                'paged'=>$paged,
-                'eacoophp_version'=>EACOOPHP_V
+                'paged'      =>$paged,
+                'type'       =>'plugin',
+                'eacoophp_v' =>EACOOPHP_V
             ];
             $result = curl_post($url,$params);
             $result = json_decode($result,true);

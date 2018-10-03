@@ -178,7 +178,7 @@ class Base extends Model
         if ($cache) {
             $this->cache(true);
         }
-
+        
         $data_list  = $this->where($this->conditions)->field($fields)->order($order)->page($paged,$page_size)->select();
         $total = $this->where($this->conditions)->count();
 

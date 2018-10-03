@@ -16,7 +16,7 @@ class InitApp {
 
 	public function run(&$params) {
         define('EACOOPHP_V','1.3.0');
-        define('BUILD_VERSION','201810011206');//编译版本
+        define('BUILD_VERSION','201810031445');//编译版本
 
         $this->initConst();
 

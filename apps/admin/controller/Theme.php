@@ -240,15 +240,18 @@ class Theme extends Admin {
     {
         $store_data = cache('eacoo_appstore_themes_'.$paged);
         if (empty($store_data) || !$store_data) {
-            $url        = config('eacoo_api_url').'/api/appstore/themes';
+            $url        = config('eacoo_api_url').'/api/appstore/apps';
             $params = [
-                'paged'=>$paged,
-                'eacoophp_version'=>EACOOPHP_V
+                'paged'      =>$paged,
+                'type'       =>'theme',
+                'eacoophp_v' =>EACOOPHP_V
             ];
             $result = curl_post($url,$params);
             $result = json_decode($result,true);
             $store_data = $result['data'];
+            $total = 12;
             cache('eacoo_appstore_themes_'.$paged,$store_data,3600);
+            cache('eacoo_appstore_modules_info',['total'=>$total],3600);
         }
         if (!empty($store_data)) {
             $extensionObj = new ExtensionLogic();

@@ -380,7 +380,6 @@ function loadAttachment(params) {
     params = $.extend(defaults, params);
     var action_url = params.action_url;
     $.get(action_url, params, function (result) {
-        console.log(result);
         var attachment_list = template('attachment_tpl', result);
         $('#attachment-content').html(attachment_list);
     })

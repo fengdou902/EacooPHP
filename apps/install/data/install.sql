@@ -118,8 +118,8 @@ CREATE TABLE `eacoo_admin` (
 
 CREATE TABLE `eacoo_attachment` (
   `id` int(11) UNSIGNED NOT NULL COMMENT 'ID',
-  `admin_uid` mediumint(8) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'UID',
-  `uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '管理员用户ID',
+  `is_admin` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '是否后台用户上传',
+  `uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '文件名',
   `path` varchar(255) NOT NULL DEFAULT '' COMMENT '文件路径',
   `url` varchar(255) NOT NULL DEFAULT '' COMMENT '文件链接（暂时无用）',
@@ -142,7 +142,7 @@ CREATE TABLE `eacoo_attachment` (
 -- 转存表中的数据 `eacoo_attachment`
 --
 
-INSERT INTO `eacoo_attachment` (`id`, `admin_uid`, `uid`, `name`, `path`, `url`, `location`, `path_type`, `ext`, `mime_type`, `size`, `alt`, `md5`, `sha1`, `download`, `create_time`, `update_time`, `sort`, `status`) VALUES
+INSERT INTO `eacoo_attachment` (`id`, `is_admin`, `uid`, `name`, `path`, `url`, `location`, `path_type`, `ext`, `mime_type`, `size`, `alt`, `md5`, `sha1`, `download`, `create_time`, `update_time`, `sort`, `status`) VALUES
 (1, 1, 0, 'preg_match_imgs.jpeg', '/uploads/Editor/Picture/2016-06-12/575d4bd8d0351.jpeg', '', 'local', 'editor', 'jpeg', '', 19513, '', '4cf157e42b44c95d579ee39b0a1a48a4', 'dee76e7b39f1afaad14c1e03cfac5f6031c3c511', 0, '2018-09-30 12:32:26', '2018-09-30 22:32:26', 99, 1),
 (2, 1, 0, 'gerxiangimg200x200.jpg', '/uploads/Editor/Picture/2016-06-12/575d4bfb09961.jpg', '', 'local', 'editor', 'jpg', '', 5291, 'gerxiangimg200x200', '4db879c357c4ab80c77fce8055a0785f', '480eb2e097397856b99b373214fb28c2f717dacf', 0, '2018-09-30 13:32:26', '2018-09-30 22:32:26', 99, 1),
 (3, 1, 0, 'oraclmysqlzjfblhere.jpg', '/uploads/Editor/Picture/2016-06-12/575d4c691e976.jpg', '', 'local', 'editor', 'jpg', '', 23866, 'mysql', '5a3a5a781a6d9b5f0089f6058572f850', 'a17bfe395b29ba06ae5784486bcf288b3b0adfdb', 0, '2018-09-30 14:32:26', '2018-09-30 22:32:26', 99, 1),
@@ -737,14 +737,14 @@ CREATE TABLE `eacoo_users` (
   `reg_time` datetime NOT NULL DEFAULT '0001-01-01 00:00:00' COMMENT '注册时间',
   `update_time` datetime NOT NULL DEFAULT '0001-01-01 00:00:00' COMMENT '更新时间',
   `status` tinyint(1) UNSIGNED NOT NULL DEFAULT '2' COMMENT '用户状态 0：禁用； 1：正常 ；'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户会员表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户会员表';
 
 --
 -- 转存表中的数据 `eacoo_users`
 --
 
 INSERT INTO `eacoo_users` (`uid`, `username`, `number`, `password`, `nickname`, `email`, `mobile`, `avatar`, `sex`, `birthday`, `description`, `register_ip`, `login_num`, `last_login_ip`, `last_login_time`, `activation_auth_sign`, `url`, `score`, `money`, `freeze_money`, `pay_pwd`, `reg_from`, `reg_method`, `level`, `p_uid`, `is_lock`, `actived`, `reg_time`, `update_time`, `status`) VALUES
-(1, 'admin', '5257975351', '031c9ffc4b280d3e78c750163d07d275', '站长', '981248356@qq.com', '15801182251', 'http://www.eacoo-php.org/static/assets/img/default-avatar.png', 1, '0000-00-00', '网站创始人和超级管理员。', '', 0, '', '2018-09-30 22:32:26', '4a1c9a3e493b01045bcacbc2981941772e7d07be', 'https://www.eacoophp.com', 1770, '7113.36', '0.00', 'eba6095468eb32492d20d5db6a85aa5d', 0, '', 0, 0, 0, 1, '2018-09-30 22:32:26', '2018-09-30 22:32:26', 1),
+(1, 'admin', '5257975351', '031c9ffc4b280d3e78c750163d07d275', '站长', '981248356@qq.com', '15801182251', 'http://www.eacoo-php.org/static/assets/img/default-avatar.png', 1, '0000-00-00', '网站的站长。', '', 0, '', '2018-09-30 22:32:26', '4a1c9a3e493b01045bcacbc2981941772e7d07be', 'https://www.eacoophp.com', 1770, '7113.36', '0.00', 'eba6095468eb32492d20d5db6a85aa5d', 0, '', 0, 0, 0, 1, '2018-09-30 22:32:26', '2018-09-30 22:32:26', 1),
 (3, 'U1471610993', '9948511005', '031c9ffc4b280d3e78c750163d07d275', '陈婧', '', '', '/static/assets/img/avatar-woman.png', 2, '0000-00-00', '', '', 0, '', '2018-09-30 22:32:26', 'a525c9259ff2e51af1b6e629dd47766f99f26c69', '', 0, '2.00', '0.00', '', 0, '', 0, 0, 0, 0, '2018-09-30 22:32:26', '2018-09-30 22:32:26', 1),
 (4, 'U1472438063', '9752985498', '031c9ffc4b280d3e78c750163d07d275', '妍冰', '', '', '/static/assets/img/avatar-woman.png', 2, '0000-00-00', '承接大型商业演出和传统文化学习班', '', 0, '', '2018-09-30 22:32:26', 'ed587cf103c3f100be20f7b8fdc7b5a8e2fda264', '', 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1, '2018-09-30 22:32:26', '2018-09-30 22:32:26', 0),
 (5, 'U1472522409', '9849571025', '031c9ffc4b280d3e78c750163d07d275', '久柳', '', '', '/static/assets/img/avatar-man.png', 1, '0000-00-00', '', '', 0, '', '2018-09-30 22:32:26', '5e542dc0c77b3749f2270cb3ec1d91acc895edc8', '', 0, '0.00', '0.00', '', 0, '', 0, 0, 0, 1, '2018-09-30 22:32:26', '2018-09-30 22:32:26', 1),

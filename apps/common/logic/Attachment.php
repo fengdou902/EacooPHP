@@ -76,7 +76,11 @@ class Attachment extends Base {
         }
         $result['size']       = format_file_size($result['size']);
         $result['uploadtime'] = $result['create_time'];
-        $result['author']     = get_user_info($result['uid'],'nickname')['nickname'] ? :'未知';
+        $author = get_user_info($result['uid'],'nickname')['nickname'] ? :'未知';
+        if ($result['is_admin']==1) {
+            $author = get_adminuser_info($result['uid'],'nickname')['nickname'] ? :'未知';
+        }
+        $result['author']     = $author;
         $result['term_id']    = get_term_info($result['id'],'term_id','attachment')['term_id']?:0;//获取该附件管理的分类
         return $result;
     }
@@ -158,7 +162,7 @@ class Attachment extends Base {
      * 判断附件类型
      * @param $data
      */
-    public function file_mimeType($ext){
+    public static function fileMimeType($ext){
         switch ($ext) {
             case 'jpg':
             case 'jpeg':

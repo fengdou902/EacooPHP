@@ -66,7 +66,7 @@ class Upload extends Admin {
     {
         $upload_type = 'picture';
         $path_type   = 'picture';
-        $controller = new Upload;
+        $controller = new UploadLogic;
         $return = $controller->uploadRemoteFile($post_field,$upload_type,$path_type);
         return json($return);
 

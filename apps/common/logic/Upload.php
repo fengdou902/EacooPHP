@@ -19,7 +19,9 @@ use think\Hook;
 class Upload {
 
 	protected $request;
-	protected $path_type;
+	protected $path_type;//路径类型
+    protected $isAdmin = 0;//是否后台操作
+    protected $doUid = 0;//操作用户ID
 
 	/**
      * 构造函数
@@ -33,6 +35,12 @@ class Upload {
         }
         $this->request = $request;
         $this->attachmentModel = new AttachmentModel();
+        //判断是否是后台
+        $this->doUid = is_login();
+        if (MODULE_MARK=='admin') {
+            $this->isAdmin = 1;
+            $this->doUid = is_admin_login();
+        }
     }
 
 	/**
@@ -75,7 +83,8 @@ class Upload {
 
 			$info = $file->rule($config['saveName'])->move($upload_path, true, false);//保存文件
 			$upload_info = $this->parseFile($info);
-            $upload_info['uid'] = isset($param['uid']) && $param['uid'] ? $param['uid'] : is_login();//设置上传者；如果为空，保存的时候会自动处理为当前用户
+            $upload_info['is_admin'] = $this->isAdmin;
+            $upload_info['uid'] = isset($param['uid']) && $param['uid'] ? $param['uid'] : $this->doUid;//设置上传者；如果为空，保存的时候会自动处理为当前用户
             unset($info);   //释放文件，避免上传通文件无法删除
 			
 			$is_sql = $this->request->param('is_sql', 'on', 'trim');//是否保存入库
@@ -218,7 +227,7 @@ class Upload {
      * @return [type]                  [description]
      * @author 心云间、凝听 <981248356@qq.com>
      */
-	public function uploadRemoteFile($url='',$download_local=false)
+	public function uploadRemoteFile($url='', $download_local=false)
 	{
 		if (!$url) return false;
 		$data=[];
@@ -227,7 +236,8 @@ class Upload {
         //$data['md5']  = md5_file($file_content);
         //$data['sha1'] = sha1_file($file_content);
         //$data['size'] = strlen($file_content);
-        $data['uid']      = is_login();
+        $data['uid']      = $this->doUid;
+        $data['is_admin'] = $this->isAdmin;
         $data['size']     = fsockopen_remote_filesize($url);
         $file_ext         = strrchr($url,'.');
         $data['ext']      = str_replace('.','',$file_ext);//截取格式并替换掉点.
@@ -345,8 +355,7 @@ class Upload {
 					'msg'  => '图片上传成功',
 					'data' => $info
             	];
-	                
-	            
+  
 			}
 
 			// 上传文件钩子，用于阿里云oss、七牛云、又拍云等第三方文件上传的扩展
@@ -387,7 +396,8 @@ class Upload {
 	 * @access public
 	 */
 	public function save($config, $from_file_name, $file) {
-		$file['uid']      = isset($file['uid']) && $file['uid'] ? $file['uid'] : is_login();
+        $file['is_admin'] = $this->isAdmin;
+		$file['uid']      = isset($file['uid']) && $file['uid'] ? $file['uid'] : $this->doUid;
 		$file['location'] = $config['driver'];
 		$file['code']   = 1;
 		$file_exist = AttachmentModel::where(['md5'=>$file['md5'],'sha1'=>$file['sha1']])->count();
@@ -396,8 +406,8 @@ class Upload {
 
 			$id = AttachmentModel::where(['md5'=>$file['md5'],'sha1'=>$file['sha1']])->value('id');
 			$data            = AttachmentLogic::info($id);;
-			$data['already'] =1;
-			$data['msg']     ='文件已存在';
+			$data['already'] = 1;
+			$data['msg']     = '文件已存在';
 			return $data;
 		} else {
         	// 上传文件钩子，用于阿里云oss、七牛云、又拍云等第三方文件上传的扩展
@@ -409,7 +419,8 @@ class Upload {
 	            $file['driver'] = $config['driver'];
 	            hook('UploadFile', $file);
 	        }
-
+            $file['mime_type'] = isset($file['mime_type']) && $file['mime_type'] ? $file['mime_type'] : AttachmentLogic::fileMimeType($file['ext']);
+            $file['create_time'] = date('Y-m-d H:i:s');
 			$this->attachmentModel->allowField(true)->isUpdate(false)->data($file)->save();
 			$id  = $this->attachmentModel->id;
 			if ($id>0) {

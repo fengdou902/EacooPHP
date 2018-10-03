@@ -126,38 +126,49 @@ class User extends Admin {
                 $this->error($this->userModel->getError());
             }
         } else {
-            $info = [
-                'sex'=>0,
-                'sex'=>0,
-                'is_lock'=>0,
-                'status'=>1
-            ];
-            // 获取账号信息
-            if ($uid>0) {
-                $info = $this->userModel->get($uid);
-                unset($info['password']);
-            }
-            $content = builder('Form')
-                        ->addFormItem('uid', 'hidden', 'UID', '')
-                        ->addFormItem('nickname', 'text', '昵称', '填写一个有个性的昵称吧','','require')
-                        ->addFormItem('username', 'text', '用户名', '登录账户所用名称','','require')
-                        ->addFormItem('password', 'password', '密码', '新增默认密码123456','','placeholder="留空则不修改密码"')
-                        ->addFormItem('email', 'email', '邮箱', '','','data-rule="email" data-tip="请填写一个邮箱地址"')
-                        ->addFormItem('mobile', 'left_icon_number', '手机号', '',['icon'=>'<i class="fa fa-phone"></i>'],'placeholder="填写手机号"')
-                        ->addFormItem('sex', 'radio', '性别', '',[0=>'保密',1=>'男',2=>'女'])
-                        ->addFormItem('description', 'textarea', '个人说明', '请填写个人说明')
-                        ->addFormItem('is_lock', 'radio', '是否锁定', '',[0=>'否',1=>'是'])
-                        ->addFormItem('status', 'radio', '状态', '',[1=>'正常',0=>'禁用'])
-                        ->setFormData($info)//->setAjaxSubmit(false)
-                        ->addButton('submit')
-                        ->addButton('back')    // 设置表单按钮
-                        ->fetch();
 
             return (new Iframe())
                     ->setMetaTitle($title.'用户')
-                    ->content($content);
+                    ->content($this->form($uid));
 
         }
+    }
+
+    /**
+     * 表单构建
+     * @param  integer $uid [description]
+     * @return [type] [description]
+     * @date   2018-10-03
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function form($uid = 0)
+    {
+        $info = [
+            'sex'     =>0,
+            'sex'     =>0,
+            'is_lock' =>0,
+            'status'  =>1
+        ];
+        // 获取账号信息
+        if ($uid>0) {
+            $info = $this->userModel->get($uid);
+            unset($info['password']);
+        }
+        return builder('Form')
+                    ->addFormItem('uid', 'hidden', 'UID', '')
+                    ->addFormItem('nickname', 'text', '昵称', '填写一个有个性的昵称吧','','require')
+                    ->addFormItem('username', 'text', '用户名', '登录账户所用名称','','require')
+                    ->addFormItem('password', 'password', '密码', '新增默认密码123456','','placeholder="留空则不修改密码"')
+                    ->addFormItem('email', 'email', '邮箱', '','','data-rule="email" data-tip="请填写一个邮箱地址"')
+                    ->addFormItem('mobile', 'left_icon_number', '手机号', '',['icon'=>'<i class="fa fa-phone"></i>'],'placeholder="填写手机号"')
+                    ->addFormItem('sex', 'radio', '性别', '',[0=>'保密',1=>'男',2=>'女'])
+                    ->addFormItem('description', 'textarea', '个人说明', '请填写个人说明')
+                    ->addFormItem('is_lock', 'radio', '是否锁定', '',[0=>'否',1=>'是'])
+                    ->addFormItem('status', 'radio', '状态', '',[1=>'正常',0=>'禁用'])
+                    ->setFormData($info)//->setAjaxSubmit(false)
+                    ->addButton('submit')
+                    ->addButton('back')    // 设置表单按钮
+                    ->fetch();
     }
     
     /**

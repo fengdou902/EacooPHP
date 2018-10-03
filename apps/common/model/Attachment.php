@@ -26,15 +26,10 @@ class Attachment extends Base {
         return is_admin_login();
     }
 
-    // protected function setCreateTimeAttr($value)
-    // {
-    //     return time();
-    // }
-
     //获取缩略图地址
     protected function getThumbSrcAttr($value,$data)
     {
-        if ($data['location']=='link') {
+        if ($data['location']=='link' || $data['ext']=='gif') {
             $thumb_src = $data['path'];
         } else {
             $style = 'medium';

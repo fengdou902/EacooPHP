@@ -349,7 +349,7 @@ class Extension extends AdminLogic {
                         @rmdirs($_static_path);//防止路径报错，前先清理静态资源目录
                     }
                     
-                    if (!copy($static_path,$_static_path)) {
+                    if (!copydirs($static_path,$_static_path)) {
                         setAppLog('应用静态资源移动失败'.PUBLIC_PATH.'static'.$type_path.'/'.$name,'error');
                     } 
                 }
@@ -407,8 +407,8 @@ class Extension extends AdminLogic {
         if (is_dir($_static_path)) {
             @rmdirs($_static_path);//升级前先清理静态资源目录
             if(is_writable(PUBLIC_PATH.'static/'.$type_path) && is_writable($this->appsPath.$name)){
-                if (!copy($_static_path,$static_path)) {
-                    setAppLog('静态资源移动失败：'.$static_path.'移动到'.$_static_path,'error');
+                if (!copydirs($_static_path,$static_path)) {
+                    setAppLog('静态资源复制失败：'.$static_path.'复制到'.$_static_path,'error');
                 } 
             }
         }

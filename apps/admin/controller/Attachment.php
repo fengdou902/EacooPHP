@@ -85,7 +85,7 @@ class Attachment extends Admin {
                 $choice_date_range                 = explode('—', $choice_date_range);
                 $choice_from_date                  = strtotime(str_replace('/','-', $choice_date_range[0]).' 00:00:00');
                 $choice_to_date                    = strtotime(str_replace('/','-', $choice_date_range[1]).' 24:00:00');
-                $extend_conditions['create_time']                = [['gt',$choice_from_date],['lt',$choice_to_date]];
+                $extend_conditions['create_time']  = [['gt',$choice_from_date],['lt',$choice_to_date]];
                 $attachment_options['page_number'] = 1000;//防止分页
             }
             //筛选end
@@ -98,7 +98,7 @@ class Attachment extends Admin {
                 'ignore_keys'       =>['action_url','media_type','term_id','choice_date_range'],
                 'extend_conditions' =>$extend_conditions
             ];
-            list($data_list,$total) = $this->attachmentModel->search($search)->getListByPage($map,true,'sort asc,create_time desc,update_time desc',$page_number);
+            list($data_list,$total) = $this->attachmentModel->search($search)->getListByPage($map,true,'sort asc,create_time asc,update_time asc',$page_number);
             foreach ($data_list as $key => &$row) {
                 $row['thumb_src'] = $row['thumb_src'];
             }
