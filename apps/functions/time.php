@@ -17,7 +17,7 @@
  * @return string
  */
 function friendly_date($sTime,$type = 'normal',$alt = 'false') {
-    if (!$sTime)
+    if (!$sTime || !is_timestamp($sTime))
         return '';
     //sTime=源时间，cTime=当前时间，dTime=时间差
     $cTime      =   time();
@@ -83,6 +83,19 @@ function friendly_date($sTime,$type = 'normal',$alt = 'false') {
 }
 
 /**
+ * 判断是否是时间戳
+ * @param  string $timestamp [description]
+ * @return boolean [description]
+ * @date   2018-10-06
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function is_timestamp($timestamp ='')
+{
+    if (!$timestamp) return false;
+    return $is_unixtime = ctype_digit($timestamp) && $timestamp <= 2147483647;
+}
+
+/**
  * 时间戳格式化
  * @param int $time
  * @return string 完整的时间显示
@@ -99,14 +112,17 @@ function time_format($time = NULL, $format = 'Y-m-d H:i') {
  * @param string $type        时间显示  说说： 0 1987-11-09  1 1987年11月09日
  * @return [type]           [description]
  */
-function getUserAge($birthday) {
-    $str = substr($birthday,0,4);               //出生日期
-    $year = date('Y',time());                   //本年  
-    return $age = $year - $str;                 //个人年龄
-}
+// function getUserAge($birthday) {
+//     $str = substr($birthday,0,4);               //出生日期
+//     $year = date('Y',time());                   //本年  
+//     return $age = $year - $str;                 //个人年龄
+// }
 
 //转换剩余时间格式
-function gettime($time){
+function get_surplus_time($time = 0){
+    if (!$time) {
+        return false;
+    }
     if ($time < 0) {  
         return '已结束';  
     } else {  
