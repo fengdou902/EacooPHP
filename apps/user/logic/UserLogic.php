@@ -1,5 +1,5 @@
 <?php
-// 用户逻辑
+// 用户逻辑层基类
 // +----------------------------------------------------------------------
 // | Copyright (c) 2017-2018 https://www.eacoophp.com, All rights reserved.         
 // +----------------------------------------------------------------------
@@ -9,13 +9,14 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\user\logic;
-use app\admin\model\AuthGroupAccess;
 
-class User extends UserLogic
-{
-    // 设置数据表（不含前缀）
-    protected $name = 'users';
-    
-    
+use app\common\logic\Base as BaseLogic;
+
+class UserLogic extends BaseLogic {
+
+    protected function initialize()
+    {
+        parent::initialize();
+    }
 
 }

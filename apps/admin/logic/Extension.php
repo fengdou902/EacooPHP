@@ -145,20 +145,6 @@ class Extension extends AdminLogic {
     }
 
     /**
-     * 在线安装之前
-     * @param  string $name [description]
-     * @return [type] [description]
-     * @date   2017-11-07
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public function onlineInstallBefore($name='')
-    {
-        $install_method = $this->request->param('install_method');
-        $this->assign('install_method',$install_method);
-        return $this->fetch('extension/online_install_before');
-    }
-
-    /**
      * 在线安装，包含在线升级
      * @return [type] [description]
      * @date   2017-10-27
@@ -385,7 +371,7 @@ class Extension extends AdminLogic {
      * @date   2018-01-18
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    private function _upgradeAction($name='')
+    public function _upgradeAction($name='')
     {
         if($name==''){
             $name = $this->appName;

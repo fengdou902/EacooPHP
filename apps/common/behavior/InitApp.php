@@ -16,26 +16,28 @@ class InitApp {
 
 	public function run(&$params) {
         define('EACOOPHP_V','1.3.0');
-        define('BUILD_VERSION','201810031445');//编译版本
+        define('BUILD_VERSION','201810061422');//编译版本
 
         $this->initConst();
 
         //加载模块全局函数
-        // $module_names = db('modules')->where(['status' =>1])->column('name');
-        // if (!empty($module_names)) {
-        //     $module_functions_list = [];
-        //     foreach ($module_names as $key => $module_name) {
-        //         $module_funcitons_file = APP_PATH.$module_name.'/functions.php';
-        //         if (is_file($module_funcitons_file)) {
-        //             $module_functions_list[] = $module_funcitons_file;
-        //         }
-        //     }
-        //     if (!empty($module_functions_list)) {
-        //         $global_extra_functions_config['extra_file_list'] = thinkConfig::get('extra_file_list');
-        //         $global_extra_functions_config['extra_file_list'] = array_merge($global_extra_functions_config['extra_file_list'],$module_functions_list);
-        //         thinkConfig::set($global_extra_functions_config);// 添加模块函数
-        //     }
-        // }
+        if (is_file(APP_PATH . 'install.lock') && is_file(APP_PATH . 'database.php')) {
+            $module_names = db('modules')->where(['status' =>1])->column('name');
+            if (!empty($module_names)) {
+                $module_functions_list = [];
+                foreach ($module_names as $key => $module_name) {
+                    $module_funcitons_file = APP_PATH.$module_name.'/functions.php';
+                    if (is_file($module_funcitons_file)) {
+                        $module_functions_list[] = $module_funcitons_file;
+                    }
+                }
+                if (!empty($module_functions_list)) {
+                    foreach ($module_functions_list as $key => $funfile) {
+                        include($funfile);
+                    }
+                }
+            }
+        }
         if (!IS_CLI) {
             //定义模版变量
             $ec_config = [

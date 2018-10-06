@@ -61,7 +61,7 @@
         <div class="col-sm-9 col-xs-9 pr-0" >
             <h4>
             <span class="view-app-detail" data-name="<%= row.name %>" data-type="plugin" style="cursor: pointer;"><%= row.title %></span>
-            <% if (row.mark) { %> <span class="btn bg-maroon margin btn-xs app-meta-mark">推荐</span><% } %>
+            <% if (row.mark) { %> <span class="btn bg-maroon margin btn-xs app-meta-mark">{{@row.mark}}</span><% } %>
             <% if (row.from_type=='oneline') { %>
                 <span class="fr color-red f12">
                     <% if (row.price>0) { %>¥<%= row.price %><% }else { %>免费<% } %>
