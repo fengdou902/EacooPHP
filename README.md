@@ -80,7 +80,7 @@ return builder('list')
         ->fetch();
 ```
 ### 效果图
-![效果图](https://github.com/fengdou902/EacooPHP/blob/dev/eacoophp-demo-builderlist-1.jpg)
+![效果图](https://github.com/fengdou902/EacooPHP/blob/dev/eacoophp-demo-builderlist-1.png)
 
 ### 表单构建器
 ```
@@ -122,7 +122,7 @@ return Builder('Form')
         ->fetch();
 ```
 ### 效果图：
-![效果图](https://github.com/fengdou902/EacooPHP/blob/dev/eacoophp-demo-builderform-1.jpg)
+![效果图](https://github.com/fengdou902/EacooPHP/blob/dev/eacoophp-demo-builderform-1.png)
 
 #### 更多神级操作，高并发，读写分离，分库分表，大数据量解决方案。
 
