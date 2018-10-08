@@ -18,18 +18,18 @@ class AdminUser extends Base
 
     // 自动完成
     protected $auto       = ['last_login_ip'];
-    protected $insert     = ['password'];
-    //protected $update     = ['password'];
+    // protected $insert     = ['password'];
+    // //protected $update     = ['password'];
 
-    public function setPasswordAttr($value)
-    {
-        if (!empty($value)) {
-            return encrypt($value);
-        } else{
-            return $value;
-        }
+    // public function setPasswordAttr($value)
+    // {
+    //     if (!empty($value)) {
+    //         return encrypt($value);
+    //     } else{
+    //         return $value;
+    //     }
         
-    }
+    // }
 
     public function setLastLoginIpAttr($value)
     {

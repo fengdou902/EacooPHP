@@ -94,8 +94,8 @@ class AuthGroup extends AdminLogic
             } 
             return true;
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(), $e->getCode());
-            
+            setAppLog($e,'logic_error');
+            return false;
         }
         
 

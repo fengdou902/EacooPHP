@@ -35,7 +35,10 @@ class Index extends AdminLogic {
             }
             $admin_sidebar_menus = Cache::get('admin_sidebar_menus_'.$uid);
             if (!$admin_sidebar_menus) {
-                
+                if (!$this->currentUser['auth_group']) {
+                    throw new \Exception("未授权任何权限", 0);
+                    
+                }
                 if(!is_administrator() && !empty($this->currentUser['auth_group'])){//如果是非超级管理员则按存储显示
                     $rules= db('auth_group')->where(['id'=>['in',array_keys($this->currentUser['auth_group'])]])->value('rules');    
                     $map_rules['id']=['in',$rules];;

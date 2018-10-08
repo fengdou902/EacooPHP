@@ -13,12 +13,15 @@ use app\common\layout\Iframe;
 use app\admin\model\AdminUser as AdminUserModel;
 
 class AdminUser extends Admin {
+    protected $adminUserModel;
+    protected $groupIds;
 
     function _initialize()
     {
         parent::_initialize();
 
         $this->adminUserModel = model('AdminUser');
+        $this->groupIds = model('admin/AuthGroup')->where('status',1)->column('title','id');
     }
 
     /**
@@ -34,6 +37,7 @@ class AdminUser extends Admin {
                 ->search([
                     ['name'=>'status','type'=>'select','title'=>'状态','options'=>[1=>'正常',2=>'待审核']],
                     ['name'=>'sex','type'=>'select','title'=>'性别','options'=>[0=>'未知',1=>'男',2=>'女']],
+                    ['name'=>'group_id','type'=>'select','title'=>'角色组','options'=>$this->groupIds],
                     ['name'=>'create_time_range','type'=>'daterange','extra_attr'=>'placeholder="注册时间"'],
                     ['name'=>'keyword','type'=>'text','extra_attr'=>'placeholder="请输入查询关键字"'],
                 ])
@@ -52,7 +56,14 @@ class AdminUser extends Admin {
         // 获取所有用户
         $condition['status'] = ['egt', '0']; // 禁用和正常状态
         list($data_list,$total) = $this->adminUserModel->search($search_setting)->getListByPage($condition,true,'create_time desc');
-
+        foreach ($data_list as $key => &$data) {
+            $auth_groups = model('admin/auth_group_access')->userGroupInfo($data['uid']);
+            $auth_groups_label = '';
+            foreach ($auth_groups as $gkey => $val) {
+                $auth_groups_label.='<label class="label label-info">'.$val.'</label>';
+            }
+            $data['auth_groups'] = $auth_groups_label;
+        }
         $reset_password = [
             'icon'         => 'fa fa-recycle',
             'title'        => '重置原始密码',
@@ -73,6 +84,7 @@ class AdminUser extends Admin {
                 ->keyListItem('uid', 'UID')
                 ->keyListItem('avatar', '头像', 'avatar')
                 ->keyListItem('nickname', '昵称')
+                ->keyListItem('auth_groups', '角色组')
                 ->keyListItem('sex', '性别')
                 ->keyListItem('username', '用户名')
                 ->keyListItem('email', '邮箱')
@@ -97,18 +109,25 @@ class AdminUser extends Admin {
         $title = $uid ? "编辑" : "新增";
         if (IS_POST) {
             $data = input('param.');
-            // 密码为空表示不修改密码
-            if ($data['password'] === '') {
-                $data['password']=123456;
-            }
+            
             $uid  = isset($data['uid']) && $data['uid']>0 ? intval($data['uid']) : false;
             if ($uid>0) {
+                // 密码为空表示不修改密码
+                if ($data['password'] === '') {
+                    unset($data['password']);
+                }
                 $this->validateData($data,'User.edit');
             } else{
+                // 密码为空表示不修改密码
+                if ($data['password'] === '') {
+                    $data['password']=123456;
+                }
                 $this->validateData($data,'User.add');
             }
             
-            
+            if (!empty($data['password'])) {
+                $data['password'] = encrypt($data['password']);
+            }
             // 提交数据
             //$data里包含主键id，则editData就会更新数据，否则是新增数据
             $result = $this->adminUserModel->editData($data);
@@ -117,7 +136,12 @@ class AdminUser extends Admin {
                 
                 if ($uid==is_admin_login()) {//如果是编辑状态下
                     logic('admin/AdminUser')->updateLoginSession($uid);
+                } else{
+                    $uid = $this->adminUserModel->uid;
                 }
+                $gid = $data['group_id'];
+                //将用户添加到用户组
+                logic('admin/AuthGroup')->addToGroup($uid,$gid);
                 $this->success($title.'成功', url('index'));
             } else {
                 $this->error($this->adminUserModel->getError());
@@ -125,7 +149,8 @@ class AdminUser extends Admin {
         } else {
             $info = [
                 'sex'=>0,
-                'allow_admin'=>1,
+                'bind_uid'=>0,
+                'group_id'=>3,
                 'sex'=>0,
                 'status'=>1
             ];
@@ -142,6 +167,8 @@ class AdminUser extends Admin {
                         ->addFormItem('email', 'email', '邮箱', '','','data-rule="email" data-tip="请填写一个邮箱地址"')
                         ->addFormItem('mobile', 'left_icon_number', '手机号', '',['icon'=>'<i class="fa fa-phone"></i>'],'placeholder="填写手机号"')
                         ->addFormItem('sex', 'radio', '性别', '',[0=>'保密',1=>'男',2=>'女'])
+                        ->addFormItem('group_id', 'select', '所属用户组', '',$this->groupIds)
+                        ->addFormItem('bind_uid', 'number', '绑定会员UID', '绑定用户表的UID')
                         ->addFormItem('description', 'textarea', '个人说明', '请填写个人说明')
                         ->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'正常',2=>'待验证'])
                         ->setFormData($info)//->setAjaxSubmit(false)
@@ -164,10 +191,12 @@ class AdminUser extends Admin {
      */
     private function buildModelSearchSetting()
     {
+        $params = $this->request->param();
         //时间范围
-        $timegap = input('create_time_range');
+        
         $extend_conditions = [];
-        if($timegap){
+        if(!empty($params['create_time_range'])){
+            $timegap = $params['create_time_range'];
             $gap = explode('—', $timegap);
             $reg_begin = $gap[0];
             $reg_end = $gap[1];
@@ -176,11 +205,16 @@ class AdminUser extends Admin {
                 'create_time'=>['between',[$reg_begin.' 00:00:00',$reg_end.' 23:59:59']]
             ];
         }
+        //过滤用户组
+        if (!empty($params['group_id'])) {
+            $uids = model('admin/auth_group_access')->where('group_id',$params['group_id'])->column('uid');
+            $extend_conditions['uid']=['in',$uids];
+        }
         //自定义查询条件
         $search_setting = [
             'keyword_condition'=>'uid|username|nickname|email',
             //忽略数据库不存在的字段
-            'ignore_keys' => ['create_time_range'],
+            'ignore_keys' => ['create_time_range','group_id'],
             //扩展的查询条件
             'extend_conditions'=>$extend_conditions
         ];
