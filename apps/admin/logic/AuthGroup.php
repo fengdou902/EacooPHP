@@ -140,7 +140,8 @@ class AuthGroup extends AdminLogic
         // }
         return $del_result;
     }
-        /**
+    
+    /**
      * 获取某个用户组的用户列表
      *
      * @param int $group_id   用户组id
