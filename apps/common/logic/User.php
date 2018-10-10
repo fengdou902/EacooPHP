@@ -211,7 +211,7 @@ class User extends Base
             'avatar'          => $user['avatar'],
             'auth_group'      => model('admin/auth_group_access')->userGroupInfo($user['uid']),
             'reg_time'        => $user['reg_time'],
-            'last_login_time' => time()
+            'last_login_time' => date('Y-m-d H:i:s',time())
         ];
 
         $auth_login_sign = data_auth_sign($auth_login);
