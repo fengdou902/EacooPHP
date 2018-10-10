@@ -51,7 +51,7 @@ class AuthGroup extends AdminLogic
                 //为单个用户批量添加用户组时,先删除旧数据
                 $del = $Access->where(['uid'=>['in',$uid]])->delete();
             }*/
-            //修改前先删除原有的用户分组
+            //修改管理员分组之前先删除原有的用户分组
             $del = $Access->where(['uid'=>['in',$uid]])->delete();
             $uid_arr = explode(',',$uid);
             $uid_arr = array_diff($uid_arr,get_administrators());
