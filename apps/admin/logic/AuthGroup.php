@@ -47,11 +47,10 @@ class AuthGroup extends AdminLogic
 
             $Access = model(self::AUTH_GROUP_ACCESS);
             $del = true;
-            if( isset($_REQUEST['batch']) ){
+           if( isset($_REQUEST['batch']) ){
                 //为单个用户批量添加用户组时,先删除旧数据
                 $del = $Access->where(['uid'=>['in',$uid]])->delete();
             }
-
             $uid_arr = explode(',',$uid);
             $uid_arr = array_diff($uid_arr,get_administrators());
             $add = [];

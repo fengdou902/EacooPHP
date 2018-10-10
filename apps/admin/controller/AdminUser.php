@@ -140,6 +140,8 @@ class AdminUser extends Admin {
                     $uid = $this->adminUserModel->uid;
                 }
                 $gid = $data['group_id'];
+                // 修改分组前删除当前所属分组
+                model('auth_group_access')->where(['uid'=>$uid])->delete();
                 //将用户添加到用户组
                 logic('admin/AuthGroup')->addToGroup($uid,$gid);
                 $this->success($title.'成功', url('index'));
@@ -158,6 +160,9 @@ class AdminUser extends Admin {
             // 获取账号信息
             if ($uid>0) {
                 $info = $this->adminUserModel->get($uid);
+                //查询该用户当前拥有的分组
+                $group_ids=model('auth_group_access')->where(['uid'=>$uid])->column('group_id');
+                $info['group_id']=$group_ids;
                 unset($info['password']);
             }
             $builder = builder('Form')
@@ -168,7 +173,7 @@ class AdminUser extends Admin {
                         ->addFormItem('email', 'email', '邮箱', '','','data-rule="email" data-tip="请填写一个邮箱地址"')
                         ->addFormItem('mobile', 'left_icon_number', '手机号', '',['icon'=>'<i class="fa fa-phone"></i>'],'placeholder="填写手机号"')
                         ->addFormItem('sex', 'radio', '性别', '',[0=>'保密',1=>'男',2=>'女'])
-                        ->addFormItem('group_id', 'select', '所属用户组', '',$this->groupIds)
+                        ->addFormItem('group_id', 'checkbox', '所属用户组', '',$this->groupIds)
                         ->addFormItem('bind_uid', 'number', '绑定会员UID', '绑定用户表的UID')
                         ->addFormItem('description', 'textarea', '个人说明', '请填写个人说明')
                         ->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'正常',2=>'待验证'])
