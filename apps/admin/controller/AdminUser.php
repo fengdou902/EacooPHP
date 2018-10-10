@@ -147,6 +147,7 @@ class AdminUser extends Admin {
                 $this->error($this->adminUserModel->getError());
             }
         } else {
+            //设置默认值
             $info = [
                 'sex'=>0,
                 'bind_uid'=>0,
