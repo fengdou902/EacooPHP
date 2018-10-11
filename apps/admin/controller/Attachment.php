@@ -98,7 +98,7 @@ class Attachment extends Admin {
                 'ignore_keys'       =>['action_url','media_type','term_id','choice_date_range'],
                 'extend_conditions' =>$extend_conditions
             ];
-            list($data_list,$total) = $this->attachmentModel->search($search)->getListByPage($map,true,'sort asc,create_time asc,update_time asc',$page_number);
+            list($data_list,$total) = $this->attachmentModel->search($search)->getListByPage($map,true,'sort desc,create_time desc,update_time desc',$page_number);
             foreach ($data_list as $key => &$row) {
                 $row['thumb_src'] = $row['thumb_src'];
             }

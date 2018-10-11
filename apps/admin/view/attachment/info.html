@@ -6,8 +6,12 @@
  <div class="row">
       <input type="hidden" name="id" id="file-id" value="">
         <div class="col-xs-6 oh tc media-modal-pic">
-
             {switch name='$info.ext'}
+                {case value='mp3'}
+                    <audio src="{$info.url}" controls="controls">
+                        您的浏览器不支持 audio 标签。
+                    </audio>
+                {/case}
                 {case value='mp4'}
                     <video width="320" height="240" controls>
                         <source src="{$info.url}" type="video/mp4">
