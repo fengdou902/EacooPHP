@@ -129,10 +129,9 @@ class Home extends Base {
      *  @author: yyyvy <76836785@qq.com>
      * */
     public function toUnderScore($str){
-        $dstr = preg_replace_callback('/([A-Z]+)/',function($matchs)
-        {
-            return '_'.strtolower($matchs[0]);
-        },$str);
-        return trim(preg_replace('/_{2,}/','_',$dstr),'_');
+        $str = preg_replace_callback('/_([a-zA-Z])/', function ($match) {
+            return strtoupper($match[1]);
+        }, $str);
+        return strtolower(trim(preg_replace("/[A-Z]/", "_\\0", $str), "_"));
     }
 }
