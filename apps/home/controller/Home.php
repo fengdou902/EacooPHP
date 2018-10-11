@@ -11,6 +11,7 @@
 namespace app\home\controller;
 use app\common\controller\Base;
 use think\Loader;
+use think\Request;
 class Home extends Base {
 
      function _initialize() {
@@ -96,11 +97,13 @@ class Home extends Base {
      * @return [type]               [description]
      */
     public function fetch($template='', $vars = [], $replace = [], $config = [] ,$render=false) {
-        
+
+        $ACTION_NAME = Request::instance()->action(true);   //处理驼峰写法模板兼容，一定要给true，不然方法名会自动变小写；
+
         if (!is_file($template)) {
             
             if (!$template) {
-                $template_name = CONTROLLER_NAME.'/'.ACTION_NAME;
+                $template_name = CONTROLLER_NAME.'/'.self::toUnderScore($ACTION_NAME);
             } else{
                 $template_name = CONTROLLER_NAME.'/'.$template;
             }
@@ -116,5 +119,20 @@ class Home extends Base {
         }
 
         return $this->view->fetch($template, $vars, $replace, $config, $render);
+    }
+
+
+    /*
+     *  驼峰写法 转换大写为下划线加小写
+     *  @param  string $str 需要转换的字符串
+     *  @time: 2018-10-12
+     *  @author: yyyvy <76836785@qq.com>
+     * */
+    public function toUnderScore($str){
+        $dstr = preg_replace_callback('/([A-Z]+)/',function($matchs)
+        {
+            return '_'.strtolower($matchs[0]);
+        },$str);
+        return trim(preg_replace('/_{2,}/','_',$dstr),'_');
     }
 }
