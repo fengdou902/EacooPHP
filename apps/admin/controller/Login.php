@@ -86,7 +86,7 @@ class Login extends Base
 
      //图片验证码
     public function verify_img($id = 1){
-        ob_clean();
+        ob_clean();     //预防相关文件有BOM头，导致无法显示图片
         $captcha = new Captcha((array)config('captcha'));
         return $captcha->entry($id);
     }
