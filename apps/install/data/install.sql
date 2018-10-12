@@ -129,7 +129,7 @@ CREATE TABLE `eacoo_attachment` (
   `download` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '下载次数',
   `create_time` datetime NOT NULL DEFAULT '0001-01-01 00:00:00' COMMENT '上传时间',
   `update_time` datetime NOT NULL DEFAULT '0001-01-01 00:00:00' COMMENT '修改时间',
-  `sort` mediumint(8) UNSIGNED NOT NULL DEFAULT '99' COMMENT '排序',
+  `sort` mediumint(8) UNSIGNED NOT NULL DEFAULT '99' COMMENT '排序，值越小越靠前',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='附件表';
 
@@ -486,7 +486,7 @@ CREATE TABLE `eacoo_links` (
   `rating` int(11) UNSIGNED NOT NULL COMMENT '评级',
   `create_time` datetime NOT NULL DEFAULT '0001-01-01 00:00:00' COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT '0001-01-01 00:00:00' COMMENT '修改时间',
-  `sort` tinyint(3) UNSIGNED NOT NULL DEFAULT '99' COMMENT '排序',
+  `sort` tinyint(3) UNSIGNED NOT NULL DEFAULT '99' COMMENT '排序，值越小越靠前',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态，1启用，0禁用'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='友情链接表';
 
@@ -517,7 +517,7 @@ CREATE TABLE `eacoo_modules` (
   `admin_manage_into` varchar(60) DEFAULT '' COMMENT '后台管理入口',
   `create_time` datetime NOT NULL DEFAULT '0001-01-01 00:00:00' COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT '0001-01-01 00:00:00' COMMENT '更新时间',
-  `sort` tinyint(3) UNSIGNED NOT NULL DEFAULT '99' COMMENT '排序',
+  `sort` tinyint(3) UNSIGNED NOT NULL DEFAULT '99' COMMENT '排序，值越小越靠前',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态。0禁用，1启用'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模块功能表';
 
@@ -545,7 +545,7 @@ CREATE TABLE `eacoo_nav` (
   `depend_type` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '来源类型。0普通外链http，1模块扩展，2插件扩展，3主题扩展',
   `depend_flag` varchar(30) NOT NULL DEFAULT '' COMMENT '来源标记。如：模块或插件标识',
   `icon` varchar(120) NOT NULL DEFAULT '' COMMENT '图标',
-  `sort` tinyint(3) UNSIGNED NOT NULL DEFAULT '99' COMMENT '排序',
+  `sort` tinyint(3) UNSIGNED NOT NULL DEFAULT '99' COMMENT '排序，值越小越靠前',
   `update_time` datetime NOT NULL DEFAULT '0001-01-01 00:00:00' COMMENT '更新时间',
   `create_time` datetime NOT NULL DEFAULT '0001-01-01 00:00:00' COMMENT '创建时间',
   `status` tinyint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '状态。0禁用，1启用'
@@ -580,7 +580,7 @@ CREATE TABLE `eacoo_plugins` (
   `type` tinyint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '插件类型',
   `create_time` datetime NOT NULL DEFAULT '0001-01-01 00:00:00' COMMENT '安装时间',
   `update_time` datetime NOT NULL DEFAULT '0001-01-01 00:00:00' COMMENT '修改时间',
-  `sort` tinyint(3) UNSIGNED NOT NULL DEFAULT '99' COMMENT '排序',
+  `sort` tinyint(3) UNSIGNED NOT NULL DEFAULT '99' COMMENT '排序，值越小越靠前',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='插件表';
 
@@ -616,7 +616,7 @@ CREATE TABLE `eacoo_terms` (
   `seo_description` varchar(255) DEFAULT '' COMMENT 'seo描述',
   `create_time` datetime NOT NULL DEFAULT '0001-01-01 00:00:00' COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT '0001-01-01 00:00:00' COMMENT '更新时间',
-  `sort` int(10) UNSIGNED DEFAULT '99' COMMENT '排序号',
+  `sort` int(10) UNSIGNED DEFAULT '99' COMMENT '排序，值越小越靠前',
   `status` tinyint(1) DEFAULT '1' COMMENT '状态，1发布，0不发布'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='分类';
 
@@ -648,7 +648,7 @@ CREATE TABLE `eacoo_term_relationships` (
   `table` varchar(60) NOT NULL COMMENT '数据表',
   `uid` int(11) UNSIGNED DEFAULT '0' COMMENT '分类与用户关系',
   `create_time` datetime DEFAULT '0001-01-01 00:00:00' COMMENT '创建时间',
-  `sort` int(10) UNSIGNED NOT NULL DEFAULT '99' COMMENT '排序',
+  `sort` int(10) UNSIGNED NOT NULL DEFAULT '99' COMMENT '排序，值越小越靠前',
   `status` tinyint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '状态，1发布，0不发布'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='对象分类对应表';
 
@@ -681,7 +681,7 @@ CREATE TABLE `eacoo_themes` (
   `config` text COMMENT '主题配置',
   `current` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '当前主题类型，1PC端，2手机端。默认0',
   `website` varchar(120) DEFAULT '' COMMENT '站点',
-  `sort` tinyint(4) UNSIGNED NOT NULL DEFAULT '99' COMMENT '排序',
+  `sort` tinyint(4) UNSIGNED NOT NULL DEFAULT '99' COMMENT '排序，值越小越靠前',
   `create_time` datetime NOT NULL DEFAULT '0001-01-01 00:00:00' COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT '0001-01-01 00:00:00' COMMENT '更新时间',
   `status` tinyint(3) NOT NULL DEFAULT '1' COMMENT '状态'
