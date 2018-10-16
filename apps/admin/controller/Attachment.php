@@ -233,31 +233,36 @@ class Attachment extends Admin {
      * @param  int $id id
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function del($id=0,$is_return=true){ 
-        $return = get_attachment_info($id);//附件信息 
-        cache('Attachment_'.$id,null);//删除缓存信息
-        if ($return['location']=='local') {
-            $realpath = $return['real_path'];
-
-            $imgInfo = pathinfo($realpath);//图片信息
-            if (unlink($realpath)===false) {//本地文件已经不存在了
-                $this->error('删除失败！');
-            } elseif(in_array($return['ext'],array('jpg','jpeg','png','gif'))){
-               $attachment_options = config('attachment_options');//获取附件配置值
-               //删除缩略图
-               @unlink($imgInfo['dirname'].'/thumb_'.$attachment_options['small_size']['width'].'_'.$attachment_options['small_size']['height'].'_'.$imgInfo["basename"]);//删除缩略图
-               @unlink($imgInfo['dirname'].'/thumb_'.$attachment_options['medium_size']['width'].'_'.$attachment_options['medium_size']['height'].'_'.$imgInfo["basename"]);//删除中等尺寸
-               @unlink($imgInfo['dirname'].'/thumb_'.$attachment_options['large_size']['width'].'_'.$attachment_options['large_size']['height'].'_'.$imgInfo["basename"]);//删除大尺寸
-            }
+    public function del($id = 0, $is_return = true){ 
+        try {
+            $return = get_attachment_info($id);//附件信息 
+            cache('Attachment_'.$id,null);//删除缓存信息
             $resut =$this->attachmentModel->destroy($id);
-            delete_media_term($id,$return['term_id']);//删除关联的分类
-            if ($is_return==true) $this->success('删除成功！不可恢复');
-            
-        } else {//属于远程url文件
-            $resut = $this->attachmentModel->destroy($id);
-            delete_media_term($id,$return['term_id']);//删除关联的分类
-            if ($is_return==true) $this->success('删除成功！不可恢复');
+            if ($return['location']=='local') {
+                $realpath = $return['real_path'];
+
+                $imgInfo = pathinfo($realpath);//图片信息
+                if (@unlink($realpath)===false) {//本地文件已经不存在了
+                    if ($is_return==true) $this->error('删除失败！');
+                } elseif(in_array($return['ext'],array('jpg','jpeg','png','gif'))){
+                   $attachment_options = config('attachment_options');//获取附件配置值
+                   //删除缩略图
+                   @unlink($imgInfo['dirname'].'/thumb_'.$attachment_options['small_size']['width'].'_'.$attachment_options['small_size']['height'].'_'.$imgInfo["basename"]);//删除缩略图
+                   @unlink($imgInfo['dirname'].'/thumb_'.$attachment_options['medium_size']['width'].'_'.$attachment_options['medium_size']['height'].'_'.$imgInfo["basename"]);//删除中等尺寸
+                   @unlink($imgInfo['dirname'].'/thumb_'.$attachment_options['large_size']['width'].'_'.$attachment_options['large_size']['height'].'_'.$imgInfo["basename"]);//删除大尺寸
+                }
+                
+                delete_media_term($id,$return['term_id']);//删除关联的分类
+                if ($is_return==true) $this->success('删除成功！不可恢复');
+                
+            } else {//属于远程url文件
+                delete_media_term($id,$return['term_id']);//删除关联的分类
+                if ($is_return==true) $this->success('删除成功！不可恢复');
+            }
+        } catch (\Exception $e) {
+            setAppLog($e,'error');
         }
+        
     }
 
     /**

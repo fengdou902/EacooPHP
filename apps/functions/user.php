@@ -47,24 +47,3 @@ function get_nickname($uid=0)
     }
     return false;
 }
-
-/**
- * 行为日志记录
- * @param  integer $uid 用户ID
- * @param  array $data 数据
- * @param  string $remark 备注
- * @return [type] [description]
- * @date   2017-10-03
- * @author 心云间、凝听 <981248356@qq.com>
- */
-function action_log($action_id = 0, $uid = 0, $data = [], $remark = '',$is_admin = 0)
-{
-    if ($uid >0 ) {
-        $action_log_model = new ActionLogic;
-        if (is_array($data)) {
-            $data = json_encode($data);
-        }
-        // 保存日志
-        return $res = $action_log_model->recordLog($action_id ,$uid,$data,$remark,$is_admin);
-    }
-}

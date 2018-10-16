@@ -201,7 +201,7 @@ class Admin extends Base
 
     /**
      * 对数据表中的单行或多行记录执行修改 GET参数id为数字或逗号分隔的数字
-     * @param string $model 模型名称,供M函数使用的参数
+     * @param string $model 模型对象或名称
      * @param array  $data  修改的数据
      * @param array  $map   查询时的where()方法的参数
      * @param array  $msg   执行正确和错误的消息
@@ -213,6 +213,9 @@ class Admin extends Base
      *                       )
      */
     final protected function editRow($model, $data, $map, $msg) {
+        if (is_string($model)) {
+            $model = model($model);
+        }
         
         $msg = array_merge(
             array(

@@ -19,7 +19,7 @@ define('IS_WRITE', true);
 function check_env(){
 	$items = [
 		'os'      => ['操作系统', '不限制', '类Unix', PHP_OS, 'bg-green'],
-		'php'     => ['PHP版本', '5.6.0', '5.6+', PHP_VERSION, 'bg-green'],
+		'php'     => ['PHP版本', '7.0.0', '5.6+', PHP_VERSION, 'bg-green'],
 		'upload'  => ['附件上传', '不限制', '2M+', '未知', 'bg-green'],
 		'gd'      => ['GD库', '2.0', '2.0+', '未知', 'bg-green'],
 		'fileinfo'=> ['fileinfo扩展', '1.0.5', '1.0+', '未知', 'bg-green'],
