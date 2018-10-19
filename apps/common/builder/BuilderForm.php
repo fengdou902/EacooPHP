@@ -225,9 +225,72 @@ class BuilderForm extends Builder
        }
 
        //过来表单项
-       foreach ($this->formItems as $key => &$item) {
+       $this->formItems = $this->buildFormItems($this->formItems);
+       
+        //设置post_url默认值
+        $this->postUrl=$this->postUrl? $this->postUrl : $this->url;
+        //编译表单值
+        if ($this->formData) {
+            foreach ($this->formItems as &$item) {
+                if ($item['type']!='group') {
+                    if ($item['name']!='') {
+                        if (isset($this->formData[$item['name']])) {
+                            $item['value'] = $this->formData[$item['name']];
+                        }
+                    }
+                } else{
+                    foreach ($item['options'] as $gkey => $gvalue) {
+                        // if (isset($this->formData[$item['name']])) {
+                        //     $item['value'] = $this->formData[$item['name']];
+                        // }
+                    }
+                }
+                
+            }
+        }
+        
+        /**
+         * 设置按钮
+         */
+        if (empty($this->buttonList)) {
+            $this->addButton('submit')->addButton('back');
+        }
+
+        //编译按钮的html属性
+        foreach ($this->buttonList as &$button) {
+            $button['attr'] = $this->compileHtmlAttr($button['attr']);
+        }
+
+        $template_val = [
+            'tab_nav'         => $this->tabNav,// 页面Tab导航
+            'grouptabNav'     => $this->groupTabNav,//页面Tab分组
+            'post_url'        => $this->postUrl,//表单提交地址
+            'fieldList'       => $this->formItems,//表单项目
+            'button_list'     => $this->buttonList,//按钮组
+            'extra_html'      => $this->extraHtml//额外HTML代码 
+        ];
+        $this->assign($template_val);
+
+        $templateFile = APP_PATH.'/common/view/builder/'.$template_name.'.html';
+        return parent::fetch($templateFile);
+    }
+
+    /**
+     * 构建表单项数据builderFormItems
+     * @param  [type] $formItems [description]
+     * @return [type] [description]
+     * @date   2018-10-19
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function buildFormItems($formItems = [])
+    {
+        if (!$formItems) {
+            return false;
+        }
+
+        foreach ($formItems as $key => &$item) {
            if (!in_array($item['type'], $this->fieldsItemsList)) {
-                unset($this->formItems[$key]);
+                unset($formItems[$key]);
                 continue;
             }
             switch ($item['type']) {
@@ -297,53 +360,8 @@ class BuilderForm extends Builder
                     break;
             }
        }
-       
-        //设置post_url默认值
-        $this->postUrl=$this->postUrl? $this->postUrl : $this->url;
-        //编译表单值
-        if ($this->formData) {
-            foreach ($this->formItems as &$item) {
-                if ($item['type']!='group') {
-                    if ($item['name']!='') {
-                        if (isset($this->formData[$item['name']])) {
-                            $item['value'] = $this->formData[$item['name']];
-                        }
-                    }
-                } else{
-                    foreach ($item['options'] as $gkey => $gvalue) {
-                        // if (isset($this->formData[$item['name']])) {
-                        //     $item['value'] = $this->formData[$item['name']];
-                        // }
-                    }
-                }
-                
-            }
-        }
-        
-        /**
-         * 设置按钮
-         */
-        if (empty($this->buttonList)) {
-            $this->addButton('submit')->addButton('back');
-        }
 
-        //编译按钮的html属性
-        foreach ($this->buttonList as &$button) {
-            $button['attr'] = $this->compileHtmlAttr($button['attr']);
-        }
-
-        $template_val = [
-            'tab_nav'         => $this->tabNav,// 页面Tab导航
-            'grouptabNav'     => $this->groupTabNav,//页面Tab分组
-            'post_url'        => $this->postUrl,//表单提交地址
-            'fieldList'       => $this->formItems,//表单项目
-            'button_list'     => $this->buttonList,//按钮组
-            'extra_html'      => $this->extraHtml//额外HTML代码 
-        ];
-        $this->assign($template_val);
-
-        $templateFile = APP_PATH.'/common/view/builder/'.$template_name.'.html';
-        return parent::fetch($templateFile);
+       return $formItems;
     }
 
     /**

@@ -103,10 +103,11 @@ class Home extends Base {
         if (!is_file($template)) {
             
             if (!$template) {
-                $template_name = CONTROLLER_NAME.'/'.self::toUnderScore($ACTION_NAME);
+                $template_name = $this->request->controller().'/'.self::toUnderScore($this->request->action());
             } else{
-                $template_name = CONTROLLER_NAME.'/'.$template;
+                $template_name = $this->request->controller().'/'.$template;
             }
+
             // 当前模版文件
             $template = config('template.view_path').strtolower($template_name).'.'.config('template.view_suffix'); //当前主题模版是否存在
             if (!is_file($template)) {
@@ -128,7 +129,7 @@ class Home extends Base {
      *  @time: 2018-10-12
      *  @author: yyyvy <76836785@qq.com>
      * */
-    public function toUnderScore($str){
+    public static function toUnderScore($str){
         $str = preg_replace_callback('/_([a-zA-Z])/', function ($match) {
             return strtoupper($match[1]);
         }, $str);
