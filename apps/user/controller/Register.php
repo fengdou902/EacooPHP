@@ -41,6 +41,7 @@ class Register extends Home{
             // 提交数据
             $result = $this->userModel->editData($data);
             if ($result) {
+                $uid = $this->userModel->uid;
                 if ($uid>0) {//如果是编辑状态下
                     logic('common/User')->updateLoginSession($uid);
                 }
