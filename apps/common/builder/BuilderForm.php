@@ -290,7 +290,8 @@ class BuilderForm extends Builder
 
         foreach ($formItems as $key => &$item) {
            if (!in_array($item['type'], $this->fieldsItemsList)) {
-                unset($formItems[$key]);
+                //unset($formItems[$key]);
+                $item['FormBuilderExtend']='FormBuilderExtend';//扩展字段
                 continue;
             }
             switch ($item['type']) {
