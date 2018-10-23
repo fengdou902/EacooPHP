@@ -8,8 +8,6 @@ EacooPHP是基于ThinkPHP5.0.21开发的一套轻量级WEB产品开发框架，�
 
 使用EacooPHP框架开发定制您的系统前，建议熟悉官方的tp5.0完全开发手册。
 
-![eacoophp封面图](https://github.com/fengdou902/EacooPHP/blob/master/screenshot.jpeg)
-
 ### 功能特性
 - **严谨规范：** 提供一套有利于团队协作的结构设计、编码、数据等规范。
 - **高效灵活：** 清晰的分层设计、钩子行为扩展机制，解耦设计更能灵活应对需求变更。
@@ -123,6 +121,14 @@ return Builder('Form')
 ```
 ### 效果图：
 ![效果图](https://github.com/fengdou902/EacooPHP/blob/dev/eacoophp-demo-builderform-1.png)
+
+### 命令行：
+命令行操作：
+```
+一键创建模块：php think module -a 模块名(英文) -c create
+一键创建插件：php think plugin -a 插件名(英文) -c create
+一键创建主题：php think theme -a 主题名(英文) -c create
+```
 
 #### 更多神级操作，高并发，读写分离，分库分表，大数据量解决方案。
 
