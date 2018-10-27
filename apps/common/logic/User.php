@@ -119,8 +119,13 @@ class User extends Base
         if(!empty($user)){   
             /* 验证用户密码 */
             if(encrypt($password) === $user['password']){
-                self::autoLogin($user,$rememberme); //更新用户登录信息
-                return ['code'=>1,'msg'=>'登录成功','data'=>['uid'=>$user['uid']]];
+                //判断账号是否激活
+                if($user['actived']==1){
+                    self::autoLogin($user,$rememberme); //更新用户登录信息 
+                    return ['code'=>1,'msg'=>'登录成功','data'=>['uid'=>$user['uid']]];
+                }else{
+                    return ['code'=>0,'msg'=>'账号尚未激活'];
+                }
             } else {
                 return ['code'=>0,'msg'=>'密码错误！'];
             }
@@ -139,7 +144,10 @@ class User extends Base
      */
     public static function autoLogin($user, $rememberme = false){
         if (empty($user)) return false;
-
+        //检查账号是否激活
+        if($user['actived']==0){
+            return false;
+        }
         // 记录登录SESSION和COOKIES
         $result = self::setUserAuthSession($user);
         $auth_login = $result['auth_login'];
