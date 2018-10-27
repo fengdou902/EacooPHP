@@ -38,7 +38,7 @@ class Auth extends AdminLogic {
      * @return [type] [description]
      */
     public function getAdminMenu(){
-        $menus = model('AuthRule')->search()->getList([],true,'sort asc,id asc');
+        $menus = model('AuthRule')->where(['pid'=>0,'status'=>1])->select();
 
         $menus = collection($menus)->toArray();
         $tree_obj = new Tree;
