@@ -1,1 +1,6 @@
-<textarea name="{$field.name}" class="form-control" length="120" rows='5' {$field.extra_attr|default=''}>{present name="field.value"}{$field.value|htmlspecialchars}{/present}</textarea>
+<div class="form-group item_title ">
+    <label for="{$field.name}" class="col-md-2 control-label">{$field.title}</label>
+    <div class="col-md-4">
+        <textarea name="{$field.name}" class="form-control" length="120" rows='5' {$field.extra_attr|default=''}>{present name="field.value"}{$field.value|htmlspecialchars}{/present}</textarea>
+    </div>
+</div>
