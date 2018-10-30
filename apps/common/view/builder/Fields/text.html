@@ -1,6 +1,1 @@
-<div class="form-group item_title ">
-    <label for="{$field.name}" class="col-md-2 control-label">{$field.title}</label>
-    <div class="col-md-4">
-        <input type="text" class="form-control" name="{$field.name}" value="{present name="field.value"}{$field.value|htmlspecialchars}{/present}" {$field.extra_attr|default=''}>
-    </div>
-</div>
+<input type="text" class="form-control" name="{$field.name}" value="{present name="field.value"}{$field.value|htmlspecialchars}{/present}" {$field.extra_attr|default=''}>
