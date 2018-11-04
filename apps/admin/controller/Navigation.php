@@ -47,9 +47,10 @@ class Navigation extends Admin {
                 ->addTopBtn('sort',['model'=>'Nav','href'=>url('sort')])  // 添加排序按钮
                 //->setSearch('', url('rule'))
                 ->keyListItem('id','ID')
+                ->keyListItem('icon', '图标','icon')
                 ->keyListItem('title_show','名称')
                 ->keyListItem('value', 'URL（支持完整http地址和三段式式）')
-                ->keyListItem('icon', '图标','icon')
+                ->keyListItem('position', '位置','array',['header'=>'头部(Header)','my'=>'我的(My)'])
                 ->keyListItem('target','打开方式','array',['_blank'=>'新的窗口打开','_self'=>'本窗口打开'])
                 ->keyListItem('depend_type', '来源类型','array',[0=>'外部链接',1=>'模块',2=>'插件',3=>'主题'])
                 ->keyListItem('depend_flag', '来源标识')

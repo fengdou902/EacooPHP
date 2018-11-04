@@ -14,12 +14,12 @@ use Exception;
 use think\exception\Handle;
 use think\exception\HttpException;
 
-class EacooException extends Handle
+class EacooHttp extends Handle
 {
 
     public function render(Exception $e)
     {
-        $code    = $e->getStatusCode();
+        $code    = $e->getCode();
         $message = $e->getMessage();
 
         $remote  = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
@@ -40,7 +40,7 @@ class EacooException extends Handle
 
         // 请求异常
         if ($e instanceof HttpException && request()->isAjax()) {
-            //return response($e->getMessage(), $e->getStatusCode());
+            //return response($e->getMessage(), $e->getCode());
         }
 
         $data = [
