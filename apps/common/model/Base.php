@@ -37,7 +37,7 @@ class Base extends Model
             $res = $this->save($data,[$pk=>$data[$pk]]);
         } else{
             //如果不存在主键，则新增数据
-            $res = $this->isUpdate(false)->data($data,true)->save();
+            $res = $this->isUpdate(false)->data($data)->save();
         }
         if (!$res) {
             if (!$this->getError()) {
