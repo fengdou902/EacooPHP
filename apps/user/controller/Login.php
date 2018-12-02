@@ -51,6 +51,8 @@ class Login extends Home{
             if ($result['code']==1) {
 
                 $uid = !empty($result['data']['uid']) ? $result['data']['uid']:0;
+                //执行登录钩子
+                hook('LoginUser',['uid'=>$uid]);
                 $this->success('登录成功！',url('/'));
             } elseif ($result['code']==0) {
                 $this->error($result['msg']);

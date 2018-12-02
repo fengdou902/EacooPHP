@@ -15,8 +15,8 @@ use think\Hook;
 class InitApp {
 
 	public function run(&$params) {
-        define('EACOOPHP_V','1.3.0');
-        define('BUILD_VERSION','201810102222');//编译版本
+        define('EACOOPHP_V','1.3.1');
+        define('BUILD_VERSION','201812021322');//编译版本
 
         $this->initConst();
 

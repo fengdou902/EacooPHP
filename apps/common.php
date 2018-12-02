@@ -103,7 +103,7 @@ function check_install_plugin($name='')
  * @date   2018-01-17
  * @author 心云间、凝听 <981248356@qq.com>
  */
-function hook($hook, $params = [],$is_return =false)
+function hook($hook, $params = null, $is_return =false)
 {
     if ($is_return==true) {
         return \think\Hook::listen($hook, $params);exit;

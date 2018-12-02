@@ -33,7 +33,8 @@ class Menu extends Admin {
      * @return [type] [description]
      */
     public function index(){
-        $menus = logic('Auth')->getAdminMenu();
+        $depend_flag = input('param.depend_flag','all');//管理类型
+        $menus = logic('Auth')->getAdminMenu($depend_flag);
         $total = model('AuthRule')->count();
 
         //移动上级按钮属性
@@ -61,35 +62,36 @@ class Menu extends Admin {
         ];
 
         $return = builder('list')
-            ->addTopBtn('addnew')  // 添加新增按钮
-            ->addTopBtn('resume',['model'=>'auth_rule'])  // 添加启用按钮
-            ->addTopBtn('forbid',['model'=>'auth_rule'])  // 添加禁用按钮
-            ->addTopBtn('delete',['model'=>'auth_rule'])  // 添加删除按钮
-            ->addTopButton('self', $marker_menu0_attr) //取消菜单标记
-            ->addTopButton('self', $marker_menu1_attr) //标记为菜单
-            ->addTopButton('self', $move_position_attr) //移动菜单位置
-            ->addTopBtn('sort',array('model'=>'auth_rule','href'=>url('Sort')))  // 添加排序按钮
-            //->setSearch('', url('rule'))
-            ->keyListItem('id','ID')
-            ->keyListItem('title_show','名称')
-            ->keyListItem('name', 'URL','url',['url_callback'=>'url'])
-            ->keyListItem('icon','图标','icon')
-            ->keyListItem('depend_type', '来源类型','array',[1=>'模块',2=>'插件',3=>'主题'])
-            ->keyListItem('depend_flag', '来源标识')
-            ->keyListItem('sort', '排序')
-            ->keyListItem('is_menu','菜单','array',[0=>'否',1=>'是'])
-            ->keyListItem('status','状态','status')
-            ->keyListItem('right_button', '操作', 'btn')
-            ->setListPrimaryKey('id')
-            ->setListPage($total,false)
-            ->setListData($menus)    // 数据列表
-            ->setExtraHtml($extra_html)
-            ->addRightButton('edit') // 添加编辑按钮
-            ->addRightButton('forbid',['model'=>'auth_rule']) // 添加禁用按钮
-            ->alterListData(
-                ['key' => 'pid', 'value' =>'0'],
-                ['p_menu' => '无'])
-            ->fetch();
+                ->addTopBtn('addnew')  // 添加新增按钮
+                ->addTopBtn('resume',['model'=>'auth_rule'])  // 添加启用按钮
+                ->addTopBtn('forbid',['model'=>'auth_rule'])  // 添加禁用按钮
+                ->addTopBtn('delete',['model'=>'auth_rule'])  // 添加删除按钮
+                ->addTopButton('self', $marker_menu0_attr) //取消菜单标记
+                ->addTopButton('self', $marker_menu1_attr) //标记为菜单
+                ->addTopButton('self', $move_position_attr) //移动菜单位置
+                ->setTabNav(logic('Auth')->getTabList(), $depend_flag)  // 设置页面Tab导航
+                ->addTopBtn('sort',array('model'=>'auth_rule','href'=>url('Sort',['depend_flag'=>$depend_flag])))  // 添加排序按钮
+                //->setSearch('', url('rule'))
+                ->keyListItem('id','ID')
+                ->keyListItem('title_show','名称')
+                ->keyListItem('name', 'URL','url',['url_callback'=>'url'])
+                ->keyListItem('icon','图标','icon')
+                ->keyListItem('depend_type', '来源类型','array',[1=>'模块',2=>'插件',3=>'主题'])
+                ->keyListItem('depend_flag', '来源标识')
+                ->keyListItem('sort', '排序')
+                ->keyListItem('is_menu','菜单','array',[0=>'否',1=>'是'])
+                ->keyListItem('status','状态','status')
+                ->keyListItem('right_button', '操作', 'btn')
+                ->setListPrimaryKey('id')
+                ->setListPage($total,false)
+                ->setListData($menus)    // 数据列表
+                ->setExtraHtml($extra_html)
+                ->addRightButton('edit') // 添加编辑按钮
+                ->addRightButton('forbid',['model'=>'auth_rule']) // 添加禁用按钮
+                ->alterListData(
+                    ['key' => 'pid', 'value' =>'0'],
+                    ['p_menu' => '无'])
+                ->fetch();
 
         return Iframe()
                 ->setMetaTitle('后台菜单管理')
@@ -184,21 +186,22 @@ class Menu extends Admin {
     public function Sort($ids = null)
     {
         $builder = builder('Sort');
-        $pid     = input('param.pid',false);//是否存在父ID
+        $depend_flag = input('param.depend_flag','all');//是否存在父ID
         $map     = [];
-        if ($pid>0 || $pid===0) {
-            $map['pid'] = $pid;
-        } 
+        if ($depend_flag!='all' && $depend_flag) {
+            $map['depend_flag']=$depend_flag;
+        }
         
         if (IS_POST) {
             cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);//清空后台菜单缓存
             $builder->doSort('auth_rule', $ids);
         } else {
-            $map['status'] = array('egt', 0);
-            $list = $this->authRuleModel->getList($map,'id,title,sort','sort asc,id asc');
+            $map['status'] = 1;
+            $list = $this->authRuleModel->getList($map,'id,title,sort,pid','sort asc,id asc');
             foreach ($list as $key => $val) {
                 $list[$key]['title'] = $val['title'];
             }
+
             $content = $builder
                     ->setListData($list)
                     ->addButton('submit')->addButton('back')

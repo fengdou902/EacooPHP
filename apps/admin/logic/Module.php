@@ -42,8 +42,8 @@ class Module extends AdminLogic
     public function getModules()
     {
         $default_module = [ 
-                        'admin'   =>'后台模块',
-                        'home'    =>'Home模块',
+                        //'admin'   =>'系统模块',
+                        //'home'    =>'Home模块',
                         ];
         $data_list = ModuleModel::where('status',1)->column('title','name');                
         $data_list = $default_module+$data_list;

@@ -35,7 +35,7 @@
                 <% if(!_child){ %>
                   <li ><a href="{{v.url}}" class="opentab" tab-name="navtab-collapse-<%=v.id %>"><i class="fa <% if(v.icon){ %> {{v.icon}} <% }else{ %>fa-circle-o <% } %>"></i> <%=v.title %></a> </li>
                   <% }else{ %>
-                   <li ><a href="{{v.url}}" class="opentab" tab-name="navtab-collapse-<%=v.id %>"><i class="fa <% if(v.icon){ %> {{v.icon}} <% }else{ %>fa-circle-o <% } %>"></i> <%=v.title %> <i class="fa fa-angle-left pull-right"></i></a>
+                   <li ><a href="#" ><i class="fa <% if(v.icon){ %> {{v.icon}} <% }else{ %>fa-circle-o <% } %>"></i> <%=v.title %> <i class="fa fa-angle-left pull-right"></i></a>
                      <ul class="treeview-menu">
                         <% for (var k = 0; k < _child.length; k ++) { %>
                             <% var _v = child[j]; %>

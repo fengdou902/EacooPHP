@@ -72,7 +72,14 @@ class Index extends Admin
     public function getSidebarMenus()
     {
         try {
-            $result = logic('index')->getAdminSidebarMenu();
+            $default_header_menu_module = cache('default_header_menu_module');
+            if (empty($default_header_menu_module)) {
+                $default_header_menu_module = 'admin';
+            }
+            $depend_type = input('param.depend_type',1);
+            $depend_flag = input('param.depend_flag',$default_header_menu_module);
+            $result = logic('index')->getAdminSidebarMenu($depend_flag,$depend_type);
+            cache('default_header_menu_module',$depend_flag);
             return json(['code'=>1,'msg'=>'获取侧边栏菜单成功','data'=>$result]);
         } catch (\Exception $e) {
             return json(['code'=>$e->getCode(),'msg'=>$e->getMessage(),'data'=>[]]);
@@ -80,7 +87,7 @@ class Index extends Admin
     }
 
     /**
-     * 获取顶部菜单
+     * 获取顶部收藏菜单
      * @return [type] [description]
      * @date   2018-02-15
      * @author 心云间、凝听 <981248356@qq.com>
@@ -94,5 +101,41 @@ class Index extends Admin
             return json(['code'=>$e->getCode(),'msg'=>$e->getMessage(),'data'=>[]]);
         }
         
+    }
+
+    /**
+     * 设置顶部模块菜单
+     * @date   2018-12-02
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public function setHeaderModulesMenus()
+    {
+        try {
+            $result = [];
+            $default_header_menu_module = cache('default_header_menu_module');
+            $data_list = model('admin/modules')->where('status',1)->column('name','name');                
+            unset($data_list['home']);
+            if (!empty($data_list)) {
+                $menu_db = db('auth_rule');
+                foreach ($data_list as $key => $vo) {
+                    $menu_info = $menu_db->where(['depend_type'=>1,'depend_flag'=>$vo])->field('id,name,title,icon,depend_flag')->find();
+                    if (!empty($menu_info)) {
+                        if ($vo=='admin') {
+                            $menu_info['title']='系统';
+                        }
+                        //默认菜单
+                        $menu_info['default_header_menu_module']=0;
+                        if ($default_header_menu_module==$vo) {
+                            $menu_info['default_header_menu_module']=1;
+                        }
+                        $result[] = $menu_info;
+                    }
+                    
+                }
+            }
+            return json(['code'=>1,'msg'=>'获取顶部模块菜单成功','data'=>$result]);
+        } catch (\Exception $e) {
+            return json(['code'=>$e->getCode(),'msg'=>$e->getMessage(),'data'=>[]]);
+        }
     }
 }

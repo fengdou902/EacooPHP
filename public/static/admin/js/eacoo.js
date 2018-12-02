@@ -113,6 +113,16 @@
     //     $(".iframe-wrapper").css("height", $(".content-wrapper").height() + "px");
     // });
     
+    //顶部模块儿菜单转换
+    $('body').on('click',"#header-modules-menus>li>a",function () {
+        var $this = $(this);
+        var depend_type = $this.data('dependtype');
+        var depend_flag = $this.data('dependflag');
+        loadSidebarMenus(depend_type,depend_flag);
+        $('#header-modules-menus').find('li').removeClass('active');
+        $this.parent().toggleClass('active');
+    }); 
+    
     //侧边栏菜单点击状态转换
     $('body').on('click',".sidebar-menu>li.no_tree>a",function () {
         $('.sidebar-menu').find('li').removeClass('active');
@@ -263,8 +273,8 @@ function showTabIframe(iframeObj,is_from_iframe) {
  * @date   2018-02-12
  * @author 心云间、凝听 <981248356@qq.com>
  */
-function loadSidebarMenus() {
-    $.get(url("admin/index/getSidebarMenus")).success(function (result) {
+function loadSidebarMenus(depend_type,depend_flag) {
+    $.get(url("admin/index/getSidebarMenus"),{depend_type:depend_type,depend_flag:depend_flag}).success(function (result) {
         //console.log(result);
         var html = template("sidebar_menus", result);
         $("#sidebar-menus").html(html);
@@ -285,4 +295,18 @@ function loadTopMenus() {
         $("#top-collect-menus").html(html);
     })
     
+}
+
+/**
+ * 加载顶部模块菜单
+ * @return {[type]} [description]
+ * @date   2018-12-02
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function loadHeaderModulesMenus() {
+    $.get(url("admin/index/setHeaderModulesMenus")).success(function (result) {
+        //console.log(result);
+        var html = template("header_modules_menus", result);
+        $("#header-modules-menus").html(html);
+    })
 }
