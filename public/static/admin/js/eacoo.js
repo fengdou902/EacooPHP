@@ -116,9 +116,8 @@
     //顶部模块儿菜单转换
     $('body').on('click',"#header-modules-menus>li>a",function () {
         var $this = $(this);
-        var depend_type = $this.data('dependtype');
-        var depend_flag = $this.data('dependflag');
-        loadSidebarMenus(depend_type,depend_flag);
+        var module_name = $this.data('dependflag');
+        loadSidebarMenus(module_name);
         $('#header-modules-menus').find('li').removeClass('active');
         $this.parent().toggleClass('active');
     }); 
@@ -273,8 +272,8 @@ function showTabIframe(iframeObj,is_from_iframe) {
  * @date   2018-02-12
  * @author 心云间、凝听 <981248356@qq.com>
  */
-function loadSidebarMenus(depend_type,depend_flag) {
-    $.get(url("admin/index/getSidebarMenus"),{depend_type:depend_type,depend_flag:depend_flag}).success(function (result) {
+function loadSidebarMenus(module_name) {
+    $.get(url("admin/index/getSidebarMenus"),{position:module_name}).success(function (result) {
         //console.log(result);
         var html = template("sidebar_menus", result);
         $("#sidebar-menus").html(html);

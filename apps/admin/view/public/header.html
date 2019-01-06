@@ -41,7 +41,7 @@
         <script id="header_modules_menus" type="text/html">
             <% for (var i = 0; i < data.length; i ++) { %>
             <% var vo = data[i]; %>
-            <li <% if (vo.default_header_menu_module==1) { %> class="active"<% } %>><a href="#" data-dependtype="1" data-dependflag="<%=vo.depend_flag %>" style="font-weight:bold!important;"><i class="<%=vo.icon %>"></i> <%=vo.title %></a></li>
+            <li <% if (vo.default_header_menu_module==1) { %> class="active"<% } %>><a href="#" data-dependtype="1" data-dependflag="<%=vo.name %>" style="font-weight:bold!important;"><i class="<%=vo.icon %>"></i> <%=vo.title %></a></li>
             <% } %>
         </script>
         <ul class="nav navbar-nav" id="header-modules-menus">

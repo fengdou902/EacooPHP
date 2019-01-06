@@ -23,13 +23,12 @@ class Index extends AdminLogic {
 
     /**
      * 获取侧边栏菜单
-     * @param  string $depend_flag [description]
-     * @param  integer $depend_type [description]
+     * @param  string $position [description]
      * @return [type] [description]
      * @date   2018-12-02
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function getAdminSidebarMenu($depend_flag='',$depend_type = 1)
+    public function getAdminSidebarMenu($position='')
     {
         try {
             $uid = is_admin_login();
@@ -50,8 +49,7 @@ class Index extends AdminLogic {
                 $map_rules['status']=1;
                 $map_rules['is_menu']=1;
 
-                $map_rules['depend_type']=$depend_type;
-                $map_rules['depend_flag']= !empty($depend_flag) ? $depend_flag:'admin';
+                $map_rules['position']= !empty($position) ? $position:'admin';
                 //是否开发者模式
                 if (1!=config('develop_mode')) {
                     $map_rules['developer']=0;

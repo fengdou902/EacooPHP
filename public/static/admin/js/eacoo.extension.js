@@ -295,6 +295,7 @@ function onlineInstall(name,app_type,install_method,only_download) {
             $(".eacoo-tabs .nav li").removeClass('active');
             $(".eacoo-tabs .nav li:first").addClass('active');
             loadAppstore(result.url);//加载应用列表
+            parent.loadHeaderModulesMenus();//加载顶部菜单
             parent.loadSidebarMenus();//加载菜单
           } else if(result.code==2){
             eacooTokenIdentification();
@@ -332,6 +333,7 @@ function app_form_submit(action_url,params,callback) {
             if ($.isFunction(callback)) {
                 callback(result);
             }
+            parent.loadHeaderModulesMenus();//加载顶部菜单
             parent.loadSidebarMenus();//加载菜单
           } else{
             updateAlert(result.msg,'warning');

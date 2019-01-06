@@ -674,7 +674,7 @@ class Extension extends AdminLogic {
      * @date   2017-09-15
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function addAdminMenus($data = [], $flag_name = '', $pid = 0)
+    public function addAdminMenus($data = [], $flag_name = '', $pid = 0,$position='')
     {
         if (!empty($data) && is_array($data) && $flag_name!='') {
             $authRuleModel = new AuthRuleModel;
@@ -683,6 +683,14 @@ class Extension extends AdminLogic {
 
                 $menu['depend_type'] = $this->depend_type;
                 $menu['depend_flag'] = $flag_name;
+                if ($position=='') {
+                    if ($this->depend_type==1) {
+                        $position = $flag_name;
+                    } else{
+                        $position = 'admin';
+                    }
+                }
+                $menu['position'] = $position;
                 $menu['pid']    = $pid;
                 $menu['sort']   = isset($menu['sort']) ? $menu['sort'] : 99;
                 if ($authRuleModel->where(['name'=>$menu['name'],'depend_type'=>$this->depend_type,'depend_flag'=>$flag_name])->find()) {

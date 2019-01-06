@@ -76,10 +76,9 @@ class Index extends Admin
             if (empty($default_header_menu_module)) {
                 $default_header_menu_module = 'admin';
             }
-            $depend_type = input('param.depend_type',1);
-            $depend_flag = input('param.depend_flag',$default_header_menu_module);
-            $result = logic('index')->getAdminSidebarMenu($depend_flag,$depend_type);
-            cache('default_header_menu_module',$depend_flag);
+            $position = input('param.position',$default_header_menu_module);
+            $result = logic('index')->getAdminSidebarMenu($position);
+            cache('default_header_menu_module',$position);
             return json(['code'=>1,'msg'=>'获取侧边栏菜单成功','data'=>$result]);
         } catch (\Exception $e) {
             return json(['code'=>$e->getCode(),'msg'=>$e->getMessage(),'data'=>[]]);
@@ -113,22 +112,24 @@ class Index extends Admin
         try {
             $result = [];
             $default_header_menu_module = cache('default_header_menu_module');
-            $data_list = model('admin/modules')->where('status',1)->column('name','name');                
-            unset($data_list['home']);
+            $data_list = model('admin/modules')->where('status',1)->field('title,name,icon')->select();
             if (!empty($data_list)) {
-                $menu_db = db('auth_rule');
-                foreach ($data_list as $key => $vo) {
-                    $menu_info = $menu_db->where(['depend_type'=>1,'depend_flag'=>$vo])->field('id,name,title,icon,depend_flag')->find();
-                    if (!empty($menu_info)) {
-                        if ($vo=='admin') {
-                            $menu_info['title']='系统';
+                foreach ($data_list as $key => $row) {
+                    $module_name = $row['name'];
+                    if ($module_name=='home') {
+                        continue;
+                    }
+                    if (!empty($row)) {
+                        if ($module_name=='admin') {
+                            $row['title']='系统';
                         }
                         //默认菜单
-                        $menu_info['default_header_menu_module']=0;
-                        if ($default_header_menu_module==$vo) {
-                            $menu_info['default_header_menu_module']=1;
+                        $row['default_header_menu_module']=0;
+                        if ($default_header_menu_module==$module_name) {
+                            $row['default_header_menu_module']=1;
                         }
-                        $result[] = $menu_info;
+                        $row['icon'] = !empty($row['icon']) ? $row['icon'] : 'fa fa-circle-o ';
+                        $result[] = $row;
                     }
                     
                 }
