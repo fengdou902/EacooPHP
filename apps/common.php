@@ -2,8 +2,8 @@
 use think\Route;
 use app\common\builder\Builder;
 use app\common\layout\Iframe;
-use app\admin\model\Modules as ModulesModel;
-use app\admin\model\Plugins as PluginsModel;
+use app\admin\logic\Module as ModuleLogic;
+use app\admin\logic\Plugin as PluginLogic;
 
 /**
  * 获取对象
@@ -79,7 +79,7 @@ function service($name='')
  */
 function check_install_module($name='')
 {
-    return ModulesModel::checkInstall($name);
+    return ModuleLogic::checkInstall($name);
 }
 
 /**
@@ -91,7 +91,7 @@ function check_install_module($name='')
  */
 function check_install_plugin($name='')
 {
-    return PluginsModel::checkInstall($name);
+    return PluginLogic::checkInstall($name);
 }
 
 /**
@@ -103,7 +103,7 @@ function check_install_plugin($name='')
  * @date   2018-01-17
  * @author 心云间、凝听 <981248356@qq.com>
  */
-function hook($hook, $params = [],$is_return =false)
+function hook($hook, $params = null, $is_return =false)
 {
     if ($is_return==true) {
         return \think\Hook::listen($hook, $params);exit;

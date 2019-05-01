@@ -120,7 +120,9 @@ class Admin extends Base
         if (empty($ids)) {
             $this->error('请选择要操作的数据');
         }
-        $model = model($model);
+        if (is_string($model)) {
+            $model = model($model);
+        }
         $model_primary_key = $model->getPk();
         $map[$model_primary_key] = ['in',$ids];
         if ($script) {

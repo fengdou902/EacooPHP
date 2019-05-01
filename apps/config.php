@@ -134,7 +134,9 @@ $config = [
         // 模板后缀
         'view_suffix'  => 'html',
         // 模板文件名分隔符
-        //'view_depr'    => '_',
+        'view_depr'    => DS,
+        // 默认模板渲染规则 1 解析为小写+下划线 2 全部转换小写
+        'auto_rule'   => 1,
         // 模板引擎普通标签开始标记
         'tpl_begin'    => '{',
         // 模板引擎普通标签结束标记
@@ -160,7 +162,7 @@ $config = [
     // 显示错误信息
     'show_error_msg'         => false,
     // 异常处理handle类 留空使用 \think\exception\Handle
-    'exception_handle'       => '\\app\\common\\exception\\EacooException',
+    'exception_handle'       => '\\app\\common\\exception\\EacooHttp',
 
     // +----------------------------------------------------------------------
     // | 日志设置

@@ -45,6 +45,8 @@ class Register extends Home{
                 if ($uid>0) {//如果是编辑状态下
                     logic('common/User')->updateLoginSession($uid);
                 }
+                //执行注册钩子
+                hook('RegisterUser',['uid'=>$uid]);
                 $this->success('注册成功', url('index'));
             } else {
                 $this->error($this->userModel->getError());

@@ -447,21 +447,24 @@ function getThumbImageById($img_id,$thumb_type='small')
     if (empty($info)) {
         return root_full_path(config('view_replace_str.__PUBLIC__').'/img/file-default.png');
     }
-    if ($info['location'] == 'local') {
 
-        return get_thumb_image($info['path'],$thumb_type);
+    return get_thumb_image($info['path'],$thumb_type);
+    
+    // if ($info['location'] == 'local') {
 
-    } else {
-        $new_img = $info['path'];
-        $name = get_plugin_class($info['location']);
-        if (class_exists($name)) {
-            $class = new $name();
-            if (method_exists($class, 'small')) {
-                $new_img = $class->thumb($info['path'],$thumb_type);
-            }
-        }
-        return root_full_path($new_img);
-    }
+    //     return get_thumb_image($info['path'],$thumb_type);
+
+    // } else {
+    //     $new_img = $info['path'];
+    //     $name = get_plugin_class($info['location']);
+    //     if (class_exists($name)) {
+    //         $class = new $name();
+    //         if (method_exists($class, 'small')) {
+    //             $new_img = $class->thumb($info['path'],$thumb_type);
+    //         }
+    //     }
+    //     return root_full_path($new_img);
+    // }
 
 }
 

@@ -18,10 +18,8 @@
                 {php}
                     if (is_array($field['value'])) {
                         $images = $field['value'];
-                        $input_value = implode(',', $field['value']);
                     } else {
                         $images = explode(',',$field['value']);
-                        $input_value = $field['value'];
                     }
                 {/php}
                 {foreach name="images" item="img"}

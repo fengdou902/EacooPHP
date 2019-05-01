@@ -37,8 +37,12 @@ class Auth extends AdminLogic {
      * 后台菜单管理(规则)
      * @return [type] [description]
      */
-    public function getAdminMenu(){
-        $menus = model('AuthRule')->where(['pid'=>0,'status'=>1])->select();
+    public function getAdminMenu($depend_flag=null){
+        $map = [];
+        if ($depend_flag!='all' && $depend_flag) {
+            $map['depend_flag']=$depend_flag;
+        }
+        $menus = model('AuthRule')->getList($map,true,'sort asc,id asc');
 
         $menus = collection($menus)->toArray();
         $tree_obj = new Tree;
@@ -54,6 +58,7 @@ class Auth extends AdminLogic {
     public function getTabList()
     {             
         $module_list = logic('Module')->getModules();
+        unset($module_list['home']);
         $tab_list = ['all'=>['title'=>'全部','href'=>url('index')]];
         foreach ($module_list as $key => $row) {
             $tab_list[$key] = ['title'=>$row,'href'=>url('index',['depend_flag'=>$key])];

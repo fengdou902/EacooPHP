@@ -288,9 +288,9 @@ class Attachment extends Admin {
         $return = builder('List')
                     ->setTabNav($tab_list,'category')  // 设置页面Tab导航
                     ->addTopButton('addnew',['href'=>url('categoryEdit')])  // 添加新增按钮
-                    ->addTopButton('resume')  // 添加启用按钮
-                    ->addTopButton('forbid')  // 添加禁用按钮
-                    ->addTopButton('recycle') //添加回收按钮
+                    ->addTopButton('resume',['model'=>'Terms'])  // 添加启用按钮
+                    ->addTopButton('forbid',['model'=>'Terms'])  // 添加禁用按钮
+                    ->addTopButton('recycle',['model'=>'Terms']) //添加回收按钮
                     ->keyListItem('term_id', 'ID')
                     ->keyListItem('name', '名称','link',url('index',['term_id'=>'__data_id__']))//约定分类对象
                     ->keyListItem('slug', '别名')
@@ -303,7 +303,8 @@ class Attachment extends Admin {
                     ->setListData($data_list)    // 数据列表
                     ->setListPage($total) // 数据列表分页
                     ->addRightButton('edit',['href'=>url('categoryEdit',['term_id'=>'__data_id__'])])// 添加编辑按钮
-                    ->addRightButton('recycle')// 添加删除按钮
+                    ->addRightButton('recycle',['model'=>'Terms'])// 添加回收按钮
+                    ->addRightButton('restore',['model'=>'Terms'])// 添加还原按钮
                     ->fetch();
                     
         return Iframe()
@@ -322,7 +323,7 @@ class Attachment extends Admin {
             'tab_list'=>AttachmentLogic::getTabList(),
             'current'=>'category'
             ];
-        \think\Loader::action('admin/Terms/edit',[$term_id,'media_cat',$tab_obj]);
+       return \think\Loader::action('admin/Terms/edit',[$term_id,'media_cat',$tab_obj]);
 
     }
 
