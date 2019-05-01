@@ -49,14 +49,14 @@ class Menu extends Admin {
         //是否标记为菜单：0否，1是
         $marker_menu0_attr = [
             'title'       => '取消菜单标记',
-            'class'       => 'btn btn-primary btn-sm confirm ajax-post',
+            'class'       => 'btn btn-primary btn-sm confirm ajax-table-btn',
             'href'        => url('markerMenu',['status'=>0]),
             'target-form' => 'ids'
         ];
 
         $marker_menu1_attr = [
             'title'       =>'标记为菜单',
-            'class'       =>'btn btn-primary btn-sm ajax-post',
+            'class'       =>'btn btn-primary btn-sm ajax-table-btn',
             'href'        =>url('markerMenu',['status'=>1]),
             'target-form' =>'ids'
         ];
