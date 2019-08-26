@@ -1,7 +1,7 @@
 <?php
 // 后台逻辑层基类
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017-2018 https://www.eacoophp.com, All rights reserved.         
+// | Copyright (c) 2017-2019 https://www.eacoophp.com, All rights reserved.         
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -28,11 +28,15 @@ class AdminLogic extends BaseLogic {
         3=>'theme'
     ];
 
+    public $currentUser = [];
+    public $uid = 0;
+    public $adminUid = 0;
+
 	protected function initialize()
     {
         parent::initialize();
         $this->currentUser = session('admin_login_auth');
-        $this->uid = is_admin_login();
+        $this->uid = $this->adminUid = is_admin_login();
     }
 
     /**

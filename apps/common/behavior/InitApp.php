@@ -1,7 +1,7 @@
 <?php
 // 初始化应用
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017-2018 https://www.eacoophp.com, All rights reserved.         
+// | Copyright (c) 2017-2019 https://www.eacoophp.com, All rights reserved.         
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -15,8 +15,8 @@ use think\Hook;
 class InitApp {
 
 	public function run(&$params) {
-        define('EACOOPHP_V','1.3.1');
-        define('BUILD_VERSION','201812021322');//编译版本
+        define('EACOOPHP_V','1.3.2');
+        define('BUILD_VERSION','201908261232');//编译版本
 
         $this->initConst();
 

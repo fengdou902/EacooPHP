@@ -151,8 +151,8 @@ class Action extends Admin {
 
         $return = builder('list')
         		->setPageTips('根据用户行为，自动记录后台日志记录')  // 设置页面标题
-        		->addTopButton('self', ['title'=>'清空日志','href'=>url('clearLog'),'class'=>'btn btn-warning btn-sm ajax-get confirm','icon'=>'fa fa-trash','hide-data'=>'true']) //清空
-                ->addTopButton('delete',['href'=>url('admin/Action/dellog')])  // 添加禁用按钮
+        		->addTopButton('self', ['title'=>'清空日志','href'=>eacoo_url('admin/Action/clearLog'),'class'=>'btn btn-warning btn-sm ajax-get confirm','icon'=>'fa fa-trash','hide-data'=>'true']) //清空
+                ->addTopButton('delete',['href'=>eacoo_url('admin/Action/dellog')])  // 添加禁用按钮
         		->keyListItem('action_name','行为标识')
                 ->keyListItem('remark','备注')
                 ->keyListItem('url','URL')
@@ -165,7 +165,7 @@ class Action extends Admin {
                 ->setListData($data_list)     // 数据列表
                 ->setListPage($total)
                 //->setListPage($data_list->render())  // 数据列表分页
-                ->addRightButton('self',['href'=>url('detail',['id'=>'__data_id__']),'title'=>'详情','icon'=>'fa fa-view'])
+                ->addRightButton('self',['href'=>eacoo_url('admin/Action/detail',['id'=>'__data_id__']),'title'=>'详情','icon'=>'fa fa-eye','class'=>'btn btn-primary btn-xs'])
                 ->addRightButton('delete')  // 添加删除按钮
                 ->fetch();
 
@@ -220,13 +220,21 @@ class Action extends Admin {
 	 */
 	public function detail($id = 0) {
 		$this->assign('meta_title','日志详情');
-
 		if (empty($id)) {
 			$this->error('参数错误！');
 		}
 
-		$info = model('actionLog')->alias('a')->where('a.id',$id)->join('__USERS__ b','a.uid = b.uid')->join('__ACTION__ c','a.action_id = c.id')->order('a.create_time desc')->field('a.*,b.nickname,c.name,c.title')->find();
-		$info['nickname']= db('users')->where('uid',$info['uid'])->value('nickname');
+		$info = db('actionLog')->alias('a')
+                ->join('__ACTION__ c','a.action_id = c.id')
+                ->where('a.id',$id)
+                ->order('a.create_time desc')->field('a.*,c.name,c.title')
+                ->find();
+        if ($info['is_admin']==1) {
+            $info['nickname']= db('admin')->where('uid',$info['uid'])->value('nickname');
+        } else{
+            $info['nickname']= db('users')->where('uid',$info['uid'])->value('nickname');
+        }
+		
 		//$info['action_ip']   = long2ip($info['action_ip']);
 		if ($info['ip']!='' && $info['ip']!='127.0.0.1') {
 			$ip_info         = curl_get('http://www.ip.cn/?ip='.$info['ip']);

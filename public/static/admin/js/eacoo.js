@@ -282,13 +282,13 @@ function loadSidebarMenus(module_name) {
 }
 
 /**
- * 加载顶部菜单
+ * 加载顶部收藏菜单
  * @return {[type]} [description]
  * @date   2018-02-12
  * @author 心云间、凝听 <981248356@qq.com>
  */
 function loadTopMenus() {
-    $.get(url("admin/index/getTopMenus")).success(function (result) {
+    $.get(url("admin/index/getCollectMenus")).success(function (result) {
         //console.log(result);
         var html = template("collect_top_menus", result);
         $("#top-collect-menus").html(html);

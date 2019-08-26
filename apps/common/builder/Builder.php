@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017-2018 https://www.eacoophp.com, All rights reserved.         
+// | Copyright (c) 2017-2019 https://www.eacoophp.com, All rights reserved.         
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -20,7 +20,8 @@ use think\Exception;
 class Builder extends Base {
 
     protected $metaTitle; // 页面标题
-    protected $tips;      // 页面标题
+    protected $tips;      // 页面提示
+    protected $authRule; //授权规则
     protected $pluginName;
     protected $preQueryConnector;
 
@@ -77,6 +78,7 @@ class Builder extends Base {
      */
     public function setMetaTitle($meta_title) {
         $this->metaTitle = $meta_title;
+        $this->authRule = $this->urlRule;
         return $this;
     }
 
@@ -108,6 +110,7 @@ class Builder extends Base {
         $template_vars = [
             'show_box_header' => 1,//是否显示box_header
             'meta_title'      => $this->metaTitle,// 页面标题
+            'auth_rule'     =>$this->authRule,
             'tips'            => $this->tips,// 页面提示说明
         ];
         $this->assign($template_vars);

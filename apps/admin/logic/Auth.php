@@ -1,7 +1,7 @@
 <?php
 // 授权管理控制器
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017-2018 https://www.eacoophp.com, All rights reserved.         
+// | Copyright (c) 2017-2019 https://www.eacoophp.com, All rights reserved.         
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -16,6 +16,7 @@ use app\admin\model\AuthGroupAccess as AuthGroupAccessModel;
 use app\admin\model\AdminUser as AdminUserModel;
 
 use eacoo\Tree;
+use think\Cookie;
 
 class Auth extends AdminLogic {
 
@@ -139,35 +140,6 @@ function switch_select_dependflag_function(type,depend_flag){
 </script>
 EOF;
     return $html;
-    }
-
-    /**
-     * 对菜单进行排序
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public function ruleSort($ids = null)
-    {
-        $builder    = builder('Sort');
-        $pid = input('param.pid',false);//是否存在父ID
-        $map = [];
-        if ($pid>0 || $pid===0) {
-            $map['pid'] = $pid;
-        } 
-        
-        if (IS_POST) {
-            cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);//清空后台菜单缓存
-            $builder->doSort('auth_rule', $ids);
-        } else {
-            //$map['status'] = array('egt', 0);
-            $list = $this->authRuleModel->getList($map, 'sort asc', 'id,title,sort');
-            foreach ($list as $key => $val) {
-                $list[$key]['title'] = $val['title'];
-            }
-            $builder->setMetaTitle('配置排序')
-                    ->setListData($list)
-                    ->addButton('submit')->addButton('back')
-                    ->fetch();
-        }
     }
 
     /**
@@ -310,275 +282,26 @@ EOF;
 EOF;
     }
 
-    //角色管理
-    public function role(){
-        // 搜索
-        $keyword = input('param.keyword');
-        if ($keyword) {
-            $this->authGroupModel->where('title','like','%'.$keyword.'%');
-        }
-        // 获取所有角色
-        $map['status'] = array('egt', '0'); // 禁用和正常状态
-        list($data_list,$page) = $this->authGroupModel->getListByPage($map,'id asc','*',20);
-        // 使用Builder快速建立列表页面。
-
-        return builder('List')       
-                ->setMetaTitle('角色管理') // 设置页面标题
-                ->addTopButton('addnew',array('href'=>url('roleEdit')))  // 添加新增按钮
-                ->addTopButton('delete',['model'=>'AuthGroup'])  // 添加删除按钮
-                ->setSearch('搜索角色','')
-                ->keyListItem('id', 'ID')
-                ->keyListItem('title', '角色名')
-                ->keyListItem('description', '描述')
-                ->keyListItem('status', '状态','status')
-                ->keyListItem('right_button', '操作', 'btn')
-                ->setListData($data_list)    // 数据列表
-                ->setListPage($page) // 数据列表分页
-                ->addRightButton('edit',['href'=>url('roleEdit',['group_id'=>'__data_id__']),'class'=>'btn btn-success btn-xs']) 
-                ->addRightButton('edit',['title'=>'权限分配','href'=>url('access',['group_id'=>'__data_id__']),'class'=>'btn btn-info btn-xs'])  
-                ->addRightButton('edit',array('title'=>'成员授权','href'=>url('accessUser',array('group_id'=>'__data_id__'))))    
-                ->fetch();
-    }
-    
-    //角色编辑
-    public function roleEdit($group_id=0){
-        $title = $group_id ? '编辑':'新增';
-    
-         $info =$this->authGroupModel->find($group_id);
-         if (IS_POST) {
-            $data = $this->request->param();
-            $this->validateData($data,  
-                                [
-                                    ['title','require|chsAlpha','用户组名称不能为空|用户组名称只能是汉字和字母'],
-                                    ['description','chsAlphaNum','描述只能是汉字字母数字']
-                                ]
-                            );
-            
-            //$data里包含主键id，则editData就会更新数据，否则是新增数据
-            if ($this->authGroupModel->editData($data)) {
-                $this->success($title.'成功', url('role'));
-            } else {
-                $this->error($this->authGroupModel->getError());
-            }
-
-        } else {
-            if ($group_id!=0) {
-                $this->assign('group_id',$group_id);
-            }
-            $this->assign('meta_title',$title.'角色');
-            $this->assign('info',$info);
-            return $this->fetch();
-        }
-    }
-
     /**
-     * 权限分配
-     * @param  integer $group_id 组ID
+     * 检测规则权限
      * @return [type] [description]
-     * @date   2017-08-27
+     * @date   2017-10-17
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function access($group_id=0){
-        if ($group_id!=0) {
-            $this->assign('group_id',$group_id);
-        }
-        $title='权限分配';
-        $this->assign('meta_title',$title);
+    public function checkAuth($rule_name = '' ,$depend_type = 1, $depend_flag ='')
+     {
+        if (is_administrator($this->adminUid)) return true;
+        $auth = new \org\util\Auth();
+        $name = !empty($rule_name) ? $rule_name : $this->urlRule;
+        //执行check的模式
+        $mode = 'url';
+        //'or' 表示满足任一条规则即通过验证;
+        //'and'则表示需满足所有规则才能通过验证
+        $relation = 'and';
 
-        if (IS_POST && $group_id!=0) {
-            $data['id']    = $group_id;
-            $menu_auth     = input('post.menu_auth/a','');//获取所有授权菜单
-            $data['rules'] = implode(',',$menu_auth);
-
-            //开发过程中先关闭这个限制
-            //if($group_id==1){
-                //$this->error('不能修改超级管理员'.$title);
-           // }else{
-                //$data里包含主键id，则editData就会更新数据，否则是新增数据
-                if ($this->authGroupModel->editData($data)) {
-                    cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);
-                    $this->success($title.'成功', url('role'));
-                }else{
-                    $this->error($this->authGroupModel->getError());
-                }
-                
-            //}
-
-        } else{
-            $role_auth_rule = $this->authGroupModel->where(['id'=>intval($group_id)])->value('rules');
-            $this->assign('menu_auth_rules',explode(',',$role_auth_rule));//获取指定获取到的权限
+        if(!$auth->check($name, $this->adminUid, 1, $mode, $relation) && $name!='admin/dashboard/index'){//允许进入仪表盘
+            return false;
         }
-        $menu = $this->authRuleModel->where(['pid'=>0,'status'=>1])->order('sort asc')->select();
-        foreach($menu as $k=>$v){
-            $menu[$k]['_child']=$this->authRuleModel->where(['pid'=>$v['id']])->order('sort asc')->select();
-        }
-        $this->assign('all_auth_rules',$menu);//所以规则
-        return $this->fetch();
-    }
-
-    /**
-     * 用户组授权用户列表
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    public function accessUser($group_id=0)
-    {
-        if ($group_id!=0) {
-            $this->assign('group_id',$group_id);
-        }
-
-        $auth_group = $this->authGroupModel->where(['status'=>['egt','0']])->field('id,title,rules')->select();
-        foreach ($auth_group as $key => $row) {
-            $authGroup[$row['id']]=$row;
-        }
-        //$list = $this->lists($model,array('a.group_id'=>$group_id,'m.status'=>array('egt',0)),'m.uid asc',null,'m.uid,m.nickname,m.last_login_time,m.last_login_ip,m.status');
-        $list= $this->userModel->alias('m')->join ('__AUTH_GROUP_ACCESS__ a','m.uid=a.uid' )->where(['a.group_id'=>$group_id,'m.status'=>['egt',0]])->order('m.uid asc')->field('m.uid,m.nickname,m.last_login_time,m.last_login_ip,m.status')->paginate(20);
-
-        $this->assign( '_list',     $list );
-        $this->assign( 'page',     $list->render());
-        $this->assign('auth_group', $authGroup);
-        $this->assign('this_group', $authGroup[(int)$group_id]);
-        $this->assign('meta_title','成员授权');
-        return $this->fetch();
-    }
-
-    /**
-     * 创建管理员用户组
-     * @author 朱亚杰 <zhuyajie@topthink.net>
-     */
-    public function createGroup(){
-        if ( empty($this->auth_group) ) {
-            $this->assign('auth_group',['title'=>null,'id'=>null,'description'=>null,'rules'=>null]);//排除notice信息
-        }
-        $this->assign('meta_title','新增用户组');
-        return $this->fetch('editgroup');
-    }
-
-    /**
-     * 编辑管理员用户组
-     * @author 朱亚杰 <zhuyajie@topthink.net>
-     */
-    public function editGroup(){
-        $auth_group = $this->authGroupModel->find( (int)$_GET['id'] );
-        $this->assign('auth_group',$auth_group);
-        $this->assign('meta_title','编辑用户组');
-        return $this->fetch();
-    }
-
-    /**
-     * 管理员用户组数据写入/更新
-     * @author 朱亚杰 <zhuyajie@topthink.net>
-     */
-    public function writeGroup(){
-        $data = input('param.');
-        if(isset($data['rules'])){
-            sort($data['rules']);
-            $data['rules']  = implode( ',' , array_unique($data['rules']));
-        }
-
-        if ($this->authGroupModel->editData($data)) {
-            $this->success('操作成功!',url('index'));
-        } else {
-            $this->error('操作失败'.$this->authGroupModel->getError());
-        }
-
-    }
-    /**
-     * 修改用户组描述
-     */
-    public function descriptionGroup()
-    {
-        $title               = input('param.title');
-        $description         = input('param.description');
-        $id                  = input('param.id');
-        $data['description'] = $description;
-        $data['title']       = $title;
-        $res=$this->authGroupModel->where('id='.$id)->save($data);
-        if($res)
-        {
-            $this->success('修改成功!');
-        }
-        else{
-            $this->error('修改失败!');
-        }
-
-    }
-    /**
-     * 将用户添加到用户组,入参uid,group_id
-     * @author 朱亚杰 <zhuyajie@topthink.net>
-     */
-    public function addToGroup(){
-        $uids = input('uids',false);//新增批量用户
-        if ($uids) {
-            $uid = explode(',',$uids);
-        }else{
-            $uid = input('uid');
-        }
-        
-        $gid = input('param.group_id');
-        if( empty($uid) ){
-            $this->error('参数有误');
-        }
-        if(is_numeric($uid)){
-            if ( is_administrator($uid) ) {
-                $this->error('该用户为超级管理员');
-            }
-            if( !$this->userModel->where(['uid'=>$uid])->find() ){
-                $this->error('用户不存在');
-            }
-        }
-
-        if( $gid && !$this->authGroupModel->checkGroupId($gid)){
-            $this->error($this->authGroupModel->error);
-        }
-        if ( $this->authGroupModel->addToGroup($uid,$gid) ){
-            $this->success('操作成功');
-        }else{
-            $this->error($this->authGroupModel->getError());
-        }
-    }
-
-    /**
-     * 将用户从用户组中移除  入参:uid,group_id
-     * @author 朱亚杰 <zhuyajie@topthink.net>
-     */
-    public function removeFromGroup(){
-        $uid = input('param.uid');
-        $gid = input('param.group_id');
-        if( $uid==is_admin_login()){
-            $this->error('不允许解除自身授权');
-        }
-        if( empty($uid) || empty($gid) ){
-            $this->error('参数有误');
-        }
-        if( !$this->authGroupModel->find($gid)){
-            $this->error('用户组不存在');
-        }
-        if ( $this->authGroupModel->removeFromGroup($uid,$gid) ){
-            $this->success('操作成功');
-        }else{
-            $this->error('操作失败');
-        }
-    }
-
-    /**
-     * 设置角色的状态
-     */
-    public function setStatus($model ='auth_rule',$script = false){
-        $ids = input('request.ids/a');
-        if ($model =='AuthGroup') {
-            if (is_array($ids)) {
-                if(in_array(1, $ids)) {
-                    $this->error('超级管理员不允许操作');
-                }
-            } else{
-                if($ids === 1) {
-                    $this->error('超级管理员不允许操作');
-                }
-            }
-        } else{
-            cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);//清空后台菜单缓存
-        }
-        
-        parent::setStatus($model);
-    }
+        return true;
+     }
 }

@@ -210,7 +210,7 @@ class Attachment extends Admin {
                 $this->error('目标分类与当前分类相同');
             }
             if ($to_cid) {
-                $ids=explode(',',$ids);
+                $ids = explode(',',$ids);
                 if (count($ids)>0) {
                     foreach ($ids as $key => $id) {
                         update_media_term($id,$to_cid);
@@ -287,7 +287,7 @@ class Attachment extends Admin {
         $tab_list = AttachmentLogic::getTabList();
         $return = builder('List')
                     ->setTabNav($tab_list,'category')  // 设置页面Tab导航
-                    ->addTopButton('addnew',['href'=>url('categoryEdit')])  // 添加新增按钮
+                    ->addTopButton('addnew',['href'=>eacoo_url('admin/attachment/categoryEdit')])  // 添加新增按钮
                     ->addTopButton('resume',['model'=>'Terms'])  // 添加启用按钮
                     ->addTopButton('forbid',['model'=>'Terms'])  // 添加禁用按钮
                     ->addTopButton('recycle',['model'=>'Terms']) //添加回收按钮
@@ -302,7 +302,7 @@ class Attachment extends Admin {
                     ->setListPrimaryKey('term_id')
                     ->setListData($data_list)    // 数据列表
                     ->setListPage($total) // 数据列表分页
-                    ->addRightButton('edit',['href'=>url('categoryEdit',['term_id'=>'__data_id__'])])// 添加编辑按钮
+                    ->addRightButton('edit',['href'=>eacoo_url('admin/attachment/categoryEdit',['term_id'=>'__data_id__'])])// 添加编辑按钮
                     ->addRightButton('recycle',['model'=>'Terms'])// 添加回收按钮
                     ->addRightButton('restore',['model'=>'Terms'])// 添加还原按钮
                     ->fetch();
@@ -336,7 +336,7 @@ class Attachment extends Admin {
     public function setting(){
         
         $tab_list = AttachmentLogic::getTabList();
-        $tab_list['attachment_option']=['title'=>'设置','href'=>url('setting')];
+        $tab_list['attachment_option'] = ['title'=>'设置','href'=>url('setting')];
         unset($tab_list['setting']);
         return \think\Loader::action('admin/Config/attachmentOption',[$tab_list]);
     }

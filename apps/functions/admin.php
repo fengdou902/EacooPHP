@@ -9,6 +9,7 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 use app\admin\logic\AdminUser as AdminUserLogic;
+use app\admin\logic\AuthGroup as AuthGroupLogic;
 use app\admin\logic\AuthGroupAccess as AuthGroupAccessLogic;
 use app\common\logic\Action as ActionLogic;
 
@@ -60,10 +61,46 @@ function get_administrators()
 function get_user_groups($uid='')
 {
     if ($uid>0) {
-        $auth = new \org\util\Auth();
-        return $auth->getGroups($uid);
+        return AuthGroupLogic::getUserGroup($uid);
     }
     return false;
+}
+
+/**
+ * 获取后台用户规则信息
+ * @param  string $uid [description]
+ * @param  array $where [description]
+ * @return [type] [description]
+ * @date   2019-08-18
+ */
+function getAdminUserAuthRule($uid = '', $where = [])
+{
+    $map = [
+        'status'=>1
+    ];
+    if (!is_administrator()) {
+        $group_info = get_user_groups($uid);
+        $group_rules = array_column($group_info, 'rules');
+        $rules = [];
+        if (!empty($group_rules)) {
+            foreach ($group_rules as $k => $row) {
+                $rule = explode(',', $row); 
+                $rules = array_merge($rules,$rule);
+            }
+        }
+        $rules = implode(',', $rules);
+        $map['id'] = ['in',$rules];
+    }
+    
+    //是否开发者模式
+    if (1!= config('develop_mode')) {
+        $map['developer']=0;
+    }
+    if (!empty($where)) {
+        $map = array_merge($map,$where);
+    }
+    $auth_rules = db('auth_rule')->where($map)->field(true)->order('sort asc')->select();
+    return $auth_rules;
 }
 
 /**

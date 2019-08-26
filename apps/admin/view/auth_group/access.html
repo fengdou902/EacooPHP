@@ -15,11 +15,16 @@
       
         <div class="builder formbuilder-box panel-body">
 
-        <div class="row">    
-
-            <div class="col-md-7 col-md-offset-1">      
-
-                    <div id="tab2" class="tab-pane">
+        <div class="row">
+            <div class="col-md-10 eacoo-tabs">
+                <ul class="nav nav-tabs">
+                {volist name="module_menus" id="row"}
+                    <li class="{eq name="row.name" value="$depend_flag" }active{/eq}"><a href="{:url('access',['group_id'=>$group_id,'depend_flag'=>$row['name']])}" >{$row.title}</a></li>
+                {/volist}
+                </ul>
+            </div>
+            <div class="col-md-10 mt-20"> 
+                <div id="tab2" class="tab-pane">
                     <form action="" method="post" class="form-builder form-horizontal responsive" >
                         <div class="form-group">
                             <div class="auth">

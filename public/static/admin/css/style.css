@@ -6,7 +6,7 @@ p { display: block; -webkit-margin-before: 0em; -webkit-margin-after: 0em; -webk
 ul { display: block; list-style-type: none; -webkit-margin-before: 0em; -webkit-margin-after: 0em; -webkit-margin-start: 0px; -webkit-margin-end: 0px; -webkit-padding-start: 0px; }
 /*base*/
 sup{color: red;top: 5px;font-size: 18px;margin-right: 3px;}
-hr{margin-top: 0px;margin-bottom: 10px;}
+hr{margin-top: 2px;margin-bottom: 10px;}
 .control-label{font-size: 13px;padding-top: 5px!important;padding-right: 0;color: #616161;}
 .col-md-offset-2{margin-left: 16.666666667%!important;}
 form .form-section, .portlet-form .form-section {

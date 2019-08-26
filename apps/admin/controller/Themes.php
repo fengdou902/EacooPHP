@@ -14,7 +14,7 @@ use app\admin\model\Theme as ThemeModel;
 use app\admin\logic\Theme as ThemeLogic;
 use app\admin\logic\Extension as ExtensionLogic;
 
-class Theme extends Admin {
+class Themes extends Admin {
     
     protected $themeModel;
     

@@ -18,6 +18,9 @@ use think\Cookie;
 
 class Admin extends Base
 { 
+    public $currentUser = [];
+    public $adminUid = 0;
+
     public function _initialize() {
         parent::_initialize();
         //初始化
@@ -28,6 +31,7 @@ class Admin extends Base
             $this->redirect('admin/login/index');
         } else {
             $this->currentUser = session('admin_login_auth');
+            $this->adminUid = is_admin_login();
 
             if (!in_array($this->urlRule,['admin/login/index', 'admin/index/logout'])) {
                 // 检测系统权限
@@ -38,7 +42,11 @@ class Admin extends Base
                             $this->error('403:禁止访问');
                         }
                     }
-                    $this->checkAuth();
+                    if(!logic('admin/Auth')->checkAuth()){
+                        $this->error('无权限访问');
+                    } else{
+                        Cookie::set('__prevUrl__',$this->url,3600);
+                    }
                 }
                 
             }
@@ -49,14 +57,19 @@ class Admin extends Base
             }
         }
 
-        if(!IS_AJAX){
+        if(!IS_AJAX && !IS_POST){
             $this->assign('current_user',$this->currentUser);
 
             //是否菜单被收藏
-            $collect_menus = config('admin_collect_menus');
+            $collect_menus = cookie('admin_collect_menus');
             $this->assign('is_menu_collected',0);
             if (isset($collect_menus[$this->request->url()])) {
                 $this->assign('is_menu_collected',1);
+            }
+
+            //是否有应用权限
+            if(logic('admin/Auth')->checkAuth('admin/themes/index') || logic('admin/Auth')->checkAuth('admin/plugins/index') ||logic('admin/Auth')->checkAuth('admin/modules/index')){
+                $this->assign('apps_menu',1);
             }
 
             $template_path_str = '../';
@@ -116,6 +129,7 @@ class Admin extends Base
      */
     public function setStatus($model = CONTROLLER_NAME, $script = false) {
         $ids = $this->request->param('ids/a');
+        
         $status = $this->request->param('status');
         if (empty($ids)) {
             $this->error('请选择要操作的数据');
@@ -258,31 +272,5 @@ class Admin extends Base
         return true;
         
     }
-
-    /**
-     * 检测授权
-     * @return [type] [description]
-     * @date   2017-10-17
-     * @author 心云间、凝听 <981248356@qq.com>
-     */
-    protected function checkAuth()
-     {
-        $auth = new \org\util\Auth();
-        $name = $this->urlRule;
-        //当前用户id
-        $uid = is_admin_login();
-        //执行check的模式
-        $mode = 'url';
-        //'or' 表示满足任一条规则即通过验证;
-        //'and'则表示需满足所有规则才能通过验证
-        $relation = 'and';
-
-        if(!$auth->check($name, $uid, 1, $mode, $relation) && $name!='admin/dashboard/index'){//允许进入仪表盘
-            $this->error('无权限访问',Cookie::get('__prevUrl__'));
-            return false;
-        }
-        Cookie::set('__prevUrl__',$this->url,3600);
-        return true;
-     } 
 
 }

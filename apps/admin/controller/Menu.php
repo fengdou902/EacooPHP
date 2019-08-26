@@ -1,5 +1,5 @@
 <?php
-// 授权管理控制器
+// 菜单管理控制器
 // +----------------------------------------------------------------------
 // | Copyright (c) 2016-2018 https://www.eacoophp.com, All rights reserved.         
 // +----------------------------------------------------------------------
@@ -311,19 +311,22 @@ class Menu extends Admin {
         try {
             if (!IS_GET) {
                 throw new \Exception("非法请求", 0);
-                
             }
             $param = $this->request->param();
-            $collect_menus = config('admin_collect_menus');
+            $admin_collect_menus = cookie('admin_collect_menus');
+            $collect_menus = [];
+
+            if(!empty($admin_collect_menus)) $collect_menus = json_decode(cookie('admin_collect_menus'),true);
             if (isset($collect_menus[$param['url']])) {
                 unset($collect_menus[$param['url']]);
                 $return = ['code'=>2,'msg'=>'取消收藏','data'=>[]];
             } else{
-                $collect_menus[$param['url']] = ['title'=>$param['title']];
+                $auth_rule = !empty($param['auth_rule']) ? $param['auth_rule'] : $param['title'];
+                $auth_rule_id = db('auth_rule')->where('name',$auth_rule)->value('id');
+                $collect_menus[$param['url']] = ['title'=>$param['title'],'id'=>$auth_rule_id];
                 $return = ['code'=>1,'msg'=>'收藏成功','data'=>[]];
             }
-            model('Config')->where('name','admin_collect_menus')->setField('value',json_encode($collect_menus));
-            cache('DB_CONFIG_DATA',null);
+            cookie('admin_collect_menus',json_encode($collect_menus),3600*24*365);
             return json($return);
         } catch (\Exception $e) {
             return json(['code'=>0,'msg'=>$e->getMessage()]);

@@ -708,7 +708,7 @@ CREATE TABLE `eacoo_users` (
   `mobile` varchar(20) NOT NULL DEFAULT '' COMMENT '手机号',
   `avatar` varchar(150) NOT NULL DEFAULT '' COMMENT '用户头像，相对于uploads/avatar目录',
   `sex` smallint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '性别；0：保密，1：男；2：女',
-  `birthday` date NOT NULL DEFAULT '0000-00-00' COMMENT '生日',
+  `birthday` date NOT NULL DEFAULT '' COMMENT '生日',
   `description` varchar(200) NOT NULL DEFAULT '' COMMENT '个人描述',
   `register_ip` varchar(16) NOT NULL DEFAULT '' COMMENT '注册IP',
   `login_num` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '登录次数',

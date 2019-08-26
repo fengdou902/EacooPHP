@@ -15,7 +15,7 @@ class Index extends Admin
 
     /**
      * 首页
-     * @return [type] [description]
+     * @return mixed [type] [description]
      * @date   2018-02-05
      * @author 心云间、凝听 <981248356@qq.com>
      */
@@ -49,17 +49,17 @@ class Index extends Admin
         //防止认证信息被清理
         cache('eacoo_identification',$eacoo_identification);
         $this->success('清除缓存成功！');
-    } 
+    }
 
     /**
      * 刷新授权信息
-     * @return [type] [description]
+     * @return void [type] [description]
      * @date   2018-03-04
      * @author 心云间、凝听 <981248356@qq.com>
      */
     public function refreshAccreditInfo()
     {
-        $install_lock = EacooAccredit::runAccredit(['access_token'=>ACCREDIT_TOKEN]);
+        EacooAccredit::runAccredit(['access_token'=>ACCREDIT_TOKEN]);
         $this->success('刷新成功');
     }
 
@@ -72,13 +72,13 @@ class Index extends Admin
     public function getSidebarMenus()
     {
         try {
-            $default_header_menu_module = cache('default_header_menu_module');
+            $default_header_menu_module = cookie('default_header_menu_module');
             if (empty($default_header_menu_module)) {
                 $default_header_menu_module = 'admin';
             }
             $position = input('param.position',$default_header_menu_module);
             $result = logic('index')->getAdminSidebarMenu($position);
-            cache('default_header_menu_module',$position);
+            cookie('default_header_menu_module',$position);
             return json(['code'=>1,'msg'=>'获取侧边栏菜单成功','data'=>$result]);
         } catch (\Exception $e) {
             return json(['code'=>$e->getCode(),'msg'=>$e->getMessage(),'data'=>[]]);
@@ -91,10 +91,11 @@ class Index extends Admin
      * @date   2018-02-15
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function getTopMenus()
+    public function getCollectMenus()
     {
         try {
-            $result = logic('index')->getAdminTopMenu();
+            $admin_uid = is_admin_login();
+            $result = logic('index')->getAdminCollectMenus($admin_uid);
             return json(['code'=>1,'msg'=>'获取顶部收藏菜单成功','data'=>$result]);
         } catch (\Exception $e) {
             return json(['code'=>$e->getCode(),'msg'=>$e->getMessage(),'data'=>[]]);
@@ -110,30 +111,7 @@ class Index extends Admin
     public function setHeaderModulesMenus()
     {
         try {
-            $result = [];
-            $default_header_menu_module = cache('default_header_menu_module');
-            $data_list = model('admin/modules')->where('status',1)->field('title,name,icon')->select();
-            if (!empty($data_list)) {
-                foreach ($data_list as $key => $row) {
-                    $module_name = $row['name'];
-                    if ($module_name=='home') {
-                        continue;
-                    }
-                    if (!empty($row)) {
-                        if ($module_name=='admin') {
-                            $row['title']='系统';
-                        }
-                        //默认菜单
-                        $row['default_header_menu_module']=0;
-                        if ($default_header_menu_module==$module_name) {
-                            $row['default_header_menu_module']=1;
-                        }
-                        $row['icon'] = !empty($row['icon']) ? $row['icon'] : 'fa fa-circle-o ';
-                        $result[] = $row;
-                    }
-                    
-                }
-            }
+            $result = logic('index')->getModuleMenus();
             return json(['code'=>1,'msg'=>'获取顶部模块菜单成功','data'=>$result]);
         } catch (\Exception $e) {
             return json(['code'=>$e->getCode(),'msg'=>$e->getMessage(),'data'=>[]]);

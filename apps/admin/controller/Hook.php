@@ -34,7 +34,7 @@ class Hook extends Admin {
 
         list($data_list,$total) = $this->hooksModel->search('name|description')->getListByPage([],true,'create_time desc',20);
         $return = builder('List')
-                ->addTopButton('addnew',array('href'=>url('edit'),'title'=>'新增钩子','class'=>'btn bg-purple btn-sm margin'))    // 添加新增按钮
+                ->addTopButton('addnew',array('href'=>eacoo_url('admin/hook/edit'),'title'=>'新增钩子','class'=>'btn bg-purple btn-sm margin'))    // 添加新增按钮
                 ->keyListItem('id', 'ID')
                 ->keyListItem('name', '名称')
                 ->keyListItem('description', '描述')
@@ -43,7 +43,7 @@ class Hook extends Admin {
                 ->setListData($data_list)     // 数据列表
                 ->setListPage($total,20)  // 数据列表分页
                 ->addRightButton('edit')           // 添加编辑按钮
-                ->addRightButton('delete',['href'=>url('del',['id'=>'__data_id__']),'model'=>'Hooks'])  // 添加删除按钮
+                ->addRightButton('delete',['href'=>eacoo_url('admin/hook/del',['id'=>'__data_id__']),'model'=>'Hooks'])  // 添加删除按钮
                 ->fetch();
 
         return Iframe()

@@ -33,9 +33,9 @@ class AuthGroup extends Base
      *
      * @author 朱亚杰 <zhuyajie@topthink.net>
      */
-    public function getGroups($where=array()){
+    public function getGroups($where = []){
         $map = array('status'=>1);
-        $map = array_merge($map,$where);
+        $map = array_merge($map, $where);
         return $this->where($map)->select();
     }
 
@@ -47,7 +47,7 @@ class AuthGroup extends Base
      *                                         array('uid'=>'用户id','group_id'=>'用户组id','title'=>'用户组名称','rules'=>'用户组拥有的规则id,多个,号隔开'),
      *                                         ...)   
      */
-    static public function getUserGroup($uid){
+    static public function getUserGroup($uid = 0){
         static $groups = array();
         if (isset($groups[$uid]))
             return $groups[$uid];
@@ -58,7 +58,7 @@ class AuthGroup extends Base
             ->join ($prefix.self::AUTH_GROUP." g on a.group_id=g.id")
             ->where("a.uid='$uid' and g.status='1'")
             ->select();
-        $groups[$uid]=$user_groups?$user_groups:array();
+        $groups[$uid]=$user_groups ? $user_groups:array();
         return $groups[$uid];
     }
     
@@ -90,7 +90,7 @@ class AuthGroup extends Base
         if(is_array($mid)){
             $count = count($mid);
             $ids   = implode(',',$mid);
-        }else{
+        } else{
             $mid   = explode(',',$mid);
             $count = count($mid);
             $ids   = $mid;

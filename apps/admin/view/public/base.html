@@ -11,7 +11,7 @@
                 <li class="text-muted">{$vo.title}</li>
             {/volist}
           {else/}
-            <li class="active">{$meta_title} <span class="color-warning eacoo-menu-collect" data-title="{$meta_title}" data-url="{$Request.url}" title="标记为收藏" style="cursor: pointer;font-size: 13px;"> <i class="fa {eq name="is_menu_collected" value="1"}fa-star{else/}fa-star-o{/eq}"></i></span></li>
+            <li class="active">{$meta_title} <span class="color-warning eacoo-menu-collect" data-title="{$meta_title}" data-url="{$Request.url}" data-authrule="{$auth_rule|default=""}" title="标记为收藏" style="cursor: pointer;font-size: 13px;"> <i class="fa {eq name="is_menu_collected" value="1"}fa-star{else/}fa-star-o{/eq}"></i></span></li>
           {/notempty}
           <div class="pull-right mr-10" style="margin-top: -10px;">
             {present name="page_config.self"}{$page_config.self}{/present}
