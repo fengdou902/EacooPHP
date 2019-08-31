@@ -31,7 +31,7 @@ class UserLevel extends Admin {
     public function index(){
 
         return (new Iframe())
-                ->setMetaTitle('用户等级')
+                ->setMetaTitle('用户头衔')
                 ->search([
                     ['name'=>'status','type'=>'select','title'=>'状态','options'=>[1=>'正常',0=>'禁用']],
                     ['name'=>'keyword','type'=>'text','extra_attr'=>'placeholder="请输入查询关键字"'],

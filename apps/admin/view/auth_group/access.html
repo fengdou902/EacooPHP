@@ -17,20 +17,21 @@
 
         <div class="row">
             <div class="col-md-10 eacoo-tabs">
-                <ul class="nav nav-tabs">
+                <ul class="nav nav-tabs" role="tablist" id="auth-rules-tabs">
                 {volist name="module_menus" id="row"}
-                    <li class="{eq name="row.name" value="$depend_flag" }active{/eq}"><a href="{:url('access',['group_id'=>$group_id,'depend_flag'=>$row['name']])}" >{$row.title}</a></li>
+                    <li class="{eq name="row.name" value="admin" }active{/eq}"><a href="#{$row.name}" aria-controls="{$row.name}" role="tab" data-toggle="tab">{$row.title}</a></li>
                 {/volist}
                 </ul>
             </div>
-            <div class="col-md-10 mt-20"> 
-                <div id="tab2" class="tab-pane">
-                    <form action="" method="post" class="form-builder form-horizontal responsive" >
+            <form action="" method="post" class="form-builder form-horizontal responsive" >
+                <div class="col-md-10 mt-20 tab-content"> 
+                    {volist name="auth_rules_list" id="auth_rules"}
+                    <div id="{$key|default=''}" role="tabpanel" class="tab-pane {eq name="key" value="admin" }active{/eq}">
                         <div class="form-group">
                             <div class="auth">
-                                {volist name="auth_rules_list" id="vo"}
+                                {volist name="auth_rules" id="vo"}
                                     {php} $depend_name = $vo['depend_flag']; {/php}
-                                    <div class="{$depend_name}">
+                                    <div class="{$depend_name}_{$vo.id|default='0'}">
                                         <div class="ud-control ud-checkbox">
                                             <label class="checkbox-label checkbox-inline">
                                                 <input type="checkbox" name="menu_auth[]" data-depend-name="{$depend_name}" {php} if(in_array($vo['id'], $menu_auth_rules)) echo "checked";{/php} value="{$vo.id}">
@@ -86,16 +87,16 @@
                                 
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="col-md-offset-2 tc">
-                                 <div class="col-md-3"><button class="btn btn-block btn-primary submit ajax-post" type="submit" target-form="form-builder">确认</button></div>  &nbsp;
-                                <div class="col-md-3"><button class="btn bg-aqua btn-block return" onclick="javascript:history.back(-1);return false;"><i class="fa fa-mail-reply"></i> 返回</button></div>
-                          </div>
-                        </div>
-                    </form>
                     </div>
-                        
-                </div>    
+                    {/volist}
+                    <div class="form-group">
+                        <div class="col-md-offset-2 tc">
+                             <div class="col-md-3"><button class="btn btn-block btn-primary submit ajax-post" type="submit" target-form="form-builder">确认</button></div>  &nbsp;
+                            <div class="col-md-3"><button class="btn bg-aqua btn-block return" onclick="javascript:history.back(-1);return false;"><i class="fa fa-mail-reply"></i> 返回</button></div>
+                      </div>
+                    </div>
+                </div>
+            </form>   
        </div><!--row-->
      </div>
     </div>
@@ -106,6 +107,10 @@
 {block name="script"}
 <script type="text/javascript">
     $(function(){
+        $('#auth-rules-tabs a').click(function (e) {
+          e.preventDefault()
+          $(this).tab('show')
+        })
         //遍历选中当前权限的子权限
         $('.auth input[type="checkbox"]').on('change',function(){
             $('.'+$(this).attr('data-depend-name')+' .auth'+$(this).val()).find('input').prop('checked',this.checked);

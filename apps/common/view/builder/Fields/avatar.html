@@ -10,7 +10,7 @@
 <div class="row">
     <span class="btn btn-info ml-10 btn-sm" id="upload_avatar_{$field.name}"><i class="fa fa-upload"></i> 上传头像</span>{notempty name="field.description"}<span class="color-red f12 ml-10">{$field.description}</span>{/notempty}
   
-    <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field.value}"/>
+    <input class="attach" type="hidden" id="{$field.id}" name="{$field.name}" value="{$field.value|default="/static/admin/img/default-avatar.png"}"/>
 
     <div class="upload-avatar-box tc popup-avatar img-thumbnail pr">
         <div class="each">
@@ -42,7 +42,7 @@
                 // swf文件路径
                 swf: '__PUBLIC__/libs/webuploader/Uploader.swf',
                 // 文件接收服务端。
-                server: "{:url('admin/Upload/uploadAvatar',['uid'=>$field['options']['uid']])}",
+                server: "{:url('admin/Upload/uploadAvatar',['uid'=>$field['options']['uid']?? 0])}",
                 //验证文件总数量, 超出则不允许加入队列
                 fileNumLimit: 5,
                 // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！

@@ -36,12 +36,16 @@
         
         <div class="col-xs-12 col-sm-12 button-list clearfix">   
              <div class="col-xs-4 col-sm-4 form-group pr-0 pl-0">
+                {php}if(eacoo_url('admin/Upload/upload',['type'=>'picture'])!=''){{/php}
                  <span id="web_uploader_wrapper_attachmentIndex" class="btn btn-info btn-raised btn-sm">
                      <i class="fa fa-cloud-upload"></i> 上传图片
                  </span>
+                 {php}}{/php}
+                 {php}if(eacoo_url('admin/Upload/upload')!=''){{/php}
                  <span id="web_uploader_wrapper_attachmentFile" class="btn btn-info btn-raised btn-sm">
                      <i class="fa fa-cloud-upload"></i> 上传文件
                  </span>
+                 {php}}{/php}
                  
             </div>
             <!--高级工具-->
@@ -158,7 +162,7 @@
             // swf文件路径
             swf: '__LIBS__/webuploader/Uploader.swf',
             // 文件接收服务端。
-            server: "{:url('admin/Upload/upload',['path_type'=>$path_type,'type'=>'picture'])}",
+            server: "{:eacoo_url('admin/Upload/upload',['path_type'=>$path_type,'type'=>'picture'])}",
             fileNumLimit: 10,
             // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
             compress: false,
@@ -219,7 +223,7 @@
             // swf文件路径
             swf: '__LIBS__/webuploader/Uploader.swf',
             // 文件接收服务端。
-            server: "{:url('admin/Upload/upload',['path_type'=>'file','type'=>'file'])}",
+            server: "{:eacoo_url('admin/Upload/upload',['path_type'=>'file','type'=>'file'])}",
             fileNumLimit: 10,
             // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
             compress: false,

@@ -11,7 +11,7 @@
 namespace app\user\admin;
 use app\admin\controller\Admin;
 use app\common\layout\Iframe;
-use app\common\model\User as UserModel;
+use app\user\model\User as UserModel;
 
 class User extends Admin {
 
@@ -19,7 +19,7 @@ class User extends Admin {
     {
         parent::_initialize();
 
-        $this->userModel = model('common/User');
+        $this->userModel = new UserModel;
     }
 
     /**
@@ -80,6 +80,7 @@ class User extends Admin {
                 ->keyListItem('username', '用户名')
                 ->keyListItem('email', '邮箱')
                 ->keyListItem('mobile', '手机号')
+                ->keyListItem('user_level_text', '头衔')
                 ->keyListItem('reg_time', '注册时间')
                 ->keyListItem('lock_text', '锁定','label_bool')
                 ->keyListItem('actived', '激活','bool')
@@ -102,7 +103,7 @@ class User extends Admin {
             $data = input('param.');
             // 密码为空表示不修改密码
             if ($data['password'] === '') {
-                $data['password']=123456;
+                $data['password'] = 123456;
             }
             $uid  = isset($data['uid']) && $data['uid']>0 ? intval($data['uid']) : false;
             if ($uid>0) {
@@ -119,7 +120,7 @@ class User extends Admin {
             if ($result) {
                 
                 if ($uid==is_login()) {//如果是编辑状态下
-                    logic('common/User')->updateLoginSession($uid);
+                    logic('user/User')->updateLoginSession($uid);
                 }
                 $this->success($title.'成功', url('index'));
             } else {
@@ -152,15 +153,21 @@ class User extends Admin {
         if ($uid>0) {
             $info = $this->userModel->get($uid);
             unset($info['password']);
+
         }
+        $user_level = model('UserLevel')->where('status',1)->column('title','id');
         return builder('Form')
                     ->addFormItem('uid', 'hidden', 'UID', '')
+                    //->addFormItem('avatar', 'avatar', '头像', '设置用户头像','','require')
                     ->addFormItem('nickname', 'text', '昵称', '填写一个有个性的昵称吧','','require')
                     ->addFormItem('username', 'text', '用户名', '登录账户所用名称','','require')
                     ->addFormItem('password', 'password', '密码', '新增默认密码123456','','placeholder="留空则不修改密码"')
+                    ->addFormItem('birthday', 'date', '生日', '','','')
                     ->addFormItem('email', 'email', '邮箱', '','','data-rule="email" data-tip="请填写一个邮箱地址"')
                     ->addFormItem('mobile', 'left_icon_number', '手机号', '',['icon'=>'<i class="fa fa-phone"></i>'],'placeholder="填写手机号"')
                     ->addFormItem('sex', 'radio', '性别', '',[0=>'保密',1=>'男',2=>'女'])
+                    ->addFormItem('level', 'select', '头衔', '用户头衔，关联用户头衔',$user_level)
+                    ->addFormItem('url', 'url', '个人站点', '','','')
                     ->addFormItem('description', 'textarea', '个人说明', '请填写个人说明')
                     ->addFormItem('is_lock', 'radio', '是否锁定', '',[0=>'否',1=>'是'])
                     ->addFormItem('status', 'radio', '状态', '',[1=>'正常',0=>'禁用'])
@@ -218,8 +225,8 @@ class User extends Admin {
             $result = $this->userModel->editData($data);
             if ($result) {
                 $uid = $data['uid'];
-                if ($uid==is_login()) {//如果是编辑状态下
-                    logic('common/User')->updateLoginSession($uid);
+                if ($uid == is_login()) {//如果是编辑状态下
+                    logic('user/User')->updateLoginSession($uid);
                 }
 
                 $this->success('提交成功', url('profile',['uid'=>$uid]));

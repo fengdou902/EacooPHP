@@ -109,20 +109,16 @@ class AuthGroup extends Admin {
         
         $title = '权限分配'; 
         if (IS_POST && $group_id>0) {
-            $data['id']    = $group_id;
-            $menu_auth     = input('param.menu_auth/a','');//获取所有授权菜单
-            
+            $data['id']  = $group_id;
+            $menu_auth   = input('param.menu_auth/a','');//获取所有授权菜单
 
             //开发过程中先关闭这个限制
             if($group_id==1){
                 $this->error('不能修改超级管理员'.$title);
            } else{
-                $db_rules = $this->authGroupModel->where('id',$group_id)->value('rules');
-                if (!empty($db_rules)) {
-                    $rules = explode(',', $db_rules);
-                    $menu_auth = array_merge($rules,$menu_auth);
-                }
-                $data['rules'] = implode(',',$menu_auth);
+                
+                $menu_auth_rules = array_unique($menu_auth);
+                $data['rules'] = implode(',',$menu_auth_rules);
                 //$data里包含主键id，则editData就会更新数据，否则是新增数据
                 if ($this->authGroupModel->editData($data)) {
                     cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);
@@ -134,24 +130,27 @@ class AuthGroup extends Admin {
             }
 
         } else{
-            if ($group_id>0) $this->assign('group_id',$group_id);
             $this->assign('meta_title',$title);
+            if ($group_id>0) $this->assign('group_id',$group_id);
 
             $role_auth_rule = $this->authGroupModel->where(['id'=>intval($group_id)])->value('rules');
             $this->assign('menu_auth_rules',explode(',',$role_auth_rule));//获取指定获取到的权限
 
             $depend_flag = $this->request->param('depend_flag','admin');
             $this->assign('depend_flag',$depend_flag);
-            $rule = db('auth_rule')->where([
-                'status'=>1,
-                'depend_type'=>1,
-                'depend_flag' => $depend_flag
-            ])->select();
-
-            $rule = (new \eacoo\Tree)->listToTree($rule);
-            $this->assign('auth_rules_list',$rule);//所以规则
 
             $module_menus = logic('index')->getModuleMenus();
+            $auth_rules_list = [];
+            if (!empty($module_menus)) {
+                foreach ($module_menus as $k => $module) {
+                    $auth_rules_list[$module['name']] = (new \eacoo\Tree)->listToTree(db('auth_rule')->where([
+                            'status' => 1,
+                            'depend_type' => 1,
+                            'depend_flag' => $module['name']
+                        ])->select());
+                }  
+            }
+            $this->assign('auth_rules_list',$auth_rules_list);//所以规则
             $this->assign('module_menus',$module_menus);//所以规则
             return $this->fetch();
         }

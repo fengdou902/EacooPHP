@@ -30,6 +30,13 @@
         showTabIframe(latest_iframe_tab,is_iframe);
         return false;
     });
+
+    // 双击刷新标签
+    $('body').delegate('#sidebar-menus a', 'dblclick', function() {
+        var id = '#'+$(this).attr('tab-name');
+        $(id+' .iframe').attr('src', $(id+' .iframe').attr('src'));
+    });
+
     // 给Bootstrap标签切换增加关闭功能
     $('body').on('click', '.eacoo-tab-wrap .close', function() {
         var id = $(this).closest('a[data-toggle="tab"]').attr('href');

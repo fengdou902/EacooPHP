@@ -173,7 +173,7 @@ class AdminUser extends Admin {
                         ->addFormItem('mobile', 'left_icon_number', '手机号', '',['icon'=>'<i class="fa fa-phone"></i>'],'placeholder="填写手机号"')
                         ->addFormItem('sex', 'radio', '性别', '',[0=>'保密',1=>'男',2=>'女'])
                         ->addFormItem('group_id', 'checkbox', '所属用户组', '',$this->groupIds)
-                        ->addFormItem('bind_uid', 'number', '绑定会员UID', '绑定用户表的UID')
+                        ->addFormItem('bind_uid', 'number', '绑定会员UID', '绑定用户表的UID。（后台用户绑定前台用户）')
                         ->addFormItem('description', 'textarea', '个人说明', '请填写个人说明')
                         ->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'正常',2=>'待验证'])
                         ->setFormData($info)//->setAjaxSubmit(false)

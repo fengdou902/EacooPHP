@@ -56,7 +56,7 @@ class Admin extends Base
                 $this->error('您的帐号正在别的地方登录!',url('admin/login/logout'));
             }
         }
-
+        $this->assign('is_menu_collected',0);
         if(!IS_AJAX && !IS_POST){
             $this->assign('current_user',$this->currentUser);
 

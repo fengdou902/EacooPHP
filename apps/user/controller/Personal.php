@@ -49,7 +49,7 @@ class Personal extends Home{
           $result = $this->userModel->editData($data);
 
           if ($result) {
-            logic('common/User')->updateLoginSession(is_login());
+            logic('user/User')->updateLoginSession(is_login());
             $this->success('提交成功', url('profile'));
           } else {
             $this->error($this->userModel->getError());
