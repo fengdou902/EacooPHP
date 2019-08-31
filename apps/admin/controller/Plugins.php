@@ -372,9 +372,10 @@ class Plugins extends Admin {
      */
     private function getCloudAppstore($paged = 1)
     {
-        $total = 20;
+        $eacoo_appstore_plugins_info = cache('eacoo_appstore_plugins_info');
+        $total = $eacoo_appstore_plugins_info['total'] ?? 30;
         $store_data = cache('eacoo_appstore_plugins_'.$paged);
-        if (empty($store_data) || !$store_data) {
+        if (empty($store_data) || !$store_data || !$total) {
             $url        = config('eacoo_api_url').'/api/appstore/apps';
             $params = [
                 'paged'      =>$paged,
@@ -384,7 +385,9 @@ class Plugins extends Admin {
             $result = curl_post($url,$params);
             $result = json_decode($result,true);
             $store_data = $result['data'];
-            $total = 20;
+
+            unset($params['paged']);
+            $total = count(json_decode(curl_post($url,$params),true)['data']);
             cache('eacoo_appstore_plugins_'.$paged,$store_data,3600);
             cache('eacoo_appstore_plugins_info',['total'=>$total],3600);
         }

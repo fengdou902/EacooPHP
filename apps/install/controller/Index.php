@@ -147,7 +147,7 @@ class Index extends Controller {
                 $this->error('数据库连接失败，请检查数据库配置！');
             }
 
-			$sql = "CREATE DATABASE IF NOT EXISTS `{$dbname}` DEFAULT CHARACTER SET utf8";
+			$sql = "CREATE DATABASE IF NOT EXISTS `{$dbname}` DEFAULT CHARACTER SET utf8mb4";
 			if (!$db_instance->execute($sql)) {
 				return $this->error($db_instance->getError());
 			} else {
@@ -190,7 +190,6 @@ class Index extends Controller {
 			update_webconfig($db_instance, $dbconfig['prefix'], session('web_config'));
 			//注册创始人帐号
 			register_administrator($db_instance, $dbconfig['prefix'], session('admin_info'));
-
 			//创建配置文件
 			$conf = write_config($dbconfig);
 			session('config_file', $conf);

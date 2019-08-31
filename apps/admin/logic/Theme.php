@@ -70,7 +70,7 @@ class Theme extends AdminLogic
                     </div> ';
                     }
                     $val['right_button'] .= '<a class="btn btn-sm btn-info ajax-get" href="'.url('updateInfo', array('id' => $val['id'])).'">刷新</a> ';
-                    $val['right_button'] .= '<a class="btn btn-sm btn-default ajax-get" href="'.url('uninstall', array('id' => $val['id'])).'">卸载</a> ';
+                    $val['right_button'] .= '<a class="btn btn-sm btn-default ajax-get confirm" href="'.url('uninstall', array('id' => $val['id'])).'">卸载</a> ';
                     break;
             }
         }

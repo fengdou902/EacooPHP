@@ -3,12 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: 2019-08-31 02:54:03
--- 服务器版本： 5.7.15
+-- Generation Time: 2019-08-31 06:26:28
+-- 服务器版本： 5.7.15-log
 -- PHP Version: 7.2.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 SET time_zone = "+00:00";
 
 --
@@ -771,8 +770,8 @@ CREATE TABLE `eacoo_themes` (
 --
 
 INSERT INTO `eacoo_themes` (`id`, `name`, `title`, `description`, `author`, `version`, `config`, `current`, `website`, `sort`, `create_time`, `update_time`, `status`) VALUES
-(1, 'default', '默认主题', '内置于系统中，是其它主题的基础主题', '心云间、凝听', '1.0.2', '', 1, 'https://www.eacoophp.com', 99, '2018-09-30 22:32:26', '2018-09-30 22:32:26', 1),
-(2, 'default-mobile', '默认主题-手机端', '内置于系统中，是系统的默认主题。手机端', '心云间、凝听', '1.0.1', '', 2, '', 99, '2018-09-30 22:32:26', '2018-09-30 22:32:26', 1);
+(1, 'default', '默认主题', '内置于系统中，是其它主题的基础主题', '心云间、凝听', '1.0.3', '', 1, 'https://www.eacoophp.com', 99, '2018-09-30 22:32:26', '2019-08-31 14:22:04', 1),
+(2, 'default-mobile', '默认主题-手机端', '内置于系统中，是系统的默认主题。手机端', '心云间、凝听', '1.0.1', '', 2, '', 99, '2019-08-31 14:24:16', '2019-08-31 14:24:26', 1);
 
 -- --------------------------------------------------------
 
