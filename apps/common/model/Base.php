@@ -23,7 +23,7 @@ class Base extends Model
      * @param  string  $confirm  是否验证
      * @return [type]        执行结果
      */
-    public function editData($data, $confirm=false)
+    public function editData($data, $confirm = false)
     {
         $this->allowField(true);
         

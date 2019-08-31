@@ -211,7 +211,7 @@ class Extension extends AdminLogic {
                 } elseif ($this->type=='module') {
                     $call_url = url('admin/Modules/index',['from_type'=>'local']);
                 } elseif ($this->type=='theme') {
-                    $call_url = url('admin/Theme/index',['from_type'=>'local']);
+                    $call_url = url('admin/Themes/index',['from_type'=>'local']);
                 }
                 
                 $return['url'] = $call_url;

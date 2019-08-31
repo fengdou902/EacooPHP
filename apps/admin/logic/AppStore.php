@@ -49,7 +49,7 @@ class AppStore extends AdminLogic {
         $result = '<ul class="nav nav-tabs appcenter-tabs">
             <li class="'.$module_active_class.'"><a href="'.url('admin/modules/index').'" class="opentab color-6 f15 mr-10" tab-title="应用中心-模块" data-iframe="true" tab-name="navtab-collapse-app-modules"><img src="/static/admin/img/extension/module.svg" width="16"> 模块</a></li>
             <li class="'.$plugin_active_class.'"><a href="'.url('admin/plugins/index').'" class="opentab color-6 f15 mr-10" tab-title="应用中心-插件" data-iframe="true" tab-name="navtab-collapse-app-plugins"><img src="/static/admin/img/extension/plugin.svg" width="16"> 插件</a></li>
-            <li class="'.$theme_active_class.'"><a href="'.url('admin/theme/index').'" class="opentab color-6 f15 mr-10" tab-title="应用中心-主题" data-iframe="true" tab-name="navtab-collapse-app-themes"><img src="/static/admin/img/extension/theme.svg" width="16"> 主题</a></li>
+            <li class="'.$theme_active_class.'"><a href="'.url('admin/themes/index').'" class="opentab color-6 f15 mr-10" tab-title="应用中心-主题" data-iframe="true" tab-name="navtab-collapse-app-themes"><img src="/static/admin/img/extension/theme.svg" width="16"> 主题</a></li>
             </ul>';
         return $result;
     }
@@ -102,7 +102,7 @@ class AppStore extends AdminLogic {
                   </div></a>
                 </div>
                 <div class="item-apptab col-md-3 col-sm-6 col-xs-12 '.$theme_active_class.'" >
-                  <a href="'.url('admin/theme/index').'" class="opentab" data-iframe="true" tab-name="navtab-collapse-app-themes" data-selftabhtml=\'<img src="/static/admin/img/extension/theme.svg" width="16"> 应用中心-主题\'>
+                  <a href="'.url('admin/themes/index').'" class="opentab" data-iframe="true" tab-name="navtab-collapse-app-themes" data-selftabhtml=\'<img src="/static/admin/img/extension/theme.svg" width="16"> 应用中心-主题\'>
                   <div class="info-box">
                     <span class="info-box-icon bg-yellow color-palette"><img src="/static/admin/img/extension/theme.svg" width="64"></span>
 
