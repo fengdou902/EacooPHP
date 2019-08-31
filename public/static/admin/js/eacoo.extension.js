@@ -176,11 +176,7 @@ function initAppstore() {
 function loadAppstore(action_url,paged) {
     if (!action_url) {
         var url_pa;
-        if (apptype=='theme') {
-            url_pa = apptype;
-        } else{
-            url_pa = apptype+'s';
-        }
+        url_pa = apptype+'s';
         action_url = url('admin/'+url_pa+'/index',['from_type='+from_type]);
     }
     var paged;

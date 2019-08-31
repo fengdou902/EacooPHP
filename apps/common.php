@@ -185,9 +185,9 @@ if (!function_exists('plugin_url')) {
  * @date   2017-11-14
  * @author 心云间、凝听 <981248356@qq.com>
  */
-function eacoo_url($url, $param=[],$type=1)
+function eacoo_url($url, $param = [] , $type = 1)
 {
-    if ($type==2) {//插件
+    if ($type == 2) {//插件
         $url_params = [];
         $query      = parse_url($url);
         $url        = $query['path'];
@@ -203,8 +203,14 @@ function eacoo_url($url, $param=[],$type=1)
     } else{
         if($url=='' || !$url || strpos($url, 'http://')!==false || strpos($url, 'https://')!==false){
             return $url;
-        } 
-        return url($url,$param);
+        }
+        if (MODULE_MARK == 'admin') {
+            if (!logic('admin/Auth')->checkAuth($url,$type)) {
+                return false;
+            }
+        }
+        
+        return url($url, $param);
     }
 }
 

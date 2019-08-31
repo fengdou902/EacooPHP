@@ -69,7 +69,7 @@ class AdminUser extends Admin {
             'title'        => '重置原始密码',
             'class'        => 'btn btn-default ajax-table-btn confirm btn-sm',
             'confirm-info' => '该操作会重置用户密码为123456，请谨慎操作',
-            'href'         => url('resetPassword')
+            'href'         => eacoo_url('admin/adminUser/resetPassword')
         ];
 
         return builder('list')
@@ -151,30 +151,29 @@ class AdminUser extends Admin {
         } else {
             //设置默认值
             $info = [
-                'sex'=>0,
-                'bind_uid'=>0,
-                'group_id'=>3,
-                'sex'=>0,
-                'status'=>1
+                'sex'      => 0,
+                'bind_uid' => 0,
+                'group_id' => 3,//普通用户ID
+                'status'   => 1
             ];
             // 获取账号信息
             if ($uid>0) {
                 $info = $this->adminUserModel->get($uid);
                 //查询该用户当前拥有的分组
-                $group_ids=model('auth_group_access')->where(['uid'=>$uid])->column('group_id');
+                $group_ids = model('auth_group_access')->where(['uid'=>$uid])->column('group_id');
                 $info['group_id']=$group_ids;
                 unset($info['password']);
             }
             $builder = builder('Form')
                         ->addFormItem('uid', 'hidden', 'UID', '')
                         ->addFormItem('nickname', 'text', '昵称', '填写一个有个性的昵称吧','','require')
-                        ->addFormItem('username', 'text', '用户名', '登录账户所用名称','','require')
+                        ->addFormItem('username', 'text', '用户名', '登录账户所用名称（英文）','','require')
                         ->addFormItem('password', 'password', '密码', '新增默认密码123456','','placeholder="留空则不修改密码"')
                         ->addFormItem('email', 'email', '邮箱', '','','data-rule="email" data-tip="请填写一个邮箱地址"')
                         ->addFormItem('mobile', 'left_icon_number', '手机号', '',['icon'=>'<i class="fa fa-phone"></i>'],'placeholder="填写手机号"')
                         ->addFormItem('sex', 'radio', '性别', '',[0=>'保密',1=>'男',2=>'女'])
                         ->addFormItem('group_id', 'checkbox', '所属用户组', '',$this->groupIds)
-                        ->addFormItem('bind_uid', 'number', '绑定会员UID', '绑定用户表的UID')
+                        ->addFormItem('bind_uid', 'number', '绑定会员UID', '绑定用户表的UID。（后台用户绑定前台用户）')
                         ->addFormItem('description', 'textarea', '个人说明', '请填写个人说明')
                         ->addFormItem('status', 'select', '状态', '',[0=>'禁用',1=>'正常',2=>'待验证'])
                         ->setFormData($info)//->setAjaxSubmit(false)
@@ -191,7 +190,7 @@ class AdminUser extends Admin {
 
     /**
      * 构建模型搜索查询条件
-     * @return [type] [description]
+     * @return array [type] [description]
      * @date   2018-09-30
      * @author 心云间、凝听 <981248356@qq.com>
      */

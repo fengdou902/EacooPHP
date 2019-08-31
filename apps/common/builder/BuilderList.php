@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017-2018 https://www.eacoophp.com, All rights reserved.         
+// | Copyright (c) 2017-2019 https://www.eacoophp.com, All rights reserved.         
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -159,14 +159,14 @@ class BuilderList extends Builder {
         if (IS_AJAX) return $this;
 
         $model_name = !empty($attribute['model']) ? $attribute['model'] : ($this->pluginName ? input('param._controller') : CONTROLLER_NAME);
-        $query_model_params = $this->preQueryConnector.'model='.$model_name;
+
         switch ($type) {
             case 'addnew':  // 添加新增按钮
                 // 预定义按钮属性以简化使用
                 $my_attribute['title'] = '添加';
                 $my_attribute['icon'] = 'fa fa-plus';
                 $my_attribute['class'] = 'btn btn-primary btn-sm';
-                $my_attribute['href']  = $this->pluginName ? plugin_url('edit') :  url(MODULE_NAME.'/'.CONTROLLER_NAME.'/edit');
+                $my_attribute['href']  = $this->pluginName ? plugin_url('edit') : eacoo_url(MODULE_NAME.'/'.CONTROLLER_NAME.'/edit');
                 
                 break;
             case 'resume':  // 添加启用按钮(禁用的反操作)
@@ -175,8 +175,8 @@ class BuilderList extends Builder {
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['icon'] = 'fa fa-play';
                 $my_attribute['class'] = 'btn btn-success ajax-table-btn confirm btn-sm';
-                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'resume']) : url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status'=>'resume']);
-                $my_attribute['href'] .= $query_model_params;
+                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'resume']) : eacoo_url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status'=>'resume']);
+                
                 break;
             case 'forbid':  // 添加禁用按钮(启用的反操作)
                 // 预定义按钮属性以简化使用
@@ -185,8 +185,7 @@ class BuilderList extends Builder {
                 $my_attribute['icon'] = 'fa fa-pause';
                 $my_attribute['class'] = 'btn btn-warning ajax-table-btn confirm btn-sm';
                 $my_attribute['confirm-info'] = '您确定要执行禁用操作吗？';
-                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'forbid']) : url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'forbid']);
-                $my_attribute['href'] .=  $query_model_params;
+                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'forbid']) : eacoo_url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'forbid']);
                 break;
             case 'recycle':  // 添加回收按钮(还原的反操作)
                 // 预定义按钮属性以简化使用
@@ -195,8 +194,7 @@ class BuilderList extends Builder {
                 $my_attribute['icon'] = 'fa fa-recycle';
                 $my_attribute['class'] = 'btn btn-danger ajax-table-btn confirm btn-sm';
                 $my_attribute['confirm-info'] = '您确定要执行回收操作吗？';
-                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'recycle']) : url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'recycle']);
-                $my_attribute['href'] .=  $query_model_params;
+                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'recycle']) : eacoo_url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'recycle']);
                 break;
             case 'restore':  // 添加还原按钮(回收的反操作)
                 // 预定义按钮属性以简化使用
@@ -204,8 +202,7 @@ class BuilderList extends Builder {
                 $my_attribute['target-form'] = 'ids';
                 $my_attribute['icon'] = 'fa fa-window-restore';
                 $my_attribute['class'] = 'btn btn-success ajax-table-btn confirm btn-sm';
-                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status'=>'restore']) :  url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'restore']);
-                $my_attribute['href'] .=  $query_model_params;
+                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status'=>'restore']) :  eacoo_url(MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'restore']);
                 break;
             case 'delete': // 添加删除按钮(我没有反操作，删除了就没有了，就真的找不回来了)
                 // 预定义按钮属性以简化使用
@@ -214,13 +211,8 @@ class BuilderList extends Builder {
                 $my_attribute['icon'] = 'fa fa-remove';
                 $my_attribute['class'] = 'btn btn-danger ajax-table-btn confirm btn-sm';
                 $my_attribute['confirm-info'] = '您确定要执行删除操作吗？';
-                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status'=>'delete']) :  url(
-                    MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
-                    array(
-                        'status' => 'delete',
-                    )
-                );
-                $my_attribute['href'] .=  $query_model_params;
+                $my_attribute['href']  = $this->pluginName ? plugin_url('setStatus',['status'=>'delete']) :  eacoo_url(
+                    MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',['status' => 'delete']);
                 break;
             case 'sort':  // 添加排序按钮
                 // 预定义按钮属性以简化使用
@@ -228,7 +220,7 @@ class BuilderList extends Builder {
                 $my_attribute['icon'] = 'fa fa-sort';
                 $my_attribute['name'] = '排序';
                 $my_attribute['class'] = 'btn btn-info btn-sm';
-                $my_attribute['href']  = $this->pluginName ? plugin_url('sort') :  url(MODULE_NAME.'/'.CONTROLLER_NAME.'/sort');
+                $my_attribute['href']  = $this->pluginName ? plugin_url('sort') :  eacoo_url(MODULE_NAME.'/'.CONTROLLER_NAME.'/sort');
 
                 break;
             case 'self': //添加自定义按钮(第一原则使用上面预设的按钮，如果有特殊需求不能满足则使用此自定义按钮方法)
@@ -251,7 +243,16 @@ class BuilderList extends Builder {
             $my_attribute = array_merge($my_attribute, $attribute);
         } 
         // 这个按钮定义好了把它丢进按钮池里
-        if ($position=='top') {
+        if ($position == 'top') {
+            if (isset($my_attribute['href'])) {
+                if ($my_attribute['href']==''){
+                    if(!empty($my_attribute['class'])) $my_attribute['class'] .= " disabled";
+                    $my_attribute['disabled'] = 'disabled';
+                } else{
+                    $my_attribute['href'] .= $this->preQueryConnector.'model='.$model_name;
+                }
+            }
+            
             $this->topButtonList[] = $my_attribute;
         } 
         
@@ -282,7 +283,7 @@ class BuilderList extends Builder {
                 $my_attribute['title'] = '编辑';
                 $my_attribute['icon'] = 'fa fa-edit';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-primary btn-xs':'';
-                $my_attribute['href']  =  $this->pluginName ? plugin_url('edit',[$this->tablePrimaryKey => '__data_id__']) : url(MODULE_NAME.'/'.CONTROLLER_NAME.'/edit',[$this->tablePrimaryKey => '__data_id__']);
+                $my_attribute['href']  =  $this->pluginName ? plugin_url('edit',[$this->tablePrimaryKey => '__data_id__']) : eacoo_url(MODULE_NAME.'/'.CONTROLLER_NAME.'/edit',[$this->tablePrimaryKey => '__data_id__']);
 
                 break;
             case 'forbid':  // 改变记录状态按钮，会更具数据当前的状态自动选择应该显示启用/禁用
@@ -290,7 +291,7 @@ class BuilderList extends Builder {
                 $my_attribute['type'] = 'forbid';
                 $my_attribute['0']['title'] = !empty($attribute['0']['title']) ? $attribute['0']['title'] : '启用';
                 $my_attribute['0']['class'] = $this->rightButtonType==1 ? 'btn btn-success btn-xs ajax-get confirm':'ajax-get confirm';
-                $my_attribute['0']['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'resume',$this->tablePrimaryKey => '__data_id__']) : url(
+                $my_attribute['0']['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'resume',$this->tablePrimaryKey => '__data_id__']) : eacoo_url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
                     array(
                         'status' => 'resume',
@@ -299,7 +300,7 @@ class BuilderList extends Builder {
                 ).$query_model_params;
                 $my_attribute['1']['title'] = !empty($attribute['1']['title']) ? $attribute['1']['title'] : '禁用';
                 $my_attribute['1']['class'] = $this->rightButtonType==1 ? 'btn btn-warning btn-xs ajax-get confirm':'ajax-get confirm';
-                $my_attribute['1']['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'forbid',$this->tablePrimaryKey => '__data_id__']) : url(
+                $my_attribute['1']['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'forbid',$this->tablePrimaryKey => '__data_id__']) : eacoo_url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
                     array(
                         'status' => 'forbid',
@@ -313,7 +314,7 @@ class BuilderList extends Builder {
                 $my_attribute['type'] = 'hide';
                 $my_attribute['2']['title'] = '显示';
                 $my_attribute['2']['class'] = $this->rightButtonType==1 ? 'btn btn-success btn-xs ajax-get confirm':'ajax-get confirm';
-                $my_attribute['2']['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'show',$this->tablePrimaryKey => '__data_id__']) : url(
+                $my_attribute['2']['href']  = $this->pluginName ? plugin_url('setStatus',['status' => 'show',$this->tablePrimaryKey => '__data_id__']) : eacoo_url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
                     array(
                         'status' => 'show',
@@ -322,7 +323,7 @@ class BuilderList extends Builder {
                 ).$query_model_params;
                 $my_attribute['1']['title'] = '隐藏';
                 $my_attribute['1']['class'] = $this->rightButtonType==1 ? 'btn btn-info btn-xs ajax-get confirm':'ajax-get confirm';
-                $my_attribute['1']['href']  = url(
+                $my_attribute['1']['href']  = eacoo_url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
                     array(
                         'status' => 'hide',
@@ -337,28 +338,26 @@ class BuilderList extends Builder {
                 $my_attribute['icon'] = 'fa fa-recycle';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-danger btn-xs ajax-get confirm':'ajax-get confirm';
                 $my_attribute['confirm-info'] = '您确定要执行回收操作吗？';
-                $my_attribute['href'] = $this->pluginName ? plugin_url('setStatus',['status'=>'recycle','ids' => '__data_id__']) :  url(
+                $my_attribute['href'] = $this->pluginName ? plugin_url('setStatus',['status'=>'recycle','ids' => '__data_id__']) : eacoo_url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
                     array(
                         'status' => 'recycle',
                         'ids' => '__data_id__',
                     )
                 );
-                $my_attribute['href'] .= $query_model_params;
 
                 break;
             case 'restore':
                 // 预定义按钮属性以简化使用
                 $my_attribute['title'] = '还原';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-success btn-xs ajax-get confirm':'ajax-get confirm';
-                $my_attribute['href'] = $this->pluginName ? plugin_url('setStatus',['status'=>'restore','ids' => '__data_id__']) :  url(
+                $my_attribute['href'] = $this->pluginName ? plugin_url('setStatus',['status'=>'restore','ids' => '__data_id__']) : eacoo_url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
                     array(
                         'status' => 'restore',
                         'ids' => '__data_id__',
                     )
                 );
-                $my_attribute['href'] .= $query_model_params;
 
                 break;
             case 'delete':
@@ -367,14 +366,13 @@ class BuilderList extends Builder {
                 $my_attribute['icon'] = 'fa fa-remove';
                 $my_attribute['class'] = $this->rightButtonType==1 ? 'btn btn-danger btn-xs ajax-get confirm':'ajax-get confirm';
                 $my_attribute['confirm-info'] = '您确定要执行删除操作吗？';
-                $my_attribute['href'] = $this->pluginName ? plugin_url('setStatus',['status'=>'delete','ids' => '__data_id__']) :  url(
+                $my_attribute['href'] = $this->pluginName ? plugin_url('setStatus',['status'=>'delete','ids' => '__data_id__']) : eacoo_url(
                     MODULE_NAME.'/'.CONTROLLER_NAME.'/setStatus',
                     array(
                         'status' => 'delete',
                         'ids' => '__data_id__',
                     )
                 );
-                $my_attribute['href'] .= $query_model_params;
 
                 break;
             case 'self':
@@ -413,6 +411,17 @@ class BuilderList extends Builder {
             $my_attribute['condition'] = $condition;
         }
 
+        if (isset($my_attribute['href']) && $my_attribute['href']=='') $my_attribute['disabled'] = 'disabled';
+
+        if (isset($my_attribute['href'])) {
+            if ($my_attribute['href']==''){
+                if(!empty($my_attribute['class'])) $my_attribute['class'] .= " disabled";
+                $my_attribute['disabled'] = 'disabled';
+            } else{
+                $my_attribute['href'] .= $this->preQueryConnector.'model='.$model_name;
+            }
+        }
+        
         // 这个按钮定义好了把它丢进按钮池里
         $this->rightButtonList[] = $my_attribute;
         return $this;
@@ -560,7 +569,7 @@ class BuilderList extends Builder {
         if(!isset($data['right_button'])) $data['right_button']='';
         // 编译表格右侧按钮
         if ($this->rightButtonList) {
-            if ($this->rightButtonType==2) {
+            if ($this->rightButtonType==2) {//下拉
                 $data['right_button'] .='<div class="btn-group">
                   <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
                     操作 <span class="caret"></span>
@@ -594,6 +603,7 @@ class BuilderList extends Builder {
                 if(isset($right_button['icon'])) $right_button_show_title = '<i class="'.$right_button['icon'].'"></i> ';
                 // 编译按钮属性
                 $right_button['attribute'] = $this->compileHtmlAttr($right_button);
+
                 switch ($this->rightButtonType) {
                     case 2:
                         $data['right_button'] .= '<li><a '.$right_button['attribute'].'>'.$right_button_show_title.'</a></li>';

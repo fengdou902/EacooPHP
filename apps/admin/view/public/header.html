@@ -20,7 +20,7 @@
             <ul class="dropdown-menu" role="menu">
                 <% for (var i = 0; i < data.length; i ++) { %>
                 <% var vo = data[i]; %>
-                  <li><a href="<%=vo.url %>" class="opentab" tab-name="navtab-collapse-<%=vo.title %>" style="font-weight:bold!important;"><i class="fa fa-circle-o"></i> <%=vo.title %></a></li>
+                  <li><a href="<%=vo.url %>" class="opentab" tab-name="navtab-collapse-<%=vo.id %>" style="font-weight:bold!important;"><i class="fa fa-circle-o"></i> <%=vo.title %></a></li>
                 <% } %>
                 <% if (data.length==0) { %>
                     <li class="f13 ml-10 color-6">Tips: 点击<i class="fa fa-star-o"></i>可添加菜单收藏</li>
@@ -29,6 +29,7 @@
         </script>
         <ul class="nav navbar-nav">
           <li id="top-collect-menus"></li>
+          {notempty name="apps_menu"}
           <li class="dropdown">
               <a href="#" class="dropdown-toggle fb" data-toggle="dropdown"><i class="fa fa-cloud"></i> 应用中心<span class="label label-danger">新</span> <!-- <span class="caret"></span> --></a>
               <ul class="dropdown-menu" role="menu">
@@ -37,6 +38,7 @@
                 <li><a href="{:url('admin/theme/index')}" class="opentab" tab-title="应用中心-主题" tab-name="navtab-collapse-app-themes"><img src="/static/admin/img/extension/theme.svg" width="16"> 主题</a></li>
               </ul>
             </li>
+            {/notempty}
         </ul>
         <script id="header_modules_menus" type="text/html">
             <% for (var i = 0; i < data.length; i ++) { %>

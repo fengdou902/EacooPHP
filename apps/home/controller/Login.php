@@ -34,7 +34,7 @@ class Login extends Home {
             }
             $rememberme = input('post.rememberme')==1 ? true : false;
 
-            $uid = logic('common/User')->login($this->param['username'],$this->param['password'], $rememberme);
+            $uid = logic('user/User')->login($this->param['username'],$this->param['password'], $rememberme);
             if (!$uid) {
                 $this->error($this->userModel->getError());
             } elseif (0 < $uid) {

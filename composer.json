@@ -28,15 +28,16 @@
         "topthink/think-queue": "^1.0",
         "topthink/think-testing": "^1.0",
         "aliyuncs/oss-sdk-php": "^2.2",
-        "jenssegers/agent": "^2.6"
+        "jenssegers/agent": "^2.6",
+      "ext-json": "*"
     },
     "extra": {
         "think-path": "thinkphp"
     },
     "repositories": {
-        "laravel-china": {
+        "packagist": {
             "type": "composer",
-            "url": "https://packagist.laravel-china.org"
+            "url": "https://mirrors.aliyun.com/composer/"
         }
     },
     "config": {

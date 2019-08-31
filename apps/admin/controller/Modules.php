@@ -445,7 +445,9 @@ class Modules extends Admin {
      */
     private function getCloudAppstore($paged = 1)
     {
-        $total = 12;
+        $eacoo_appstore_modules_info = cache('eacoo_appstore_modules_info');
+        $total = $eacoo_appstore_modules_info['total'] ?? 30;
+
         $store_data = cache('eacoo_appstore_modules_'.$paged);
         if (empty($store_data) || !$store_data) {
             $url        = config('eacoo_api_url').'/api/appstore/apps';
@@ -457,7 +459,9 @@ class Modules extends Admin {
             $result = curl_post($url,$params);
             $result = json_decode($result,true);
             $store_data = $result['data'];
-            $total = 12;
+            
+            unset($params['paged']);
+            $total = count(json_decode(curl_post($url,$params),true)['data']);
             cache('eacoo_appstore_modules_'.$paged,$store_data,3600);
             cache('eacoo_appstore_modules_info',['total'=>$total],3600);
         }

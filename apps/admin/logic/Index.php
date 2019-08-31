@@ -1,7 +1,7 @@
 <?php
 // 框架逻辑层
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017-2018 https://www.eacoophp.com, All rights reserved.         
+// | Copyright (c) 2017-2019 https://www.eacoophp.com, All rights reserved.         
 // +----------------------------------------------------------------------
 // | [EacooPHP] 并不是自由软件,可免费使用,未经许可不能去掉EacooPHP相关版权。
 // | 禁止在EacooPHP整体或任何部分基础上发展任何派生、修改或第三方版本用于重新分发
@@ -28,10 +28,10 @@ class Index extends AdminLogic {
      * @date   2018-12-02
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function getAdminSidebarMenu($position='')
+    public function getAdminSidebarMenu($position =  '')
     {
         try {
-            $uid = is_admin_login();
+            $uid = $this->uid;
             if (!$uid) {
                 throw new \Exception("暂未登录", 0);
                 
@@ -42,19 +42,10 @@ class Index extends AdminLogic {
                     throw new \Exception("未授权任何权限", 0);
                     
                 }
-                if(!is_administrator() && !empty($this->currentUser['auth_group'])){//如果是非超级管理员则按存储显示
-                    $rules= db('auth_group')->where(['id'=>['in',array_keys($this->currentUser['auth_group'])]])->value('rules');    
-                    $map_rules['id']=['in',$rules];;
-                }
-                $map_rules['status']=1;
+                $map_rules = [];
                 $map_rules['is_menu']=1;
-
-                $map_rules['position']= !empty($position) ? $position:'admin';
-                //是否开发者模式
-                if (1!=config('develop_mode')) {
-                    $map_rules['developer']=0;
-                }
-                $menu = db('auth_rule')->where($map_rules)->field(true)->order('sort asc')->select();
+                $map_rules['position']= !empty($position) ? $position : 'admin';
+                $menu = getAdminUserAuthRule($uid, $map_rules);
                 if (!empty($menu)) {
                     foreach ($menu as $key => $row) {
                         $menu[$key]['url'] = eacoo_url($row['name'],[],$row['depend_type']);
@@ -65,7 +56,7 @@ class Index extends AdminLogic {
             //}
             return $admin_sidebar_menus;
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(), $e->getCode());
+            throw new \Exception($e->getMessage().';File:'.$e->getFile().';'.$e->getLine(), $e->getCode());
             
         }
         
@@ -77,22 +68,57 @@ class Index extends AdminLogic {
      * @date   2018-02-15
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function getAdminTopMenu()
+    public function getAdminCollectMenus($admin_uid = 0)
     {
         try {
-            $collect_menus = config('admin_collect_menus');
+            if ($admin_uid<=0) {
+                throw new \Exception("参数不合法", 0);
+            }
+            $collect_menus = json_decode(cookie('admin_collect_menus'),true);
             if (!$collect_menus) {
                 throw new \Exception("暂未收藏菜单", 0);
             }
             $result = [];
             foreach ($collect_menus as $key => $row) {
-                $row['url']=$key;
-                $result[]=$row;
+                $row['url'] = $key;
+                $result[] = $row;
             }
             return $result;
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage(), $e->getCode());
         }
+    }
+
+    public function getModuleMenus()
+    {
+        $result = [];
+        $default_header_menu_module = cookie('default_header_menu_module');
+        $data_list = model('admin/modules')->where('status',1)->field('id,title,name,icon')->select();
+        if (!empty($data_list)) {
+            foreach ($data_list as $key => $row) {
+                $module_name = $row['name'];
+                if ($module_name=='home') {
+                    continue;
+                }
+                if (!empty($row)) {
+                    if ($module_name=='admin') {
+                        $row['title']='系统';
+                    }
+                    //默认菜单
+                    $row['default_header_menu_module']=0;
+                    if ($default_header_menu_module==$module_name) {
+                        $row['default_header_menu_module']=1;
+                    }
+                    $row['icon'] = !empty($row['icon']) ? $row['icon'] : 'fa fa-circle-o ';
+
+                    //判断是否有对应规则
+                    $rules = getAdminUserAuthRule($this->adminUid,['is_menu'=>1,'position'=>$module_name]);
+                    if(!empty($rules)) $result[] = $row;
+                }
+                
+            }
+        }
+        return $result;
     }
 
     /**

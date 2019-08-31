@@ -51,12 +51,12 @@ class Auth extends Admin {
 
         $return = builder('list')
                 ->setPageTips('用于管理后台的规则项')
-                ->addTopBtn('addnew',array('href'=>url('edit',['pid'=>$pid])))  // 添加新增按钮
+                ->addTopBtn('addnew',array('href'=>eacoo_url('admin/auth/edit',['pid'=>$pid])))  // 添加新增按钮
                 ->addTopBtn('resume',array('model'=>'auth_rule'))  // 添加启用按钮
                 ->addTopBtn('forbid',array('model'=>'auth_rule'))  // 添加禁用按钮
                 ->addTopBtn('delete',array('model'=>'auth_rule'))  // 添加删除按钮
                 ->setTabNav(logic('Auth')->getTabList(), $depend_flag)  // 设置页面Tab导航
-                ->addTopBtn('sort',['model'=>'auth_rule','href'=>url('Sort',['pid'=>$pid])])  // 添加排序按钮
+                ->addTopBtn('sort',['model'=>'auth_rule','href'=>eacoo_url('admin/auth/Sort',['pid'=>$pid])])  // 添加排序按钮
                 //->setSearch('', url('rule'))
                 ->keyListItem('id','ID')
                 ->keyListItem('title','名称')
@@ -94,7 +94,7 @@ class Auth extends Admin {
      * @param  integer $id [description]
      * @return [type]      [description]
      */
-    public function edit($id=0){
+    public function edit($id = 0){
         $title=$id ? "编辑":"新增";
         
         if(IS_POST){

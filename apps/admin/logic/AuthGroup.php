@@ -9,6 +9,7 @@
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
 namespace app\admin\logic;
+use think\Db;
 
 class AuthGroup extends AdminLogic
 {
@@ -107,18 +108,18 @@ class AuthGroup extends AdminLogic
      *                                         array('uid'=>'用户id','group_id'=>'用户组id','title'=>'用户组名称','rules'=>'用户组拥有的规则id,多个,号隔开'),
      *                                         ...)   
      */
-    static public function getUserGroup($uid){
+    static public function getUserGroup($uid = 0){
         static $groups = array();
         if (isset($groups[$uid]))
             return $groups[$uid];
         $prefix   = config('database.prefix');
-        $user_groups = model()
-            ->field('uid,group_id,title,description,rules')
-            ->table($prefix.self::AUTH_GROUP_ACCESS.' a')
-            ->join ($prefix.self::AUTH_GROUP." g on a.group_id=g.id")
-            ->where("a.uid='$uid' and g.status='1'")
+        $user_groups = Db::table($prefix.self::AUTH_GROUP_ACCESS)
+            ->alias('a')
+            ->join ($prefix.self::AUTH_GROUP." g"," a.group_id = g.id")
+            ->where(['a.uid'=>$uid,'g.status'=>1])
+            ->field('a.uid,a.group_id,g.title,g.description,g.rules')
             ->select();
-        $groups[$uid]=$user_groups?$user_groups:array();
+        $groups[$uid] = $user_groups ? $user_groups : [];
         return $groups[$uid];
     }
     

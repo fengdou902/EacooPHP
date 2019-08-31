@@ -1,4 +1,4 @@
-EacooPHP v1.3.1
+EacooPHP v1.3.2
 ===============
 ### 介绍
 EacooPHP是基于ThinkPHP5.0.21开发的一套轻量级WEB产品开发框架，追求高效，简单，灵活。

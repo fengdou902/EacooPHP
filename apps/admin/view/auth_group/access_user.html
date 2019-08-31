@@ -10,13 +10,7 @@
                     <li class=""><a href="{:url('edit',array('group_id'=>$group_id))}">角色信息</a></li>
                     <li class=""><a href="{:url('access',array('group_id'=>$group_id))}">权限分配</a></li>
                     <li class="active"><a href="{:url('accessUser',['group_id'=>$group_id])}">成员授权</a></li>
-                    <li class="right form-group mt0 mr20">
-                        <select name="group" class="form-control col-md-8">
-                            {volist name="auth_group" id="vo"}
-                                <option value="{:url('AuthGroup/accessUser',['group_id'=>$vo['id'],'group_name'=>$vo['title']])}" {eq name="vo['id']" value="$this_group['id']"}selected{/eq} >{$vo.title}</option>
-                            {/volist}
-                        </select>
-                    </li>
+                    
                 </ul>
             </div>
 
@@ -43,7 +37,7 @@
                         <tr>
                             <td>{$vo.uid} </td>
                             <td>{$vo.nickname}</td>
-                            <td><span>{$vo.last_login_time|time_format}</span></td>
+                            <td><span>{$vo.last_login_time}</span></td>
                             <td><span>{$vo.last_login_ip}</span></td>
                             <td>{switch name="vo.status"}
                                     {case value="-1"}删除{/case}
@@ -53,7 +47,7 @@
                                     {case value="3"}草稿{/case}
                                     {default /}未知
                                 {/switch}</td>
-                            <td><a href="{:url('AuthGroup/removeFromGroup?uid='.$vo['uid'].'&group_id='.input('group_id'))}" class="ajax-get">解除授权</a>
+                            <td><a href="{:url('AuthGroup/removeFromGroup?uid='.$vo['uid'].'&group_id='.input('group_id'))}" class="ajax-get confirm">解除授权</a>
 
                                 </td>
                         </tr>
@@ -71,7 +65,13 @@
                     <form class="add-user" action="{:url('AuthGroup/addToGroup')}" method="post" enctype="application/x-www-form-urlencoded" >
                     <div class="form-group">
                         <div class="col-md-10">
-                            <input class="form-control" type="text" name="uid" placeholder="请输入管理员uid,多个用英文逗号分隔">
+                            <!--<input class="form-control" id="admin_uid_list" type="number" name="uid" placeholder="请输入管理员uid,多个用英文逗号分隔">-->
+                            <select id="admin_uid_list" type="number" name="uid" class="select2-container form-control" >
+                                <option value="">请选择</option>
+                                {volist name="admin_user_list" id="vo"}
+                                    <option value="{$vo.uid|default=''}">{$vo.nickname}</option>
+                                {/volist}
+                            </select>
                         </div>
                         <input type="hidden" name="group_id" value="{:input('group_id')}">
                         <button type="submit" class="btn btn-info btn-raised btn-sm ajax-post col-md-2" target-form="add-user">新 增</button>
@@ -84,4 +84,15 @@
     </div>
 </div>
 </section>
+{/block}
+
+{block name="script"}
+<link rel="stylesheet" type="text/css" href="__LIBS__/select2/css/select2.min.css">
+<link rel="stylesheet" type="text/css" href="__LIBS__/select2/css/select2-bootstrap.min.css">
+<script type="text/javascript" src="__LIBS__/select2/js/select2.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#admin_uid_list").select2();         
+    });
+</script>
 {/block}

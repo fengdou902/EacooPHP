@@ -52,7 +52,7 @@ class Config extends Admin {
 
         $return = builder('list')
                 ->setPageTips('调用方式，如：<code>config("web_site_statistics")</code>，即可调用站点统计的配置信息')
-                ->addTopButton('addnew',['href'=>url('edit',['group_id'=>$group])])   // 添加新增按钮
+                ->addTopButton('addnew',['href'=>eacoo_url('admin/config/edit',['group_id'=>$group])])   // 添加新增按钮
                 //->addTopButton('resume',array('title'=>'显示'))   // 添加启用按钮
                 //->addTopButton('forbid',array('title'=>'隐藏'))   // 添加禁用按钮
                 ->addTopButton('delete')   // 添加删除按钮

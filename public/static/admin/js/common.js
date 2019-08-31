@@ -4,7 +4,7 @@
     //收藏菜单
     $('body').on('click', '.eacoo-menu-collect', function() {
         var $this = $(this);
-        $.get(url("admin/menu/toggleCollect"),{title:$this.data('title'),url:$this.data('url')}).success(function (result) {
+        $.get(url("admin/menu/toggleCollect"),{title:$this.data('title'),url:$this.data('url'),auth_rule:$this.data('authrule')}).success(function (result) {
             //console.log(result);
             parent.loadTopMenus();
             if (result.code==1) {
@@ -145,6 +145,38 @@ function handleBuilderListAjaxEvent(object) {
     $.post(target, {ids:result}).success(function (result) {
         handleAjax(result,$this);
     });
+}
+
+/**
+ * 处理BuilderList携带参数事件
+ * @param  {[type]} argument [description]
+ * @return {[type]} [description]
+ * @date   2018-02-19
+ * @author 心云间、凝听 <981248356@qq.com>
+ */
+function handleBuilderListParamEvent(object) {
+    var $this = object;
+    var target = $this.attr('href');
+    var getSelectRows = $table.bootstrapTable('getSelections');
+    var row_len = getSelectRows.length;
+    if (row_len<1) {
+        updateAlert('没有可操作数据。','error');
+        return false;
+    }
+    var result="";
+    var key = $this.attr('primary-key');//主键
+    for (var i = 0; i < getSelectRows.length; i++) {
+        result+=getSelectRows[i][key]+",";
+    }
+    $this.addClass('disabled').prop('disabled', true);
+
+    if (target.indexOf("?")!=-1) {
+        var delimiter = '&';
+    } else{
+        var delimiter = '?';
+    }
+    window.redirect(target + delimiter+'ids=' + result);
+    
 }
 
 /**

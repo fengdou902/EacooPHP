@@ -58,9 +58,9 @@ class AuthGroup extends Admin {
                 ->keyListItem('right_button', '操作', 'btn')
                 ->setListData($data_list)    // 数据列表
                 ->setListPage($total) // 数据列表分页
-                ->addRightButton('edit',['href'=>url('edit',['group_id'=>'__data_id__']),'class'=>'btn btn-success btn-xs']) 
-                ->addRightButton('self',['title'=>'权限分配','href'=>url('access',['group_id'=>'__data_id__']),'class'=>'btn btn-info btn-xs'])  
-                ->addRightButton('self',array('title'=>'成员授权','href'=>url('accessUser',array('group_id'=>'__data_id__'))))    
+                ->addRightButton('edit',['href'=>eacoo_url('admin/AuthGroup/edit',['group_id'=>'__data_id__']),'title'=>'编辑','class'=>'btn btn-success btn-xs']) 
+                ->addRightButton('self',['title'=>'权限分配','href'=>eacoo_url('admin/AuthGroup/access',['group_id'=>'__data_id__']),'class'=>'btn btn-info btn-xs'])  
+                ->addRightButton('self',array('title'=>'成员授权','href'=>eacoo_url('admin/AuthGroup/accessUser',array('group_id'=>'__data_id__')),'class'=>'btn btn-warning btn-xs'))    
                 ->fetch();
 
         return Iframe()
@@ -69,7 +69,7 @@ class AuthGroup extends Admin {
     }
     
     //角色编辑
-    public function edit($group_id=0){
+    public function edit($group_id = 0){
         $title = $group_id ? '编辑':'新增';
     
          $info =$this->authGroupModel->find($group_id);
@@ -105,39 +105,53 @@ class AuthGroup extends Admin {
      * @date   2017-08-27
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function access($group_id=0){
+    public function access($group_id = 0){
         
-        $title='权限分配'; 
+        $title = '权限分配'; 
         if (IS_POST && $group_id>0) {
-            $data['id']    = $group_id;
-            $menu_auth     = input('param.menu_auth/a','');//获取所有授权菜单
-            $data['rules'] = implode(',',$menu_auth);
+            $data['id']  = $group_id;
+            $menu_auth   = input('param.menu_auth/a','');//获取所有授权菜单
 
             //开发过程中先关闭这个限制
-            //if($group_id==1){
-                //$this->error('不能修改超级管理员'.$title);
-           // }else{
+            if($group_id==1){
+                $this->error('不能修改超级管理员'.$title);
+           } else{
+                
+                $menu_auth_rules = array_unique($menu_auth);
+                $data['rules'] = implode(',',$menu_auth_rules);
                 //$data里包含主键id，则editData就会更新数据，否则是新增数据
                 if ($this->authGroupModel->editData($data)) {
                     cache('admin_sidebar_menus_'.$this->currentUser['uid'],null);
-                    $this->success($title.'成功', url('index'));
-                }else{
+                    $this->success($title.'成功', url('access',['group_id' => $group_id ]));
+                } else{
                     $this->error($this->authGroupModel->getError());
                 }
                 
-            //}
+            }
 
         } else{
-            if ($group_id>0) {
-                $this->assign('group_id',$group_id);
-            }
             $this->assign('meta_title',$title);
+            if ($group_id>0) $this->assign('group_id',$group_id);
+
             $role_auth_rule = $this->authGroupModel->where(['id'=>intval($group_id)])->value('rules');
             $this->assign('menu_auth_rules',explode(',',$role_auth_rule));//获取指定获取到的权限
-            $rule = db('auth_rule')->select();
-            $tree_obj = new \eacoo\Tree;
-            $rule = $tree_obj->listToTree($rule);
-            $this->assign('auth_rules_list',$rule);//所以规则
+
+            $depend_flag = $this->request->param('depend_flag','admin');
+            $this->assign('depend_flag',$depend_flag);
+
+            $module_menus = logic('index')->getModuleMenus();
+            $auth_rules_list = [];
+            if (!empty($module_menus)) {
+                foreach ($module_menus as $k => $module) {
+                    $auth_rules_list[$module['name']] = (new \eacoo\Tree)->listToTree(db('auth_rule')->where([
+                            'status' => 1,
+                            'depend_type' => 1,
+                            'depend_flag' => $module['name']
+                        ])->select());
+                }  
+            }
+            $this->assign('auth_rules_list',$auth_rules_list);//所以规则
+            $this->assign('module_menus',$module_menus);//所以规则
             return $this->fetch();
         }
     
@@ -147,7 +161,7 @@ class AuthGroup extends Admin {
      * 用户组授权用户列表
      * @author 心云间、凝听 <981248356@qq.com>
      */
-    public function accessUser($group_id=0)
+    public function accessUser($group_id = 0)
     {
         if ($group_id!=0) {
             $this->assign('group_id',$group_id);
@@ -160,6 +174,9 @@ class AuthGroup extends Admin {
         //$list = $this->lists($model,array('a.group_id'=>$group_id,'m.status'=>array('egt',0)),'m.uid asc',null,'m.uid,m.nickname,m.last_login_time,m.last_login_ip,m.status');
         $list= $this->userModel->alias('m')->join ('__AUTH_GROUP_ACCESS__ a','m.uid=a.uid' )->where(['a.group_id'=>$group_id,'m.status'=>['egt',0]])->order('m.uid asc')->field('m.uid,m.nickname,m.last_login_time,m.last_login_ip,m.status')->paginate(20);
 
+        $admin_user_list  = db('admin')->where('status',1)->field('uid,nickname')->select();
+
+        $this->assign( 'admin_user_list', $admin_user_list );
         $this->assign( '_list',     $list );
         $this->assign( 'page',     $list->render());
         $this->assign('auth_group', $authGroup);
@@ -196,13 +213,14 @@ class AuthGroup extends Admin {
             }
 
             if( $gid && !$this->authGroupModel->checkGroupId($gid)){
-                $this->error($this->authGroupModel->error);
+                throw new \Exception($this->authGroupModel->getError(), 0);
             }
             if ( !logic('AuthGroup')->addToGroup($uid,$gid) ){
-                $this->error($this->authGroupModel->getError());
+                throw new \Exception($this->authGroupModel->getError(), 0);
             }
         } catch (\Exception $e) {
-            $this->error($e->getMessage());
+            $error = !empty($e->getMessage()) ? $e->getMessage() : '操作失败';
+            $this->error($error);
         }
         $this->success('操作成功');
         

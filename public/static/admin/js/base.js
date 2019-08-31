@@ -18,7 +18,7 @@
         });
     });
     //icheck
-	$('input').iCheck({
+	$('input:not([name="btSelectAll"])').iCheck({
 	      checkboxClass:'icheckbox_minimal-blue',
 	      radioClass:'iradio_minimal-blue',
 	      increaseArea:'20%' // optional
@@ -75,6 +75,31 @@
             });
         } else{
             handleBuilderListAjaxEvent($this);
+        }
+        
+    })
+
+    //redirect table btn适用于基于bootstrap-table页面
+    $('body').on('click','.redirect-table-btn',function (event) {
+        event.preventDefault();
+        var $this = $(this);
+        var need_confirm = false;
+
+        if ($this.hasClass('confirm')) {
+            need_confirm = true;
+        }
+        //验证
+        if (need_confirm) {
+            var confirm_info = $this.attr('confirm-info');
+            confirm_info = confirm_info ? confirm_info : "确认要执行该操作吗?";
+            parent.layer.confirm(confirm_info, {offset: 't',icon: 3, title:'询问',shadeClose: true,shade: 0.5,}, function(e){
+                parent.layer.close(e);
+                handleBuilderListParamEvent($this);
+            }, function(e){
+                parent.layer.close(e);
+            });
+        } else{
+            handleBuilderListParamEvent($this);
         }
         
     })

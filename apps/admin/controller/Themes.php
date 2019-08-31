@@ -14,7 +14,7 @@ use app\admin\model\Theme as ThemeModel;
 use app\admin\logic\Theme as ThemeLogic;
 use app\admin\logic\Extension as ExtensionLogic;
 
-class Theme extends Admin {
+class Themes extends Admin {
     
     protected $themeModel;
     
@@ -238,6 +238,9 @@ class Theme extends Admin {
      */
     private function getCloudAppstore($paged = 1)
     {
+        $eacoo_appstore_themes_info = cache('eacoo_appstore_themes_info');
+        $total = $eacoo_appstore_themes_info['total'] ?? 30;
+
         $store_data = cache('eacoo_appstore_themes_'.$paged);
         if (empty($store_data) || !$store_data) {
             $url        = config('eacoo_api_url').'/api/appstore/apps';
@@ -249,9 +252,11 @@ class Theme extends Admin {
             $result = curl_post($url,$params);
             $result = json_decode($result,true);
             $store_data = $result['data'];
-            $total = 12;
+
+            unset($params['paged']);
+            $total = count(json_decode(curl_post($url,$params),true)['data']);
             cache('eacoo_appstore_themes_'.$paged,$store_data,3600);
-            cache('eacoo_appstore_modules_info',['total'=>$total],3600);
+            cache('eacoo_appstore_themes_info',['total'=>$total],3600);
         }
         if (!empty($store_data)) {
             $extensionObj = new ExtensionLogic();
