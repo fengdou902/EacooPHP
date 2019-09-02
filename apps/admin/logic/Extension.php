@@ -349,7 +349,7 @@ class Extension extends AdminLogic {
             }
             return ['code'=>1,'msg'=>'安装成功','data'=>''];
         } catch (\Exception $e) {
-            setAppLog($e,'error');
+            setAppLog($e->getMessage().';File:'.$e->getFile().'('.$e->getLine().')','error');
             //卸载安装的数据库
             $sql_file = $this->appExtensionPath.'install/uninstall.sql';
             if(is_file($sql_file) && isset($info['database_prefix'])) Sql::executeSqlByFile($sql_file, $info['database_prefix']);
