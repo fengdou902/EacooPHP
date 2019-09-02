@@ -8,7 +8,7 @@
 // +----------------------------------------------------------------------
 // | Author:  心云间、凝听 <981248356@qq.com>
 // +----------------------------------------------------------------------
-use app\common\logic\User as UserLogic;
+use app\user\logic\User as UserLogic;
 use app\common\logic\Action as ActionLogic;
 
 /**
@@ -17,7 +17,7 @@ use app\common\logic\Action as ActionLogic;
  * @author 心云间、凝听 <981248356@qq.com>
  */
 function is_login() {
-	return UserLogic::isLogin();
+    return UserLogic::isLogin();
 }
 
 /**
@@ -34,16 +34,16 @@ function get_user_info($uid) {
 }
 
 /**
- * 获取用户名
+ * 获取用户昵称
  * @param  integer $uid [description]
  * @return [type] [description]
  * @date   2017-09-25
  * @author 心云间、凝听 <981248356@qq.com>
  */
-function get_nickname($uid=0)
+function get_nickname($uid = 0)
 {
     if ($uid>0) {
-        return UserLogic::where('uid',$uid)->value('nickname');
+        return model('user/User')->where('uid',$uid)->value('nickname');
     }
     return false;
 }
