@@ -101,11 +101,14 @@ class Home extends Base {
         $ACTION_NAME = Request::instance()->action(true);   //处理驼峰写法模板兼容，一定要给true，不然方法名会自动变小写；
 
         if (!is_file($template)) {
-            
+            $controller = $this->request->controller();
+            if (strpos($controller, '.')!==false) {
+                $controller = str_replace('.', '/_', $controller);
+            }
             if (!$template) {
-                $template_name = $this->request->controller().'/'.self::toUnderScore($this->request->action());
+                $template_name = $controller.'/'.self::toUnderScore($this->request->action(true));
             } else{
-                $template_name = $this->request->controller().'/'.$template;
+                $template_name = $controller.'/'.self::toUnderScore($template);
             }
 
             // 当前模版文件

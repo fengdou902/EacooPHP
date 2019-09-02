@@ -11,10 +11,14 @@
 namespace app\user\logic;
 use app\admin\model\AuthGroupAccess;
 
-class User extends BaseLogic
+class User extends UserLogic
 {
     // 设置数据表（不含前缀）
     protected $name = 'users';
+
+    // 定义时间戳字段名
+    protected $createTime = 'reg_time';
+    protected $updateTime = '';
 
     /**
      * 用户信息

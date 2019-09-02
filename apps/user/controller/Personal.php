@@ -11,8 +11,8 @@
 namespace app\user\controller;
 use app\home\controller\Home;
 
-use app\common\model\User as UserModel;
-use app\common\logic\User as UserLogic;
+use app\user\model\User as UserModel;
+use app\user\logic\User as UserLogic;
 
 class Personal extends Home{
     function _initialize()
@@ -45,7 +45,7 @@ class Personal extends Home{
         if (IS_POST) {
           $data = input('post.');
           // 提交数据
-          $data['uid']=is_login();
+          $data['uid'] = is_login();
           $result = $this->userModel->editData($data);
 
           if ($result) {

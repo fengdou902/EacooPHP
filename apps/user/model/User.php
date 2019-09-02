@@ -15,6 +15,7 @@ class User extends Base
 {
     // 设置数据表（不含前缀）
     protected $name = 'users';
+    protected $pk = 'uid';
 
     // 定义时间戳字段名
     protected $createTime = 'reg_time';
