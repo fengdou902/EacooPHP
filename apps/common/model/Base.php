@@ -41,7 +41,7 @@ class Base extends Model
         }
         if (!$res) {
             if (!$this->getError()) {
-                $this->error = '数据操作失败！';
+                $this->error = '数据操作失败！'.$this->getError();
             }
         }
         return $res;

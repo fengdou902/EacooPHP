@@ -12,5 +12,26 @@ namespace app\admin\logic;
 
 class Plugin extends AdminLogic
 {
-    
+    static public $pluginName;
+
+    protected $name = 'plugins';
+
+    /**
+     * 检测是否安装了某个插件
+     * @param  string $name [description]
+     * @return [type] [description]
+     * @date   2017-09-17
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    public static function checkInstall($name='')
+    {
+        if ($name!='') {
+            $res = self::where(['name' => $name,'status'=>1])->count();
+            if ($res>0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
