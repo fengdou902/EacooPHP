@@ -306,7 +306,7 @@ class AdminUser extends Admin {
             $new_password = encrypt($newpassword);
             $res = AdminUserModel::where($map)->setField('password',$new_password);
             if ($res) {
-                if (isset($params['uid']) && $params['uid']==is_login()) {
+                if (isset($params['uid']) && $params['uid']==is_admin_login()) {
                     session(null);
                     $this->success('已重置密码成功，新密码：'.$newpassword, url('admin/login/index'));
                 } else{

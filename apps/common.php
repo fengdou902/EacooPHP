@@ -4,6 +4,7 @@ use app\common\builder\Builder;
 use app\common\layout\Iframe;
 use app\admin\logic\Module as ModuleLogic;
 use app\admin\logic\Plugin as PluginLogic;
+use app\common\logic\Action as ActionLogic;
 
 /**
  * 获取对象
