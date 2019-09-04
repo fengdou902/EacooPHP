@@ -123,14 +123,14 @@ class User extends UserLogic
         if(!empty($user)){   
             /* 验证用户密码 */
             if(encrypt($password) === $user['password']){
-                //判断账号是否激活
-                if($user['actived']==1){
+                if($user['is_lock']===0){
                     self::autoLogin($user,$rememberme); //更新用户登录信息 
                     return ['code'=>1,'msg'=>'登录成功','data'=>['uid'=>$user['uid']]];
                 }else{
-                    return ['code'=>0,'msg'=>'账号尚未激活'];
+                    return ['code'=>0,'msg'=>'用户被锁定，请联系站长进行解锁！'];
                 }
-            } else {
+                
+            }else {
                 return ['code'=>0,'msg'=>'密码错误！'];
             }
         } else {

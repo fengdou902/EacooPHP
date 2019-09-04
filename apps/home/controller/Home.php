@@ -96,8 +96,7 @@ class Home extends Base {
      * @param  array  $render       是否渲染内容
      * @return [type]               [description]
      */
-    public function fetch($template='', $vars = [], $replace = [], $config = [] ,$render=false) {
-
+    public function fetch($template = '', $vars = [], $replace = [], $config = [] ,$render=false) {
         $ACTION_NAME = Request::instance()->action(true);   //处理驼峰写法模板兼容，一定要给true，不然方法名会自动变小写；
 
         if (!is_file($template)) {
@@ -105,23 +104,21 @@ class Home extends Base {
             if (strpos($controller, '.')!==false) {
                 $controller = str_replace('.', '/_', $controller);
             }
-            if (!$template) {
+            $controller = strtolower($controller);
+            if (empty($template)) {
                 $template_name = $controller.'/'.self::toUnderScore($this->request->action(true));
             } else{
-                $template_name = $controller.'/'.self::toUnderScore($template);
+                $template_name = $controller.'/'.$template;
             }
-
             // 当前模版文件
-            $template = config('template.view_path').strtolower($template_name).'.'.config('template.view_suffix'); //当前主题模版是否存在
+            $template = config('template.view_path').$template_name.'.'.config('template.view_suffix'); //当前主题模版是否存在
             if (!is_file($template)) {
-                $template = APP_PATH.MODULE_NAME. '/view/'. strtolower($template_name) . '.' .config('template.view_suffix');
+                $template = APP_PATH.MODULE_NAME. '/view/'.$template_name. '.' .config('template.view_suffix');
                 if (!is_file($template)) {
                     throw new \Exception('模板不存在：'.$template, 5001);
                 }
             }
-            
         }
-
         return $this->view->fetch($template, $vars, $replace, $config, $render);
     }
 
