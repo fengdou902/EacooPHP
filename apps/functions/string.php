@@ -173,6 +173,8 @@ function msubstr($str, $start=0, $length, $charset="utf-8", $suffix=true) {
  * @return string               返回截取后的字符串
  */
 function cut_str($str, $len = 100, $start = 0, $suffix = 1) {
+    if (empty($str)) return '';
+    $array = [];
     $str = strip_tags(trim(strip_tags($str)));
     $str = str_replace(array("\n", "\t"), "", $str);
     $strlen = mb_strlen($str);
