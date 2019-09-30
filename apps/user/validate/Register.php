@@ -18,7 +18,7 @@ class Register extends Validate
     protected $rule = [
       'username' => 'require|length:4,20',
       'nickname' => 'require|length:2,20',
-      'email' => 'email',
+      'email' => 'email|unique:users',
       'password' => 'require|confirm|length:6,16',
     ];
 
@@ -27,7 +27,8 @@ class Register extends Validate
       'username.length' => '账号长度要在4-20个字符之间',
       'nickname.require' => '昵称不能为空',
       'nickname.length' => '昵称长度要在2-20个字符之间',
-      'email' => '邮箱格式错误',
+      'email.email' => '邮箱格式错误',
+      'email.unique' => '该邮箱已被注册',
       'password.require' => '密码不能为空',
       'password.confirm' => '两次密码不一致',
       'password.length' => '密码长度要在6-16个字符之间',
