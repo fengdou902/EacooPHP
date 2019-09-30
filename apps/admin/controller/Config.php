@@ -456,11 +456,12 @@ class Config extends Admin {
             if (!isset($info['water_img']) || empty($info['water_img'])) {
                 $info['water_img'] = './logo.png';
             }
+            $driver_url = url('admin/plugins/index');
             //自定义表单项
             $content = builder('Form')
                     ->setPageTips('调用方式，如：<code>config("配置名")</code>，即可调用站点统计的配置信息')
                     ->setTabNav($tab_list,'attachment_option')  // 设置页面Tab导航
-                    ->addFormItem('driver', 'select', '上传驱动', '选择上传驱动插件用于七牛云、又拍云等第三方文件上传的扩展',upload_drivers())
+                    ->addFormItem('driver', 'select', '上传驱动', '强烈建议使用第三方存储，如阿里oss、七牛、又拍云等。<a href="'.$driver_url.'" class="opentab1" tab-title="应用中心-插件" tab-name="navtab-collapse-app-plugins"> 前往安装</a>',upload_drivers())
                     ->addFormItem('file_max_size', 'number', '上传的文件大小限制', '文件上传大小单位：kb (0-不做限制)')
                     ->addFormItem('file_exts', 'text', '允许上传的文件后缀', '多个后缀用逗号隔开，不填写则不限制类型')
                     ->addFormItem('file_save_name', 'text', '上传文件命名规则', 'date,md5,sha1,自定义规则')

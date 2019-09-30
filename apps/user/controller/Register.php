@@ -29,17 +29,17 @@ class Register extends Home{
      */
     public function index(){
         if (IS_POST){
-            $data = input('post.');
+            $params = input('post.');
             //检测用户名或昵称是否被禁止注册
-            $check_username = UserLogic::checkDenyUser($data['username']);
-            $check_nickname = UserLogic::checkDenyUser($data['nickname']);
+            $check_username = UserLogic::checkDenyUser($params['username']);
+            $check_nickname = UserLogic::checkDenyUser($params['nickname']);
             if ($check_username || $check_nickname){
                 $this->error('用户名或昵称包含违规关键字，禁止注册');
             }
             //验证数据
-            $this->validateData($data,'Register.register');
+            $this->validateData($params,'Register.register');
             // 提交数据
-            $result = $this->userModel->editData($data);
+            $result = $this->userModel->editData($params);
             if ($result) {
                 $uid = $this->userModel->uid;
                 if ($uid>0) {//如果是编辑状态下
