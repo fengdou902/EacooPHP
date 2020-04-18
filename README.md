@@ -136,7 +136,7 @@ return Builder('Form')
 artTemplate(JS模版引擎),artDialog(弹窗),datetimepicker(日期),echarts(图表),colorpicker(颜色选择器),fastclick,iCheck(复选框美化),ieonly,imgcutter,jquery-repeater,lazyload(延迟加载),select2,superslide,ueditor,wangeditor,webuploader,x-editable
 
 官网：[https://www.eacoophp.com](https://www.eacoophp.com)
-QQ群: 436491685
+QQ群: 1082768796
 ### 演示地址
 [http://demo1.eacoophp.com/admin](http://demo1.eacoophp.com/admin)  
 账号：admin  
