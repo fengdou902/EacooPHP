@@ -88,7 +88,7 @@
 })(jQuery);
 
 function changeVerify(){
-    $('#code').attr('src',"{:BASE_PATH}{:url('login/verify_img',['v'=>rand_string(15)])}");
+    $('#code').attr('src',"{:BASE_PATH}{:url('login/verify_img',['v'=>rand_string(15)])}?t="+ new Date().getSeconds());
 }
 
 function BindEnter(obj)
